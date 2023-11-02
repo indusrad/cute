@@ -28,6 +28,7 @@
 #include "capsule-application.h"
 #include "capsule-profile.h"
 
+#define CAPSULE_PROFILE_KEY_AUDIBLE_BELL    "audible-bell"
 #define CAPSULE_PROFILE_KEY_FONT_NAME       "font-name"
 #define CAPSULE_PROFILE_KEY_LABEL           "label"
 #define CAPSULE_PROFILE_KEY_USE_SYSTEM_FONT "use-system-font"
@@ -41,6 +42,7 @@ struct _CapsuleProfile
 
 enum {
   PROP_0,
+  PROP_AUDIBLE_BELL,
   PROP_FONT_DESC,
   PROP_FONT_NAME,
   PROP_LABEL,
@@ -76,6 +78,10 @@ capsule_profile_changed_cb (CapsuleProfile *self,
   else if (g_str_equal (key, CAPSULE_PROFILE_KEY_LABEL))
     {
       g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_LABEL]);
+    }
+  else if (g_str_equal (key, CAPSULE_PROFILE_KEY_AUDIBLE_BELL))
+    {
+      g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_AUDIBLE_BELL]);
     }
 }
 
@@ -121,6 +127,10 @@ capsule_profile_get_property (GObject    *object,
 
   switch (prop_id)
     {
+    case PROP_AUDIBLE_BELL:
+      g_value_set_boolean (value, capsule_profile_get_audible_bell (self));
+      break;
+
     case PROP_FONT_DESC:
       g_value_take_boxed (value, capsule_profile_dup_font_desc (self));
       break;
@@ -156,6 +166,10 @@ capsule_profile_set_property (GObject      *object,
 
   switch (prop_id)
     {
+    case PROP_AUDIBLE_BELL:
+      capsule_profile_set_audible_bell (self, g_value_get_boolean (value));
+      break;
+
     case PROP_FONT_DESC:
       capsule_profile_set_font_desc (self, g_value_get_boxed (value));
       break;
@@ -191,7 +205,14 @@ capsule_profile_class_init (CapsuleProfileClass *klass)
   object_class->get_property = capsule_profile_get_property;
   object_class->set_property = capsule_profile_set_property;
 
-  properties [PROP_FONT_DESC] =
+  properties[PROP_AUDIBLE_BELL] =
+    g_param_spec_boolean ("audible-bell", NULL, NULL,
+                          FALSE,
+                          (G_PARAM_READWRITE |
+                           G_PARAM_EXPLICIT_NOTIFY |
+                           G_PARAM_STATIC_STRINGS));
+
+  properties[PROP_FONT_DESC] =
     g_param_spec_boxed ("font-desc", NULL, NULL,
                         PANGO_TYPE_FONT_DESCRIPTION,
                         (G_PARAM_READWRITE |
@@ -354,4 +375,23 @@ capsule_profile_set_label (CapsuleProfile *self,
     label = "";
 
   g_settings_set_string (self->settings, CAPSULE_PROFILE_KEY_LABEL, label);
+}
+
+gboolean
+capsule_profile_get_audible_bell (CapsuleProfile *self)
+{
+  g_return_val_if_fail (CAPSULE_IS_PROFILE (self), FALSE);
+
+  return g_settings_get_boolean (self->settings, CAPSULE_PROFILE_KEY_AUDIBLE_BELL);
+}
+
+void
+capsule_profile_set_audible_bell (CapsuleProfile *self,
+                                  gboolean        audible_bell)
+{
+  g_return_if_fail (CAPSULE_IS_PROFILE (self));
+
+  g_settings_set_boolean (self->settings,
+                          CAPSULE_PROFILE_KEY_AUDIBLE_BELL,
+                          audible_bell);
 }

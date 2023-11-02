@@ -30,10 +30,13 @@ G_BEGIN_DECLS
 G_DECLARE_FINAL_TYPE (CapsuleProfile, capsule_profile, CAPSULE, PROFILE, GObject)
 
 CapsuleProfile       *capsule_profile_new                 (const char                 *uuid);
+const char           *capsule_profile_get_uuid            (CapsuleProfile             *self);
+gboolean              capsule_profile_get_audible_bell    (CapsuleProfile             *self);
+void                  capsule_profile_set_audible_bell    (CapsuleProfile             *self,
+                                                           gboolean                    audible_bell);
 PangoFontDescription *capsule_profile_dup_font_desc       (CapsuleProfile             *self);
 void                  capsule_profile_set_font_desc       (CapsuleProfile             *self,
                                                            const PangoFontDescription *font_desc);
-const char           *capsule_profile_get_uuid            (CapsuleProfile             *self);
 char                 *capsule_profile_dup_font_name       (CapsuleProfile             *self);
 void                  capsule_profile_set_font_name       (CapsuleProfile             *self,
                                                            const char                 *font_name);

@@ -28,6 +28,11 @@
           <object class="CapsuleTerminal" id="terminal">
             <property name="enable-fallback-scrolling">false</property>
             <signal name="notify::window-title" handler="capsule_tab_notify_window_title_cb" swapped="1"/>
+            <binding name="audible-bell">
+              <lookup name="audible-bell" type="CapsuleProfile">
+                <lookup name="profile">CapsuleTab</lookup>
+              </lookup>
+            </binding>
             <binding name="font-desc">
               <lookup name="font-desc" type="CapsuleProfile">
                 <lookup name="profile">CapsuleTab</lookup>
