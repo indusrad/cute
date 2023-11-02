@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=capsule
+Exec=capsule
+Icon=org.gnome.Capsule
+Terminal=false
+Type=Application
+Categories=GTK;
+StartupNotify=true

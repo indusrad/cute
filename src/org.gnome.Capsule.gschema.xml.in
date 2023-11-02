@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright 2023 Christian Hergert
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+  SPDX-License-Identifier: GPL-3.0-or-later
+-->
+<schemalist gettext-domain=@GETTEXT_PACKAGE@>
+
+  <schema id=@APP_SCHEMA_ID@ path=@APP_SCHEMA_PATH@>
+
+    <key name="default-profile-uuid" type="s">
+      <default>''</default>
+      <summary>Default Profile UUID</summary>
+      <description>The UUID of the default profile</description>
+    </key>
+
+    <key name="profile-uuids" type="as">
+      <default>[]</default>
+      <summary>UUIDs of all Profiles</summary>
+      <description>A list of UUID for every profile</description>
+    </key>
+
+  </schema>
+
+  <schema id=@APP_SCHEMA_PROFILE_ID@>
+
+    <key name="label" type="s">
+      <default>''</default>
+      <summary>Label</summary>
+      <description>The label for the profile</description>
+    </key>
+
+    <key name="use-system-font" type="b">
+      <default>true</default>
+      <summary>Use System Font</summary>
+      <description>If the default system monospace font should be used</description>
+    </key>
+
+    <key name="font-name" type="s">
+      <default>''</default>
+      <summary>Font Name</summary>
+      <description>The font description to use if use-system-font is set to False</description>
+    </key>
+
+  </schema>
+
+</schemalist>

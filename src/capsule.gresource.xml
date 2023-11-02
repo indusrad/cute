@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/org/gnome/Capsule">
+    <file preprocess="xml-stripblanks">capsule-close-dialog.ui</file>
+    <file preprocess="xml-stripblanks">capsule-find-bar.ui</file>
+    <file preprocess="xml-stripblanks">capsule-preferences-window.ui</file>
+    <file preprocess="xml-stripblanks">capsule-profile-editor.ui</file>
+    <file preprocess="xml-stripblanks">capsule-tab.ui</file>
+    <file preprocess="xml-stripblanks">capsule-window.ui</file>
+    <file>style.css</file>
+  </gresource>
+  <gresource prefix="/org/gnome/Capsule/gtk">
+    <file preprocess="xml-stripblanks">help-overlay.ui</file>
+  </gresource>
+</gresources>

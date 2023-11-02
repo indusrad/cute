@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright 2023 Christian Hergert
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+  SPDX-License-Identifier: GPL-3.0-or-later
+-->
+<interface>
+  <requires lib="gtk" version="4.0"/>
+  <requires lib="Adw" version="1.0"/>
+  <template class="CapsuleWindow" parent="AdwApplicationWindow">
+    <child>
+      <object class="GtkShortcutController">
+        <property name="propagation-phase">capture</property>
+        <child>
+          <object class="GtkShortcut">
+            <property name="trigger">&lt;ctrl&gt;&lt;shift&gt;n</property>
+            <property name="action">action(win.new-tab::'')</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkShortcut">
+            <property name="trigger">&lt;ctrl&gt;&lt;shift&gt;t</property>
+            <property name="action">action(win.new-window::'')</property>
+          </object>
+        </child>
+      </object>
+    </child>
+    <property name="content">
+      <object class="AdwToolbarView">
+        <child type="top">
+          <object class="GtkBox">
+            <property name="orientation">vertical</property>
+            <child>
+              <object class="AdwHeaderBar" id="header_bar">
+                <child type="start">
+                  <object class="AdwSplitButton">
+                    <property name="icon-name">tab-new-symbolic</property>
+                    <property name="tooltip-text" translatable="yes">New Terminal</property>
+                    <property name="action-name">win.new-terminal</property>
+                    <property name="action-target">'default'</property>
+                    <binding name="menu-model">
+                      <lookup name="profile-menu" type="CapsuleApplication">
+                        <lookup name="application">CapsuleWindow</lookup>
+                      </lookup>
+                    </binding>
+                  </object>
+                </child>
+                <child type="title">
+                  <object class="AdwWindowTitle">
+                    <binding name="title">
+                      <lookup name="title" type="CapsuleTab">
+                        <lookup name="active-tab">CapsuleWindow</lookup>
+                      </lookup>
+                    </binding>
+                  </object>
+                </child>
+                <child type="end">
+                  <object class="GtkMenuButton">
+                    <property name="primary">true</property>
+                    <property name="icon-name">open-menu-symbolic</property>
+                    <property name="tooltip-text" translatable="yes">Menu</property>
+                    <property name="menu-model">primary_menu</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="AdwTabBar" id="tab_bar">
+                <property name="view">tab_view</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <property name="content">
+          <object class="AdwTabView" id="tab_view">
+            <signal name="notify::selected-page" handler="capsule_window_notify_selected_page_cb" swapped="1"/>
+            <signal name="page-attached" handler="capsule_window_page_attached_cb" swapped="1"/>
+            <signal name="page-detached" handler="capsule_window_page_detached_cb" swapped="1"/>
+          </object>
+        </property>
+      </object>
+    </property>
+  </template>
+  <menu id="primary_menu">
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">New _Tab</attribute>
+        <attribute name="action">win.new-tab</attribute>
+        <attribute name="target" type="s">'default'</attribute>
+        <attribute name="accel">&lt;ctrl&gt;&lt;shift&gt;t</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">New _Window</attribute>
+        <attribute name="action">win.new-window</attribute>
+        <attribute name="target" type="s">'default'</attribute>
+        <attribute name="accel">&lt;ctrl&gt;&lt;shift&gt;n</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">_Preferences</attribute>
+        <attribute name="action">app.preferences</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">_Keyboard Shortcuts</attribute>
+        <attribute name="action">win.show-help-overlay</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">_About Capsule</attribute>
+        <attribute name="action">app.about</attribute>
+      </item>
+    </section>
+  </menu>
+</interface>
