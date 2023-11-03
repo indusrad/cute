@@ -34,7 +34,7 @@
 
 struct _CapsuleApplication
 {
-	AdwApplication      parent_instance;
+  AdwApplication      parent_instance;
   GListStore         *profiles;
   GListStore         *containers;
   CapsuleSettings    *settings;
@@ -72,12 +72,12 @@ CapsuleApplication *
 capsule_application_new (const char        *application_id,
                          GApplicationFlags  flags)
 {
-	g_return_val_if_fail (application_id != NULL, NULL);
+  g_return_val_if_fail (application_id != NULL, NULL);
 
-	return g_object_new (CAPSULE_TYPE_APPLICATION,
-	                     "application-id", application_id,
-	                     "flags", flags,
-	                     NULL);
+  return g_object_new (CAPSULE_TYPE_APPLICATION,
+                       "application-id", application_id,
+                       "flags", flags,
+                       NULL);
 }
 
 static void
@@ -85,9 +85,9 @@ capsule_application_activate (GApplication *app)
 {
   CapsuleWindow *window;
 
-	g_assert (CAPSULE_IS_APPLICATION (app));
+  g_assert (CAPSULE_IS_APPLICATION (app));
 
-	for (const GList *windows = gtk_application_get_windows (GTK_APPLICATION (app));
+  for (const GList *windows = gtk_application_get_windows (GTK_APPLICATION (app));
        windows != NULL;
        windows = windows->next)
     {
@@ -100,7 +100,7 @@ capsule_application_activate (GApplication *app)
 
   window = capsule_window_new ();
 
-	gtk_window_present (GTK_WINDOW (window));
+  gtk_window_present (GTK_WINDOW (window));
 }
 
 static void
@@ -294,13 +294,13 @@ static void
 capsule_application_class_init (CapsuleApplicationClass *klass)
 {
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
-	GApplicationClass *app_class = G_APPLICATION_CLASS (klass);
+  GApplicationClass *app_class = G_APPLICATION_CLASS (klass);
 
   object_class->get_property = capsule_application_get_property;
 
-	app_class->activate = capsule_application_activate;
-	app_class->startup = capsule_application_startup;
-	app_class->shutdown = capsule_application_shutdown;
+  app_class->activate = capsule_application_activate;
+  app_class->startup = capsule_application_startup;
+  app_class->shutdown = capsule_application_shutdown;
 
   properties[PROP_PROFILE_MENU] =
     g_param_spec_object ("profile-menu", NULL, NULL,
@@ -330,9 +330,9 @@ capsule_application_edit_profile (CapsuleApplication *self,
 {
   const char *profile_uuid;
 
-	g_assert (CAPSULE_IS_APPLICATION (self));
-	g_assert (param != NULL);
-	g_assert (g_variant_is_of_type (param, G_VARIANT_TYPE_STRING));
+  g_assert (CAPSULE_IS_APPLICATION (self));
+  g_assert (param != NULL);
+  g_assert (g_variant_is_of_type (param, G_VARIANT_TYPE_STRING));
 
   profile_uuid = g_variant_get_string (param, NULL);
 
@@ -343,22 +343,22 @@ static void
 capsule_application_about (CapsuleApplication *self,
                            GVariant           *param)
 {
-	static const char *developers[] = {"Christian Hergert", NULL};
-	GtkWindow *window = NULL;
+  static const char *developers[] = {"Christian Hergert", NULL};
+  GtkWindow *window = NULL;
 
-	g_assert (CAPSULE_IS_APPLICATION (self));
+  g_assert (CAPSULE_IS_APPLICATION (self));
 
-	window = gtk_application_get_active_window (GTK_APPLICATION (self));
+  window = gtk_application_get_active_window (GTK_APPLICATION (self));
 
-	adw_show_about_window (window,
-	                       "application-icon", PACKAGE_ICON_NAME,
-	                       "application-name", PACKAGE_NAME,
-	                       "copyright", "© 2023 Red Hat, Inc.",
-	                       "developer-name", "Christian Hergert",
-	                       "developers", developers,
-	                       "version", "0.1.0",
+  adw_show_about_window (window,
+                         "application-icon", PACKAGE_ICON_NAME,
+                         "application-name", PACKAGE_NAME,
+                         "copyright", "© 2023 Red Hat, Inc.",
+                         "developer-name", "Christian Hergert",
+                         "developers", developers,
+                         "version", "0.1.0",
                          "license-type", GTK_LICENSE_GPL_3_0,
-	                       NULL);
+                         NULL);
 }
 
 static void
