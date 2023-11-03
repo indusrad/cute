@@ -14,6 +14,7 @@ capsule_sources = [
   'capsule-settings.c',
   'capsule-tab.c',
   'capsule-terminal.c',
+  'capsule-util.c',
   'capsule-window-style.c',
   'capsule-window.c',
 ]
@@ -31,6 +32,7 @@ configure_file(
 )
 
 capsule_deps = [
+  dependency('gio-unix-2.0'),
   dependency('gtk4', version: '>= 4.12'),
   dependency('libadwaita-1', version: '>= 1.4'),
   dependency('libpeas-2', version: '>= 2.0'),
