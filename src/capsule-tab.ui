@@ -20,34 +20,45 @@
 <interface>
   <template class="CapsuleTab" parent="GtkWidget">
     <child>
-      <object class="GtkScrolledWindow" id="scrolled_window">
-        <property name="propagate-natural-width">true</property>
-        <property name="propagate-natural-height">true</property>
-        <property name="hscrollbar-policy">never</property>
+      <object class="GtkBox">
+        <property name="orientation">vertical</property>
         <child>
-          <object class="CapsuleTerminal" id="terminal">
-            <property name="enable-fallback-scrolling">false</property>
-            <signal name="notify::window-title" handler="capsule_tab_notify_window_title_cb" swapped="1"/>
-            <binding name="audible-bell">
-              <lookup name="audible-bell" type="CapsuleProfile">
-                <lookup name="profile">CapsuleTab</lookup>
-              </lookup>
-            </binding>
-            <binding name="font-desc">
-              <lookup name="font-desc" type="CapsuleProfile">
-                <lookup name="profile">CapsuleTab</lookup>
-              </lookup>
-            </binding>
-            <binding name="scroll-on-keystroke">
-              <lookup name="scroll-on-keystroke" type="CapsuleProfile">
-                <lookup name="profile">CapsuleTab</lookup>
-              </lookup>
-            </binding>
-            <binding name="scroll-on-output">
-              <lookup name="scroll-on-output" type="CapsuleProfile">
-                <lookup name="profile">CapsuleTab</lookup>
-              </lookup>
-            </binding>
+          <object class="AdwBanner" id="banner">
+          </object>
+        </child>
+        <child>
+          <object class="GtkScrolledWindow" id="scrolled_window">
+            <property name="propagate-natural-width">true</property>
+            <property name="propagate-natural-height">true</property>
+            <property name="hscrollbar-policy">never</property>
+            <property name="vexpand">true</property>
+            <child>
+              <object class="CapsuleTerminal" id="terminal">
+                <property name="enable-fallback-scrolling">false</property>
+                <property name="scroll-unit-is-pixels">true</property>
+                <signal name="notify::window-title" handler="capsule_tab_notify_window_title_cb" swapped="1"/>
+                <binding name="audible-bell">
+                  <lookup name="audible-bell" type="CapsuleProfile">
+                    <lookup name="profile">CapsuleTab</lookup>
+                  </lookup>
+                </binding>
+                <binding name="font-desc">
+                  <lookup name="font-desc" type="CapsuleProfile">
+                    <lookup name="profile">CapsuleTab</lookup>
+                  </lookup>
+                </binding>
+                <binding name="scroll-on-keystroke">
+                  <lookup name="scroll-on-keystroke" type="CapsuleProfile">
+                    <lookup name="profile">CapsuleTab</lookup>
+                  </lookup>
+                </binding>
+                <binding name="scroll-on-output">
+                  <lookup name="scroll-on-output" type="CapsuleProfile">
+                    <lookup name="profile">CapsuleTab</lookup>
+                  </lookup>
+                </binding>
+              </object>
+            </child>
           </object>
         </child>
       </object>
