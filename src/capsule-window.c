@@ -28,6 +28,7 @@ struct _CapsuleWindow
   AdwApplicationWindow  parent_instance;
   AdwHeaderBar         *header_bar;
   AdwTabBar            *tab_bar;
+  AdwTabOverview       *tab_overview;
   AdwTabView           *tab_view;
 };
 
@@ -166,6 +167,17 @@ capsule_window_new_terminal_action (GtkWidget  *widget,
     capsule_window_new_tab_action (widget, NULL, param);
 }
 
+static void
+capsule_window_tab_overview_action (GtkWidget  *widget,
+                                    const char *action_name,
+                                    GVariant   *param)
+{
+  CapsuleWindow *self = (CapsuleWindow *)widget;
+
+  g_assert (CAPSULE_IS_WINDOW (self));
+
+  adw_tab_overview_set_open (self->tab_overview, TRUE);
+}
 
 static void
 capsule_window_dispose (GObject *object)
@@ -238,6 +250,7 @@ capsule_window_class_init (CapsuleWindowClass *klass)
 
   gtk_widget_class_bind_template_child (widget_class, CapsuleWindow, header_bar);
   gtk_widget_class_bind_template_child (widget_class, CapsuleWindow, tab_bar);
+  gtk_widget_class_bind_template_child (widget_class, CapsuleWindow, tab_overview);
   gtk_widget_class_bind_template_child (widget_class, CapsuleWindow, tab_view);
 
   gtk_widget_class_bind_template_callback (widget_class, capsule_window_page_attached_cb);
@@ -248,6 +261,7 @@ capsule_window_class_init (CapsuleWindowClass *klass)
   gtk_widget_class_install_action (widget_class, "win.new-tab", "s", capsule_window_new_tab_action);
   gtk_widget_class_install_action (widget_class, "win.new-window", "s", capsule_window_new_window_action);
   gtk_widget_class_install_action (widget_class, "win.new-terminal", "s", capsule_window_new_terminal_action);
+  gtk_widget_class_install_action (widget_class, "win.tab-overview", NULL, capsule_window_tab_overview_action);
 }
 
 static void

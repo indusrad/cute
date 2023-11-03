@@ -38,6 +38,12 @@
             <property name="arguments">'default'</property>
           </object>
         </child>
+        <child>
+          <object class="GtkShortcut">
+            <property name="trigger">&lt;ctrl&gt;&lt;shift&gt;o</property>
+            <property name="action">action(win.tab-overview)</property>
+          </object>
+        </child>
       </object>
     </child>
     <property name="content">
