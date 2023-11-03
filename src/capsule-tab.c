@@ -25,6 +25,7 @@
 
 #include "capsule-application.h"
 #include "capsule-container.h"
+#include "capsule-enums.h"
 #include "capsule-tab.h"
 #include "capsule-terminal.h"
 #include "capsule-util.h"
@@ -52,6 +53,7 @@ struct _CapsuleTab
   GtkScrolledWindow *scrolled_window;
   CapsuleTerminal   *terminal;
 
+  CapsuleZoomLevel   zoom;
   CapsuleTabState    state;
 };
 
@@ -61,6 +63,7 @@ enum {
   PROP_TITLE,
   PROP_TITLE_PREFIX,
   PROP_SUBTITLE,
+  PROP_ZOOM,
   N_PROPS
 };
 
@@ -69,6 +72,24 @@ static void capsule_tab_respawn (CapsuleTab *self);
 G_DEFINE_FINAL_TYPE (CapsuleTab, capsule_tab, GTK_TYPE_WIDGET)
 
 static GParamSpec *properties[N_PROPS];
+static double zoom_font_scales[] = {
+  0,
+  1.0 / (1.2 * 1.2 * 1.2 * 1.2 * 1.2 * 1.2 * 1.2),
+  1.0 / (1.2 * 1.2 * 1.2 * 1.2 * 1.2 * 1.2),
+  1.0 / (1.2 * 1.2 * 1.2 * 1.2 * 1.2),
+  1.0 / (1.2 * 1.2 * 1.2 * 1.2),
+  1.0 / (1.2 * 1.2 * 1.2),
+  1.0 / (1.2 * 1.2),
+  1.0 / (1.2),
+  1.0,
+  1.0 * 1.2,
+  1.0 * 1.2 * 1.2,
+  1.0 * 1.2 * 1.2 * 1.2,
+  1.0 * 1.2 * 1.2 * 1.2 * 1.2,
+  1.0 * 1.2 * 1.2 * 1.2 * 1.2 * 1.2,
+  1.0 * 1.2 * 1.2 * 1.2 * 1.2 * 1.2 * 1.2,
+  1.0 * 1.2 * 1.2 * 1.2 * 1.2 * 1.2 * 1.2 * 1,2,
+};
 
 static void
 capsule_tab_wait_check_cb (GObject      *object,
@@ -268,6 +289,26 @@ capsule_tab_notify_window_subtitle_cb (CapsuleTab      *self,
 }
 
 static void
+capsule_tab_increase_font_size_cb (CapsuleTab      *self,
+                                   CapsuleTerminal *terminal)
+{
+  g_assert (CAPSULE_IS_TAB (self));
+  g_assert (CAPSULE_IS_TERMINAL (terminal));
+
+  capsule_tab_zoom_in (self);
+}
+
+static void
+capsule_tab_decrease_font_size_cb (CapsuleTab      *self,
+                                   CapsuleTerminal *terminal)
+{
+  g_assert (CAPSULE_IS_TAB (self));
+  g_assert (CAPSULE_IS_TERMINAL (terminal));
+
+  capsule_tab_zoom_out (self);
+}
+
+static void
 capsule_tab_dispose (GObject *object)
 {
   CapsuleTab *self = (CapsuleTab *)object;
@@ -313,6 +354,10 @@ capsule_tab_get_property (GObject    *object,
       g_value_set_string (value, capsule_tab_get_title_prefix (self));
       break;
 
+    case PROP_ZOOM:
+      g_value_set_enum (value, capsule_tab_get_zoom (self));
+      break;
+
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
     }
@@ -334,6 +379,10 @@ capsule_tab_set_property (GObject      *object,
 
     case PROP_TITLE_PREFIX:
       capsule_tab_set_title_prefix (self, g_value_get_string (value));
+      break;
+
+    case PROP_ZOOM:
+      capsule_tab_set_zoom (self, g_value_get_enum (value));
       break;
 
     default:
@@ -379,6 +428,14 @@ capsule_tab_class_init (CapsuleTabClass *klass)
                           G_PARAM_EXPLICIT_NOTIFY |
                           G_PARAM_STATIC_STRINGS));
 
+  properties[PROP_ZOOM] =
+    g_param_spec_enum ("zoom", NULL, NULL,
+                       CAPSULE_TYPE_ZOOM_LEVEL,
+                       CAPSULE_ZOOM_LEVEL_DEFAULT,
+                       (G_PARAM_READWRITE |
+                        G_PARAM_EXPLICIT_NOTIFY |
+                        G_PARAM_STATIC_STRINGS));
+
   g_object_class_install_properties (object_class, N_PROPS, properties);
 
   gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/Capsule/capsule-tab.ui");
@@ -390,6 +447,8 @@ capsule_tab_class_init (CapsuleTabClass *klass)
 
   gtk_widget_class_bind_template_callback (widget_class, capsule_tab_notify_window_title_cb);
   gtk_widget_class_bind_template_callback (widget_class, capsule_tab_notify_window_subtitle_cb);
+  gtk_widget_class_bind_template_callback (widget_class, capsule_tab_increase_font_size_cb);
+  gtk_widget_class_bind_template_callback (widget_class, capsule_tab_decrease_font_size_cb);
 
   g_type_ensure (CAPSULE_TYPE_TERMINAL);
 }
@@ -398,6 +457,7 @@ static void
 capsule_tab_init (CapsuleTab *self)
 {
   self->state = CAPSULE_TAB_STATE_INITIAL;
+  self->zoom = CAPSULE_ZOOM_LEVEL_DEFAULT;
 
   gtk_widget_init_template (GTK_WIDGET (self));
 }
@@ -526,4 +586,55 @@ capsule_tab_set_previous_working_directory_uri (CapsuleTab *self,
   g_return_if_fail (CAPSULE_IS_TAB (self));
 
   g_set_str (&self->previous_working_directory_uri, previous_working_directory_uri);
+}
+
+static void
+capsule_tab_apply_zoom (CapsuleTab *self)
+{
+  g_assert (CAPSULE_IS_TAB (self));
+
+  vte_terminal_set_font_scale (VTE_TERMINAL (self->terminal),
+                               zoom_font_scales[self->zoom]);
+}
+
+CapsuleZoomLevel
+capsule_tab_get_zoom (CapsuleTab *self)
+{
+  g_return_val_if_fail (CAPSULE_IS_TAB (self), 0);
+
+  return self->zoom;
+}
+
+void
+capsule_tab_set_zoom (CapsuleTab       *self,
+                      CapsuleZoomLevel  zoom)
+{
+  g_return_if_fail (CAPSULE_IS_TAB (self));
+  g_return_if_fail (zoom >= CAPSULE_ZOOM_LEVEL_MINUS_7 &&
+                    zoom <= CAPSULE_ZOOM_LEVEL_PLUS_7);
+
+  if (zoom != self->zoom)
+    {
+      self->zoom = zoom;
+      capsule_tab_apply_zoom (self);
+      g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_ZOOM]);
+    }
+}
+
+void
+capsule_tab_zoom_in (CapsuleTab *self)
+{
+  g_return_if_fail (CAPSULE_IS_TAB (self));
+
+  if (self->zoom < CAPSULE_ZOOM_LEVEL_PLUS_7)
+    capsule_tab_set_zoom (self, self->zoom + 1);
+}
+
+void
+capsule_tab_zoom_out (CapsuleTab *self)
+{
+  g_return_if_fail (CAPSULE_IS_TAB (self));
+
+  if (self->zoom > CAPSULE_ZOOM_LEVEL_MINUS_7)
+    capsule_tab_set_zoom (self, self->zoom - 1);
 }

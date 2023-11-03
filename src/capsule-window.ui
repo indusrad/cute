@@ -125,6 +125,24 @@
   </template>
   <menu id="primary_menu">
     <section>
+      <attribute name="display-hint">horizontal-buttons</attribute>
+      <item>
+        <attribute name="action">win.zoom-out</attribute>
+        <attribute name="accel">&lt;ctrl&gt;minus</attribute>
+        <attribute name="verb-icon">zoom-out-symbolic</attribute>
+      </item>
+      <item>
+        <attribute name="action">win.zoom-one</attribute>
+        <attribute name="accel">&lt;ctrl&gt;0</attribute>
+        <attribute name="verb-icon">zoom-original-symbolic</attribute>
+      </item>
+      <item>
+        <attribute name="action">win.zoom-in</attribute>
+        <attribute name="accel">&lt;ctrl&gt;plus</attribute>
+        <attribute name="verb-icon">zoom-in-symbolic</attribute>
+      </item>
+    </section>
+    <section>
       <item>
         <attribute name="label" translatable="yes">New _Tab</attribute>
         <attribute name="action">win.new-tab</attribute>

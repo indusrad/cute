@@ -26,6 +26,7 @@ capsule_sources = [
 
 capsule_enum_headers = [
   'capsule-profile.h',
+  'capsule-tab.h',
 ]
 
 capsule_sources += gnome.mkenums_simple('capsule-enums',

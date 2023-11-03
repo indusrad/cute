@@ -27,19 +27,43 @@
 
 G_BEGIN_DECLS
 
+typedef enum _CapsuleZoomLevel
+{
+  CAPSULE_ZOOM_LEVEL_MINUS_7 = 1,
+  CAPSULE_ZOOM_LEVEL_MINUS_6,
+  CAPSULE_ZOOM_LEVEL_MINUS_5,
+  CAPSULE_ZOOM_LEVEL_MINUS_4,
+  CAPSULE_ZOOM_LEVEL_MINUS_3,
+  CAPSULE_ZOOM_LEVEL_MINUS_2,
+  CAPSULE_ZOOM_LEVEL_MINUS_1,
+  CAPSULE_ZOOM_LEVEL_DEFAULT,
+  CAPSULE_ZOOM_LEVEL_PLUS_1,
+  CAPSULE_ZOOM_LEVEL_PLUS_2,
+  CAPSULE_ZOOM_LEVEL_PLUS_3,
+  CAPSULE_ZOOM_LEVEL_PLUS_4,
+  CAPSULE_ZOOM_LEVEL_PLUS_5,
+  CAPSULE_ZOOM_LEVEL_PLUS_6,
+  CAPSULE_ZOOM_LEVEL_PLUS_7,
+} CapsuleZoomLevel;
+
 #define CAPSULE_TYPE_TAB (capsule_tab_get_type())
 
 G_DECLARE_FINAL_TYPE (CapsuleTab, capsule_tab, CAPSULE, TAB, GtkWidget)
 
-CapsuleTab     *capsule_tab_new                                (CapsuleProfile *profile);
-CapsuleProfile *capsule_tab_get_profile                        (CapsuleTab     *self);
-char           *capsule_tab_dup_subtitle                       (CapsuleTab     *self);
-char           *capsule_tab_dup_title                          (CapsuleTab     *self);
-const char     *capsule_tab_get_title_prefix                   (CapsuleTab     *self);
-void            capsule_tab_set_title_prefix                   (CapsuleTab     *self,
-                                                                const char     *title_prefix);
-const char     *capsule_tab_get_current_directory_uri          (CapsuleTab     *self);
-void            capsule_tab_set_previous_working_directory_uri (CapsuleTab     *self,
-                                                                const char     *previous_working_directory_uri);
+CapsuleTab       *capsule_tab_new                                (CapsuleProfile   *profile);
+CapsuleProfile   *capsule_tab_get_profile                        (CapsuleTab       *self);
+char             *capsule_tab_dup_subtitle                       (CapsuleTab       *self);
+char             *capsule_tab_dup_title                          (CapsuleTab       *self);
+const char       *capsule_tab_get_title_prefix                   (CapsuleTab       *self);
+void              capsule_tab_set_title_prefix                   (CapsuleTab       *self,
+                                                                  const char       *title_prefix);
+const char       *capsule_tab_get_current_directory_uri          (CapsuleTab       *self);
+void              capsule_tab_set_previous_working_directory_uri (CapsuleTab       *self,
+                                                                  const char       *previous_working_directory_uri);
+CapsuleZoomLevel  capsule_tab_get_zoom                           (CapsuleTab       *self);
+void              capsule_tab_set_zoom                           (CapsuleTab       *self,
+                                                                  CapsuleZoomLevel  zoom);
+void              capsule_tab_zoom_in                            (CapsuleTab       *self);
+void              capsule_tab_zoom_out                           (CapsuleTab       *self);
 
 G_END_DECLS

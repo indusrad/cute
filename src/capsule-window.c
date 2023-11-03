@@ -95,8 +95,16 @@ capsule_window_notify_selected_page_cb (CapsuleWindow *self,
                                         GParamSpec    *pspec,
                                         AdwTabView    *tab_view)
 {
+  gboolean has_page;
+
   g_assert (CAPSULE_IS_WINDOW (self));
   g_assert (ADW_IS_TAB_VIEW (tab_view));
+
+  has_page = adw_tab_view_get_selected_page (self->tab_view) != NULL;
+
+  gtk_widget_action_set_enabled (GTK_WIDGET (self), "win.zoom-in", has_page);
+  gtk_widget_action_set_enabled (GTK_WIDGET (self), "win.zoom-out", has_page);
+  gtk_widget_action_set_enabled (GTK_WIDGET (self), "win.zoom-one", has_page);
 
   g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_ACTIVE_TAB]);
 }
@@ -210,6 +218,48 @@ capsule_window_tab_overview_action (GtkWidget  *widget,
 }
 
 static void
+capsule_window_zoom_in_action (GtkWidget  *widget,
+                               const char *action_name,
+                               GVariant   *param)
+{
+  CapsuleWindow *self = (CapsuleWindow *)widget;
+  CapsuleTab *active_tab;
+
+  g_assert (CAPSULE_IS_WINDOW (self));
+
+  if ((active_tab = capsule_window_get_active_tab (self)))
+    capsule_tab_zoom_in (active_tab);
+}
+
+static void
+capsule_window_zoom_out_action (GtkWidget  *widget,
+                                const char *action_name,
+                                GVariant   *param)
+{
+  CapsuleWindow *self = (CapsuleWindow *)widget;
+  CapsuleTab *active_tab;
+
+  g_assert (CAPSULE_IS_WINDOW (self));
+
+  if ((active_tab = capsule_window_get_active_tab (self)))
+    capsule_tab_zoom_out (active_tab);
+}
+
+static void
+capsule_window_zoom_one_action (GtkWidget  *widget,
+                                const char *action_name,
+                                GVariant   *param)
+{
+  CapsuleWindow *self = (CapsuleWindow *)widget;
+  CapsuleTab *active_tab;
+
+  g_assert (CAPSULE_IS_WINDOW (self));
+
+  if ((active_tab = capsule_window_get_active_tab (self)))
+    capsule_tab_set_zoom (active_tab, CAPSULE_ZOOM_LEVEL_DEFAULT);
+}
+
+static void
 capsule_window_dispose (GObject *object)
 {
   CapsuleWindow *self = (CapsuleWindow *)object;
@@ -292,6 +342,9 @@ capsule_window_class_init (CapsuleWindowClass *klass)
   gtk_widget_class_install_action (widget_class, "win.new-window", "s", capsule_window_new_window_action);
   gtk_widget_class_install_action (widget_class, "win.new-terminal", "s", capsule_window_new_terminal_action);
   gtk_widget_class_install_action (widget_class, "win.tab-overview", NULL, capsule_window_tab_overview_action);
+  gtk_widget_class_install_action (widget_class, "win.zoom-in", NULL, capsule_window_zoom_in_action);
+  gtk_widget_class_install_action (widget_class, "win.zoom-out", NULL, capsule_window_zoom_out_action);
+  gtk_widget_class_install_action (widget_class, "win.zoom-one", NULL, capsule_window_zoom_one_action);
 }
 
 static void
