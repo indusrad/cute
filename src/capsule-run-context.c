@@ -95,6 +95,7 @@ capsule_run_context_add_minimal_environment (CapsuleRunContext *self)
     "LANG",
     "HOME",
     "SHELL",
+    "SHELLOPTS",
     "SSH_AUTH_SOCK",
     "USER",
     "WAYLAND_DISPLAY",
@@ -338,6 +339,11 @@ capsule_run_context_push_host (CapsuleRunContext *self)
                                 capsule_run_context_host_handler,
                                 NULL,
                                 NULL);
+    }
+  else
+    {
+      g_auto(GStrv) env = g_get_environ ();
+      capsule_run_context_set_environ (self, (const char * const *)env);
     }
 }
 
