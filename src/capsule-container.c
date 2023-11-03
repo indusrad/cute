@@ -128,7 +128,6 @@ capsule_container_apply_profile (CapsuleContainer  *self,
   g_assert (CAPSULE_IS_RUN_CONTEXT (run_context));
   g_assert (VTE_IS_PTY (pty));
   g_assert (CAPSULE_IS_PROFILE (profile));
-  g_assert (default_shell != NULL);
 
   capsule_run_context_set_pty (run_context, pty);
 
