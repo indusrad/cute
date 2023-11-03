@@ -96,6 +96,7 @@
             <signal name="notify::selected-page" handler="capsule_window_notify_selected_page_cb" swapped="1"/>
             <signal name="page-attached" handler="capsule_window_page_attached_cb" swapped="1"/>
             <signal name="page-detached" handler="capsule_window_page_detached_cb" swapped="1"/>
+            <signal name="create-window" handler="capsule_window_create_window_cb" swapped="1"/>
           </object>
         </property>
       </object>
