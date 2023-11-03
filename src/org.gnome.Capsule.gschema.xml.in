@@ -19,6 +19,12 @@
 -->
 <schemalist gettext-domain=@GETTEXT_PACKAGE@>
 
+  <enum id="org.gnome.Capsule.ExitAction">
+    <value nick="none" value="0"/>
+    <value nick="restart" value="1"/>
+    <value nick="close" value="2"/>
+  </enum>
+
   <schema id=@APP_SCHEMA_ID@ path=@APP_SCHEMA_PATH@>
 
     <key name="default-profile-uuid" type="s">
@@ -77,6 +83,12 @@
       <default>'host'</default>
       <summary>Default Container</summary>
       <description>The container to run the command in by default</description>
+    </key>
+
+    <key name="exit-action" enum="org.gnome.Capsule.ExitAction">
+      <default>'close'</default>
+      <summary>Exit Action</summary>
+      <description>The action to take when the shell exits</description>
     </key>
 
   </schema>

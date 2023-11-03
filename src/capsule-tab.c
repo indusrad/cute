@@ -62,6 +62,8 @@ enum {
   N_PROPS
 };
 
+static void capsule_tab_respawn (CapsuleTab *self);
+
 G_DEFINE_FINAL_TYPE (CapsuleTab, capsule_tab, GTK_TYPE_WIDGET)
 
 static GParamSpec *properties[N_PROPS];
@@ -74,6 +76,9 @@ capsule_tab_wait_check_cb (GObject      *object,
   GSubprocess *subprocess = (GSubprocess *)object;
   g_autoptr(CapsuleTab) self = user_data;
   g_autoptr(GError) error = NULL;
+  CapsuleExitAction exit_action;
+  AdwTabPage *page = NULL;
+  GtkWidget *tab_view;
   gboolean success;
 
   g_assert (G_IS_SUBPROCESS (subprocess));
@@ -88,7 +93,27 @@ capsule_tab_wait_check_cb (GObject      *object,
   else
     self->state = CAPSULE_TAB_STATE_FAILED;
 
-  /* TODO: respawn state */
+  exit_action = capsule_profile_get_exit_action (self->profile);
+  tab_view = gtk_widget_get_ancestor (GTK_WIDGET (self), ADW_TYPE_TAB_VIEW);
+
+  if (ADW_IS_TAB_VIEW (tab_view))
+    page = adw_tab_view_get_page (ADW_TAB_VIEW (tab_view), GTK_WIDGET (self));
+
+  switch (exit_action)
+    {
+    case CAPSULE_EXIT_ACTION_RESTART:
+      capsule_tab_respawn (self);
+      break;
+
+    case CAPSULE_EXIT_ACTION_CLOSE:
+      if (ADW_IS_TAB_VIEW (tab_view) && ADW_IS_TAB_PAGE (page))
+        adw_tab_view_close_page (ADW_TAB_VIEW (tab_view), page);
+      break;
+
+    case CAPSULE_EXIT_ACTION_NONE:
+    default:
+      break;
+    }
 }
 
 static void

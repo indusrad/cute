@@ -25,6 +25,13 @@
 
 G_BEGIN_DECLS
 
+typedef enum _CapsuleExitAction
+{
+  CAPSULE_EXIT_ACTION_NONE = 0,
+  CAPSULE_EXIT_ACTION_RESTART,
+  CAPSULE_EXIT_ACTION_CLOSE,
+} CapsuleExitAction;
+
 #define CAPSULE_TYPE_PROFILE (capsule_profile_get_type())
 
 G_DECLARE_FINAL_TYPE (CapsuleProfile, capsule_profile, CAPSULE, PROFILE, GObject)
@@ -55,5 +62,8 @@ void                  capsule_profile_set_scroll_on_keystroke (CapsuleProfile   
 gboolean              capsule_profile_get_scroll_on_output    (CapsuleProfile             *self);
 void                  capsule_profile_set_scroll_on_output    (CapsuleProfile             *self,
                                                                gboolean                    scroll_on_output);
+CapsuleExitAction     capsule_profile_get_exit_action         (CapsuleProfile             *self);
+void                  capsule_profile_set_exit_action         (CapsuleProfile             *self,
+                                                               CapsuleExitAction           exit_action);
 
 G_END_DECLS

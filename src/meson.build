@@ -24,6 +24,16 @@ capsule_sources = [
   'eggshell.c',
 ]
 
+capsule_enum_headers = [
+  'capsule-profile.h',
+]
+
+capsule_sources += gnome.mkenums_simple('capsule-enums',
+            sources: capsule_enum_headers,
+  identifier_prefix: 'Capsule',
+      symbol_prefix: 'capsule',
+)
+
 capsule_sources += gnome.compile_resources('capsule-resources',
   'capsule.gresource.xml',
   c_name: 'capsule'

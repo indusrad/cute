@@ -26,10 +26,12 @@
 #include <gio/gio.h>
 
 #include "capsule-application.h"
+#include "capsule-enums.h"
 #include "capsule-profile.h"
 
 #define CAPSULE_PROFILE_KEY_AUDIBLE_BELL        "audible-bell"
 #define CAPSULE_PROFILE_KEY_DEFAULT_CONTAINER   "default-container"
+#define CAPSULE_PROFILE_KEY_EXIT_ACTION         "exit-action"
 #define CAPSULE_PROFILE_KEY_FONT_NAME           "font-name"
 #define CAPSULE_PROFILE_KEY_LABEL               "label"
 #define CAPSULE_PROFILE_KEY_SCROLL_ON_KEYSTROKE "scroll-on-keystroke"
@@ -47,6 +49,7 @@ enum {
   PROP_0,
   PROP_AUDIBLE_BELL,
   PROP_DEFAULT_CONTAINER,
+  PROP_EXIT_ACTION,
   PROP_FONT_DESC,
   PROP_FONT_NAME,
   PROP_LABEL,
@@ -87,6 +90,8 @@ capsule_profile_changed_cb (CapsuleProfile *self,
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_AUDIBLE_BELL]);
   else if (g_str_equal (key, CAPSULE_PROFILE_KEY_DEFAULT_CONTAINER))
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_DEFAULT_CONTAINER]);
+  else if (g_str_equal (key, CAPSULE_PROFILE_KEY_EXIT_ACTION))
+    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_EXIT_ACTION]);
 }
 
 static void
@@ -139,6 +144,10 @@ capsule_profile_get_property (GObject    *object,
       g_value_take_string (value, capsule_profile_dup_default_container (self));
       break;
 
+    case PROP_EXIT_ACTION:
+      g_value_set_enum (value, capsule_profile_get_exit_action (self));
+      break;
+
     case PROP_FONT_DESC:
       g_value_take_boxed (value, capsule_profile_dup_font_desc (self));
       break;
@@ -188,6 +197,10 @@ capsule_profile_set_property (GObject      *object,
 
     case PROP_DEFAULT_CONTAINER:
       capsule_profile_set_default_container (self, g_value_get_string (value));
+      break;
+
+    case PROP_EXIT_ACTION:
+      capsule_profile_set_exit_action (self, g_value_get_enum (value));
       break;
 
     case PROP_FONT_DESC:
@@ -246,6 +259,14 @@ capsule_profile_class_init (CapsuleProfileClass *klass)
                          (G_PARAM_READWRITE |
                           G_PARAM_EXPLICIT_NOTIFY |
                           G_PARAM_STATIC_STRINGS));
+
+  properties[PROP_EXIT_ACTION] =
+    g_param_spec_enum ("exit-action", NULL, NULL,
+                       CAPSULE_TYPE_EXIT_ACTION,
+                       CAPSULE_EXIT_ACTION_CLOSE,
+                       (G_PARAM_READWRITE |
+                        G_PARAM_EXPLICIT_NOTIFY |
+                        G_PARAM_STATIC_STRINGS));
 
   properties[PROP_FONT_DESC] =
     g_param_spec_boxed ("font-desc", NULL, NULL,
@@ -503,4 +524,23 @@ capsule_profile_set_default_container (CapsuleProfile *self,
   g_settings_set_string (self->settings,
                          CAPSULE_PROFILE_KEY_DEFAULT_CONTAINER,
                          default_container);
+}
+
+CapsuleExitAction
+capsule_profile_get_exit_action (CapsuleProfile *self)
+{
+  g_return_val_if_fail (CAPSULE_IS_PROFILE (self), 0);
+
+  return g_settings_get_enum (self->settings, CAPSULE_PROFILE_KEY_EXIT_ACTION);
+}
+
+void
+capsule_profile_set_exit_action (CapsuleProfile    *self,
+                                 CapsuleExitAction  exit_action)
+{
+  g_return_if_fail (CAPSULE_IS_PROFILE (self));
+  g_return_if_fail (exit_action >= CAPSULE_EXIT_ACTION_NONE &&
+                    exit_action <= CAPSULE_EXIT_ACTION_CLOSE);
+
+  g_settings_set_enum (self->settings, CAPSULE_PROFILE_KEY_EXIT_ACTION, exit_action);
 }
