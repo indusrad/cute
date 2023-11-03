@@ -41,62 +41,77 @@
       </object>
     </child>
     <property name="content">
-      <object class="AdwToolbarView">
-        <child type="top">
-          <object class="GtkBox">
-            <property name="orientation">vertical</property>
-            <child>
-              <object class="AdwHeaderBar" id="header_bar">
-                <child type="start">
-                  <object class="AdwSplitButton">
-                    <property name="icon-name">tab-new-symbolic</property>
-                    <property name="tooltip-text" translatable="yes">New Terminal</property>
-                    <property name="action-name">win.new-terminal</property>
-                    <property name="action-target">'default'</property>
-                    <binding name="menu-model">
-                      <lookup name="profile-menu" type="CapsuleApplication">
-                        <lookup name="application">CapsuleWindow</lookup>
-                      </lookup>
-                    </binding>
+      <object class="AdwTabOverview" id="tab_overview">
+        <property name="view">tab_view</property>
+        <property name="child">
+          <object class="AdwToolbarView">
+            <child type="top">
+              <object class="GtkBox">
+                <property name="orientation">vertical</property>
+                <child>
+                  <object class="AdwHeaderBar" id="header_bar">
+                    <child type="start">
+                      <object class="AdwSplitButton">
+                        <property name="icon-name">tab-new-symbolic</property>
+                        <property name="tooltip-text" translatable="yes">New Terminal</property>
+                        <property name="action-name">win.new-terminal</property>
+                        <property name="action-target">'default'</property>
+                        <property name="focus-on-click">false</property>
+                        <binding name="menu-model">
+                          <lookup name="profile-menu" type="CapsuleApplication">
+                            <lookup name="application">CapsuleWindow</lookup>
+                          </lookup>
+                        </binding>
+                      </object>
+                    </child>
+                    <child type="title">
+                      <object class="AdwWindowTitle">
+                        <binding name="subtitle">
+                          <lookup name="subtitle" type="CapsuleTab">
+                            <lookup name="active-tab">CapsuleWindow</lookup>
+                          </lookup>
+                        </binding>
+                        <binding name="title">
+                          <lookup name="title" type="CapsuleTab">
+                            <lookup name="active-tab">CapsuleWindow</lookup>
+                          </lookup>
+                        </binding>
+                      </object>
+                    </child>
+                    <child type="end">
+                      <object class="GtkMenuButton">
+                        <property name="primary">true</property>
+                        <property name="icon-name">open-menu-symbolic</property>
+                        <property name="tooltip-text" translatable="yes">Menu</property>
+                        <property name="menu-model">primary_menu</property>
+                        <property name="focus-on-click">false</property>
+                      </object>
+                    </child>
+                    <child type="end">
+                      <object class="GtkToggleButton">
+                        <property name="icon-name">view-grid-symbolic</property>
+                        <property name="tooltip-text" translatable="yes">Show Open Tabs</property>
+                        <property name="active" bind-source="tab_overview" bind-property="open" bind-flags="bidirectional|sync-create"/>
+                        <property name="focus-on-click">false</property>
+                      </object>
+                    </child>
                   </object>
                 </child>
-                <child type="title">
-                  <object class="AdwWindowTitle">
-                    <binding name="subtitle">
-                      <lookup name="subtitle" type="CapsuleTab">
-                        <lookup name="active-tab">CapsuleWindow</lookup>
-                      </lookup>
-                    </binding>
-                    <binding name="title">
-                      <lookup name="title" type="CapsuleTab">
-                        <lookup name="active-tab">CapsuleWindow</lookup>
-                      </lookup>
-                    </binding>
-                  </object>
-                </child>
-                <child type="end">
-                  <object class="GtkMenuButton">
-                    <property name="primary">true</property>
-                    <property name="icon-name">open-menu-symbolic</property>
-                    <property name="tooltip-text" translatable="yes">Menu</property>
-                    <property name="menu-model">primary_menu</property>
+                <child>
+                  <object class="AdwTabBar" id="tab_bar">
+                    <property name="view">tab_view</property>
                   </object>
                 </child>
               </object>
             </child>
-            <child>
-              <object class="AdwTabBar" id="tab_bar">
-                <property name="view">tab_view</property>
+            <property name="content">
+              <object class="AdwTabView" id="tab_view">
+                <signal name="notify::selected-page" handler="capsule_window_notify_selected_page_cb" swapped="1"/>
+                <signal name="page-attached" handler="capsule_window_page_attached_cb" swapped="1"/>
+                <signal name="page-detached" handler="capsule_window_page_detached_cb" swapped="1"/>
+                <signal name="create-window" handler="capsule_window_create_window_cb" swapped="1"/>
               </object>
-            </child>
-          </object>
-        </child>
-        <property name="content">
-          <object class="AdwTabView" id="tab_view">
-            <signal name="notify::selected-page" handler="capsule_window_notify_selected_page_cb" swapped="1"/>
-            <signal name="page-attached" handler="capsule_window_page_attached_cb" swapped="1"/>
-            <signal name="page-detached" handler="capsule_window_page_detached_cb" swapped="1"/>
-            <signal name="create-window" handler="capsule_window_create_window_cb" swapped="1"/>
+            </property>
           </object>
         </property>
       </object>
