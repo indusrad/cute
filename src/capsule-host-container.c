@@ -37,47 +37,33 @@ struct _CapsuleHostContainer
 G_DEFINE_FINAL_TYPE (CapsuleHostContainer, capsule_host_container, CAPSULE_TYPE_CONTAINER)
 
 static void
-capsule_host_container_spawn_async (CapsuleContainer    *container,
-                                    VtePty              *pty,
-                                    CapsuleProfile      *profile,
-                                    GCancellable        *cancellable,
-                                    GAsyncReadyCallback  callback,
-                                    gpointer             user_data)
+capsule_host_container_prepare_async (CapsuleContainer    *container,
+                                      CapsuleRunContext   *run_context,
+                                      GCancellable        *cancellable,
+                                      GAsyncReadyCallback  callback,
+                                      gpointer             user_data)
 {
-  g_autoptr(CapsuleRunContext) run_context = NULL;
-  g_autoptr(GSubprocess) subprocess = NULL;
-  g_autoptr(GError) error = NULL;
   g_autoptr(GTask) task = NULL;
 
   g_assert (CAPSULE_IS_HOST_CONTAINER (container));
-  g_assert (VTE_IS_PTY (pty));
-  g_assert (CAPSULE_IS_PROFILE (profile));
-
-  task = g_task_new (container, cancellable, callback, user_data);
-  g_task_set_source_tag (task, capsule_host_container_spawn_async);
-
-  run_context = capsule_run_context_new ();
+  g_assert (CAPSULE_IS_RUN_CONTEXT (run_context));
 
   capsule_run_context_push_host (run_context);
-  capsule_run_context_set_pty (run_context, pty);
 
-  capsule_container_prepare_run_context (container, run_context, profile);
-
-  if (!(subprocess = capsule_run_context_spawn (run_context, &error)))
-    g_task_return_error (task, g_steal_pointer (&error));
-  else
-    g_task_return_pointer (task, g_steal_pointer (&subprocess), g_object_unref);
+  task = g_task_new (container, cancellable, callback, user_data);
+  g_task_set_source_tag (task, capsule_host_container_prepare_async);
+  g_task_return_boolean (task, TRUE);
 }
 
-static GSubprocess *
-capsule_host_container_spawn_finish (CapsuleContainer  *container,
-                                     GAsyncResult      *result,
-                                     GError           **error)
+static gboolean
+capsule_host_container_prepare_finish (CapsuleContainer  *container,
+                                       GAsyncResult      *result,
+                                       GError           **error)
 {
   g_assert (CAPSULE_IS_HOST_CONTAINER (container));
   g_assert (G_IS_TASK (result));
 
-  return g_task_propagate_pointer (G_TASK (result), error);
+  return g_task_propagate_boolean (G_TASK (result), error);
 }
 
 static const char *
@@ -94,8 +80,8 @@ capsule_host_container_class_init (CapsuleHostContainerClass *klass)
   CapsuleContainerClass *container_class = CAPSULE_CONTAINER_CLASS (klass);
 
   container_class->get_id = capsule_host_container_get_id;
-  container_class->spawn_async = capsule_host_container_spawn_async;
-  container_class->spawn_finish = capsule_host_container_spawn_finish;
+  container_class->prepare_async = capsule_host_container_prepare_async;
+  container_class->prepare_finish = capsule_host_container_prepare_finish;
 }
 
 static void
