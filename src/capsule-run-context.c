@@ -330,7 +330,12 @@ capsule_run_context_host_handler (CapsuleRunContext   *self,
 void
 capsule_run_context_push_host (CapsuleRunContext *self)
 {
+  g_auto(GStrv) env = NULL;
+
   g_return_if_fail (CAPSULE_IS_RUN_CONTEXT (self));
+
+  env = g_get_environ ();
+  capsule_run_context_set_environ (self, (const char * const *)env);
 
   if (capsule_get_process_kind () == CAPSULE_PROCESS_KIND_FLATPAK)
     {
@@ -339,11 +344,6 @@ capsule_run_context_push_host (CapsuleRunContext *self)
                                 capsule_run_context_host_handler,
                                 NULL,
                                 NULL);
-    }
-  else
-    {
-      g_auto(GStrv) env = g_get_environ ();
-      capsule_run_context_set_environ (self, (const char * const *)env);
     }
 }
 
