@@ -177,7 +177,7 @@ capsule_tab_respawn (CapsuleTab *self)
     {
       g_autoptr(GError) error = NULL;
 
-      new_pty = vte_pty_new_sync (VTE_PTY_NO_CTTY, NULL, &error);
+      new_pty = vte_pty_new_sync (0, NULL, &error);
 
       if (new_pty == NULL)
         {

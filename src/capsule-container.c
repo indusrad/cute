@@ -106,6 +106,7 @@ capsule_container_prepare_run_context (CapsuleContainer  *self,
                                        CapsuleRunContext *run_context,
                                        CapsuleProfile    *profile)
 {
+  g_autofree char *vte_version = NULL;
   const char *user_shell;
 
   g_return_if_fail (CAPSULE_IS_CONTAINER (self));
@@ -114,8 +115,18 @@ capsule_container_prepare_run_context (CapsuleContainer  *self,
 
   user_shell = capsule_get_user_shell ();
 
+  capsule_run_context_add_minimal_environment (run_context);
+
+  vte_version = g_strdup_printf ("%d.%d.%d",
+                                 vte_get_major_version (),
+                                 vte_get_minor_version (),
+                                 vte_get_micro_version ());
+  capsule_run_context_setenv (run_context, "VTE_VERSION", vte_version);
+  capsule_run_context_setenv (run_context, "CAPSULE_VERSION", PACKAGE_VERSION);
+
+  /* TODO: Need tow ait for initialization to finish */
   if (user_shell == NULL)
-    user_shell = "/bin/sh";
+    user_shell = "/bin/bash";
 
   capsule_run_context_append_argv (run_context, user_shell);
 }
