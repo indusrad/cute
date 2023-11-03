@@ -38,6 +38,16 @@
                 <lookup name="profile">CapsuleTab</lookup>
               </lookup>
             </binding>
+            <binding name="scroll-on-keystroke">
+              <lookup name="scroll-on-keystroke" type="CapsuleProfile">
+                <lookup name="profile">CapsuleTab</lookup>
+              </lookup>
+            </binding>
+            <binding name="scroll-on-output">
+              <lookup name="scroll-on-output" type="CapsuleProfile">
+                <lookup name="profile">CapsuleTab</lookup>
+              </lookup>
+            </binding>
           </object>
         </child>
       </object>

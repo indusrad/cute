@@ -28,10 +28,12 @@
 #include "capsule-application.h"
 #include "capsule-profile.h"
 
-#define CAPSULE_PROFILE_KEY_AUDIBLE_BELL    "audible-bell"
-#define CAPSULE_PROFILE_KEY_FONT_NAME       "font-name"
-#define CAPSULE_PROFILE_KEY_LABEL           "label"
-#define CAPSULE_PROFILE_KEY_USE_SYSTEM_FONT "use-system-font"
+#define CAPSULE_PROFILE_KEY_AUDIBLE_BELL        "audible-bell"
+#define CAPSULE_PROFILE_KEY_FONT_NAME           "font-name"
+#define CAPSULE_PROFILE_KEY_LABEL               "label"
+#define CAPSULE_PROFILE_KEY_SCROLL_ON_KEYSTROKE "scroll-on-keystroke"
+#define CAPSULE_PROFILE_KEY_SCROLL_ON_OUTPUT    "scroll-on-output"
+#define CAPSULE_PROFILE_KEY_USE_SYSTEM_FONT     "use-system-font"
 
 struct _CapsuleProfile
 {
@@ -46,6 +48,8 @@ enum {
   PROP_FONT_DESC,
   PROP_FONT_NAME,
   PROP_LABEL,
+  PROP_SCROLL_ON_KEYSTROKE,
+  PROP_SCROLL_ON_OUTPUT,
   PROP_USE_SYSTEM_FONT,
   PROP_UUID,
   N_PROPS
@@ -143,6 +147,14 @@ capsule_profile_get_property (GObject    *object,
       g_value_take_string (value, capsule_profile_dup_label (self));
       break;
 
+    case PROP_SCROLL_ON_KEYSTROKE:
+      g_value_set_boolean (value, capsule_profile_get_scroll_on_keystroke (self));
+      break;
+
+    case PROP_SCROLL_ON_OUTPUT:
+      g_value_set_boolean (value, capsule_profile_get_scroll_on_output (self));
+      break;
+
     case PROP_USE_SYSTEM_FONT:
       g_value_set_boolean (value, capsule_profile_get_use_system_font (self));
       break;
@@ -180,6 +192,14 @@ capsule_profile_set_property (GObject      *object,
 
     case PROP_LABEL:
       capsule_profile_set_label (self, g_value_get_string (value));
+      break;
+
+    case PROP_SCROLL_ON_KEYSTROKE:
+      capsule_profile_set_scroll_on_keystroke (self, g_value_get_boolean (value));
+      break;
+
+    case PROP_SCROLL_ON_OUTPUT:
+      capsule_profile_set_scroll_on_output (self, g_value_get_boolean (value));
       break;
 
     case PROP_USE_SYSTEM_FONT:
@@ -229,6 +249,20 @@ capsule_profile_class_init (CapsuleProfileClass *klass)
   properties[PROP_LABEL] =
     g_param_spec_string ("label", NULL, NULL,
                          NULL,
+                         (G_PARAM_READWRITE |
+                          G_PARAM_EXPLICIT_NOTIFY |
+                          G_PARAM_STATIC_STRINGS));
+
+  properties[PROP_SCROLL_ON_KEYSTROKE] =
+    g_param_spec_boolean ("scroll-on-keystroke", NULL, NULL,
+                         FALSE,
+                         (G_PARAM_READWRITE |
+                          G_PARAM_EXPLICIT_NOTIFY |
+                          G_PARAM_STATIC_STRINGS));
+
+  properties[PROP_SCROLL_ON_OUTPUT] =
+    g_param_spec_boolean ("scroll-on-output", NULL, NULL,
+                         FALSE,
                          (G_PARAM_READWRITE |
                           G_PARAM_EXPLICIT_NOTIFY |
                           G_PARAM_STATIC_STRINGS));
@@ -394,4 +428,42 @@ capsule_profile_set_audible_bell (CapsuleProfile *self,
   g_settings_set_boolean (self->settings,
                           CAPSULE_PROFILE_KEY_AUDIBLE_BELL,
                           audible_bell);
+}
+
+gboolean
+capsule_profile_get_scroll_on_keystroke (CapsuleProfile *self)
+{
+  g_return_val_if_fail (CAPSULE_IS_PROFILE (self), FALSE);
+
+  return g_settings_get_boolean (self->settings, CAPSULE_PROFILE_KEY_SCROLL_ON_KEYSTROKE);
+}
+
+void
+capsule_profile_set_scroll_on_keystroke (CapsuleProfile *self,
+                                         gboolean        scroll_on_keystroke)
+{
+  g_return_if_fail (CAPSULE_IS_PROFILE (self));
+
+  g_settings_set_boolean (self->settings,
+                          CAPSULE_PROFILE_KEY_SCROLL_ON_KEYSTROKE,
+                          scroll_on_keystroke);
+}
+
+gboolean
+capsule_profile_get_scroll_on_output (CapsuleProfile *self)
+{
+  g_return_val_if_fail (CAPSULE_IS_PROFILE (self), FALSE);
+
+  return g_settings_get_boolean (self->settings, CAPSULE_PROFILE_KEY_SCROLL_ON_OUTPUT);
+}
+
+void
+capsule_profile_set_scroll_on_output (CapsuleProfile *self,
+                                      gboolean        scroll_on_output)
+{
+  g_return_if_fail (CAPSULE_IS_PROFILE (self));
+
+  g_settings_set_boolean (self->settings,
+                          CAPSULE_PROFILE_KEY_SCROLL_ON_OUTPUT,
+                          scroll_on_output);
 }

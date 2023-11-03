@@ -61,6 +61,18 @@
       <description>If an audible bell should be used</description>
     </key>
 
+    <key name="scroll-on-output" type="b">
+      <default>false</default>
+      <summary>Scroll on Output</summary>
+      <description>Scroll to the bottom upon new output</description>
+    </key>
+
+    <key name="scroll-on-keystroke" type="b">
+      <default>true</default>
+      <summary>Scroll on Keystroke</summary>
+      <description>Scroll to the bottom upon user keystroke</description>
+    </key>
+
   </schema>
 
 </schemalist>
