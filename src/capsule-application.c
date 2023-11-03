@@ -22,6 +22,7 @@
 
 #include "capsule-action-group.h"
 #include "capsule-application.h"
+#include "capsule-host-container.h"
 #include "capsule-preferences-window.h"
 #include "capsule-profile-menu.h"
 #include "capsule-settings.h"
@@ -35,6 +36,7 @@ struct _CapsuleApplication
 {
 	AdwApplication      parent_instance;
   GListStore         *profiles;
+  GListStore         *containers;
   CapsuleSettings    *settings;
   CapsuleProfileMenu *profile_menu;
   char               *system_font_name;
@@ -43,11 +45,14 @@ struct _CapsuleApplication
 
 static void capsule_application_about        (CapsuleApplication *self,
                                               GVariant           *param);
+static void capsule_application_edit_profile (CapsuleApplication *self,
+                                              GVariant           *param);
 static void capsule_application_preferences  (CapsuleApplication *self,
                                               GVariant           *param);
 
 CAPSULE_DEFINE_ACTION_GROUP (CapsuleApplication, capsule_application, {
   { "about", capsule_application_about },
+  { "edit-profile", capsule_application_edit_profile, "s" },
   { "preferences", capsule_application_preferences },
 })
 
@@ -189,15 +194,20 @@ capsule_application_startup (GApplication *application)
 {
   static const char *patterns[] = { "org.gnome.*", NULL };
   CapsuleApplication *self = (CapsuleApplication *)application;
+  g_autoptr(CapsuleContainer) host = NULL;
 
   g_assert (CAPSULE_IS_APPLICATION (self));
 
   g_application_set_default (application);
   g_application_set_resource_base_path (G_APPLICATION (self), "/org/gnome/Capsule");
 
+  self->containers = g_list_store_new (CAPSULE_TYPE_CONTAINER);
   self->profiles = g_list_store_new (CAPSULE_TYPE_PROFILE);
   self->settings = capsule_settings_new ();
   self->profile_menu = capsule_profile_menu_new (self->settings);
+
+  host = capsule_host_container_new ();
+  g_list_store_append (self->containers, host);
 
   G_APPLICATION_CLASS (capsule_application_parent_class)->startup (application);
 
@@ -250,6 +260,7 @@ capsule_application_shutdown (GApplication *application)
 
   g_clear_object (&self->profile_menu);
   g_clear_object (&self->profiles);
+  g_clear_object (&self->containers);
   g_clear_object (&self->portal);
   g_clear_object (&self->settings);
 
@@ -311,6 +322,21 @@ static void
 capsule_application_init (CapsuleApplication *self)
 {
   self->system_font_name = g_strdup ("Monospace 11");
+}
+
+static void
+capsule_application_edit_profile (CapsuleApplication *self,
+                                  GVariant           *param)
+{
+  const char *profile_uuid;
+
+	g_assert (CAPSULE_IS_APPLICATION (self));
+	g_assert (param != NULL);
+	g_assert (g_variant_is_of_type (param, G_VARIANT_TYPE_STRING));
+
+  profile_uuid = g_variant_get_string (param, NULL);
+
+  g_printerr ("TODO: show preferences for %s\n", profile_uuid);
 }
 
 static void
@@ -495,4 +521,47 @@ capsule_application_dup_profile_menu (CapsuleApplication *self)
   g_return_val_if_fail (CAPSULE_IS_APPLICATION (self), NULL);
 
   return g_object_ref (G_MENU_MODEL (self->profile_menu));
+}
+
+/**
+ * capsule_application_list_containers:
+ * @self: a #CapsuleApplication
+ *
+ * Gets a #GListModel of #CapsuleContainer.
+ *
+ * Returns: (transfer full) (not nullable): a #GListModel
+ */
+GListModel *
+capsule_application_list_containers (CapsuleApplication *self)
+{
+  g_return_val_if_fail (CAPSULE_IS_APPLICATION (self), NULL);
+
+  return g_object_ref (G_LIST_MODEL (self->containers));
+}
+
+CapsuleContainer *
+capsule_application_lookup_container (CapsuleApplication *self,
+                                      const char         *container_id)
+{
+  g_autoptr(GListModel) model = NULL;
+  guint n_items;
+
+  g_return_val_if_fail (CAPSULE_IS_APPLICATION (self), NULL);
+
+  if (container_id == NULL || container_id[0] == 0)
+    return NULL;
+
+  model = capsule_application_list_containers (self);
+  n_items = g_list_model_get_n_items (model);
+
+  for (guint i = 0; i < n_items; i++)
+    {
+      g_autoptr(CapsuleContainer) container = g_list_model_get_item (model, i);
+      const char *id = capsule_container_get_id (container);
+
+      if (g_strcmp0 (id, container_id) == 0)
+        return g_steal_pointer (&container);
+    }
+
+  return NULL;
 }

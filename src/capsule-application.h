@@ -48,5 +48,7 @@ CapsuleProfile     *capsule_application_dup_profile          (CapsuleApplication
 GMenuModel         *capsule_application_dup_profile_menu     (CapsuleApplication *self);
 GListModel         *capsule_application_list_profiles        (CapsuleApplication *self);
 GListModel         *capsule_application_list_containers      (CapsuleApplication *self);
+CapsuleContainer   *capsule_application_lookup_container     (CapsuleApplication *self,
+                                                              const char         *container_id);
 
 G_END_DECLS
