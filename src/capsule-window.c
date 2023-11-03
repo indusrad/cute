@@ -78,10 +78,16 @@ capsule_window_page_detached_cb (CapsuleWindow *self,
                                  int            position,
                                  AdwTabView    *tab_view)
 {
+  guint n_pages;
+
   g_assert (CAPSULE_IS_WINDOW (self));
   g_assert (ADW_IS_TAB_PAGE (page));
   g_assert (ADW_IS_TAB_VIEW (tab_view));
 
+  n_pages = adw_tab_view_get_n_pages (tab_view);
+
+  if (n_pages == 0)
+    gtk_window_destroy (GTK_WINDOW (self));
 }
 
 static void
