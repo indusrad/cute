@@ -117,10 +117,7 @@ capsule_container_prepare_run_context (CapsuleContainer  *self,
 
   capsule_run_context_add_minimal_environment (run_context);
 
-  vte_version = g_strdup_printf ("%d.%d.%d",
-                                 vte_get_major_version (),
-                                 vte_get_minor_version (),
-                                 vte_get_micro_version ());
+  vte_version = g_strdup_printf ("%u", VTE_VERSION_NUMERIC);
   capsule_run_context_setenv (run_context, "VTE_VERSION", vte_version);
   capsule_run_context_setenv (run_context, "CAPSULE_VERSION", PACKAGE_VERSION);
 

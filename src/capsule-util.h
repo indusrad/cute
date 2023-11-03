@@ -20,9 +20,11 @@
 
 #pragma once
 
-#include <glib.h>
+#include <vte/vte.h>
 
 G_BEGIN_DECLS
+
+#define VTE_VERSION_NUMERIC ((VTE_MAJOR_VERSION) * 10000 + (VTE_MINOR_VERSION) * 100 + (VTE_MICRO_VERSION))
 
 typedef enum
 {
