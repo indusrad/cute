@@ -25,6 +25,12 @@
     <value nick="close" value="2"/>
   </enum>
 
+  <enum id="org.gnome.Capsule.PreserveDirectory">
+    <value nick="never" value="0"/>
+    <value nick="safe" value="1"/>
+    <value nick="always" value="2"/>
+  </enum>
+
   <schema id=@APP_SCHEMA_ID@ path=@APP_SCHEMA_PATH@>
 
     <key name="default-profile-uuid" type="s">
@@ -89,6 +95,12 @@
       <default>'close'</default>
       <summary>Exit Action</summary>
       <description>The action to take when the shell exits</description>
+    </key>
+
+    <key name="preserve-directory" enum="org.gnome.Capsule.PreserveDirectory">
+      <default>'safe'</default>
+      <summary>Preserve Directory</summary>
+      <description>If the directory should preserved for new terminals</description>
     </key>
 
   </schema>

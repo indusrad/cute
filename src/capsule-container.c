@@ -27,9 +27,10 @@
 
 typedef struct _CapsuleContainerSpawn
 {
-  VtePty *pty;
-  CapsuleProfile *profile;
+  VtePty            *pty;
+  CapsuleProfile    *profile;
   CapsuleRunContext *run_context;
+  char              *current_directory_uri;
 } CapsuleContainerSpawn;
 
 G_DEFINE_ABSTRACT_TYPE (CapsuleContainer, capsule_container, G_TYPE_OBJECT)
@@ -48,6 +49,7 @@ capsule_container_spawn_free (CapsuleContainerSpawn *spawn)
   g_clear_object (&spawn->pty);
   g_clear_object (&spawn->profile);
   g_clear_object (&spawn->run_context);
+  g_clear_pointer (&spawn->current_directory_uri, g_free);
   g_free (spawn);
 }
 
@@ -118,28 +120,6 @@ capsule_container_prepare_finish (CapsuleContainer  *self,
 }
 
 static void
-capsule_container_apply_profile (CapsuleContainer  *self,
-                                 CapsuleRunContext *run_context,
-                                 VtePty            *pty,
-                                 CapsuleProfile    *profile,
-                                 const char        *default_shell)
-{
-  g_assert (CAPSULE_IS_CONTAINER (self));
-  g_assert (CAPSULE_IS_RUN_CONTEXT (run_context));
-  g_assert (VTE_IS_PTY (pty));
-  g_assert (CAPSULE_IS_PROFILE (profile));
-
-  capsule_run_context_set_pty (run_context, pty);
-
-  if (default_shell != NULL)
-    capsule_run_context_append_argv (run_context, default_shell);
-  else
-    capsule_run_context_append_argv (run_context, "/bin/sh");
-
-  capsule_run_context_set_cwd (run_context, g_get_home_dir ());
-}
-
-static void
 capsule_container_spawn_discover_cb (GObject      *object,
                                      GAsyncResult *result,
                                      gpointer      user_data)
@@ -165,11 +145,11 @@ capsule_container_spawn_discover_cb (GObject      *object,
 
   default_shell = capsule_user_discover_shell_finish (user, result, NULL);
 
-  capsule_container_apply_profile (g_task_get_source_object (task),
-                                   state->run_context,
-                                   state->pty,
-                                   state->profile,
-                                   default_shell);
+  capsule_profile_apply (state->profile,
+                         state->run_context,
+                         state->pty,
+                         state->current_directory_uri,
+                         default_shell);
 
   if (!(subprocess = capsule_run_context_spawn (state->run_context, &error)))
     g_task_return_error (task, g_steal_pointer (&error));
@@ -214,6 +194,7 @@ void
 capsule_container_spawn_async (CapsuleContainer    *self,
                                VtePty              *pty,
                                CapsuleProfile      *profile,
+                               const char          *current_directory_uri,
                                GCancellable        *cancellable,
                                GAsyncReadyCallback  callback,
                                gpointer             user_data)
@@ -236,6 +217,7 @@ capsule_container_spawn_async (CapsuleContainer    *self,
   g_set_object (&state->pty, pty);
   g_set_object (&state->profile, profile);
   g_set_object (&state->run_context, run_context);
+  state->current_directory_uri = g_strdup (current_directory_uri);
   g_task_set_task_data (task,
                         g_steal_pointer (&state),
                         (GDestroyNotify)capsule_container_spawn_free);

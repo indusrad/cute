@@ -28,6 +28,7 @@
 #include "capsule-tab.h"
 #include "capsule-terminal.h"
 #include "capsule-util.h"
+#include "capsule-window.h"
 
 typedef enum _CapsuleTabState
 {
@@ -42,6 +43,7 @@ struct _CapsuleTab
 {
   GtkWidget          parent_instance;
 
+  char              *previous_working_directory_uri;
   CapsuleProfile    *profile;
   GSubprocess       *subprocess;
   char              *title_prefix;
@@ -225,6 +227,7 @@ capsule_tab_respawn (CapsuleTab *self)
   capsule_container_spawn_async (container,
                                  pty,
                                  self->profile,
+                                 self->previous_working_directory_uri,
                                  NULL,
                                  capsule_tab_spawn_cb,
                                  g_object_ref (self));
@@ -265,14 +268,6 @@ capsule_tab_notify_window_subtitle_cb (CapsuleTab      *self,
 }
 
 static void
-capsule_tab_constructed (GObject *object)
-{
-  /* TODO: Setup terminal */
-
-  G_OBJECT_CLASS (capsule_tab_parent_class)->constructed (object);
-}
-
-static void
 capsule_tab_dispose (GObject *object)
 {
   CapsuleTab *self = (CapsuleTab *)object;
@@ -284,6 +279,10 @@ capsule_tab_dispose (GObject *object)
     gtk_widget_unparent (child);
 
   g_clear_object (&self->profile);
+  g_clear_object (&self->subprocess);
+
+  g_clear_pointer (&self->previous_working_directory_uri, g_free);
+  g_clear_pointer (&self->title_prefix, g_free);
 
   G_OBJECT_CLASS (capsule_tab_parent_class)->dispose (object);
 }
@@ -348,7 +347,6 @@ capsule_tab_class_init (CapsuleTabClass *klass)
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
   GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 
-  object_class->constructed = capsule_tab_constructed;
   object_class->dispose = capsule_tab_dispose;
   object_class->get_property = capsule_tab_get_property;
   object_class->set_property = capsule_tab_set_property;
@@ -511,4 +509,21 @@ capsule_tab_dup_subtitle (CapsuleTab *self)
     return capsule_tab_collapse_uri (current_directory_uri);
 
   return NULL;
+}
+
+const char *
+capsule_tab_get_current_directory_uri (CapsuleTab *self)
+{
+  g_return_val_if_fail (CAPSULE_IS_TAB (self), NULL);
+
+  return vte_terminal_get_current_directory_uri (VTE_TERMINAL (self->terminal));
+}
+
+void
+capsule_tab_set_previous_working_directory_uri (CapsuleTab *self,
+                                                const char *previous_working_directory_uri)
+{
+  g_return_if_fail (CAPSULE_IS_TAB (self));
+
+  g_set_str (&self->previous_working_directory_uri, previous_working_directory_uri);
 }

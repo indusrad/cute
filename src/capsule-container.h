@@ -60,6 +60,7 @@ gboolean     capsule_container_prepare_finish (CapsuleContainer     *self,
 void         capsule_container_spawn_async    (CapsuleContainer     *self,
                                                VtePty               *pty,
                                                CapsuleProfile       *profile,
+                                               const char           *current_directory_uri,
                                                GCancellable         *cancellable,
                                                GAsyncReadyCallback   callback,
                                                gpointer              user_data);

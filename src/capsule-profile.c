@@ -28,12 +28,14 @@
 #include "capsule-application.h"
 #include "capsule-enums.h"
 #include "capsule-profile.h"
+#include "capsule-util.h"
 
 #define CAPSULE_PROFILE_KEY_AUDIBLE_BELL        "audible-bell"
 #define CAPSULE_PROFILE_KEY_DEFAULT_CONTAINER   "default-container"
 #define CAPSULE_PROFILE_KEY_EXIT_ACTION         "exit-action"
 #define CAPSULE_PROFILE_KEY_FONT_NAME           "font-name"
 #define CAPSULE_PROFILE_KEY_LABEL               "label"
+#define CAPSULE_PROFILE_KEY_PRESERVE_DIRECTORY  "preserve-directory"
 #define CAPSULE_PROFILE_KEY_SCROLL_ON_KEYSTROKE "scroll-on-keystroke"
 #define CAPSULE_PROFILE_KEY_SCROLL_ON_OUTPUT    "scroll-on-output"
 #define CAPSULE_PROFILE_KEY_USE_SYSTEM_FONT     "use-system-font"
@@ -53,6 +55,7 @@ enum {
   PROP_FONT_DESC,
   PROP_FONT_NAME,
   PROP_LABEL,
+  PROP_PRESERVE_DIRECTORY,
   PROP_SCROLL_ON_KEYSTROKE,
   PROP_SCROLL_ON_OUTPUT,
   PROP_USE_SYSTEM_FONT,
@@ -160,6 +163,10 @@ capsule_profile_get_property (GObject    *object,
       g_value_take_string (value, capsule_profile_dup_label (self));
       break;
 
+    case PROP_PRESERVE_DIRECTORY:
+      g_value_set_enum (value, capsule_profile_get_preserve_directory (self));
+      break;
+
     case PROP_SCROLL_ON_KEYSTROKE:
       g_value_set_boolean (value, capsule_profile_get_scroll_on_keystroke (self));
       break;
@@ -213,6 +220,10 @@ capsule_profile_set_property (GObject      *object,
 
     case PROP_LABEL:
       capsule_profile_set_label (self, g_value_get_string (value));
+      break;
+
+    case PROP_PRESERVE_DIRECTORY:
+      capsule_profile_set_preserve_directory (self, g_value_get_enum (value));
       break;
 
     case PROP_SCROLL_ON_KEYSTROKE:
@@ -288,6 +299,14 @@ capsule_profile_class_init (CapsuleProfileClass *klass)
                          (G_PARAM_READWRITE |
                           G_PARAM_EXPLICIT_NOTIFY |
                           G_PARAM_STATIC_STRINGS));
+
+  properties[PROP_PRESERVE_DIRECTORY] =
+    g_param_spec_enum ("preserve-directory", NULL, NULL,
+                       CAPSULE_TYPE_PRESERVE_DIRECTORY,
+                       CAPSULE_PRESERVE_DIRECTORY_SAFE,
+                       (G_PARAM_READWRITE |
+                        G_PARAM_EXPLICIT_NOTIFY |
+                        G_PARAM_STATIC_STRINGS));
 
   properties[PROP_SCROLL_ON_KEYSTROKE] =
     g_param_spec_boolean ("scroll-on-keystroke", NULL, NULL,
@@ -539,8 +558,87 @@ capsule_profile_set_exit_action (CapsuleProfile    *self,
                                  CapsuleExitAction  exit_action)
 {
   g_return_if_fail (CAPSULE_IS_PROFILE (self));
-  g_return_if_fail (exit_action >= CAPSULE_EXIT_ACTION_NONE &&
-                    exit_action <= CAPSULE_EXIT_ACTION_CLOSE);
+  g_return_if_fail (exit_action <= CAPSULE_EXIT_ACTION_CLOSE);
 
-  g_settings_set_enum (self->settings, CAPSULE_PROFILE_KEY_EXIT_ACTION, exit_action);
+  g_settings_set_enum (self->settings,
+                       CAPSULE_PROFILE_KEY_EXIT_ACTION,
+                       exit_action);
+}
+
+CapsulePreserveDirectory
+capsule_profile_get_preserve_directory (CapsuleProfile *self)
+{
+  g_return_val_if_fail (CAPSULE_IS_PROFILE (self), 0);
+
+  return g_settings_get_enum (self->settings, CAPSULE_PROFILE_KEY_PRESERVE_DIRECTORY);
+}
+
+void
+capsule_profile_set_preserve_directory (CapsuleProfile           *self,
+                                        CapsulePreserveDirectory  preserve_directory)
+{
+  g_return_if_fail (CAPSULE_IS_PROFILE (self));
+  g_return_if_fail (preserve_directory <= CAPSULE_PRESERVE_DIRECTORY_ALWAYS);
+
+  g_settings_set_enum (self->settings,
+                       CAPSULE_PROFILE_KEY_EXIT_ACTION,
+                       preserve_directory);
+}
+
+
+void
+capsule_profile_apply (CapsuleProfile    *self,
+                       CapsuleRunContext *run_context,
+                       VtePty            *pty,
+                       const char        *current_directory_uri,
+                       const char        *default_shell)
+{
+  CapsulePreserveDirectory preserve_directory;
+  g_autoptr(GFile) last_directory = NULL;
+  const char *cwd = NULL;
+  const char *arg0 = NULL;
+
+  g_assert (CAPSULE_IS_PROFILE (self));
+  g_assert (CAPSULE_IS_RUN_CONTEXT (run_context));
+  g_assert (VTE_IS_PTY (pty));
+
+  capsule_run_context_set_pty (run_context, pty);
+
+  if (default_shell == NULL)
+    default_shell = "/bin/sh";
+
+  /* TODO: figure out shell/args */
+  arg0 = default_shell;
+
+  capsule_run_context_append_argv (run_context, arg0);
+
+  if (current_directory_uri != NULL)
+    last_directory = g_file_new_for_uri (current_directory_uri);
+
+  preserve_directory = capsule_profile_get_preserve_directory (self);
+
+  switch (preserve_directory)
+    {
+    case CAPSULE_PRESERVE_DIRECTORY_NEVER:
+      break;
+
+    case CAPSULE_PRESERVE_DIRECTORY_SAFE:
+      /* TODO: We might want to check with the container that this
+       * is a shell (as opposed to one available on the host).
+       */
+      if (!capsule_is_shell (arg0))
+        break;
+      G_GNUC_FALLTHROUGH;
+
+    case CAPSULE_PRESERVE_DIRECTORY_ALWAYS:
+      if (last_directory != NULL && g_file_is_native (last_directory))
+        cwd = g_file_peek_path (last_directory);
+      break;
+
+    default:
+      g_assert_not_reached ();
+    }
+
+  if (cwd != NULL)
+    capsule_run_context_set_cwd (run_context, cwd);
 }

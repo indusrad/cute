@@ -102,6 +102,24 @@ capsule_window_notify_selected_page_cb (CapsuleWindow *self,
 }
 
 static void
+capsule_window_apply_current_settings (CapsuleWindow *self,
+                                       CapsuleTab    *tab)
+{
+  CapsuleTab *active_tab;
+
+  g_assert (CAPSULE_IS_WINDOW (self));
+  g_assert (CAPSULE_IS_TAB (tab));
+
+  if ((active_tab = capsule_window_get_active_tab (self)))
+    {
+      const char *current_directory_uri = capsule_tab_get_current_directory_uri (active_tab);
+
+      if (current_directory_uri != NULL)
+        capsule_tab_set_previous_working_directory_uri (tab, current_directory_uri);
+    }
+}
+
+static void
 capsule_window_new_tab_action (GtkWidget  *widget,
                                const char *action_name,
                                GVariant   *param)
@@ -125,6 +143,7 @@ capsule_window_new_tab_action (GtkWidget  *widget,
     profile = capsule_application_dup_profile (app, profile_uuid);
 
   tab = capsule_tab_new (profile);
+  capsule_window_apply_current_settings (self, tab);
 
   capsule_window_append_tab (self, tab);
   capsule_window_set_active_tab (self, tab);
@@ -139,6 +158,7 @@ capsule_window_new_window_action (GtkWidget  *widget,
   g_autoptr(CapsuleProfile) profile = NULL;
   CapsuleApplication *app;
   CapsuleWindow *window;
+  CapsuleTab *tab;
   const char *profile_uuid;
 
   g_assert (CAPSULE_IS_WINDOW (self));
@@ -153,7 +173,11 @@ capsule_window_new_window_action (GtkWidget  *widget,
   else
     profile = capsule_application_dup_profile (app, profile_uuid);
 
-  window = capsule_window_new_for_profile (profile);
+  tab = capsule_tab_new (profile);
+  capsule_window_apply_current_settings (self, tab);
+
+  window = g_object_new (CAPSULE_TYPE_WINDOW, NULL);
+  capsule_window_append_tab (window, tab);
 
   gtk_window_present (GTK_WINDOW (window));
 }
@@ -306,6 +330,7 @@ capsule_window_new_for_profile (CapsuleProfile *profile)
   self = g_object_new (CAPSULE_TYPE_WINDOW,
                        "application", CAPSULE_APPLICATION_DEFAULT,
                        NULL);
+
   tab = capsule_tab_new (profile);
 
   capsule_window_append_tab (self, tab);

@@ -31,12 +31,15 @@ G_BEGIN_DECLS
 
 G_DECLARE_FINAL_TYPE (CapsuleTab, capsule_tab, CAPSULE, TAB, GtkWidget)
 
-CapsuleTab     *capsule_tab_new              (CapsuleProfile *profile);
-CapsuleProfile *capsule_tab_get_profile      (CapsuleTab     *self);
-char           *capsule_tab_dup_subtitle     (CapsuleTab     *self);
-char           *capsule_tab_dup_title        (CapsuleTab     *self);
-const char     *capsule_tab_get_title_prefix (CapsuleTab     *self);
-void            capsule_tab_set_title_prefix (CapsuleTab     *self,
-                                              const char     *title_prefix);
+CapsuleTab     *capsule_tab_new                                (CapsuleProfile *profile);
+CapsuleProfile *capsule_tab_get_profile                        (CapsuleTab     *self);
+char           *capsule_tab_dup_subtitle                       (CapsuleTab     *self);
+char           *capsule_tab_dup_title                          (CapsuleTab     *self);
+const char     *capsule_tab_get_title_prefix                   (CapsuleTab     *self);
+void            capsule_tab_set_title_prefix                   (CapsuleTab     *self,
+                                                                const char     *title_prefix);
+const char     *capsule_tab_get_current_directory_uri          (CapsuleTab     *self);
+void            capsule_tab_set_previous_working_directory_uri (CapsuleTab     *self,
+                                                                const char     *previous_working_directory_uri);
 
 G_END_DECLS
