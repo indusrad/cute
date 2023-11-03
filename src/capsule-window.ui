@@ -60,6 +60,11 @@
                 </child>
                 <child type="title">
                   <object class="AdwWindowTitle">
+                    <binding name="subtitle">
+                      <lookup name="subtitle" type="CapsuleTab">
+                        <lookup name="active-tab">CapsuleWindow</lookup>
+                      </lookup>
+                    </binding>
                     <binding name="title">
                       <lookup name="title" type="CapsuleTab">
                         <lookup name="active-tab">CapsuleWindow</lookup>

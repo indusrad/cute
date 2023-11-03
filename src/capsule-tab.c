@@ -30,9 +30,9 @@ struct _CapsuleTab
 {
   GtkWidget          parent_instance;
 
-  CapsuleProfile   *profile;
+  CapsuleProfile    *profile;
 
-  char             *title_prefix;
+  char              *title_prefix;
 
   GtkScrolledWindow *scrolled_window;
   CapsuleTerminal   *terminal;
@@ -43,6 +43,7 @@ enum {
   PROP_PROFILE,
   PROP_TITLE,
   PROP_TITLE_PREFIX,
+  PROP_SUBTITLE,
   N_PROPS
 };
 
@@ -93,6 +94,10 @@ capsule_tab_get_property (GObject    *object,
     {
     case PROP_PROFILE:
       g_value_set_object (value, capsule_tab_get_profile (self));
+      break;
+
+    case PROP_SUBTITLE:
+      g_value_take_string (value, capsule_tab_dup_subtitle (self));
       break;
 
     case PROP_TITLE:
@@ -147,6 +152,12 @@ capsule_tab_class_init (CapsuleTabClass *klass)
                          CAPSULE_TYPE_PROFILE,
                          (G_PARAM_READWRITE |
                           G_PARAM_CONSTRUCT_ONLY |
+                          G_PARAM_STATIC_STRINGS));
+
+  properties[PROP_SUBTITLE] =
+    g_param_spec_string ("subtitle", NULL, NULL,
+                         NULL,
+                         (G_PARAM_READABLE |
                           G_PARAM_STATIC_STRINGS));
 
   properties[PROP_TITLE] =
@@ -252,4 +263,23 @@ capsule_tab_dup_title (CapsuleTab *self)
     return g_strdup (self->title_prefix);
 
   return g_strdup (_("Terminal"));
+}
+
+char *
+capsule_tab_dup_subtitle (CapsuleTab *self)
+{
+  const char *current_directory_uri;
+  const char *current_file_uri;
+
+  g_return_val_if_fail (CAPSULE_IS_TAB (self), NULL);
+
+  current_file_uri = vte_terminal_get_current_file_uri (VTE_TERMINAL (self->terminal));
+  if (current_file_uri != NULL && current_file_uri[0] != 0)
+    return g_strdup (current_file_uri);
+
+  current_directory_uri = vte_terminal_get_current_directory_uri (VTE_TERMINAL (self->terminal));
+  if (current_directory_uri != NULL && current_directory_uri[0] != 0)
+    return g_strdup (current_directory_uri);
+
+  return NULL;
 }
