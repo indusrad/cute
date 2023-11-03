@@ -23,19 +23,33 @@
 
 #include <glib/gi18n.h>
 
+#include "capsule-application.h"
+#include "capsule-container.h"
 #include "capsule-tab.h"
 #include "capsule-terminal.h"
+
+typedef enum _CapsuleTabState
+{
+  CAPSULE_TAB_STATE_INITIAL,
+  CAPSULE_TAB_STATE_SPAWNING,
+  CAPSULE_TAB_STATE_RUNNING,
+  CAPSULE_TAB_STATE_EXITED,
+  CAPSULE_TAB_STATE_FAILED,
+} CapsuleTabState;
 
 struct _CapsuleTab
 {
   GtkWidget          parent_instance;
 
   CapsuleProfile    *profile;
-
+  GSubprocess       *subprocess;
   char              *title_prefix;
 
+  AdwBanner         *banner;
   GtkScrolledWindow *scrolled_window;
   CapsuleTerminal   *terminal;
+
+  CapsuleTabState    state;
 };
 
 enum {
@@ -50,6 +64,158 @@ enum {
 G_DEFINE_FINAL_TYPE (CapsuleTab, capsule_tab, GTK_TYPE_WIDGET)
 
 static GParamSpec *properties[N_PROPS];
+
+static void
+capsule_tab_wait_check_cb (GObject      *object,
+                           GAsyncResult *result,
+                           gpointer      user_data)
+{
+  GSubprocess *subprocess = (GSubprocess *)object;
+  g_autoptr(CapsuleTab) self = user_data;
+  g_autoptr(GError) error = NULL;
+  gboolean success;
+
+  g_assert (G_IS_SUBPROCESS (subprocess));
+  g_assert (G_IS_ASYNC_RESULT (result));
+  g_assert (CAPSULE_IS_TAB (self));
+  g_assert (self->state == CAPSULE_TAB_STATE_RUNNING);
+
+  success = g_subprocess_wait_check_finish (subprocess, result, &error);
+
+  if (success)
+    self->state = CAPSULE_TAB_STATE_EXITED;
+  else
+    self->state = CAPSULE_TAB_STATE_FAILED;
+
+  /* TODO: respawn state */
+}
+
+static void
+capsule_tab_spawn_cb (GObject      *object,
+                      GAsyncResult *result,
+                      gpointer      user_data)
+{
+  CapsuleContainer *container = (CapsuleContainer *)object;
+  g_autoptr(CapsuleTab) self = user_data;
+  g_autoptr(GSubprocess) subprocess = NULL;
+  g_autoptr(GError) error = NULL;
+
+  g_assert (CAPSULE_IS_CONTAINER (container));
+  g_assert (G_IS_ASYNC_RESULT (result));
+  g_assert (CAPSULE_IS_TAB (self));
+  g_assert (self->state == CAPSULE_TAB_STATE_SPAWNING);
+
+  if (!(subprocess = capsule_container_spawn_finish (container, result, &error)))
+    {
+      const char *profile_uuid = capsule_profile_get_uuid (self->profile);
+
+      self->state = CAPSULE_TAB_STATE_FAILED;
+
+      vte_terminal_feed (VTE_TERMINAL (self->terminal), error->message, -1);
+      vte_terminal_feed (VTE_TERMINAL (self->terminal), "\r\n", -1);
+
+      adw_banner_set_title (self->banner, _("Failed to launch terminal"));
+      adw_banner_set_revealed (self->banner, TRUE);
+      adw_banner_set_button_label (self->banner, _("Edit Profile"));
+      gtk_actionable_set_action_target (GTK_ACTIONABLE (self->banner), "s", profile_uuid);
+      gtk_actionable_set_action_name (GTK_ACTIONABLE (self->banner), "app.edit-profile");
+
+      return;
+    }
+
+  self->state = CAPSULE_TAB_STATE_RUNNING;
+
+  g_subprocess_wait_check_async (subprocess,
+                                 NULL,
+                                 capsule_tab_wait_check_cb,
+                                 g_object_ref (self));
+}
+
+static void
+capsule_tab_respawn (CapsuleTab *self)
+{
+  g_autofree char *default_container = NULL;
+  g_autoptr(CapsuleContainer) container = NULL;
+  g_autoptr(VtePty) new_pty = NULL;
+  CapsuleApplication *app;
+  const char *profile_uuid;
+  VtePty *pty;
+
+  g_assert (CAPSULE_IS_TAB (self));
+  g_assert (self->state == CAPSULE_TAB_STATE_INITIAL ||
+            self->state == CAPSULE_TAB_STATE_EXITED ||
+            self->state == CAPSULE_TAB_STATE_FAILED);
+
+  adw_banner_set_revealed (self->banner, FALSE);
+
+  app = CAPSULE_APPLICATION_DEFAULT;
+  default_container = capsule_profile_dup_default_container (self->profile);
+  container = capsule_application_lookup_container (app, default_container);
+  profile_uuid = capsule_profile_get_uuid (self->profile);
+
+  if (container == NULL)
+    {
+      g_autofree char *title = NULL;
+
+      self->state = CAPSULE_TAB_STATE_FAILED;
+
+      title = g_strdup_printf (_("Cannot locate container “%s”"), default_container);
+      adw_banner_set_title (self->banner, title);
+      adw_banner_set_revealed (self->banner, TRUE);
+      adw_banner_set_button_label (self->banner, _("Edit Profile"));
+      gtk_actionable_set_action_target (GTK_ACTIONABLE (self->banner), "s", profile_uuid);
+      gtk_actionable_set_action_name (GTK_ACTIONABLE (self->banner), "app.edit-profile");
+
+      return;
+    }
+
+  self->state = CAPSULE_TAB_STATE_SPAWNING;
+
+  pty = vte_terminal_get_pty (VTE_TERMINAL (self->terminal));
+
+  if (pty == NULL)
+    {
+      g_autoptr(GError) error = NULL;
+
+      new_pty = vte_pty_new_sync (VTE_PTY_NO_CTTY, NULL, &error);
+
+      if (new_pty == NULL)
+        {
+          self->state = CAPSULE_TAB_STATE_FAILED;
+
+          adw_banner_set_title (self->banner, _("Failed to create pseudo terminal device"));
+          adw_banner_set_revealed (self->banner, TRUE);
+          adw_banner_set_button_label (self->banner, NULL);
+          gtk_actionable_set_action_name (GTK_ACTIONABLE (self->banner), NULL);
+
+          return;
+        }
+
+      vte_terminal_set_pty (VTE_TERMINAL (self->terminal), new_pty);
+
+      pty = new_pty;
+    }
+
+  capsule_container_spawn_async (container,
+                                 pty,
+                                 self->profile,
+                                 NULL,
+                                 capsule_tab_spawn_cb,
+                                 g_object_ref (self));
+}
+
+static void
+capsule_tab_map (GtkWidget *widget)
+{
+  CapsuleTab *self = (CapsuleTab *)widget;
+
+  g_assert (CAPSULE_IS_TAB (widget));
+
+  GTK_WIDGET_CLASS (capsule_tab_parent_class)->map (widget);
+
+  if (self->state == CAPSULE_TAB_STATE_INITIAL)
+    capsule_tab_respawn (self);
+}
 
 static void
 capsule_tab_notify_window_title_cb (CapsuleTab      *self,
@@ -74,8 +240,12 @@ static void
 capsule_tab_dispose (GObject *object)
 {
   CapsuleTab *self = (CapsuleTab *)object;
+  GtkWidget *child;
 
   gtk_widget_dispose_template (GTK_WIDGET (self), CAPSULE_TYPE_TAB);
+
+  while ((child = gtk_widget_get_first_child (GTK_WIDGET (self))))
+    gtk_widget_unparent (child);
 
   g_clear_object (&self->profile);
 
@@ -147,6 +317,8 @@ capsule_tab_class_init (CapsuleTabClass *klass)
   object_class->get_property = capsule_tab_get_property;
   object_class->set_property = capsule_tab_set_property;
 
+  widget_class->map = capsule_tab_map;
+
   properties[PROP_PROFILE] =
     g_param_spec_object ("profile", NULL, NULL,
                          CAPSULE_TYPE_PROFILE,
@@ -178,6 +350,7 @@ capsule_tab_class_init (CapsuleTabClass *klass)
   gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/Capsule/capsule-tab.ui");
   gtk_widget_class_set_layout_manager_type (widget_class, GTK_TYPE_BIN_LAYOUT);
 
+  gtk_widget_class_bind_template_child (widget_class, CapsuleTab, banner);
   gtk_widget_class_bind_template_child (widget_class, CapsuleTab, terminal);
   gtk_widget_class_bind_template_child (widget_class, CapsuleTab, scrolled_window);
 
@@ -189,6 +362,8 @@ capsule_tab_class_init (CapsuleTabClass *klass)
 static void
 capsule_tab_init (CapsuleTab *self)
 {
+  self->state = CAPSULE_TAB_STATE_INITIAL;
+
   gtk_widget_init_template (GTK_WIDGET (self));
 }
 
