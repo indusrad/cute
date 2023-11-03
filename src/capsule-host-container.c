@@ -80,11 +80,20 @@ capsule_host_container_spawn_finish (CapsuleContainer  *container,
   return g_task_propagate_pointer (G_TASK (result), error);
 }
 
+static const char *
+capsule_host_container_get_id (CapsuleContainer *container)
+{
+  g_assert (CAPSULE_IS_HOST_CONTAINER (container));
+
+  return "host";
+}
+
 static void
 capsule_host_container_class_init (CapsuleHostContainerClass *klass)
 {
   CapsuleContainerClass *container_class = CAPSULE_CONTAINER_CLASS (klass);
 
+  container_class->get_id = capsule_host_container_get_id;
   container_class->spawn_async = capsule_host_container_spawn_async;
   container_class->spawn_finish = capsule_host_container_spawn_finish;
 }

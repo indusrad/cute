@@ -37,6 +37,7 @@ struct _CapsuleContainerClass
 {
   GObjectClass parent_class;
 
+  const char  *(*get_id)       (CapsuleContainer     *self);
   void         (*spawn_async)  (CapsuleContainer     *self,
                                 VtePty               *pty,
                                 CapsuleProfile       *profile,
@@ -51,6 +52,7 @@ struct _CapsuleContainerClass
 void         capsule_container_prepare_run_context (CapsuleContainer     *self,
                                                     CapsuleRunContext    *run_context,
                                                     CapsuleProfile       *profile);
+const char  *capsule_container_get_id              (CapsuleContainer     *self);
 void         capsule_container_spawn_async         (CapsuleContainer     *self,
                                                     VtePty               *pty,
                                                     CapsuleProfile       *profile,

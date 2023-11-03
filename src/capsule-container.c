@@ -26,14 +26,60 @@
 
 G_DEFINE_ABSTRACT_TYPE (CapsuleContainer, capsule_container, G_TYPE_OBJECT)
 
+enum {
+  PROP_0,
+  PROP_ID,
+  N_PROPS
+};
+
+static GParamSpec *properties[N_PROPS];
+
+static void
+capsule_container_get_property (GObject    *object,
+                                guint       prop_id,
+                                GValue     *value,
+                                GParamSpec *pspec)
+{
+  CapsuleContainer *self = CAPSULE_CONTAINER (object);
+
+  switch (prop_id)
+    {
+    case PROP_ID:
+      g_value_set_string (value, capsule_container_get_id (self));
+      break;
+
+    default:
+      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+    }
+}
+
 static void
 capsule_container_class_init (CapsuleContainerClass *klass)
 {
+  GObjectClass *object_class = G_OBJECT_CLASS (klass);
+
+  object_class->get_property = capsule_container_get_property;
+
+  properties [PROP_ID] =
+    g_param_spec_string ("id", NULL, NULL,
+                         NULL,
+                         (G_PARAM_READABLE |
+                          G_PARAM_STATIC_STRINGS));
+
+  g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void
 capsule_container_init (CapsuleContainer *self)
 {
+}
+
+const char *
+capsule_container_get_id (CapsuleContainer *self)
+{
+  g_return_val_if_fail (CAPSULE_IS_CONTAINER (self), NULL);
+
+  return CAPSULE_CONTAINER_GET_CLASS (self)->get_id (self);
 }
 
 void
@@ -60,9 +106,16 @@ capsule_container_prepare_run_context (CapsuleContainer  *self,
                                        CapsuleRunContext *run_context,
                                        CapsuleProfile    *profile)
 {
+  const char *user_shell;
+
   g_return_if_fail (CAPSULE_IS_CONTAINER (self));
   g_return_if_fail (CAPSULE_IS_RUN_CONTEXT (run_context));
   g_return_if_fail (CAPSULE_IS_PROFILE (profile));
 
-  capsule_run_context_append_argv (run_context, capsule_get_user_shell ());
+  user_shell = capsule_get_user_shell ();
+
+  if (user_shell == NULL)
+    user_shell = "/bin/sh";
+
+  capsule_run_context_append_argv (run_context, user_shell);
 }
