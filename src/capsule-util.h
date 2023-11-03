@@ -40,5 +40,6 @@ gboolean            capsule_pty_create_producer   (int         consumer_fd,
                                                    gboolean    nonblock);
 gboolean            capsule_shell_supports_dash_c (const char *shell);
 gboolean            capsule_shell_supports_dash_l (const char *shell);
+gboolean            capsule_is_shell              (const char *arg0);
 
 G_END_DECLS

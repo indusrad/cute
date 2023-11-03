@@ -341,3 +341,42 @@ capsule_init_ctor (void)
   if (g_file_test ("/.flatpak-info", G_FILE_TEST_EXISTS))
     kind = CAPSULE_PROCESS_KIND_FLATPAK;
 }
+
+gboolean
+capsule_is_shell (const char *arg0)
+{
+  static const char * const builtin_shells[] = {
+    "/bin/sh", "/usr/bin/sh",
+    "/bin/bash", "/usr/bin/bash",
+    "/bin/dash", "/usr/bin/dash",
+    "/bin/zsh", "/usr/bin/zsh",
+    "/bin/fish", "/usr/bin/fish",
+    "/bin/tcsh", "/usr/bin/tcsh",
+    "/bin/csh", "/usr/bin/csh",
+    "/bin/tmux", "/usr/bin/tmux",
+  };
+  const char *etc_shells_path = "/etc/shells";
+  g_autofree char *etc_shells = NULL;
+
+  for (guint i = 0; i < G_N_ELEMENTS (builtin_shells); i++)
+    {
+      if (g_str_equal (arg0, builtin_shells[i]))
+        return TRUE;
+    }
+
+  if (capsule_get_process_kind () == CAPSULE_PROCESS_KIND_FLATPAK)
+    etc_shells_path = "/var/run/host/etc/shells";
+
+  if (g_file_get_contents (etc_shells_path, &etc_shells, NULL, NULL))
+    {
+      g_auto(GStrv) lines = g_strsplit (etc_shells, "\n", 0);
+
+      for (guint i = 0; lines[i]; i++)
+        {
+          if (g_str_equal (g_strstrip (lines[i]), arg0))
+            return TRUE;
+        }
+    }
+
+  return FALSE;
+}
