@@ -21,6 +21,7 @@ capsule_sources = [
   'capsule-util.c',
   'capsule-window-style.c',
   'capsule-window.c',
+  'eggshell.c',
 ]
 
 capsule_sources += gnome.compile_resources('capsule-resources',
