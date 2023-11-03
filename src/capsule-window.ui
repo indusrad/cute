@@ -27,13 +27,15 @@
         <child>
           <object class="GtkShortcut">
             <property name="trigger">&lt;ctrl&gt;&lt;shift&gt;n</property>
-            <property name="action">action(win.new-tab::'')</property>
+            <property name="action">action(win.new-window)</property>
+            <property name="arguments">'default'</property>
           </object>
         </child>
         <child>
           <object class="GtkShortcut">
             <property name="trigger">&lt;ctrl&gt;&lt;shift&gt;t</property>
-            <property name="action">action(win.new-window::'')</property>
+            <property name="action">action(win.new-tab)</property>
+            <property name="arguments">'default'</property>
           </object>
         </child>
       </object>
