@@ -335,9 +335,9 @@ capsule_run_context_push_host (CapsuleRunContext *self)
     {
       self->setup_tty = FALSE;
       capsule_run_context_push (self,
-                            capsule_run_context_host_handler,
-                            NULL,
-                            NULL);
+                                capsule_run_context_host_handler,
+                                NULL,
+                                NULL);
     }
 }
 
@@ -480,9 +480,9 @@ capsule_run_context_push_error (CapsuleRunContext *self,
   g_return_if_fail (error != NULL);
 
   capsule_run_context_push (self,
-                        capsule_run_context_error_handler,
-                        error,
-                        (GDestroyNotify)g_error_free);
+                            capsule_run_context_error_handler,
+                            error,
+                            (GDestroyNotify)g_error_free);
 }
 
 static gboolean
@@ -636,9 +636,9 @@ capsule_run_context_push_expansion (CapsuleRunContext  *self,
 
   if (environ != NULL)
     capsule_run_context_push (self,
-                          capsule_run_context_expansion_handler,
-                          g_strdupv ((char **)environ),
-                          (GDestroyNotify)g_strfreev);
+                              capsule_run_context_expansion_handler,
+                              g_strdupv ((char **)environ),
+                              (GDestroyNotify)g_strfreev);
 }
 
 const char * const *
