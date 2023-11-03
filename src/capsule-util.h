@@ -36,5 +36,6 @@ char               *capsule_path_expand         (const char *path);
 char               *capsule_path_collapse       (const char *path);
 gboolean            capsule_pty_create_producer (int         consumer_fd,
                                                  gboolean    nonblock);
+const char         *capsule_get_user_shell      (void) G_GNUC_CONST;
 
 G_END_DECLS

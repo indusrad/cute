@@ -43,20 +43,67 @@
 #include "capsule-util.h"
 
 static CapsuleProcessKind kind = CAPSULE_PROCESS_KIND_HOST;
+static char *user_shell;
+static char *user_default_path;
 
 G_DEFINE_CONSTRUCTOR(capsule_init_ctor)
-
-static void
-capsule_init_ctor (void)
-{
-  if (g_file_test ("/.flatpak-info", G_FILE_TEST_EXISTS))
-    kind = CAPSULE_PROCESS_KIND_FLATPAK;
-}
 
 CapsuleProcessKind
 capsule_get_process_kind (void)
 {
   return kind;
+}
+
+static gboolean
+shell_supports_dash_c (const char *shell)
+{
+  if (shell == NULL)
+    return FALSE;
+
+  return strcmp (shell, "bash") == 0 || g_str_has_suffix (shell, "/bash") ||
+#if 0
+         /* Fish does apparently support -l and -c in testing, but it is causing
+          * issues with users, so we will disable it for now so that we fallback
+          * to using `sh -l -c ''` instead.
+          */
+         strcmp (shell, "fish") == 0 || g_str_has_suffix (shell, "/fish") ||
+#endif
+         strcmp (shell, "zsh") == 0 || g_str_has_suffix (shell, "/zsh") ||
+         strcmp (shell, "dash") == 0 || g_str_has_suffix (shell, "/dash") ||
+         strcmp (shell, "tcsh") == 0 || g_str_has_suffix (shell, "/tcsh") ||
+         strcmp (shell, "sh") == 0 || g_str_has_suffix (shell, "/sh");
+}
+
+/**
+ * shell_supports_dash_login:
+ * @shell: the name of the shell, such as `sh` or `/bin/sh`
+ *
+ * Checks if the shell is known to support login semantics. Originally,
+ * this meant `--login`, but now is meant to mean `-l` as more shells
+ * support `-l` than `--login` (notably dash).
+ *
+ * Returns: %TRUE if @shell likely supports `-l`.
+ */
+static gboolean
+shell_supports_dash_login (const char *shell)
+{
+  if (shell == NULL)
+    return FALSE;
+
+  return strcmp (shell, "bash") == 0 || g_str_has_suffix (shell, "/bash") ||
+#if 0
+         strcmp (shell, "fish") == 0 || g_str_has_suffix (shell, "/fish") ||
+#endif
+         strcmp (shell, "zsh") == 0 || g_str_has_suffix (shell, "/zsh") ||
+         strcmp (shell, "dash") == 0 || g_str_has_suffix (shell, "/dash") ||
+#if 0
+         /* tcsh supports -l and -c but not combined! To do that, you'd have
+          * to instead launch the login shell like `-tcsh -c 'command'`, which
+          * is possible, but we lack the abstractions for that currently.
+          */
+         strcmp (shell, "tcsh") == 0 || g_str_has_suffix (shell, "/tcsh") ||
+#endif
+         strcmp (shell, "sh") == 0 || g_str_has_suffix (shell, "/sh");
 }
 
 /**
@@ -137,10 +184,10 @@ capsule_pty_create_producer (int      consumer_fd,
   return g_steal_fd (&ret);
 }
 
-static gchar **
+static char **
 get_environ_from_stdout (GSubprocess *subprocess)
 {
-  g_autofree gchar *stdout_buf = NULL;
+  g_autofree char *stdout_buf = NULL;
 
   if (g_subprocess_communicate_utf8 (subprocess, NULL, NULL, &stdout_buf, NULL, NULL))
     {
@@ -170,17 +217,17 @@ get_environ_from_stdout (GSubprocess *subprocess)
       if (env->len > 0)
         {
           g_ptr_array_add (env, NULL);
-          return (gchar **)g_ptr_array_free (g_steal_pointer (&env), FALSE);
+          return (char **)g_ptr_array_free (g_steal_pointer (&env), FALSE);
         }
     }
 
   return NULL;
 }
 
-const gchar * const *
+const char * const *
 capsule_host_environ (void)
 {
-  static gchar **host_environ;
+  static char **host_environ;
 
   if (host_environ == NULL)
     {
@@ -214,8 +261,8 @@ capsule_host_environ (void)
  * Returns: (transfer full): A newly allocated string containing the
  *   expansion. A copy of the input string upon failure to expand.
  */
-gchar *
-capsule_path_expand (const gchar *path)
+char *
+capsule_path_expand (const char *path)
 {
   wordexp_t state = { 0 };
   char *replace_home = NULL;
@@ -250,7 +297,7 @@ capsule_path_expand (const gchar *path)
 
   if (!g_path_is_absolute (ret))
     {
-      g_autofree gchar *freeme = ret;
+      g_autofree char *freeme = ret;
 
       ret = g_build_filename (g_get_home_dir (), freeme, NULL);
     }
@@ -272,10 +319,10 @@ capsule_path_expand (const gchar *path)
  *
  * Returns: (transfer full): A new path, possibly collapsed.
  */
-gchar *
-capsule_path_collapse (const gchar *path)
+char *
+capsule_path_collapse (const char *path)
 {
-  g_autofree gchar *expanded = NULL;
+  g_autofree char *expanded = NULL;
 
   if (path == NULL)
     return NULL;
@@ -288,4 +335,228 @@ capsule_path_collapse (const gchar *path)
                              NULL);
 
   return g_steal_pointer (&expanded);
+}
+
+/**
+ * capsule_get_user_shell:
+ *
+ * Gets the user preferred shell on the host.
+ *
+ * If the background shell discovery has not yet finished due to
+ * slow or misconfigured getent on the host, this will provide a
+ * sensible fallback.
+ *
+ * Returns: (not nullable): a shell such as "/bin/sh"
+ */
+const char *
+capsule_get_user_shell (void)
+{
+  return user_shell;
+}
+
+static void
+capsule_guess_shell_communicate_cb (GObject      *object,
+                                    GAsyncResult *result,
+                                    gpointer      user_data)
+{
+  GSubprocess *subprocess = (GSubprocess *)object;
+  g_autoptr(GTask) task = user_data;
+  g_autoptr(GError) error = NULL;
+  g_autofree char *stdout_buf = NULL;
+  const char *key;
+
+  g_assert (G_IS_SUBPROCESS (subprocess));
+  g_assert (G_IS_ASYNC_RESULT (result));
+  g_assert (G_IS_TASK (task));
+
+  key = g_task_get_task_data (task);
+
+  if (!g_subprocess_communicate_utf8_finish (subprocess, result, &stdout_buf, NULL, &error))
+    {
+      g_task_return_error (task, g_steal_pointer (&error));
+      return;
+    }
+
+  if (stdout_buf != NULL)
+    g_strstrip (stdout_buf);
+
+  g_debug ("Guessed %s as \"%s\"", key, stdout_buf);
+
+  if (g_str_equal (key, "SHELL"))
+    {
+      if (stdout_buf[0] == '/')
+        user_shell = g_steal_pointer (&stdout_buf);
+    }
+  else if (g_str_equal (key, "PATH"))
+    {
+      if (stdout_buf && stdout_buf[0])
+        user_default_path = g_steal_pointer (&stdout_buf);
+    }
+  else
+    {
+      g_critical ("Unknown key %s", key);
+    }
+
+  g_task_return_boolean (task, TRUE);
+}
+
+static void
+capsule_guess_shell (GCancellable        *cancellable,
+                     GAsyncReadyCallback  callback,
+                     gpointer             user_data)
+{
+  g_autoptr(GSubprocessLauncher) launcher = NULL;
+  g_autoptr(GSubprocess) subprocess = NULL;
+  g_autoptr(GStrvBuilder) builder = NULL;
+  g_autoptr(GTask) task = NULL;
+  g_autofree char *command = NULL;
+  g_autoptr(GError) error = NULL;
+  g_auto(GStrv) argv = NULL;
+
+  g_assert (!cancellable || G_IS_CANCELLABLE (cancellable));
+
+  task = g_task_new (NULL, cancellable, callback, user_data);
+  g_task_set_task_data (task, g_strdup ("SHELL"), g_free);
+
+#ifdef __APPLE__
+  command = g_strdup_printf ("sh -c 'dscacheutil -q user -a name %s | grep ^shell: | cut -f 2 -d \" \"'",
+                             g_get_user_name ());
+#else
+  command = g_strdup_printf ("sh -c 'getent passwd %s | head -n1 | cut -f 7 -d :'",
+                             g_get_user_name ());
+#endif
+
+  builder = g_strv_builder_new ();
+
+  if (capsule_get_process_kind () == CAPSULE_PROCESS_KIND_FLATPAK)
+    {
+      g_strv_builder_add (builder, "flatpak-spawn");
+      g_strv_builder_add (builder, "--host");
+      g_strv_builder_add (builder, "--watch-bus");
+    }
+
+  if (!g_shell_parse_argv (command, NULL, &argv, &error))
+    {
+      g_task_return_error (task, g_steal_pointer (&error));
+      return;
+    }
+
+  g_strv_builder_addv (builder, (const char **)argv);
+  g_clear_pointer (&argv, g_strfreev);
+  argv = g_strv_builder_end (builder);
+
+  launcher = g_subprocess_launcher_new (G_SUBPROCESS_FLAGS_STDOUT_PIPE);
+  g_subprocess_launcher_set_cwd (launcher, g_get_home_dir ());
+
+  if (!(subprocess = g_subprocess_launcher_spawnv (launcher, (const char * const *)argv, &error)))
+    g_task_return_error (task, g_steal_pointer (&error));
+  else
+    g_subprocess_communicate_utf8_async (subprocess,
+                                         NULL,
+                                         cancellable,
+                                         capsule_guess_shell_communicate_cb,
+                                         g_steal_pointer (&task));
+}
+
+static void
+capsule_shell_init_guess_path_cb (GObject      *object,
+                                  GAsyncResult *result,
+                                  gpointer      user_data)
+{
+  g_autoptr(GError) error = NULL;
+
+  g_assert (object == NULL);
+  g_assert (G_IS_TASK (result));
+  g_assert (user_data == NULL);
+
+  if (!g_task_propagate_boolean (G_TASK (result), &error))
+    g_warning ("Failed to guess user $PATH using $SHELL %s: %s",
+               user_shell, error->message);
+}
+
+static void
+_capsule_guess_user_path (GCancellable        *cancellable,
+                          GAsyncReadyCallback  callback,
+                          gpointer             user_data)
+{
+  g_autoptr(GSubprocessLauncher) launcher = NULL;
+  g_autoptr(GSubprocess) subprocess = NULL;
+  g_autoptr(GStrvBuilder) builder = NULL;
+  g_autoptr(GTask) task = NULL;
+  g_autoptr(GError) error = NULL;
+  g_auto(GStrv) argv = NULL;
+
+  g_assert (!cancellable || G_IS_CANCELLABLE (cancellable));
+
+  task = g_task_new (NULL, cancellable, callback, user_data);
+  g_task_set_task_data (task, g_strdup ("PATH"), g_free);
+
+  /* This works by running 'echo $PATH' on the host, preferably
+   * through the user $SHELL we discovered.
+   */
+  launcher = g_subprocess_launcher_new (G_SUBPROCESS_FLAGS_STDOUT_PIPE);
+  g_subprocess_launcher_set_cwd (launcher, g_get_home_dir ());
+
+  builder = g_strv_builder_new ();
+
+  if (shell_supports_dash_c (user_shell))
+    {
+      g_strv_builder_add (builder, user_shell);
+      if (shell_supports_dash_login (user_shell))
+        g_strv_builder_add (builder, "-l");
+      g_strv_builder_add (builder, "-c");
+      g_strv_builder_add (builder, "echo $PATH");
+    }
+  else
+    {
+      g_strv_builder_add (builder, "/bin/sh");
+      g_strv_builder_add (builder, "-l");
+      g_strv_builder_add (builder, "-c");
+      g_strv_builder_add (builder, "echo $PATH");
+    }
+
+  argv = g_strv_builder_end (builder);
+
+  if (!(subprocess = g_subprocess_launcher_spawnv (launcher, (const char * const *)argv, &error)))
+    g_task_return_error (task, g_steal_pointer (&error));
+  else
+    g_subprocess_communicate_utf8_async (subprocess,
+                                         NULL,
+                                         NULL,
+                                         capsule_guess_shell_communicate_cb,
+                                         g_steal_pointer (&task));
+}
+
+static void
+capsule_shell_init_guess_shell_cb (GObject      *object,
+                                   GAsyncResult *result,
+                                   gpointer      user_data)
+{
+  g_autoptr(GError) error = NULL;
+
+  g_assert (object == NULL);
+  g_assert (G_IS_TASK (result));
+  g_assert (user_data == NULL);
+
+  if (!g_task_propagate_boolean (G_TASK (result), &error))
+    g_warning ("Failed to guess user $SHELL: %s", error->message);
+
+  _capsule_guess_user_path (NULL,
+                            capsule_shell_init_guess_path_cb,
+                            NULL);
+}
+
+static void
+capsule_init_ctor (void)
+{
+  if (g_file_test ("/.flatpak-info", G_FILE_TEST_EXISTS))
+    kind = CAPSULE_PROCESS_KIND_FLATPAK;
+
+  /* First we need to guess the user shell, so that we can potentially
+   * get the path using that shell (instead of just /bin/sh which might
+   * not include things like .bashrc).
+   */
+  capsule_guess_shell (NULL,
+                       capsule_shell_init_guess_shell_cb,
+                       NULL);
 }
