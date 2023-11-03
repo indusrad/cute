@@ -32,12 +32,13 @@ typedef enum
   CAPSULE_PROCESS_KIND_FLATPAK = 1,
 } CapsuleProcessKind;
 
-CapsuleProcessKind  capsule_get_process_kind    (void) G_GNUC_CONST;
-const char * const *capsule_host_environ        (void) G_GNUC_CONST;
-char               *capsule_path_expand         (const char *path);
-char               *capsule_path_collapse       (const char *path);
-gboolean            capsule_pty_create_producer (int         consumer_fd,
-                                                 gboolean    nonblock);
-const char         *capsule_get_user_shell      (void) G_GNUC_CONST;
+CapsuleProcessKind  capsule_get_process_kind      (void) G_GNUC_CONST;
+const char * const *capsule_host_environ          (void) G_GNUC_CONST;
+char               *capsule_path_expand           (const char *path);
+char               *capsule_path_collapse         (const char *path);
+gboolean            capsule_pty_create_producer   (int         consumer_fd,
+                                                   gboolean    nonblock);
+gboolean            capsule_shell_supports_dash_c (const char *shell);
+gboolean            capsule_shell_supports_dash_l (const char *shell);
 
 G_END_DECLS
