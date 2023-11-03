@@ -22,6 +22,7 @@
 #include "config.h"
 
 #include "capsule-container.h"
+#include "capsule-util.h"
 
 G_DEFINE_ABSTRACT_TYPE (CapsuleContainer, capsule_container, G_TYPE_OBJECT)
 
@@ -52,4 +53,16 @@ capsule_container_spawn_finish (CapsuleContainer  *self,
                                 GError           **error)
 {
   return CAPSULE_CONTAINER_GET_CLASS (self)->spawn_finish (self, result, error);
+}
+
+void
+capsule_container_prepare_run_context (CapsuleContainer  *self,
+                                       CapsuleRunContext *run_context,
+                                       CapsuleProfile    *profile)
+{
+  g_return_if_fail (CAPSULE_IS_CONTAINER (self));
+  g_return_if_fail (CAPSULE_IS_RUN_CONTEXT (run_context));
+  g_return_if_fail (CAPSULE_IS_PROFILE (profile));
+
+  capsule_run_context_append_argv (run_context, capsule_get_user_shell ());
 }

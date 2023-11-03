@@ -25,6 +25,7 @@
 #include <vte/vte.h>
 
 #include "capsule-profile.h"
+#include "capsule-run-context.h"
 
 G_BEGIN_DECLS
 
@@ -47,14 +48,17 @@ struct _CapsuleContainerClass
                                 GError              **error);
 };
 
-void         capsule_container_spawn_async  (CapsuleContainer     *self,
-                                             VtePty               *pty,
-                                             CapsuleProfile       *profile,
-                                             GCancellable         *cancellable,
-                                             GAsyncReadyCallback   callback,
-                                             gpointer              user_data);
-GSubprocess *capsule_container_spawn_finish (CapsuleContainer     *self,
-                                             GAsyncResult         *result,
-                                             GError              **error);
+void         capsule_container_prepare_run_context (CapsuleContainer     *self,
+                                                    CapsuleRunContext    *run_context,
+                                                    CapsuleProfile       *profile);
+void         capsule_container_spawn_async         (CapsuleContainer     *self,
+                                                    VtePty               *pty,
+                                                    CapsuleProfile       *profile,
+                                                    GCancellable         *cancellable,
+                                                    GAsyncReadyCallback   callback,
+                                                    gpointer              user_data);
+GSubprocess *capsule_container_spawn_finish        (CapsuleContainer     *self,
+                                                    GAsyncResult         *result,
+                                                    GError              **error);
 
 G_END_DECLS
