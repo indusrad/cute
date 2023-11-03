@@ -256,7 +256,6 @@ capsule_tab_notify_window_title_cb (CapsuleTab      *self,
 
 static void
 capsule_tab_notify_window_subtitle_cb (CapsuleTab      *self,
-                                       GParamSpec      *pspec,
                                        CapsuleTerminal *terminal)
 {
   g_assert (CAPSULE_IS_TAB (self));
