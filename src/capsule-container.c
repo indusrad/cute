@@ -128,5 +128,7 @@ capsule_container_prepare_run_context (CapsuleContainer  *self,
   if (user_shell == NULL)
     user_shell = "/bin/bash";
 
+  capsule_run_context_set_cwd (run_context, g_get_home_dir ());
+
   capsule_run_context_append_argv (run_context, user_shell);
 }
