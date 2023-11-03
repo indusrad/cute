@@ -37,6 +37,8 @@
                 <property name="enable-fallback-scrolling">false</property>
                 <property name="scroll-unit-is-pixels">true</property>
                 <signal name="notify::window-title" handler="capsule_tab_notify_window_title_cb" swapped="1"/>
+                <signal name="current-file-uri-changed" handler="capsule_tab_notify_window_subtitle_cb" swapped="1"/>
+                <signal name="current-directory-uri-changed" handler="capsule_tab_notify_window_subtitle_cb" swapped="1"/>
                 <binding name="audible-bell">
                   <lookup name="audible-bell" type="CapsuleProfile">
                     <lookup name="profile">CapsuleTab</lookup>

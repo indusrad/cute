@@ -27,6 +27,7 @@
 #include "capsule-container.h"
 #include "capsule-tab.h"
 #include "capsule-terminal.h"
+#include "capsule-util.h"
 
 typedef enum _CapsuleTabState
 {
@@ -229,6 +230,17 @@ capsule_tab_notify_window_title_cb (CapsuleTab      *self,
 }
 
 static void
+capsule_tab_notify_window_subtitle_cb (CapsuleTab      *self,
+                                       GParamSpec      *pspec,
+                                       CapsuleTerminal *terminal)
+{
+  g_assert (CAPSULE_IS_TAB (self));
+  g_assert (CAPSULE_IS_TERMINAL (terminal));
+
+  g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_SUBTITLE]);
+}
+
+static void
 capsule_tab_constructed (GObject *object)
 {
   /* TODO: Setup terminal */
@@ -355,6 +367,7 @@ capsule_tab_class_init (CapsuleTabClass *klass)
   gtk_widget_class_bind_template_child (widget_class, CapsuleTab, scrolled_window);
 
   gtk_widget_class_bind_template_callback (widget_class, capsule_tab_notify_window_title_cb);
+  gtk_widget_class_bind_template_callback (widget_class, capsule_tab_notify_window_subtitle_cb);
 
   g_type_ensure (CAPSULE_TYPE_TERMINAL);
 }
@@ -440,6 +453,23 @@ capsule_tab_dup_title (CapsuleTab *self)
   return g_strdup (_("Terminal"));
 }
 
+static char *
+capsule_tab_collapse_uri (const char *uri)
+{
+  g_autoptr(GFile) file = NULL;
+
+  if (uri == NULL)
+    return NULL;
+
+  if (!(file = g_file_new_for_uri (uri)))
+    return NULL;
+
+  if (g_file_is_native (file))
+    return capsule_path_collapse (g_file_peek_path (file));
+
+  return strdup (uri);
+}
+
 char *
 capsule_tab_dup_subtitle (CapsuleTab *self)
 {
@@ -450,11 +480,11 @@ capsule_tab_dup_subtitle (CapsuleTab *self)
 
   current_file_uri = vte_terminal_get_current_file_uri (VTE_TERMINAL (self->terminal));
   if (current_file_uri != NULL && current_file_uri[0] != 0)
-    return g_strdup (current_file_uri);
+    return capsule_tab_collapse_uri (current_file_uri);
 
   current_directory_uri = vte_terminal_get_current_directory_uri (VTE_TERMINAL (self->terminal));
   if (current_directory_uri != NULL && current_directory_uri[0] != 0)
-    return g_strdup (current_directory_uri);
+    return capsule_tab_collapse_uri (current_directory_uri);
 
   return NULL;
 }
