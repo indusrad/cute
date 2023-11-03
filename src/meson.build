@@ -14,6 +14,8 @@ capsule_sources = [
   'capsule-settings.c',
   'capsule-tab.c',
   'capsule-terminal.c',
+  'capsule-run-context.c',
+  'capsule-unix-fd-map.c',
   'capsule-util.c',
   'capsule-window-style.c',
   'capsule-window.c',
