@@ -29,6 +29,7 @@
 #include "capsule-profile.h"
 
 #define CAPSULE_PROFILE_KEY_AUDIBLE_BELL        "audible-bell"
+#define CAPSULE_PROFILE_KEY_DEFAULT_CONTAINER   "default-container"
 #define CAPSULE_PROFILE_KEY_FONT_NAME           "font-name"
 #define CAPSULE_PROFILE_KEY_LABEL               "label"
 #define CAPSULE_PROFILE_KEY_SCROLL_ON_KEYSTROKE "scroll-on-keystroke"
@@ -45,6 +46,7 @@ struct _CapsuleProfile
 enum {
   PROP_0,
   PROP_AUDIBLE_BELL,
+  PROP_DEFAULT_CONTAINER,
   PROP_FONT_DESC,
   PROP_FONT_NAME,
   PROP_LABEL,
@@ -80,13 +82,11 @@ capsule_profile_changed_cb (CapsuleProfile *self,
       g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_FONT_DESC]);
     }
   else if (g_str_equal (key, CAPSULE_PROFILE_KEY_LABEL))
-    {
-      g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_LABEL]);
-    }
+    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_LABEL]);
   else if (g_str_equal (key, CAPSULE_PROFILE_KEY_AUDIBLE_BELL))
-    {
-      g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_AUDIBLE_BELL]);
-    }
+    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_AUDIBLE_BELL]);
+  else if (g_str_equal (key, CAPSULE_PROFILE_KEY_DEFAULT_CONTAINER))
+    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_DEFAULT_CONTAINER]);
 }
 
 static void
@@ -135,6 +135,10 @@ capsule_profile_get_property (GObject    *object,
       g_value_set_boolean (value, capsule_profile_get_audible_bell (self));
       break;
 
+    case PROP_DEFAULT_CONTAINER:
+      g_value_take_string (value, capsule_profile_dup_default_container (self));
+      break;
+
     case PROP_FONT_DESC:
       g_value_take_boxed (value, capsule_profile_dup_font_desc (self));
       break;
@@ -180,6 +184,10 @@ capsule_profile_set_property (GObject      *object,
     {
     case PROP_AUDIBLE_BELL:
       capsule_profile_set_audible_bell (self, g_value_get_boolean (value));
+      break;
+
+    case PROP_DEFAULT_CONTAINER:
+      capsule_profile_set_default_container (self, g_value_get_string (value));
       break;
 
     case PROP_FONT_DESC:
@@ -231,6 +239,13 @@ capsule_profile_class_init (CapsuleProfileClass *klass)
                           (G_PARAM_READWRITE |
                            G_PARAM_EXPLICIT_NOTIFY |
                            G_PARAM_STATIC_STRINGS));
+
+  properties[PROP_DEFAULT_CONTAINER] =
+    g_param_spec_string ("default-container", NULL, NULL,
+                         NULL,
+                         (G_PARAM_READWRITE |
+                          G_PARAM_EXPLICIT_NOTIFY |
+                          G_PARAM_STATIC_STRINGS));
 
   properties[PROP_FONT_DESC] =
     g_param_spec_boxed ("font-desc", NULL, NULL,
@@ -466,4 +481,26 @@ capsule_profile_set_scroll_on_output (CapsuleProfile *self,
   g_settings_set_boolean (self->settings,
                           CAPSULE_PROFILE_KEY_SCROLL_ON_OUTPUT,
                           scroll_on_output);
+}
+
+char *
+capsule_profile_dup_default_container (CapsuleProfile *self)
+{
+  g_return_val_if_fail (CAPSULE_IS_PROFILE (self), NULL);
+
+  return g_settings_get_string (self->settings, CAPSULE_PROFILE_KEY_DEFAULT_CONTAINER);
+}
+
+void
+capsule_profile_set_default_container (CapsuleProfile *self,
+                                       const char *default_container)
+{
+  g_return_if_fail (CAPSULE_IS_PROFILE (self));
+
+  if (default_container == NULL)
+    default_container = "";
+
+  g_settings_set_string (self->settings,
+                         CAPSULE_PROFILE_KEY_DEFAULT_CONTAINER,
+                         default_container);
 }

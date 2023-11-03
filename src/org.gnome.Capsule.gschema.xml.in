@@ -73,6 +73,12 @@
       <description>Scroll to the bottom upon user keystroke</description>
     </key>
 
+    <key name="default-container" type="s">
+      <default>'host'</default>
+      <summary>Default Container</summary>
+      <description>The container to run the command in by default</description>
+    </key>
+
   </schema>
 
 </schemalist>

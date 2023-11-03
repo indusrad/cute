@@ -34,6 +34,9 @@ const char           *capsule_profile_get_uuid                (CapsuleProfile   
 gboolean              capsule_profile_get_audible_bell        (CapsuleProfile             *self);
 void                  capsule_profile_set_audible_bell        (CapsuleProfile             *self,
                                                                gboolean                    audible_bell);
+char                 *capsule_profile_dup_default_container   (CapsuleProfile             *self);
+void                  capsule_profile_set_default_container   (CapsuleProfile             *self,
+                                                               const char                 *default_container);
 PangoFontDescription *capsule_profile_dup_font_desc           (CapsuleProfile             *self);
 void                  capsule_profile_set_font_desc           (CapsuleProfile             *self,
                                                                const PangoFontDescription *font_desc);
