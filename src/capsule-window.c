@@ -25,8 +25,8 @@
 
 struct _CapsuleWindow
 {
-	AdwApplicationWindow  parent_instance;
-	AdwHeaderBar         *header_bar;
+  AdwApplicationWindow  parent_instance;
+  AdwHeaderBar         *header_bar;
   AdwTabBar            *tab_bar;
   AdwTabView           *tab_view;
 };
@@ -218,7 +218,7 @@ capsule_window_set_property (GObject      *object,
 static void
 capsule_window_class_init (CapsuleWindowClass *klass)
 {
-	GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
+  GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
   object_class->dispose = capsule_window_dispose;
@@ -234,16 +234,16 @@ capsule_window_class_init (CapsuleWindowClass *klass)
 
   g_object_class_install_properties (object_class, N_PROPS, properties);
 
-	gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/Capsule/capsule-window.ui");
+  gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/Capsule/capsule-window.ui");
 
-	gtk_widget_class_bind_template_child (widget_class, CapsuleWindow, header_bar);
-	gtk_widget_class_bind_template_child (widget_class, CapsuleWindow, tab_bar);
-	gtk_widget_class_bind_template_child (widget_class, CapsuleWindow, tab_view);
+  gtk_widget_class_bind_template_child (widget_class, CapsuleWindow, header_bar);
+  gtk_widget_class_bind_template_child (widget_class, CapsuleWindow, tab_bar);
+  gtk_widget_class_bind_template_child (widget_class, CapsuleWindow, tab_view);
 
-	gtk_widget_class_bind_template_callback (widget_class, capsule_window_page_attached_cb);
-	gtk_widget_class_bind_template_callback (widget_class, capsule_window_page_detached_cb);
-	gtk_widget_class_bind_template_callback (widget_class, capsule_window_notify_selected_page_cb);
-	gtk_widget_class_bind_template_callback (widget_class, capsule_window_create_window_cb);
+  gtk_widget_class_bind_template_callback (widget_class, capsule_window_page_attached_cb);
+  gtk_widget_class_bind_template_callback (widget_class, capsule_window_page_detached_cb);
+  gtk_widget_class_bind_template_callback (widget_class, capsule_window_notify_selected_page_cb);
+  gtk_widget_class_bind_template_callback (widget_class, capsule_window_create_window_cb);
 
   gtk_widget_class_install_action (widget_class, "win.new-tab", "s", capsule_window_new_tab_action);
   gtk_widget_class_install_action (widget_class, "win.new-window", "s", capsule_window_new_window_action);
@@ -253,7 +253,7 @@ capsule_window_class_init (CapsuleWindowClass *klass)
 static void
 capsule_window_init (CapsuleWindow *self)
 {
-	gtk_widget_init_template (GTK_WIDGET (self));
+  gtk_widget_init_template (GTK_WIDGET (self));
 
 #if DEVELOPMENT_BUILD
   gtk_widget_add_css_class (GTK_WIDGET (self), "devel");
