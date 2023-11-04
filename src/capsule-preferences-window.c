@@ -74,20 +74,20 @@ string_to_index (GValue   *value,
                  GVariant *variant,
                  gpointer  user_data)
 {
-#if 0
   GListModel *model = G_LIST_MODEL (user_data);
   guint n_items = g_list_model_get_n_items (model);
 
-  for (guint i = 0; i < n_items; i++) {
-    g_autoptr(CapsulePreferencesListItem) item = CAPSULE_PREFERENCES_LIST_ITEM (g_list_model_get_item (model, i));
-    GVariant *item_value = capsule_preferences_list_item_get_value (item);
+  for (guint i = 0; i < n_items; i++)
+    {
+      g_autoptr(CapsulePreferencesListItem) item = CAPSULE_PREFERENCES_LIST_ITEM (g_list_model_get_item (model, i));
+      GVariant *item_value = capsule_preferences_list_item_get_value (item);
 
-    if (g_variant_equal (variant, item_value)) {
-      g_value_set_uint (value, i);
-      return TRUE;
+      if (g_variant_equal (variant, item_value))
+        {
+          g_value_set_uint (value, i);
+          return TRUE;
+        }
     }
-  }
-#endif
 
   return FALSE;
 }
@@ -97,14 +97,12 @@ index_to_string (const GValue       *value,
                  const GVariantType *type,
                  gpointer            user_data)
 {
-#if 0
   guint index = g_value_get_uint (value);
   GListModel *model = G_LIST_MODEL (user_data);
   g_autoptr(CapsulePreferencesListItem) item = CAPSULE_PREFERENCES_LIST_ITEM (g_list_model_get_item (model, index));
 
   if (item != NULL)
     return g_variant_ref (capsule_preferences_list_item_get_value (item));
-#endif
 
   return NULL;
 }
@@ -113,8 +111,21 @@ static void
 capsule_preferences_window_constructed (GObject *object)
 {
   CapsulePreferencesWindow *self = (CapsulePreferencesWindow *)object;
+  CapsuleApplication *app = CAPSULE_APPLICATION_DEFAULT;
+  CapsuleSettings *settings = capsule_application_get_settings (app);
+  GSettings *gsettings = capsule_settings_get_settings (settings);
 
   G_OBJECT_CLASS (capsule_preferences_window_parent_class)->constructed (object);
+
+  g_settings_bind_with_mapping (gsettings,
+                                CAPSULE_SETTING_KEY_NEW_TAB_POSITION,
+                                self->tab_position,
+                                "selected",
+                                G_SETTINGS_BIND_DEFAULT,
+                                string_to_index,
+                                index_to_string,
+                                g_object_ref (self->tab_positions),
+                                g_object_unref);
 }
 
 static void
