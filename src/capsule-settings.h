@@ -25,9 +25,11 @@
 
 G_BEGIN_DECLS
 
+#define CAPSULE_SETTING_KEY_AUDIBLE_BELL         "audible-bell"
 #define CAPSULE_SETTING_KEY_DEFAULT_PROFILE_UUID "default-profile-uuid"
 #define CAPSULE_SETTING_KEY_NEW_TAB_POSITION     "new-tab-position"
 #define CAPSULE_SETTING_KEY_PROFILE_UUIDS        "profile-uuids"
+#define CAPSULE_SETTING_KEY_VISUAL_BELL          "visual-bell"
 
 typedef enum _CapsuleNewTabPosition
 {
@@ -52,5 +54,11 @@ void                    capsule_settings_remove_profile_uuid      (CapsuleSettin
 CapsuleNewTabPosition   capsule_settings_get_new_tab_position     (CapsuleSettings       *self);
 void                    capsule_settings_set_new_tab_position     (CapsuleSettings       *self,
                                                                    CapsuleNewTabPosition  new_tab_position);
+gboolean                capsule_settings_get_audible_bell         (CapsuleSettings       *self);
+void                    capsule_settings_set_audible_bell         (CapsuleSettings       *self,
+                                                                   gboolean               audible_bell);
+gboolean                capsule_settings_get_visual_bell          (CapsuleSettings       *self);
+void                    capsule_settings_set_visual_bell          (CapsuleSettings       *self,
+                                                                   gboolean               visual_bell);
 
 G_END_DECLS

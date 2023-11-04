@@ -30,7 +30,6 @@
 #include "capsule-profile.h"
 #include "capsule-util.h"
 
-#define CAPSULE_PROFILE_KEY_AUDIBLE_BELL        "audible-bell"
 #define CAPSULE_PROFILE_KEY_DEFAULT_CONTAINER   "default-container"
 #define CAPSULE_PROFILE_KEY_EXIT_ACTION         "exit-action"
 #define CAPSULE_PROFILE_KEY_FONT_NAME           "font-name"
@@ -49,7 +48,6 @@ struct _CapsuleProfile
 
 enum {
   PROP_0,
-  PROP_AUDIBLE_BELL,
   PROP_DEFAULT_CONTAINER,
   PROP_EXIT_ACTION,
   PROP_FONT_DESC,
@@ -89,8 +87,6 @@ capsule_profile_changed_cb (CapsuleProfile *self,
     }
   else if (g_str_equal (key, CAPSULE_PROFILE_KEY_LABEL))
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_LABEL]);
-  else if (g_str_equal (key, CAPSULE_PROFILE_KEY_AUDIBLE_BELL))
-    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_AUDIBLE_BELL]);
   else if (g_str_equal (key, CAPSULE_PROFILE_KEY_DEFAULT_CONTAINER))
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_DEFAULT_CONTAINER]);
   else if (g_str_equal (key, CAPSULE_PROFILE_KEY_EXIT_ACTION))
@@ -139,10 +135,6 @@ capsule_profile_get_property (GObject    *object,
 
   switch (prop_id)
     {
-    case PROP_AUDIBLE_BELL:
-      g_value_set_boolean (value, capsule_profile_get_audible_bell (self));
-      break;
-
     case PROP_DEFAULT_CONTAINER:
       g_value_take_string (value, capsule_profile_dup_default_container (self));
       break;
@@ -198,10 +190,6 @@ capsule_profile_set_property (GObject      *object,
 
   switch (prop_id)
     {
-    case PROP_AUDIBLE_BELL:
-      capsule_profile_set_audible_bell (self, g_value_get_boolean (value));
-      break;
-
     case PROP_DEFAULT_CONTAINER:
       capsule_profile_set_default_container (self, g_value_get_string (value));
       break;
@@ -256,13 +244,6 @@ capsule_profile_class_init (CapsuleProfileClass *klass)
   object_class->dispose = capsule_profile_dispose;
   object_class->get_property = capsule_profile_get_property;
   object_class->set_property = capsule_profile_set_property;
-
-  properties[PROP_AUDIBLE_BELL] =
-    g_param_spec_boolean ("audible-bell", NULL, NULL,
-                          FALSE,
-                          (G_PARAM_READWRITE |
-                           G_PARAM_EXPLICIT_NOTIFY |
-                           G_PARAM_STATIC_STRINGS));
 
   properties[PROP_DEFAULT_CONTAINER] =
     g_param_spec_string ("default-container", NULL, NULL,
@@ -464,25 +445,6 @@ capsule_profile_set_label (CapsuleProfile *self,
     label = "";
 
   g_settings_set_string (self->settings, CAPSULE_PROFILE_KEY_LABEL, label);
-}
-
-gboolean
-capsule_profile_get_audible_bell (CapsuleProfile *self)
-{
-  g_return_val_if_fail (CAPSULE_IS_PROFILE (self), FALSE);
-
-  return g_settings_get_boolean (self->settings, CAPSULE_PROFILE_KEY_AUDIBLE_BELL);
-}
-
-void
-capsule_profile_set_audible_bell (CapsuleProfile *self,
-                                  gboolean        audible_bell)
-{
-  g_return_if_fail (CAPSULE_IS_PROFILE (self));
-
-  g_settings_set_boolean (self->settings,
-                          CAPSULE_PROFILE_KEY_AUDIBLE_BELL,
-                          audible_bell);
 }
 
 gboolean

@@ -34,9 +34,11 @@ struct _CapsuleSettings
 
 enum {
   PROP_0,
+  PROP_AUDIBLE_BELL,
   PROP_DEFAULT_PROFILE_UUID,
   PROP_NEW_TAB_POSITION,
   PROP_PROFILE_UUIDS,
+  PROP_VISUAL_BELL,
   N_PROPS
 };
 
@@ -59,6 +61,10 @@ capsule_settings_changed_cb (CapsuleSettings *self,
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_PROFILE_UUIDS]);
   else if (g_str_equal (key, CAPSULE_SETTING_KEY_NEW_TAB_POSITION))
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_NEW_TAB_POSITION]);
+  else if (g_str_equal (key, CAPSULE_SETTING_KEY_AUDIBLE_BELL))
+    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_AUDIBLE_BELL]);
+  else if (g_str_equal (key, CAPSULE_SETTING_KEY_VISUAL_BELL))
+    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_VISUAL_BELL]);
 }
 
 static void
@@ -81,6 +87,10 @@ capsule_settings_get_property (GObject    *object,
 
   switch (prop_id)
     {
+    case PROP_AUDIBLE_BELL:
+      g_value_set_boolean (value, capsule_settings_get_audible_bell (self));
+      break;
+
     case PROP_DEFAULT_PROFILE_UUID:
       g_value_take_string (value, capsule_settings_dup_default_profile_uuid (self));
       break;
@@ -91,6 +101,10 @@ capsule_settings_get_property (GObject    *object,
 
     case PROP_PROFILE_UUIDS:
       g_value_take_boxed (value, capsule_settings_dup_profile_uuids (self));
+      break;
+
+    case PROP_VISUAL_BELL:
+      g_value_set_boolean (value, capsule_settings_get_visual_bell (self));
       break;
 
     default:
@@ -108,12 +122,20 @@ capsule_settings_set_property (GObject      *object,
 
   switch (prop_id)
     {
+    case PROP_AUDIBLE_BELL:
+      capsule_settings_set_audible_bell (self, g_value_get_boolean (value));
+      break;
+
     case PROP_NEW_TAB_POSITION:
       capsule_settings_set_new_tab_position (self, g_value_get_enum (value));
       break;
 
     case PROP_DEFAULT_PROFILE_UUID:
       capsule_settings_set_default_profile_uuid (self, g_value_get_string (value));
+      break;
+
+    case PROP_VISUAL_BELL:
+      capsule_settings_set_visual_bell (self, g_value_get_boolean (value));
       break;
 
     default:
@@ -129,6 +151,13 @@ capsule_settings_class_init (CapsuleSettingsClass *klass)
   object_class->dispose = capsule_settings_dispose;
   object_class->get_property = capsule_settings_get_property;
   object_class->set_property = capsule_settings_set_property;
+
+  properties[PROP_AUDIBLE_BELL] =
+    g_param_spec_boolean ("audible-bell", NULL, NULL,
+                          FALSE,
+                          (G_PARAM_READWRITE |
+                           G_PARAM_EXPLICIT_NOTIFY |
+                           G_PARAM_STATIC_STRINGS));
 
   properties[PROP_NEW_TAB_POSITION] =
     g_param_spec_enum ("new-tab-position", NULL, NULL,
@@ -150,6 +179,13 @@ capsule_settings_class_init (CapsuleSettingsClass *klass)
                         G_TYPE_STRV,
                         (G_PARAM_READABLE |
                          G_PARAM_STATIC_STRINGS));
+
+  properties[PROP_VISUAL_BELL] =
+    g_param_spec_boolean ("visual-bell", NULL, NULL,
+                          FALSE,
+                          (G_PARAM_READWRITE |
+                           G_PARAM_EXPLICIT_NOTIFY |
+                           G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_properties (object_class, N_PROPS, properties);
 }
@@ -297,4 +333,42 @@ capsule_settings_get_settings (CapsuleSettings *self)
   g_return_val_if_fail (CAPSULE_IS_SETTINGS (self), NULL);
 
   return self->settings;
+}
+
+gboolean
+capsule_settings_get_audible_bell (CapsuleSettings *self)
+{
+  g_return_val_if_fail (CAPSULE_IS_SETTINGS (self), FALSE);
+
+  return g_settings_get_boolean (self->settings, CAPSULE_SETTING_KEY_AUDIBLE_BELL);
+}
+
+void
+capsule_settings_set_audible_bell (CapsuleSettings *self,
+                                   gboolean         audible_bell)
+{
+  g_return_if_fail (CAPSULE_IS_SETTINGS (self));
+
+  g_settings_set_boolean (self->settings,
+                          CAPSULE_SETTING_KEY_AUDIBLE_BELL,
+                          audible_bell);
+}
+
+gboolean
+capsule_settings_get_visual_bell (CapsuleSettings *self)
+{
+  g_return_val_if_fail (CAPSULE_IS_SETTINGS (self), FALSE);
+
+  return g_settings_get_boolean (self->settings, CAPSULE_SETTING_KEY_VISUAL_BELL);
+}
+
+void
+capsule_settings_set_visual_bell (CapsuleSettings *self,
+                                  gboolean         visual_bell)
+{
+  g_return_if_fail (CAPSULE_IS_SETTINGS (self));
+
+  g_settings_set_boolean (self->settings,
+                          CAPSULE_SETTING_KEY_VISUAL_BELL,
+                          visual_bell);
 }

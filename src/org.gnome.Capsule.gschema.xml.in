@@ -56,6 +56,18 @@
       <description>Where to place new tabs</description>
     </key>
 
+    <key name="audible-bell" type="b">
+      <default>true</default>
+      <summary>Audible Bell</summary>
+      <description>If an audible bell should be used</description>
+    </key>
+
+    <key name="visual-bell" type="b">
+      <default>true</default>
+      <summary>Visible Bell</summary>
+      <description>If a visual bell should be used</description>
+    </key>
+
   </schema>
 
   <schema id=@APP_SCHEMA_PROFILE_ID@>
@@ -76,12 +88,6 @@
       <default>''</default>
       <summary>Font Name</summary>
       <description>The font description to use if use-system-font is set to False</description>
-    </key>
-
-    <key name="audible-bell" type="b">
-      <default>true</default>
-      <summary>Audible Bell</summary>
-      <description>If an audible bell should be used</description>
     </key>
 
     <key name="scroll-on-output" type="b">

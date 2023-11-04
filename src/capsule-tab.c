@@ -345,25 +345,6 @@ capsule_tab_bell_cb (CapsuleTab      *self,
 }
 
 static void
-capsule_tab_real_bell (CapsuleTab *self)
-{
-  g_assert (CAPSULE_IS_TAB (self));
-
-  if (capsule_profile_get_audible_bell (self->profile))
-    {
-      GtkNative *native = gtk_widget_get_native (GTK_WIDGET (self));
-
-      if (native != NULL)
-        {
-          GdkSurface *surface = gtk_native_get_surface (native);
-
-          if (surface != NULL)
-            gdk_surface_beep (surface);
-        }
-    }
-}
-
-static void
 capsule_tab_dispose (GObject *object)
 {
   CapsuleTab *self = (CapsuleTab *)object;
@@ -497,7 +478,7 @@ capsule_tab_class_init (CapsuleTabClass *klass)
     g_signal_new_class_handler ("bell",
                                 G_TYPE_FROM_CLASS (klass),
                                 G_SIGNAL_RUN_LAST,
-                                G_CALLBACK (capsule_tab_real_bell),
+                                NULL,
                                 NULL, NULL,
                                 NULL,
                                 G_TYPE_NONE, 0);

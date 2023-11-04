@@ -33,9 +33,11 @@ struct _CapsulePreferencesWindow
   AdwPreferencesWindow  parent_instance;
 
   GtkListBoxRow        *add_profile_row;
+  AdwSwitchRow         *audible_bell;
   GtkListBox           *profiles_list_box;
   AdwComboRow          *tab_position;
   GListModel           *tab_positions;
+  AdwSwitchRow         *visual_bell;
 };
 
 G_DEFINE_FINAL_TYPE (CapsulePreferencesWindow, capsule_preferences_window, ADW_TYPE_PREFERENCES_WINDOW)
@@ -141,6 +143,13 @@ capsule_preferences_window_constructed (GObject *object)
                            profiles,
                            capsule_preferences_window_create_profile_row_cb,
                            NULL, NULL);
+
+  g_object_bind_property (settings, "audible-bell",
+                          self->audible_bell, "active",
+                          G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
+  g_object_bind_property (settings, "visual-bell",
+                          self->visual_bell, "active",
+                          G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
 }
 
 static void
@@ -165,9 +174,11 @@ capsule_preferences_window_class_init (CapsulePreferencesWindowClass *klass)
   gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/Capsule/capsule-preferences-window.ui");
 
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, add_profile_row);
+  gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, audible_bell);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, profiles_list_box);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, tab_position);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, tab_positions);
+  gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, visual_bell);
 
   gtk_widget_class_install_action (widget_class,
                                    "profile.add",

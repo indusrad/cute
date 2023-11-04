@@ -65,6 +65,22 @@
         <child>
           <object class="AdwPreferencesGroup">
             <child>
+              <object class="AdwSwitchRow" id="audible_bell">
+                <property name="title" translatable="yes">Audible Bell</property>
+                <property name="subtitle" translatable="yes">Emit an audible bell when requested by active tab</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwSwitchRow" id="visual_bell">
+                <property name="title" translatable="yes">Visual Bell</property>
+                <property name="subtitle" translatable="yes">Emit a visual bell when requested by active tab</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <child>
               <object class="AdwActionRow">
                 <property name="title" translatable="yes">View and Customize Shortcuts</property>
                 <property name="action-name">preferences.view-shortcuts</property>
