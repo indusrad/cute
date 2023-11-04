@@ -24,6 +24,7 @@
 #include <gtk/gtk.h>
 
 #include "capsule-profile.h"
+#include "capsule-terminal.h"
 
 G_BEGIN_DECLS
 
@@ -51,6 +52,7 @@ typedef enum _CapsuleZoomLevel
 G_DECLARE_FINAL_TYPE (CapsuleTab, capsule_tab, CAPSULE, TAB, GtkWidget)
 
 CapsuleTab       *capsule_tab_new                                (CapsuleProfile   *profile);
+CapsuleTerminal  *capsule_tab_get_terminal                       (CapsuleTab       *self);
 CapsuleProfile   *capsule_tab_get_profile                        (CapsuleTab       *self);
 char             *capsule_tab_dup_subtitle                       (CapsuleTab       *self);
 char             *capsule_tab_dup_title                          (CapsuleTab       *self);

@@ -698,3 +698,11 @@ capsule_tab_zoom_out (CapsuleTab *self)
   if (self->zoom > CAPSULE_ZOOM_LEVEL_MINUS_7)
     capsule_tab_set_zoom (self, self->zoom - 1);
 }
+
+CapsuleTerminal *
+capsule_tab_get_terminal (CapsuleTab *self)
+{
+  g_return_val_if_fail (CAPSULE_IS_TAB (self), NULL);
+
+  return self->terminal;
+}
