@@ -1,6 +1,4 @@
 /*
- * capsule-preferences-window.h
- *
  * Copyright 2023 Christian Hergert <chergert@redhat.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -23,15 +21,16 @@
 
 #include <adwaita.h>
 
+#include "capsule-profile.h"
+
 G_BEGIN_DECLS
 
-#define CAPSULE_TYPE_PREFERENCES_WINDOW (capsule_preferences_window_get_type())
+#define CAPSULE_TYPE_PROFILE_ROW (capsule_profile_row_get_type())
 
-G_DECLARE_FINAL_TYPE (CapsulePreferencesWindow, capsule_preferences_window, CAPSULE, PREFERENCES_WINDOW, AdwPreferencesWindow)
+G_DECLARE_FINAL_TYPE (CapsuleProfileRow, capsule_profile_row, CAPSULE, PROFILE_ROW, AdwActionRow)
 
-CapsulePreferencesWindow *capsule_preferences_window_get_default  (void);
-GtkWindow                *capsule_preferences_window_new          (GtkApplication           *application);
-void                      capsule_preferences_window_edit_profile (CapsulePreferencesWindow *self,
-                                                                   CapsuleProfile           *profile);
+GtkWidget      *capsule_profile_row_new         (CapsuleProfile    *profile);
+CapsuleProfile *capsule_profile_row_get_profile (CapsuleProfileRow *self);
 
 G_END_DECLS
+

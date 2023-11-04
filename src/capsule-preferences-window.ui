@@ -1,21 +1,111 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Copyright 2023 Christian Hergert
+ Copyright © 2013 Christian Persch
+ Copyright © 2023 Christian Hergert
 
-  This program is free software: you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
 
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-  You should have received a copy of the GNU General Public License
-  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-  SPDX-License-Identifier: GPL-3.0-or-later
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <interface>
+  <template class="CapsulePreferencesWindow" parent="AdwPreferencesWindow">
+    <child>
+      <object class="GtkShortcutController">
+        <child>
+          <object class="GtkShortcut">
+            <property name="trigger">&lt;control&gt;w</property>
+            <property name="action">action(window.close)</property>
+          </object>
+        </child>
+      </object>
+    </child>
+    <property name="default-height">700</property>
+    <child>
+      <object class="AdwPreferencesPage">
+        <property name="title" translatable="yes">Preferences</property>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title" translatable="yes">Behavior</property>
+            <child>
+              <object class="AdwComboRow" id="tab_position">
+                <property name="title" translatable="yes">New Tab Position</property>
+                <property name="expression">
+                  <lookup name="title" type="CapsulePreferencesListItem"/>
+                </property>
+                <property name="model">
+                  <object class="GListStore" id="tab_positions">
+                    <property name="item-type">CapsulePreferencesListItem</property>
+                    <child>
+                      <object class="CapsulePreferencesListItem">
+                        <property name="title" translatable="yes">Last</property>
+                        <property name="value">'last'</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="CapsulePreferencesListItem">
+                        <property name="title" translatable="yes">Next</property>
+                        <property name="value">'next'</property>
+                      </object>
+                    </child>
+                  </object>
+                </property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <child>
+              <object class="AdwActionRow">
+                <property name="title" translatable="yes">View and Customize Shortcuts</property>
+                <property name="action-name">preferences.view-shortcuts</property>
+                <property name="activatable">true</property>
+                <child type="suffix">
+                  <object class="GtkImage">
+                    <property name="icon-name">go-next-symbolic</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title" translatable="yes">Profiles</property>
+            <child>
+              <object class="GtkListBox" id="profiles_list_box">
+                <style>
+                  <class name="boxed-list"/>
+                </style>
+                <property name="selection-mode">none</property>
+                <child>
+                  <object class="AdwPreferencesRow" id="add_profile_row">
+                    <property name="action-name">profile.add</property>
+                    <child>
+                      <object class="GtkImage">
+                        <property name="hexpand">true</property>
+                        <property name="icon-name">list-add-symbolic</property>
+                        <property name="margin-top">16</property>
+                        <property name="margin-bottom">16</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
 </interface>
+

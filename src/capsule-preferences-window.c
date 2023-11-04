@@ -21,14 +21,101 @@
 
 #include "config.h"
 
+#include <glib/gi18n.h>
+
+#include "capsule-application.h"
+#include "capsule-preferences-list-item.h"
 #include "capsule-preferences-window.h"
+#include "capsule-profile-row.h"
 
 struct _CapsulePreferencesWindow
 {
-  AdwPreferencesWindow parent_instance;
+  AdwPreferencesWindow  parent_instance;
+
+  GtkListBoxRow        *add_profile_row;
+  GtkListBox           *profiles_list_box;
+  AdwComboRow          *tab_position;
+  GListModel           *tab_positions;
 };
 
 G_DEFINE_FINAL_TYPE (CapsulePreferencesWindow, capsule_preferences_window, ADW_TYPE_PREFERENCES_WINDOW)
+
+static void
+capsule_preferences_window_add_profile (GtkWidget  *widget,
+                                        const char *action_name,
+                                        GVariant   *param)
+{
+  CapsulePreferencesWindow *self = (CapsulePreferencesWindow *)widget;
+  g_autoptr(CapsuleProfile) profile = NULL;
+
+  g_assert (CAPSULE_IS_PREFERENCES_WINDOW (self));
+
+  profile = capsule_profile_new (NULL);
+
+  capsule_application_add_profile (CAPSULE_APPLICATION_DEFAULT, profile);
+}
+
+static void
+capsule_preferences_window_profile_row_activated_cb (CapsulePreferencesWindow *self,
+                                                     CapsuleProfileRow        *row)
+{
+  CapsuleProfile *profile;
+
+  g_assert (CAPSULE_IS_PREFERENCES_WINDOW (self));
+  g_assert (CAPSULE_IS_PROFILE_ROW (row));
+
+  profile = capsule_profile_row_get_profile (row);
+
+  capsule_preferences_window_edit_profile (self, profile);
+}
+
+static gboolean
+string_to_index (GValue   *value,
+                 GVariant *variant,
+                 gpointer  user_data)
+{
+#if 0
+  GListModel *model = G_LIST_MODEL (user_data);
+  guint n_items = g_list_model_get_n_items (model);
+
+  for (guint i = 0; i < n_items; i++) {
+    g_autoptr(CapsulePreferencesListItem) item = CAPSULE_PREFERENCES_LIST_ITEM (g_list_model_get_item (model, i));
+    GVariant *item_value = capsule_preferences_list_item_get_value (item);
+
+    if (g_variant_equal (variant, item_value)) {
+      g_value_set_uint (value, i);
+      return TRUE;
+    }
+  }
+#endif
+
+  return FALSE;
+}
+
+static GVariant *
+index_to_string (const GValue       *value,
+                 const GVariantType *type,
+                 gpointer            user_data)
+{
+#if 0
+  guint index = g_value_get_uint (value);
+  GListModel *model = G_LIST_MODEL (user_data);
+  g_autoptr(CapsulePreferencesListItem) item = CAPSULE_PREFERENCES_LIST_ITEM (g_list_model_get_item (model, index));
+
+  if (item != NULL)
+    return g_variant_ref (capsule_preferences_list_item_get_value (item));
+#endif
+
+  return NULL;
+}
+
+static void
+capsule_preferences_window_constructed (GObject *object)
+{
+  CapsulePreferencesWindow *self = (CapsulePreferencesWindow *)object;
+
+  G_OBJECT_CLASS (capsule_preferences_window_parent_class)->constructed (object);
+}
 
 static void
 capsule_preferences_window_dispose (GObject *object)
@@ -46,18 +133,52 @@ capsule_preferences_window_class_init (CapsulePreferencesWindowClass *klass)
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
   GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 
+  object_class->constructed = capsule_preferences_window_constructed;
   object_class->dispose = capsule_preferences_window_dispose;
 
   gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/Capsule/capsule-preferences-window.ui");
+
+  gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, add_profile_row);
+  gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, profiles_list_box);
+  gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, tab_position);
+  gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, tab_positions);
+
+  gtk_widget_class_install_action (widget_class,
+                                   "profile.add",
+                                   NULL,
+                                   capsule_preferences_window_add_profile);
+
+  g_type_ensure (CAPSULE_TYPE_PREFERENCES_LIST_ITEM);
+  //g_type_ensure (CAPSULE_TYPE_PROFILE_EDITOR);
 }
 
 static void
 capsule_preferences_window_init (CapsulePreferencesWindow *self)
 {
   gtk_widget_init_template (GTK_WIDGET (self));
+}
 
-#if DEVELOPMENT_BUILD
-  gtk_widget_add_css_class (GTK_WIDGET (self), "devel");
+GtkWindow *
+capsule_preferences_window_new (GtkApplication* application)
+{
+  return g_object_new (CAPSULE_TYPE_PREFERENCES_WINDOW,
+                       NULL);
+}
+
+void
+capsule_preferences_window_edit_profile (CapsulePreferencesWindow *self,
+                                         CapsuleProfile           *profile)
+{
+#if 0
+  GtkWidget *editor;
+
+  g_return_if_fail (CAPSULE_IS_PREFERENCES_WINDOW (self));
+  g_return_if_fail (G_IS_SETTINGS (settings));
+
+  editor = capsule_profile_editor_new (settings);
+
+  adw_preferences_window_push_subpage (ADW_PREFERENCES_WINDOW (self),
+                                       ADW_NAVIGATION_PAGE (editor));
 #endif
 }
 

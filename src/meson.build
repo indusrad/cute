@@ -11,6 +11,7 @@ capsule_sources = [
   'capsule-preferences-list-item.c',
   'capsule-preferences-window.c',
   'capsule-profile.c',
+  'capsule-profile-row.c',
   'capsule-profile-editor.c',
   'capsule-profile-menu.c',
   'capsule-settings.c',
