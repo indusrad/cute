@@ -134,26 +134,21 @@ capsule_terminal_set_palette (CapsuleTerminal *self,
       const GdkRGBA *background;
       const GdkRGBA *foreground;
       const GdkRGBA *colors;
+      gboolean dark;
       guint n_colors;
 
       if (palette == NULL)
         palette = fallback = capsule_palette_new_from_name ("gnome");
 
+      dark = adw_style_manager_get_dark (style_manager);
       colors = capsule_palette_get_indexed_colors (palette, &n_colors);
-      background = capsule_palette_get_background (palette);
-      foreground = capsule_palette_get_foreground (palette);
+      background = capsule_palette_get_background (palette, dark);
+      foreground = capsule_palette_get_foreground (palette, dark);
 
       g_assert (foreground != NULL);
       g_assert (background != NULL);
       g_assert (colors != NULL);
       g_assert (n_colors == 16);
-
-      if (adw_style_manager_get_dark (style_manager))
-        {
-          const GdkRGBA *tmp = foreground;
-          foreground = background;
-          background = tmp;
-        }
 
       vte_terminal_set_colors (VTE_TERMINAL (self),
                                foreground,

@@ -113,9 +113,17 @@ capsule_window_notify_selected_page_cb (CapsuleWindow *self,
   if ((page = adw_tab_view_get_selected_page (self->tab_view)))
     {
       CapsuleTab *tab = CAPSULE_TAB (adw_tab_page_get_child (page));
-      g_signal_group_set_target (self->active_tab_signals, tab);
-      gtk_widget_grab_focus (GTK_WIDGET (tab));
+      CapsuleProfile *profile = capsule_tab_get_profile (tab);
+
       has_page = TRUE;
+
+      g_signal_group_set_target (self->active_tab_signals, tab);
+
+      g_object_bind_property (profile, "palette",
+                              self->dressing, "palette",
+                              G_BINDING_SYNC_CREATE);
+
+      gtk_widget_grab_focus (GTK_WIDGET (tab));
     }
 
   gtk_widget_action_set_enabled (GTK_WIDGET (self), "win.zoom-in", has_page);

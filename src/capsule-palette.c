@@ -30,8 +30,14 @@ typedef struct _CapsulePaletteData
 {
   const char *id;
   const char *name;
-  GdkRGBA background;
-  GdkRGBA foreground;
+  struct {
+    GdkRGBA background;
+    GdkRGBA foreground;
+  } light;
+  struct {
+    GdkRGBA background;
+    GdkRGBA foreground;
+  } dark;
   GdkRGBA indexed[16];
 } CapsulePaletteData;
 
@@ -41,23 +47,20 @@ struct _CapsulePalette
   const CapsulePaletteData *palette;
 };
 
-enum {
-  PROP_0,
-  PROP_BACKGROUND,
-  PROP_FOREGROUND,
-  N_PROPS
-};
-
 G_DEFINE_FINAL_TYPE (CapsulePalette, capsule_palette, G_TYPE_OBJECT)
-
-static GParamSpec *properties [N_PROPS];
 
 static const CapsulePaletteData palettes[] = {
   {
     .id = "gnome",
     .name = N_("GNOME"),
-    .foreground = GDK_RGBA ("1e1e1e"),
-    .background = GDK_RGBA ("ffffff"),
+    .light = {
+      .foreground = GDK_RGBA ("1e1e1e"),
+      .background = GDK_RGBA ("ffffff"),
+    },
+    .dark = {
+      .foreground = GDK_RGBA ("ffffff"),
+      .background = GDK_RGBA ("1e1e1e"),
+    },
     .indexed = {
       GDK_RGBA ("1e1e1e"),
       GDK_RGBA ("c01c28"),
@@ -76,52 +79,42 @@ static const CapsulePaletteData palettes[] = {
       GDK_RGBA ("33c7de"),
       GDK_RGBA ("d0cfcc"),
     }
+  },
+  {
+    .id = "solarized",
+    .name = N_("Solarized"),
+    .light = {
+      .foreground = GDK_RGBA ("657b83"),
+      .background = GDK_RGBA ("fdf6e3"),
+    },
+    .dark = {
+      .foreground = GDK_RGBA ("839496"),
+      .background = GDK_RGBA ("002b36"),
+    },
+    .indexed = {
+      GDK_RGBA ("073642"),
+      GDK_RGBA ("dc322f"),
+      GDK_RGBA ("859900"),
+      GDK_RGBA ("b58900"),
+      GDK_RGBA ("268bd2"),
+      GDK_RGBA ("d33682"),
+      GDK_RGBA ("2aa198"),
+      GDK_RGBA ("eee8d5"),
+      GDK_RGBA ("002b36"),
+      GDK_RGBA ("cb4b16"),
+      GDK_RGBA ("586e75"),
+      GDK_RGBA ("657b83"),
+      GDK_RGBA ("839496"),
+      GDK_RGBA ("6c71c4"),
+      GDK_RGBA ("93a1a1"),
+      GDK_RGBA ("fdf6e3"),
+    }
   }
 };
 
 static void
-capsule_palette_get_property (GObject    *object,
-                              guint       prop_id,
-                              GValue     *value,
-                              GParamSpec *pspec)
-{
-  CapsulePalette *self = CAPSULE_PALETTE (object);
-
-  switch (prop_id)
-    {
-    case PROP_BACKGROUND:
-      g_value_set_boxed (value, capsule_palette_get_background (self));
-      break;
-
-    case PROP_FOREGROUND:
-      g_value_set_boxed (value, capsule_palette_get_foreground (self));
-      break;
-
-    default:
-      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-    }
-}
-
-static void
 capsule_palette_class_init (CapsulePaletteClass *klass)
 {
-  GObjectClass *object_class = G_OBJECT_CLASS (klass);
-
-  object_class->get_property = capsule_palette_get_property;
-
-  properties[PROP_BACKGROUND] =
-    g_param_spec_boxed ("background", NULL, NULL,
-                        GDK_TYPE_RGBA,
-                        (G_PARAM_READABLE |
-                         G_PARAM_STATIC_STRINGS));
-
-  properties[PROP_FOREGROUND] =
-    g_param_spec_boxed ("foreground", NULL, NULL,
-                        GDK_TYPE_RGBA,
-                        (G_PARAM_READABLE |
-                         G_PARAM_STATIC_STRINGS));
-
-  g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void
@@ -130,31 +123,27 @@ capsule_palette_init (CapsulePalette *self)
 }
 
 const GdkRGBA *
-capsule_palette_get_background (CapsulePalette *self)
+capsule_palette_get_background (CapsulePalette *self,
+                                gboolean        dark)
 {
   g_return_val_if_fail (CAPSULE_IS_PALETTE (self), NULL);
 
-  return &self->palette->background;
+  if (dark)
+    return &self->palette->dark.background;
+  else
+    return &self->palette->light.background;
 }
 
 const GdkRGBA *
-capsule_palette_get_foreground (CapsulePalette *self)
+capsule_palette_get_foreground (CapsulePalette *self,
+                                gboolean        dark)
 {
   g_return_val_if_fail (CAPSULE_IS_PALETTE (self), NULL);
 
-  return &self->palette->foreground;
-}
-
-const GdkRGBA *
-capsule_palette_get_indexed_color (CapsulePalette *self,
-                                   guint           index)
-{
-  g_return_val_if_fail (CAPSULE_IS_PALETTE (self), NULL);
-
-  if (index >= 16)
-    return NULL;
-
-  return &self->palette->indexed[index];
+  if (dark)
+    return &self->palette->dark.foreground;
+  else
+    return &self->palette->light.foreground;
 }
 
 CapsulePalette *

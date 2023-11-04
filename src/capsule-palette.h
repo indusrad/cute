@@ -32,10 +32,10 @@ G_DECLARE_FINAL_TYPE (CapsulePalette, capsule_palette, CAPSULE, PALETTE, GObject
 CapsulePalette *capsule_palette_new_from_name      (const char     *name);
 const char     *capsule_palette_get_id             (CapsulePalette *self);
 const char     *capsule_palette_get_name           (CapsulePalette *self);
-const GdkRGBA  *capsule_palette_get_background     (CapsulePalette *self);
-const GdkRGBA  *capsule_palette_get_foreground     (CapsulePalette *self);
-const GdkRGBA  *capsule_palette_get_indexed_color  (CapsulePalette *self,
-                                                    guint           index);
+const GdkRGBA  *capsule_palette_get_background     (CapsulePalette *self,
+                                                    gboolean        dark);
+const GdkRGBA  *capsule_palette_get_foreground     (CapsulePalette *self,
+                                                    gboolean        dark);
 const GdkRGBA  *capsule_palette_get_indexed_colors (CapsulePalette *self,
                                                     guint          *n_colors);
 

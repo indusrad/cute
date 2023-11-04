@@ -83,16 +83,12 @@ capsule_window_dressing_update (CapsuleWindowDressing *self)
       double popover_alpha;
       const GdkRGBA *bg_rgba;
       const GdkRGBA *fg_rgba;
+      gboolean dark;
 
-      bg_rgba = capsule_palette_get_background (self->palette);
-      fg_rgba = capsule_palette_get_foreground (self->palette);
+      dark = adw_style_manager_get_dark (style_manager);
 
-      if (adw_style_manager_get_dark (style_manager))
-        {
-          const GdkRGBA *tmp = fg_rgba;
-          fg_rgba = bg_rgba;
-          bg_rgba = tmp;
-        }
+      bg_rgba = capsule_palette_get_background (self->palette, dark);
+      fg_rgba = capsule_palette_get_foreground (self->palette, dark);
 
       bg = gdk_rgba_to_string (bg_rgba);
       fg = gdk_rgba_to_string (fg_rgba);
@@ -104,25 +100,28 @@ capsule_window_dressing_update (CapsuleWindowDressing *self)
       g_ascii_dtostr (window_alpha_str, sizeof window_alpha_str, window_alpha);
 
       g_string_append_printf (string,
-                              "window.%s { dressing: %s; background: alpha(%s, %s); }\n",
+                              "window.%s { color: %s; background: alpha(%s, %s); }\n",
                               self->css_class, fg, bg, window_alpha_str);
       g_string_append_printf (string,
-                              "window.%s popover > contents { dressing: %s; background: alpha(%s, %s); }\n",
+                              "window.%s popover > contents { color: %s; background: alpha(%s, %s); }\n",
                               self->css_class, fg, bg, popover_alpha_str);
       g_string_append_printf (string,
                               "window.%s popover > arrow { background: alpha(%s, %s); }\n",
                               self->css_class, bg, popover_alpha_str);
       g_string_append_printf (string,
-                              "window.%s vte-capsule > revealer.size label { dressing: %s; background-dressing: alpha(%s, %s); }\n",
+                              "window.%s vte-terminal > revealer.size label { color: %s; background-color: alpha(%s, %s); }\n",
                               self->css_class, fg, bg, popover_alpha_str);
+      g_string_append_printf (string,
+                              "window.%s toolbarview.overview { background: alpha(currentColor, .05); }\n",
+                              self->css_class);
 
       if (rgba_is_dark (bg_rgba))
         g_string_append_printf (string,
-                                "window.%s toolbarview > revealer > windowhandle { dressing: %s; background: shade(%s,1.25); }\n",
+                                "window.%s toolbarview > revealer > windowhandle { color: %s; background: shade(%s,1.25); }\n",
                                 self->css_class, fg, bg);
       else
         g_string_append_printf (string,
-                                "window.%s toolbarview > revealer > windowhandle { dressing: %s; background: shade(%s, .95); }\n",
+                                "window.%s toolbarview > revealer > windowhandle { color: %s; background: shade(%s, .95); }\n",
                                 self->css_class, fg, bg);
     }
 
@@ -161,8 +160,7 @@ capsule_window_dressing_set_window (CapsuleWindowDressing *self,
 
   g_weak_ref_set (&self->window_wr, window);
 
-  if (self->opacity < 1.0)
-    gtk_widget_add_css_class (GTK_WIDGET (window), self->css_class);
+  gtk_widget_add_css_class (GTK_WIDGET (window), self->css_class);
 }
 
 static void
@@ -312,9 +310,9 @@ capsule_window_dressing_new (CapsuleWindow *window)
 {
   g_return_val_if_fail (CAPSULE_IS_WINDOW (window), NULL);
 
-  return (CapsuleWindowDressing *)g_object_new (CAPSULE_TYPE_WINDOW_DRESSING,
-                                               "window", window,
-                                               NULL);
+  return g_object_new (CAPSULE_TYPE_WINDOW_DRESSING,
+                       "window", window,
+                       NULL);
 }
 
 CapsulePalette *
