@@ -204,6 +204,37 @@ static const CapsulePaletteData palettes[] = {
       GDK_RGBA ("ffffff")
     }
   },
+
+  {
+    .id = "rxvt",
+    .name = N_("RXVT"),
+    .light = {
+      .foreground = GDK_RGBA ("000000"),
+      .background = GDK_RGBA ("ffffff"),
+    },
+    .dark = {
+      .foreground = GDK_RGBA ("ffffff"),
+      .background = GDK_RGBA ("000000"),
+    },
+    .indexed = {
+      GDK_RGBA ("000000"),
+      GDK_RGBA ("cd0000"),
+      GDK_RGBA ("00cd00"),
+      GDK_RGBA ("cdcd00"),
+      GDK_RGBA ("0000cd"),
+      GDK_RGBA ("cd00cd"),
+      GDK_RGBA ("00cdcd"),
+      GDK_RGBA ("faebd7"),
+      GDK_RGBA ("404040"),
+      GDK_RGBA ("ff0000"),
+      GDK_RGBA ("00ff00"),
+      GDK_RGBA ("ffff00"),
+      GDK_RGBA ("0000ff"),
+      GDK_RGBA ("ff00ff"),
+      GDK_RGBA ("00ffff"),
+      GDK_RGBA ("ffffff")
+    }
+  },
 };
 
 static void
