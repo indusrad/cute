@@ -642,3 +642,32 @@ capsule_profile_apply (CapsuleProfile    *self,
   if (cwd != NULL)
     capsule_run_context_set_cwd (run_context, cwd);
 }
+
+CapsuleProfile *
+capsule_profile_duplicate (CapsuleProfile *self)
+{
+  g_autoptr(CapsuleProfile) copy = NULL;
+  g_autoptr(GSettingsSchema) schema = NULL;
+  g_auto(GStrv) keys = NULL;
+
+  g_return_val_if_fail (CAPSULE_IS_PROFILE (self), NULL);
+
+  g_object_get (self->settings,
+                "settings-schema", &schema,
+                NULL);
+
+  copy = capsule_profile_new (NULL);
+  keys = g_settings_schema_list_keys (schema);
+
+  for (guint i = 0; keys[i]; i++)
+    {
+      g_autoptr(GVariant) user_value = g_settings_get_user_value (self->settings, keys[i]);
+
+      if (user_value != NULL)
+        g_settings_set_value (copy->settings, keys[i], user_value);
+    }
+
+  capsule_application_add_profile (CAPSULE_APPLICATION_DEFAULT, copy);
+
+  return g_steal_pointer (&copy);
+}

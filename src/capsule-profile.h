@@ -47,6 +47,7 @@ typedef enum _CapsulePreserveDirectory
 G_DECLARE_FINAL_TYPE (CapsuleProfile, capsule_profile, CAPSULE, PROFILE, GObject)
 
 CapsuleProfile           *capsule_profile_new                     (const char                 *uuid);
+CapsuleProfile           *capsule_profile_duplicate               (CapsuleProfile             *self);
 void                      capsule_profile_apply                   (CapsuleProfile             *self,
                                                                    CapsuleRunContext          *run_context,
                                                                    VtePty                     *pty,
