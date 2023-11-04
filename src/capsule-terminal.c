@@ -182,6 +182,8 @@ capsule_terminal_dispose (GObject *object)
 {
   CapsuleTerminal *self = (CapsuleTerminal *)object;
 
+  gtk_widget_dispose_template (GTK_WIDGET (self), CAPSULE_TYPE_TERMINAL);
+
   g_clear_object (&self->palette);
   g_clear_handle_id (&self->size_dismiss_source, g_source_remove);
 
