@@ -121,9 +121,12 @@ capsule_window_apply_current_settings (CapsuleWindow *self,
   if ((active_tab = capsule_window_get_active_tab (self)))
     {
       const char *current_directory_uri = capsule_tab_get_current_directory_uri (active_tab);
+      CapsuleZoomLevel zoom = capsule_tab_get_zoom (active_tab);
 
       if (current_directory_uri != NULL)
         capsule_tab_set_previous_working_directory_uri (tab, current_directory_uri);
+
+      capsule_tab_set_zoom (tab, zoom);
     }
 }
 
