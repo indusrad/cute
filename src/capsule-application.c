@@ -565,3 +565,11 @@ capsule_application_lookup_container (CapsuleApplication *self,
 
   return NULL;
 }
+
+CapsuleSettings *
+capsule_application_get_settings (CapsuleApplication *self)
+{
+  g_return_val_if_fail (CAPSULE_IS_APPLICATION (self), NULL);
+
+  return self->settings;
+}
