@@ -231,7 +231,10 @@ capsule_window_zoom_in_action (GtkWidget  *widget,
   g_assert (CAPSULE_IS_WINDOW (self));
 
   if ((active_tab = capsule_window_get_active_tab (self)))
-    capsule_tab_zoom_in (active_tab);
+    {
+      capsule_tab_zoom_in (active_tab);
+      gtk_window_set_default_size (GTK_WINDOW (self), -1, -1);
+    }
 }
 
 static void
@@ -245,7 +248,10 @@ capsule_window_zoom_out_action (GtkWidget  *widget,
   g_assert (CAPSULE_IS_WINDOW (self));
 
   if ((active_tab = capsule_window_get_active_tab (self)))
-    capsule_tab_zoom_out (active_tab);
+    {
+      capsule_tab_zoom_out (active_tab);
+      gtk_window_set_default_size (GTK_WINDOW (self), -1, -1);
+    }
 }
 
 static void
@@ -259,7 +265,10 @@ capsule_window_zoom_one_action (GtkWidget  *widget,
   g_assert (CAPSULE_IS_WINDOW (self));
 
   if ((active_tab = capsule_window_get_active_tab (self)))
-    capsule_tab_set_zoom (active_tab, CAPSULE_ZOOM_LEVEL_DEFAULT);
+    {
+      capsule_tab_set_zoom (active_tab, CAPSULE_ZOOM_LEVEL_DEFAULT);
+      gtk_window_set_default_size (GTK_WINDOW (self), -1, -1);
+    }
 }
 
 static void
