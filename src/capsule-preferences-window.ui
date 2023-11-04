@@ -46,14 +46,14 @@
                     <property name="item-type">CapsulePreferencesListItem</property>
                     <child>
                       <object class="CapsulePreferencesListItem">
-                        <property name="title" translatable="yes">Last</property>
-                        <property name="value">'last'</property>
+                        <property name="title" translatable="yes">Next</property>
+                        <property name="value">'next'</property>
                       </object>
                     </child>
                     <child>
                       <object class="CapsulePreferencesListItem">
-                        <property name="title" translatable="yes">Next</property>
-                        <property name="value">'next'</property>
+                        <property name="title" translatable="yes">Last</property>
+                        <property name="value">'last'</property>
                       </object>
                     </child>
                   </object>
