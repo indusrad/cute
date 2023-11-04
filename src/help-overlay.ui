@@ -19,6 +19,23 @@
         </child>
         <child>
           <object class="GtkShortcutsGroup">
+            <property name="title" translatable="yes" context="shortcut window">Terminals</property>
+            <child>
+              <object class="GtkShortcutsShortcut">
+                <property name="title" translatable="yes" context="shortcut window">New Terminal in Tab</property>
+                <property name="accelerator">&lt;ctrl&gt;&lt;shift&gt;t</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkShortcutsShortcut">
+                <property name="title" translatable="yes" context="shortcut window">New Terminal in Window</property>
+                <property name="accelerator">&lt;ctrl&gt;&lt;shift&gt;n</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkShortcutsGroup">
             <property name="title" translatable="yes" context="shortcut window">Zoom</property>
             <child>
               <object class="GtkShortcutsShortcut">
