@@ -254,13 +254,22 @@ capsule_settings_remove_profile_uuid (CapsuleSettings *self,
   g_clear_pointer (&profiles, g_strfreev);
   profiles = g_strv_builder_end (builder);
 
+  /* Make sure we have at least one profile */
+  if (profiles[0] == NULL)
+    {
+      profiles = g_realloc_n (profiles, 2, sizeof (char *));
+      profiles[0] = g_dbus_generate_guid ();
+      profiles[1] = NULL;
+    }
+
   g_settings_set_strv (self->settings,
                        CAPSULE_SETTING_KEY_PROFILE_UUIDS,
                        (const char * const *)profiles);
+
   if (g_str_equal (uuid, default_profile_uuid))
     g_settings_set_string (self->settings,
                            CAPSULE_SETTING_KEY_DEFAULT_PROFILE_UUID,
-                           "");
+                           profiles[0]);
 }
 
 CapsuleNewTabPosition
