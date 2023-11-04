@@ -515,11 +515,12 @@ capsule_window_visual_bell (CapsuleWindow *self)
 
   gtk_widget_add_css_class (GTK_WIDGET (self->visual_bell), "visual-bell");
 
-  if (self->visual_bell_source == 0)
-    self->visual_bell_source = g_timeout_add_full (G_PRIORITY_HIGH_IDLE,
-                                                   /* Sync duration with style.css */
-                                                   500,
-                                                   capsule_window_remove_visual_bell,
-                                                   g_object_ref (self),
-                                                   g_object_unref);
+  g_clear_handle_id (&self->visual_bell_source, g_source_remove);
+
+  self->visual_bell_source = g_timeout_add_full (G_PRIORITY_HIGH_IDLE,
+                                                 /* Sync duration with style.css */
+                                                 500,
+                                                 capsule_window_remove_visual_bell,
+                                                 g_object_ref (self),
+                                                 g_object_unref);
 }
