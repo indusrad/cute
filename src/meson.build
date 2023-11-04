@@ -8,6 +8,7 @@ capsule_sources = [
   'capsule-flatpak-provider.c',
   'capsule-host-container.c',
   'capsule-podman-provider.c',
+  'capsule-preferences-list-item.c',
   'capsule-preferences-window.c',
   'capsule-profile.c',
   'capsule-profile-editor.c',
