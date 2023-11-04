@@ -80,6 +80,7 @@ static const CapsulePaletteData palettes[] = {
       GDK_RGBA ("d0cfcc"),
     }
   },
+
   {
     .id = "solarized",
     .name = N_("Solarized"),
@@ -109,7 +110,100 @@ static const CapsulePaletteData palettes[] = {
       GDK_RGBA ("93a1a1"),
       GDK_RGBA ("fdf6e3"),
     }
-  }
+  },
+
+  {
+    .id = "tango",
+    .name = N_("Tango"),
+    .light = {
+      .foreground = GDK_RGBA ("2e3436"),
+      .background = GDK_RGBA ("eeeeec"),
+    },
+    .dark = {
+      .foreground = GDK_RGBA ("d3d7cf"),
+      .background = GDK_RGBA ("2e3436"),
+    },
+    .indexed = {
+      GDK_RGBA ("2e3436"),
+      GDK_RGBA ("cc0000"),
+      GDK_RGBA ("4e9a06"),
+      GDK_RGBA ("c4a000"),
+      GDK_RGBA ("3465a4"),
+      GDK_RGBA ("75507b"),
+      GDK_RGBA ("06989a"),
+      GDK_RGBA ("d3d7cf"),
+      GDK_RGBA ("555753"),
+      GDK_RGBA ("ef2929"),
+      GDK_RGBA ("8ae234"),
+      GDK_RGBA ("fce94f"),
+      GDK_RGBA ("729fcf"),
+      GDK_RGBA ("ad7fa8"),
+      GDK_RGBA ("34e2e2"),
+      GDK_RGBA ("eeeeec"),
+    }
+  },
+
+  {
+    .id = "linux",
+    .name = N_("Linux"),
+    .light = {
+      .foreground = GDK_RGBA ("000000"),
+      .background = GDK_RGBA ("ffffff"),
+    },
+    .dark = {
+      .foreground = GDK_RGBA ("ffffff"),
+      .background = GDK_RGBA ("000000"),
+    },
+    .indexed = {
+      GDK_RGBA ("000000"),
+      GDK_RGBA ("aa0000"),
+      GDK_RGBA ("00aa00"),
+      GDK_RGBA ("aa5500"),
+      GDK_RGBA ("0000aa"),
+      GDK_RGBA ("aa00aa"),
+      GDK_RGBA ("00aaaa"),
+      GDK_RGBA ("aaaaaa"),
+      GDK_RGBA ("555555"),
+      GDK_RGBA ("ff5555"),
+      GDK_RGBA ("55ff55"),
+      GDK_RGBA ("ffff55"),
+      GDK_RGBA ("5555ff"),
+      GDK_RGBA ("ff55ff"),
+      GDK_RGBA ("55ffff"),
+      GDK_RGBA ("ffffff")
+    }
+  },
+
+  {
+    .id = "xterm",
+    .name = N_("XTerm"),
+    .light = {
+      .foreground = GDK_RGBA ("000000"),
+      .background = GDK_RGBA ("ffffff"),
+    },
+    .dark = {
+      .foreground = GDK_RGBA ("ffffff"),
+      .background = GDK_RGBA ("000000"),
+    },
+    .indexed = {
+      GDK_RGBA ("000000"),
+      GDK_RGBA ("cd0000"),
+      GDK_RGBA ("00cd00"),
+      GDK_RGBA ("cdcd00"),
+      GDK_RGBA ("0000ee"),
+      GDK_RGBA ("cd00cd"),
+      GDK_RGBA ("00cdcd"),
+      GDK_RGBA ("e5e5e5"),
+      GDK_RGBA ("7f7f7f"),
+      GDK_RGBA ("ff0000"),
+      GDK_RGBA ("00ff00"),
+      GDK_RGBA ("ffff00"),
+      GDK_RGBA ("5c5cff"),
+      GDK_RGBA ("ff00ff"),
+      GDK_RGBA ("00ffff"),
+      GDK_RGBA ("ffffff")
+    }
+  },
 };
 
 static void
