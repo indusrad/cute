@@ -26,6 +26,7 @@ capsule_sources = [
 
 capsule_enum_headers = [
   'capsule-profile.h',
+  'capsule-settings.h',
   'capsule-tab.h',
 ]
 

@@ -33,6 +33,8 @@ G_DECLARE_FINAL_TYPE (CapsuleWindow, capsule_window, CAPSULE, WINDOW, AdwApplica
 
 CapsuleWindow *capsule_window_new             (void);
 CapsuleWindow *capsule_window_new_for_profile (CapsuleProfile *profile);
+void           capsule_window_add_tab         (CapsuleWindow  *self,
+                                               CapsuleTab     *tab);
 void           capsule_window_append_tab      (CapsuleWindow  *self,
                                                CapsuleTab     *tab);
 CapsuleTab    *capsule_window_get_active_tab  (CapsuleWindow  *self);

@@ -31,6 +31,11 @@
     <value nick="always" value="2"/>
   </enum>
 
+  <enum id="org.gnome.Capsule.NewTabPosition">
+    <value nick="last" value="0"/>
+    <value nick="next" value="1"/>
+  </enum>
+
   <schema id=@APP_SCHEMA_ID@ path=@APP_SCHEMA_PATH@>
 
     <key name="default-profile-uuid" type="s">
@@ -43,6 +48,12 @@
       <default>[]</default>
       <summary>UUIDs of all Profiles</summary>
       <description>A list of UUID for every profile</description>
+    </key>
+
+    <key name="new-tab-position" enum="org.gnome.Capsule.NewTabPosition">
+      <default>'next'</default>
+      <summary>New Tab Position</summary>
+      <description>Where to place new tabs</description>
     </key>
 
   </schema>

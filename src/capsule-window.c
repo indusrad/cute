@@ -169,7 +169,7 @@ capsule_window_new_tab_action (GtkWidget  *widget,
   tab = capsule_tab_new (profile);
   capsule_window_apply_current_settings (self, tab);
 
-  capsule_window_append_tab (self, tab);
+  capsule_window_add_tab (self, tab);
   capsule_window_set_active_tab (self, tab);
 }
 
@@ -201,7 +201,7 @@ capsule_window_new_window_action (GtkWidget  *widget,
   capsule_window_apply_current_settings (self, tab);
 
   window = g_object_new (CAPSULE_TYPE_WINDOW, NULL);
-  capsule_window_append_tab (window, tab);
+  capsule_window_add_tab (window, tab);
 
   gtk_window_present (GTK_WINDOW (window));
 }
@@ -456,6 +456,47 @@ capsule_window_append_tab (CapsuleWindow *self,
   g_return_if_fail (CAPSULE_IS_TAB (tab));
 
   adw_tab_view_append (self->tab_view, GTK_WIDGET (tab));
+
+  gtk_widget_grab_focus (GTK_WIDGET (tab));
+}
+
+void
+capsule_window_add_tab (CapsuleWindow *self,
+                        CapsuleTab    *tab)
+{
+  CapsuleNewTabPosition new_tab_position;
+  CapsuleApplication *app;
+  CapsuleSettings *settings;
+  AdwTabPage *page;
+  int position = 0;
+
+  g_return_if_fail (CAPSULE_IS_WINDOW (self));
+  g_return_if_fail (CAPSULE_IS_TAB (tab));
+
+  app = CAPSULE_APPLICATION_DEFAULT;
+  settings = capsule_application_get_settings (app);
+  new_tab_position = capsule_settings_get_new_tab_position (settings);
+
+  if ((page = adw_tab_view_get_selected_page (self->tab_view)))
+    {
+      position = adw_tab_view_get_page_position (self->tab_view, page);
+
+      switch (new_tab_position)
+        {
+        case CAPSULE_NEW_TAB_POSITION_NEXT:
+          position++;
+          break;
+
+        case CAPSULE_NEW_TAB_POSITION_LAST:
+          position = adw_tab_view_get_n_pages (self->tab_view);
+          break;
+
+        default:
+          g_assert_not_reached ();
+        }
+    }
+
+  adw_tab_view_insert (self->tab_view, GTK_WIDGET (tab), position);
 
   gtk_widget_grab_focus (GTK_WIDGET (tab));
 }

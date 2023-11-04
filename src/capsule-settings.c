@@ -23,9 +23,11 @@
 
 #include <gio/gio.h>
 
+#include "capsule-enums.h"
 #include "capsule-settings.h"
 
 #define CAPSULE_SETTING_KEY_DEFAULT_PROFILE_UUID "default-profile-uuid"
+#define CAPSULE_SETTING_KEY_NEW_TAB_POSITION     "new-tab-position"
 #define CAPSULE_SETTING_KEY_PROFILE_UUIDS        "profile-uuids"
 
 struct _CapsuleSettings
@@ -37,6 +39,7 @@ struct _CapsuleSettings
 enum {
   PROP_0,
   PROP_DEFAULT_PROFILE_UUID,
+  PROP_NEW_TAB_POSITION,
   PROP_PROFILE_UUIDS,
   N_PROPS
 };
@@ -58,6 +61,8 @@ capsule_settings_changed_cb (CapsuleSettings *self,
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_DEFAULT_PROFILE_UUID]);
   else if (g_str_equal (key, CAPSULE_SETTING_KEY_PROFILE_UUIDS))
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_PROFILE_UUIDS]);
+  else if (g_str_equal (key, CAPSULE_SETTING_KEY_NEW_TAB_POSITION))
+    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_NEW_TAB_POSITION]);
 }
 
 static void
@@ -84,6 +89,10 @@ capsule_settings_get_property (GObject    *object,
       g_value_take_string (value, capsule_settings_dup_default_profile_uuid (self));
       break;
 
+    case PROP_NEW_TAB_POSITION:
+      g_value_set_enum (value, capsule_settings_get_new_tab_position (self));
+      break;
+
     case PROP_PROFILE_UUIDS:
       g_value_take_boxed (value, capsule_settings_dup_profile_uuids (self));
       break;
@@ -103,6 +112,10 @@ capsule_settings_set_property (GObject      *object,
 
   switch (prop_id)
     {
+    case PROP_NEW_TAB_POSITION:
+      capsule_settings_set_new_tab_position (self, g_value_get_enum (value));
+      break;
+
     case PROP_DEFAULT_PROFILE_UUID:
       capsule_settings_set_default_profile_uuid (self, g_value_get_string (value));
       break;
@@ -121,14 +134,22 @@ capsule_settings_class_init (CapsuleSettingsClass *klass)
   object_class->get_property = capsule_settings_get_property;
   object_class->set_property = capsule_settings_set_property;
 
-  properties [PROP_DEFAULT_PROFILE_UUID] =
+  properties[PROP_NEW_TAB_POSITION] =
+    g_param_spec_enum ("new-tab-position", NULL, NULL,
+                       CAPSULE_TYPE_NEW_TAB_POSITION,
+                       CAPSULE_NEW_TAB_POSITION_LAST,
+                       (G_PARAM_READWRITE |
+                        G_PARAM_EXPLICIT_NOTIFY |
+                        G_PARAM_STATIC_STRINGS));
+
+  properties[PROP_DEFAULT_PROFILE_UUID] =
     g_param_spec_string ("default-profile-uuid", NULL, NULL,
                          NULL,
                          (G_PARAM_READWRITE |
                           G_PARAM_EXPLICIT_NOTIFY |
                           G_PARAM_STATIC_STRINGS));
 
-  properties [PROP_PROFILE_UUIDS] =
+  properties[PROP_PROFILE_UUIDS] =
     g_param_spec_boxed ("profile-uuids", NULL, NULL,
                         G_TYPE_STRV,
                         (G_PARAM_READABLE |
@@ -147,12 +168,6 @@ capsule_settings_init (CapsuleSettings *self)
                            G_CALLBACK (capsule_settings_changed_cb),
                            self,
                            G_CONNECT_SWAPPED);
-
-  /* Prime all settings to ensure we get change notifications. GSettings
-   * backends should only notify for keys we've requested already.
-   */
-  g_free (g_settings_get_string (self->settings, CAPSULE_SETTING_KEY_DEFAULT_PROFILE_UUID));
-  g_strfreev (g_settings_get_strv (self->settings, CAPSULE_SETTING_KEY_PROFILE_UUIDS));
 }
 
 CapsuleSettings *
@@ -250,4 +265,23 @@ capsule_settings_remove_profile_uuid (CapsuleSettings *self,
     g_settings_set_string (self->settings,
                            CAPSULE_SETTING_KEY_DEFAULT_PROFILE_UUID,
                            "");
+}
+
+CapsuleNewTabPosition
+capsule_settings_get_new_tab_position (CapsuleSettings *self)
+{
+  g_return_val_if_fail (CAPSULE_IS_SETTINGS (self), 0);
+
+  return g_settings_get_enum (self->settings, CAPSULE_SETTING_KEY_NEW_TAB_POSITION);
+}
+
+void
+capsule_settings_set_new_tab_position (CapsuleSettings       *self,
+                                       CapsuleNewTabPosition  new_tab_position)
+{
+  g_return_if_fail (CAPSULE_IS_SETTINGS (self));
+
+  g_settings_set_enum (self->settings,
+                       CAPSULE_SETTING_KEY_NEW_TAB_POSITION,
+                       new_tab_position);
 }
