@@ -23,7 +23,7 @@
 
 #include <vte/vte.h>
 
-#include "capsule-profile.h"
+#include "capsule-palette.h"
 
 G_BEGIN_DECLS
 
@@ -31,7 +31,8 @@ G_BEGIN_DECLS
 
 G_DECLARE_FINAL_TYPE (CapsuleTerminal, capsule_terminal, CAPSULE, TERMINAL, VteTerminal)
 
-CapsuleTerminal *capsule_terminal_new         (CapsuleProfile  *profile);
-CapsuleProfile  *capsule_terminal_get_profile (CapsuleTerminal *self);
+CapsulePalette *capsule_terminal_get_palette (CapsuleTerminal *self);
+void            capsule_terminal_set_palette (CapsuleTerminal *self,
+                                              CapsulePalette  *palette);
 
 G_END_DECLS

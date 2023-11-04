@@ -34,6 +34,7 @@
 #define CAPSULE_PROFILE_KEY_EXIT_ACTION         "exit-action"
 #define CAPSULE_PROFILE_KEY_FONT_NAME           "font-name"
 #define CAPSULE_PROFILE_KEY_LABEL               "label"
+#define CAPSULE_PROFILE_KEY_PALETTE             "palette"
 #define CAPSULE_PROFILE_KEY_PRESERVE_DIRECTORY  "preserve-directory"
 #define CAPSULE_PROFILE_KEY_SCROLL_ON_KEYSTROKE "scroll-on-keystroke"
 #define CAPSULE_PROFILE_KEY_SCROLL_ON_OUTPUT    "scroll-on-output"
@@ -53,6 +54,7 @@ enum {
   PROP_FONT_DESC,
   PROP_FONT_NAME,
   PROP_LABEL,
+  PROP_PALETTE,
   PROP_PRESERVE_DIRECTORY,
   PROP_SCROLL_ON_KEYSTROKE,
   PROP_SCROLL_ON_OUTPUT,
@@ -91,6 +93,8 @@ capsule_profile_changed_cb (CapsuleProfile *self,
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_DEFAULT_CONTAINER]);
   else if (g_str_equal (key, CAPSULE_PROFILE_KEY_EXIT_ACTION))
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_EXIT_ACTION]);
+  else if (g_str_equal (key, CAPSULE_PROFILE_KEY_PALETTE))
+    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_PALETTE]);
 }
 
 static void
@@ -155,6 +159,10 @@ capsule_profile_get_property (GObject    *object,
       g_value_take_string (value, capsule_profile_dup_label (self));
       break;
 
+    case PROP_PALETTE:
+      g_value_take_object (value, capsule_profile_dup_palette (self));
+      break;
+
     case PROP_PRESERVE_DIRECTORY:
       g_value_set_enum (value, capsule_profile_get_preserve_directory (self));
       break;
@@ -208,6 +216,10 @@ capsule_profile_set_property (GObject      *object,
 
     case PROP_LABEL:
       capsule_profile_set_label (self, g_value_get_string (value));
+      break;
+
+    case PROP_PALETTE:
+      capsule_profile_set_palette (self, g_value_get_object (value));
       break;
 
     case PROP_PRESERVE_DIRECTORY:
@@ -277,6 +289,13 @@ capsule_profile_class_init (CapsuleProfileClass *klass)
   properties[PROP_LABEL] =
     g_param_spec_string ("label", NULL, NULL,
                          NULL,
+                         (G_PARAM_READWRITE |
+                          G_PARAM_EXPLICIT_NOTIFY |
+                          G_PARAM_STATIC_STRINGS));
+
+  properties[PROP_PALETTE] =
+    g_param_spec_object ("palette", NULL, NULL,
+                         CAPSULE_TYPE_PALETTE,
                          (G_PARAM_READWRITE |
                           G_PARAM_EXPLICIT_NOTIFY |
                           G_PARAM_STATIC_STRINGS));
@@ -632,4 +651,31 @@ capsule_profile_duplicate (CapsuleProfile *self)
   capsule_application_add_profile (CAPSULE_APPLICATION_DEFAULT, copy);
 
   return g_steal_pointer (&copy);
+}
+
+CapsulePalette *
+capsule_profile_dup_palette (CapsuleProfile *self)
+{
+  g_autofree char *name = NULL;
+
+  g_return_val_if_fail (CAPSULE_IS_PROFILE (self), NULL);
+
+  name = g_settings_get_string (self->settings, CAPSULE_PROFILE_KEY_PALETTE);
+
+  return capsule_palette_new_from_name (name);
+}
+
+void
+capsule_profile_set_palette (CapsuleProfile *self,
+                             CapsulePalette *palette)
+{
+  const char *id = "gnome";
+
+  g_return_if_fail (CAPSULE_IS_PROFILE (self));
+  g_return_if_fail (!palette || CAPSULE_IS_PALETTE (palette));
+
+  if (palette != NULL)
+    id = capsule_palette_get_id (palette);
+
+  g_settings_set_string (self->settings, CAPSULE_PROFILE_KEY_PALETTE, id);
 }

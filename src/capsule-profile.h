@@ -24,6 +24,7 @@
 #include <pango/pango.h>
 #include <vte/vte.h>
 
+#include "capsule-palette.h"
 #include "capsule-run-context.h"
 
 G_BEGIN_DECLS
@@ -84,5 +85,8 @@ void                      capsule_profile_set_exit_action         (CapsuleProfil
 CapsulePreserveDirectory  capsule_profile_get_preserve_directory  (CapsuleProfile             *self);
 void                      capsule_profile_set_preserve_directory  (CapsuleProfile             *self,
                                                                    CapsulePreserveDirectory    preserve_directory);
+CapsulePalette           *capsule_profile_dup_palette             (CapsuleProfile             *self);
+void                      capsule_profile_set_palette             (CapsuleProfile             *self,
+                                                                   CapsulePalette             *palette);
 
 G_END_DECLS

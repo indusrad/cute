@@ -7,6 +7,7 @@ capsule_sources = [
   'capsule-find-bar.c',
   'capsule-flatpak-provider.c',
   'capsule-host-container.c',
+  'capsule-palette.c',
   'capsule-podman-provider.c',
   'capsule-preferences-list-item.c',
   'capsule-preferences-window.c',

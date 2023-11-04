@@ -21,17 +21,19 @@
 
 #include "config.h"
 
+#include <adwaita.h>
+
 #include "capsule-terminal.h"
 
 struct _CapsuleTerminal
 {
-  VteTerminal parent_instance;
-  CapsuleProfile *profile;
+  VteTerminal     parent_instance;
+  CapsulePalette *palette;
 };
 
 enum {
   PROP_0,
-  PROP_PROFILE,
+  PROP_PALETTE,
   N_PROPS
 };
 
@@ -44,7 +46,7 @@ capsule_terminal_dispose (GObject *object)
 {
   CapsuleTerminal *self = (CapsuleTerminal *)object;
 
-  g_clear_object (&self->profile);
+  g_clear_object (&self->palette);
 
   G_OBJECT_CLASS (capsule_terminal_parent_class)->dispose (object);
 }
@@ -59,8 +61,8 @@ capsule_terminal_get_property (GObject    *object,
 
   switch (prop_id)
     {
-    case PROP_PROFILE:
-      g_value_set_object (value, capsule_terminal_get_profile (self));
+    case PROP_PALETTE:
+      capsule_terminal_set_palette (self, g_value_get_object (value));
       break;
 
     default:
@@ -78,8 +80,8 @@ capsule_terminal_set_property (GObject      *object,
 
   switch (prop_id)
     {
-    case PROP_PROFILE:
-      self->profile = g_value_dup_object (value);
+    case PROP_PALETTE:
+      capsule_terminal_set_palette (self, g_value_get_object (value));
       break;
 
     default:
@@ -96,11 +98,11 @@ capsule_terminal_class_init (CapsuleTerminalClass *klass)
   object_class->get_property = capsule_terminal_get_property;
   object_class->set_property = capsule_terminal_set_property;
 
-  properties [PROP_PROFILE] =
-    g_param_spec_object ("profile", NULL, NULL,
-                         CAPSULE_TYPE_PROFILE,
+  properties [PROP_PALETTE] =
+    g_param_spec_object ("palette", NULL, NULL,
+                         CAPSULE_TYPE_PALETTE,
                          (G_PARAM_READWRITE |
-                          G_PARAM_CONSTRUCT_ONLY |
+                          G_PARAM_EXPLICIT_NOTIFY |
                           G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_properties (object_class, N_PROPS, properties);
@@ -111,25 +113,54 @@ capsule_terminal_init (CapsuleTerminal *self)
 {
 }
 
-CapsuleTerminal *
-capsule_terminal_new (CapsuleProfile *profile)
-{
-  g_return_val_if_fail (CAPSULE_IS_PROFILE (profile), NULL);
-
-  return g_object_new (CAPSULE_TYPE_TERMINAL,
-                       "profile", profile,
-                       NULL);
-}
-
-/**
- * capsule_terminal_get_profile:
- *
- * Returns: (transfer none) (not nullable): a #CapsuleProfile
- */
-CapsuleProfile *
-capsule_terminal_get_profile (CapsuleTerminal *self)
+CapsulePalette *
+capsule_terminal_get_palette (CapsuleTerminal *self)
 {
   g_return_val_if_fail (CAPSULE_IS_TERMINAL (self), NULL);
 
-  return self->profile;
+  return self->palette;
+}
+
+void
+capsule_terminal_set_palette (CapsuleTerminal *self,
+                              CapsulePalette  *palette)
+{
+  g_return_if_fail (CAPSULE_IS_TERMINAL (self));
+
+  if (g_set_object (&self->palette, palette))
+    {
+      AdwStyleManager *style_manager = adw_style_manager_get_default ();
+      g_autoptr(CapsulePalette) fallback = NULL;
+      const GdkRGBA *background;
+      const GdkRGBA *foreground;
+      const GdkRGBA *colors;
+      guint n_colors;
+
+      if (palette == NULL)
+        palette = fallback = capsule_palette_new_from_name ("gnome");
+
+      colors = capsule_palette_get_indexed_colors (palette, &n_colors);
+      background = capsule_palette_get_background (palette);
+      foreground = capsule_palette_get_foreground (palette);
+
+      g_assert (foreground != NULL);
+      g_assert (background != NULL);
+      g_assert (colors != NULL);
+      g_assert (n_colors == 16);
+
+      if (adw_style_manager_get_dark (style_manager))
+        {
+          const GdkRGBA *tmp = foreground;
+          foreground = background;
+          background = tmp;
+        }
+
+      vte_terminal_set_colors (VTE_TERMINAL (self),
+                               foreground,
+                               background,
+                               colors,
+                               n_colors);
+
+      g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_PALETTE]);
+    }
 }

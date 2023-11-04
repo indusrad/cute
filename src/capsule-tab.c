@@ -345,6 +345,17 @@ capsule_tab_bell_cb (CapsuleTab      *self,
 }
 
 static void
+capsule_tab_constructed (GObject *object)
+{
+  CapsuleTab *self = (CapsuleTab *)object;
+
+  G_OBJECT_CLASS (capsule_tab_parent_class)->constructed (object);
+
+  g_object_bind_property (self->profile, "palette", self->terminal, "palette",
+                          G_BINDING_SYNC_CREATE);
+}
+
+static void
 capsule_tab_dispose (GObject *object)
 {
   CapsuleTab *self = (CapsuleTab *)object;
@@ -432,6 +443,7 @@ capsule_tab_class_init (CapsuleTabClass *klass)
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
   GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 
+  object_class->constructed = capsule_tab_constructed;
   object_class->dispose = capsule_tab_dispose;
   object_class->get_property = capsule_tab_get_property;
   object_class->set_property = capsule_tab_set_property;

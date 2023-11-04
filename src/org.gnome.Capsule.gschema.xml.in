@@ -120,6 +120,12 @@
       <description>If the directory should preserved for new terminals</description>
     </key>
 
+    <key name="palette" type="s">
+      <default>'gnome'</default>
+      <summary>Palette</summary>
+      <description>The color palette to use for the profile, by name</description>
+    </key>
+
   </schema>
 
 </schemalist>
