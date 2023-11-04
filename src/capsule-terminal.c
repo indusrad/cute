@@ -23,12 +23,21 @@
 
 #include <adwaita.h>
 
+#include "capsule-tab.h"
 #include "capsule-terminal.h"
+#include "capsule-window.h"
+
+#define SIZE_DISMISS_TIMEOUT_MSEC 1000
 
 struct _CapsuleTerminal
 {
   VteTerminal     parent_instance;
+
   CapsulePalette *palette;
+
+  GtkRevealer    *size_revealer;
+  GtkLabel       *size_label;
+  guint           size_dismiss_source;
 };
 
 enum {
@@ -41,12 +50,140 @@ G_DEFINE_FINAL_TYPE (CapsuleTerminal, capsule_terminal, VTE_TYPE_TERMINAL)
 
 static GParamSpec *properties [N_PROPS];
 
+static gboolean
+capsule_terminal_is_active (CapsuleTerminal *self)
+{
+  CapsuleTerminal *active_terminal = NULL;
+  CapsuleWindow *window;
+  CapsuleTab *active_tab;
+
+  g_assert (CAPSULE_IS_TERMINAL (self));
+
+  if ((window = CAPSULE_WINDOW (gtk_widget_get_ancestor (GTK_WIDGET (self), CAPSULE_TYPE_WINDOW))) &&
+      (active_tab = capsule_window_get_active_tab (window)))
+    active_terminal = capsule_tab_get_terminal (active_tab);
+
+  return active_terminal == self;
+}
+
+static void
+capsule_terminal_measure (GtkWidget      *widget,
+                          GtkOrientation  orientation,
+                          int             for_size,
+                          int            *minimum,
+                          int            *natural,
+                          int            *minimum_baseline,
+                          int            *natural_baseline)
+{
+  CapsuleTerminal *self = CAPSULE_TERMINAL (widget);
+  int min_revealer;
+  int nat_revealer;
+
+  GTK_WIDGET_CLASS (capsule_terminal_parent_class)->measure (widget,
+                                                             orientation,
+                                                             for_size,
+                                                             minimum,
+                                                             natural,
+                                                             minimum_baseline,
+                                                             natural_baseline);
+
+  gtk_widget_measure (GTK_WIDGET (self->size_revealer),
+                      orientation, for_size,
+                      &min_revealer, &nat_revealer, NULL, NULL);
+
+  *minimum = MAX (*minimum, min_revealer);
+  *natural = MAX (*natural, nat_revealer);
+}
+
+static gboolean
+dismiss_size_label_cb (gpointer user_data)
+{
+  CapsuleTerminal *self = CAPSULE_TERMINAL (user_data);
+
+  gtk_revealer_set_reveal_child (self->size_revealer, FALSE);
+  self->size_dismiss_source = 0;
+
+  return G_SOURCE_REMOVE;
+}
+
+static void
+capsule_terminal_size_allocate (GtkWidget *widget,
+                                int        width,
+                                int        height,
+                                int        baseline)
+{
+  CapsuleTerminal *self = CAPSULE_TERMINAL (widget);
+  GtkRequisition min;
+  GtkAllocation revealer_alloc;
+  GtkRoot *root;
+  int prev_column_count, column_count;
+  int prev_row_count, row_count;
+
+  g_assert (CAPSULE_IS_TERMINAL (self));
+
+  prev_column_count = vte_terminal_get_column_count (VTE_TERMINAL (self));
+  prev_row_count = vte_terminal_get_row_count (VTE_TERMINAL (self));
+
+  GTK_WIDGET_CLASS (capsule_terminal_parent_class)->size_allocate (widget, width, height, baseline);
+
+  column_count = vte_terminal_get_column_count (VTE_TERMINAL (self));
+  row_count = vte_terminal_get_row_count (VTE_TERMINAL (self));
+
+  root = gtk_widget_get_root (widget);
+
+  if (capsule_terminal_is_active (self) &&
+      GTK_IS_WINDOW (root) &&
+      !gtk_window_is_maximized (GTK_WINDOW (root)) &&
+      !gtk_window_is_fullscreen (GTK_WINDOW (root)) &&
+      (prev_column_count != column_count || prev_row_count != row_count))
+    {
+      char format[32];
+
+      g_snprintf (format, sizeof format, "%ld × %ld",
+                  vte_terminal_get_column_count (VTE_TERMINAL (self)),
+                  vte_terminal_get_row_count (VTE_TERMINAL (self)));
+      gtk_label_set_label (self->size_label, format);
+
+      gtk_revealer_set_reveal_child (self->size_revealer, TRUE);
+
+      g_clear_handle_id (&self->size_dismiss_source, g_source_remove);
+      self->size_dismiss_source = g_timeout_add (SIZE_DISMISS_TIMEOUT_MSEC,
+                                                 dismiss_size_label_cb,
+                                                 self);
+    }
+  else if (gtk_window_is_maximized (GTK_WINDOW (root)) ||
+           gtk_window_is_fullscreen (GTK_WINDOW (root)))
+    {
+      g_clear_handle_id (&self->size_dismiss_source, g_source_remove);
+      gtk_revealer_set_reveal_child (self->size_revealer, FALSE);
+    }
+
+  gtk_widget_get_preferred_size (GTK_WIDGET (self->size_revealer), &min, NULL);
+  revealer_alloc.x = width - min.width;
+  revealer_alloc.y = height - min.height;
+  revealer_alloc.width = min.width;
+  revealer_alloc.height = min.height;
+  gtk_widget_size_allocate (GTK_WIDGET (self->size_revealer), &revealer_alloc, -1);
+}
+
+static void
+capsule_terminal_snapshot (GtkWidget   *widget,
+                           GtkSnapshot *snapshot)
+{
+  CapsuleTerminal *self = CAPSULE_TERMINAL (widget);
+
+  GTK_WIDGET_CLASS (capsule_terminal_parent_class)->snapshot (widget, snapshot);
+
+  gtk_widget_snapshot_child (widget, GTK_WIDGET (self->size_revealer), snapshot);
+}
+
 static void
 capsule_terminal_dispose (GObject *object)
 {
   CapsuleTerminal *self = (CapsuleTerminal *)object;
 
   g_clear_object (&self->palette);
+  g_clear_handle_id (&self->size_dismiss_source, g_source_remove);
 
   G_OBJECT_CLASS (capsule_terminal_parent_class)->dispose (object);
 }
@@ -93,10 +230,15 @@ static void
 capsule_terminal_class_init (CapsuleTerminalClass *klass)
 {
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
+  GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 
   object_class->dispose = capsule_terminal_dispose;
   object_class->get_property = capsule_terminal_get_property;
   object_class->set_property = capsule_terminal_set_property;
+
+  widget_class->measure = capsule_terminal_measure;
+  widget_class->size_allocate = capsule_terminal_size_allocate;
+  widget_class->snapshot = capsule_terminal_snapshot;
 
   properties [PROP_PALETTE] =
     g_param_spec_object ("palette", NULL, NULL,
@@ -106,11 +248,17 @@ capsule_terminal_class_init (CapsuleTerminalClass *klass)
                           G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_properties (object_class, N_PROPS, properties);
+
+  gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/Capsule/capsule-terminal.ui");
+
+  gtk_widget_class_bind_template_child (widget_class, CapsuleTerminal, size_label);
+  gtk_widget_class_bind_template_child (widget_class, CapsuleTerminal, size_revealer);
 }
 
 static void
 capsule_terminal_init (CapsuleTerminal *self)
 {
+  gtk_widget_init_template (GTK_WIDGET (self));
 }
 
 CapsulePalette *

@@ -7,6 +7,7 @@
     <file preprocess="xml-stripblanks">capsule-profile-editor.ui</file>
     <file preprocess="xml-stripblanks">capsule-profile-row.ui</file>
     <file preprocess="xml-stripblanks">capsule-tab.ui</file>
+    <file preprocess="xml-stripblanks">capsule-terminal.ui</file>
     <file preprocess="xml-stripblanks">capsule-window.ui</file>
     <file>style.css</file>
   </gresource>
