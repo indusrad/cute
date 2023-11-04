@@ -21,6 +21,9 @@
   <requires lib="gtk" version="4.0"/>
   <requires lib="Adw" version="1.0"/>
   <template class="CapsuleWindow" parent="AdwApplicationWindow">
+    <style>
+      <class name="capsule-window"/>
+    </style>
     <child>
       <object class="GtkShortcutController">
         <property name="propagation-phase">capture</property>
@@ -70,7 +73,7 @@
         <property name="child">
           <object class="AdwToolbarView">
             <child type="top">
-              <object class="GtkBox">
+              <object class="GtkBox" id="visual_bell">
                 <property name="orientation">vertical</property>
                 <child>
                   <object class="AdwHeaderBar" id="header_bar">

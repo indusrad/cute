@@ -26,10 +26,16 @@
 struct _CapsuleWindow
 {
   AdwApplicationWindow  parent_instance;
+
+  GSignalGroup         *active_tab_signals;
+
   AdwHeaderBar         *header_bar;
   AdwTabBar            *tab_bar;
   AdwTabOverview       *tab_overview;
   AdwTabView           *tab_view;
+  GtkBox               *visual_bell;
+
+  guint                 visual_bell_source;
 };
 
 G_DEFINE_FINAL_TYPE (CapsuleWindow, capsule_window, ADW_TYPE_APPLICATION_WINDOW)
@@ -95,12 +101,18 @@ capsule_window_notify_selected_page_cb (CapsuleWindow *self,
                                         GParamSpec    *pspec,
                                         AdwTabView    *tab_view)
 {
-  gboolean has_page;
+  AdwTabPage *page;
+  gboolean has_page = FALSE;
 
   g_assert (CAPSULE_IS_WINDOW (self));
   g_assert (ADW_IS_TAB_VIEW (tab_view));
 
-  has_page = adw_tab_view_get_selected_page (self->tab_view) != NULL;
+  if ((page = adw_tab_view_get_selected_page (self->tab_view)))
+    {
+      CapsuleTab *tab = CAPSULE_TAB (adw_tab_page_get_child (page));
+      g_signal_group_set_target (self->active_tab_signals, tab);
+      has_page = TRUE;
+    }
 
   gtk_widget_action_set_enabled (GTK_WIDGET (self), "win.zoom-in", has_page);
   gtk_widget_action_set_enabled (GTK_WIDGET (self), "win.zoom-out", has_page);
@@ -272,13 +284,35 @@ capsule_window_zoom_one_action (GtkWidget  *widget,
 }
 
 static void
+capsule_window_active_tab_bell_cb (CapsuleWindow *self,
+                                   CapsuleTab    *tab)
+{
+  g_assert (CAPSULE_IS_WINDOW (self));
+  g_assert (CAPSULE_IS_TAB (tab));
+
+  capsule_window_bell (self);
+}
+
+static void
 capsule_window_dispose (GObject *object)
 {
   CapsuleWindow *self = (CapsuleWindow *)object;
 
   gtk_widget_dispose_template (GTK_WIDGET (self), CAPSULE_TYPE_WINDOW);
 
+  g_signal_group_set_target (self->active_tab_signals, NULL);
+
   G_OBJECT_CLASS (capsule_window_parent_class)->dispose (object);
+}
+
+static void
+capsule_window_finalize (GObject *object)
+{
+  CapsuleWindow *self = (CapsuleWindow *)object;
+
+  g_clear_object (&self->active_tab_signals);
+
+  G_OBJECT_CLASS (capsule_window_parent_class)->finalize (object);
 }
 
 static void
@@ -326,6 +360,7 @@ capsule_window_class_init (CapsuleWindowClass *klass)
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
   object_class->dispose = capsule_window_dispose;
+  object_class->finalize = capsule_window_finalize;
   object_class->get_property = capsule_window_get_property;
   object_class->set_property = capsule_window_set_property;
 
@@ -344,6 +379,7 @@ capsule_window_class_init (CapsuleWindowClass *klass)
   gtk_widget_class_bind_template_child (widget_class, CapsuleWindow, tab_bar);
   gtk_widget_class_bind_template_child (widget_class, CapsuleWindow, tab_overview);
   gtk_widget_class_bind_template_child (widget_class, CapsuleWindow, tab_view);
+  gtk_widget_class_bind_template_child (widget_class, CapsuleWindow, visual_bell);
 
   gtk_widget_class_bind_template_callback (widget_class, capsule_window_page_attached_cb);
   gtk_widget_class_bind_template_callback (widget_class, capsule_window_page_detached_cb);
@@ -362,6 +398,14 @@ capsule_window_class_init (CapsuleWindowClass *klass)
 static void
 capsule_window_init (CapsuleWindow *self)
 {
+  self->active_tab_signals = g_signal_group_new (CAPSULE_TYPE_TAB);
+
+  g_signal_group_connect_object (self->active_tab_signals,
+                                 "bell",
+                                 G_CALLBACK (capsule_window_active_tab_bell_cb),
+                                 self,
+                                 G_CONNECT_SWAPPED);
+
   gtk_widget_init_template (GTK_WIDGET (self));
 
 #if DEVELOPMENT_BUILD
@@ -448,4 +492,34 @@ capsule_window_set_active_tab (CapsuleWindow *self,
     return;
 
   adw_tab_view_set_selected_page (self->tab_view, page);
+}
+
+static gboolean
+capsule_window_remove_visual_bell (gpointer data)
+{
+  CapsuleWindow *self = data;
+
+  g_assert (CAPSULE_IS_WINDOW (self));
+
+  self->visual_bell_source = 0;
+
+  gtk_widget_remove_css_class (GTK_WIDGET (self->visual_bell), "visual-bell");
+
+  return G_SOURCE_REMOVE;
+}
+
+void
+capsule_window_bell (CapsuleWindow *self)
+{
+  g_return_if_fail (CAPSULE_IS_WINDOW (self));
+
+  gtk_widget_add_css_class (GTK_WIDGET (self->visual_bell), "visual-bell");
+
+  if (self->visual_bell_source == 0)
+    self->visual_bell_source = g_timeout_add_full (G_PRIORITY_HIGH_IDLE,
+                                                   /* Sync duration with style.css */
+                                                   500,
+                                                   capsule_window_remove_visual_bell,
+                                                   g_object_ref (self),
+                                                   g_object_unref);
 }

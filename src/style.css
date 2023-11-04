@@ -1,3 +1,17 @@
-vte-terminal {
+vte-terminal
+{
   padding: 4px;
+}
+
+@keyframes visual-bell
+{
+  50% {
+    color: #000;
+    background-color: shade(@orange_2, 1.1);
+  }
+}
+
+window.capsule-window box.visual-bell
+{
+  animation: visual-bell 0.5s ease-out;
 }

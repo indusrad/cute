@@ -67,11 +67,17 @@ enum {
   N_PROPS
 };
 
+enum {
+  BELL,
+  N_SIGNALS
+};
+
 static void capsule_tab_respawn (CapsuleTab *self);
 
 G_DEFINE_FINAL_TYPE (CapsuleTab, capsule_tab, GTK_TYPE_WIDGET)
 
 static GParamSpec *properties[N_PROPS];
+static guint signals[N_SIGNALS];
 static double zoom_font_scales[] = {
   0,
   1.0 / (1.2 * 1.2 * 1.2 * 1.2 * 1.2 * 1.2 * 1.2),
@@ -329,6 +335,16 @@ capsule_tab_decrease_font_size_cb (CapsuleTab      *self,
 }
 
 static void
+capsule_tab_bell_cb (CapsuleTab      *self,
+                     CapsuleTerminal *terminal)
+{
+  g_assert (CAPSULE_IS_TAB (self));
+  g_assert (CAPSULE_IS_TERMINAL (terminal));
+
+  g_signal_emit (self, signals[BELL], 0);
+}
+
+static void
 capsule_tab_dispose (GObject *object)
 {
   CapsuleTab *self = (CapsuleTab *)object;
@@ -458,6 +474,15 @@ capsule_tab_class_init (CapsuleTabClass *klass)
 
   g_object_class_install_properties (object_class, N_PROPS, properties);
 
+  signals[BELL] =
+    g_signal_new ("bell",
+                  G_TYPE_FROM_CLASS (klass),
+                  G_SIGNAL_RUN_LAST,
+                  0,
+                  NULL, NULL,
+                  NULL,
+                  G_TYPE_NONE, 0);
+
   gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/Capsule/capsule-tab.ui");
   gtk_widget_class_set_layout_manager_type (widget_class, GTK_TYPE_BIN_LAYOUT);
 
@@ -469,6 +494,7 @@ capsule_tab_class_init (CapsuleTabClass *klass)
   gtk_widget_class_bind_template_callback (widget_class, capsule_tab_notify_window_subtitle_cb);
   gtk_widget_class_bind_template_callback (widget_class, capsule_tab_increase_font_size_cb);
   gtk_widget_class_bind_template_callback (widget_class, capsule_tab_decrease_font_size_cb);
+  gtk_widget_class_bind_template_callback (widget_class, capsule_tab_bell_cb);
 
   gtk_widget_class_install_action (widget_class, "tab.respawn", NULL, capsule_tab_respawn_action);
 
