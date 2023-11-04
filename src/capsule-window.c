@@ -111,6 +111,7 @@ capsule_window_notify_selected_page_cb (CapsuleWindow *self,
     {
       CapsuleTab *tab = CAPSULE_TAB (adw_tab_page_get_child (page));
       g_signal_group_set_target (self->active_tab_signals, tab);
+      gtk_widget_grab_focus (GTK_WIDGET (tab));
       has_page = TRUE;
     }
 
@@ -455,6 +456,8 @@ capsule_window_append_tab (CapsuleWindow *self,
   g_return_if_fail (CAPSULE_IS_TAB (tab));
 
   adw_tab_view_append (self->tab_view, GTK_WIDGET (tab));
+
+  gtk_widget_grab_focus (GTK_WIDGET (tab));
 }
 
 CapsuleTab *
