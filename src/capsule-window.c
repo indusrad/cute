@@ -290,7 +290,7 @@ capsule_window_active_tab_bell_cb (CapsuleWindow *self,
   g_assert (CAPSULE_IS_WINDOW (self));
   g_assert (CAPSULE_IS_TAB (tab));
 
-  capsule_window_bell (self);
+  capsule_window_visual_bell (self);
 }
 
 static void
@@ -509,7 +509,7 @@ capsule_window_remove_visual_bell (gpointer data)
 }
 
 void
-capsule_window_bell (CapsuleWindow *self)
+capsule_window_visual_bell (CapsuleWindow *self)
 {
   g_return_if_fail (CAPSULE_IS_WINDOW (self));
 
