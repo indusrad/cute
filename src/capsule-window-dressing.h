@@ -35,6 +35,8 @@ CapsuleWindow         *capsule_window_dressing_dup_window  (CapsuleWindowDressin
 CapsulePalette        *capsule_window_dressing_get_palette (CapsuleWindowDressing *self);
 void                   capsule_window_dressing_set_palette (CapsuleWindowDressing *self,
                                                             CapsulePalette        *palette);
+double                 capsule_window_dressing_get_opacity (CapsuleWindowDressing *self);
+void                   capsule_window_dressing_set_opacity (CapsuleWindowDressing *self,
+                                                            double                 opacity);
 
 G_END_DECLS
-

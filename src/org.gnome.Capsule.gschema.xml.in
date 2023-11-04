@@ -126,6 +126,13 @@
       <description>The color palette to use for the profile, by name</description>
     </key>
 
+    <key name="opacity" type="d">
+      <range min="0" max="1"/>
+      <default>1</default>
+      <summary>Opacity</summary>
+      <description>The opacity of the palette background</description>
+    </key>
+
   </schema>
 
 </schemalist>

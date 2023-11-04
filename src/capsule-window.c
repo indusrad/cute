@@ -122,6 +122,9 @@ capsule_window_notify_selected_page_cb (CapsuleWindow *self,
       g_object_bind_property (profile, "palette",
                               self->dressing, "palette",
                               G_BINDING_SYNC_CREATE);
+      g_object_bind_property (profile, "opacity",
+                              self->dressing, "opacity",
+                              G_BINDING_SYNC_CREATE);
 
       gtk_widget_grab_focus (GTK_WIDGET (tab));
     }

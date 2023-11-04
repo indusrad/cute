@@ -38,6 +38,7 @@ struct _CapsuleWindowDressing
 
 enum {
   PROP_0,
+  PROP_OPACITY,
   PROP_PALETTE,
   PROP_WINDOW,
   N_PROPS
@@ -223,6 +224,10 @@ capsule_window_dressing_get_property (GObject    *object,
 
   switch (prop_id)
     {
+    case PROP_OPACITY:
+      g_value_set_double (value, capsule_window_dressing_get_opacity (self));
+      break;
+
     case PROP_PALETTE:
       g_value_set_object (value, capsule_window_dressing_get_palette (self));
       break;
@@ -246,12 +251,16 @@ capsule_window_dressing_set_property (GObject      *object,
 
   switch (prop_id)
     {
+    case PROP_OPACITY:
+      capsule_window_dressing_set_opacity (self, g_value_get_double (value));
+      break;
+
     case PROP_PALETTE:
-      capsule_window_dressing_set_palette (self, CAPSULE_PALETTE (g_value_get_object (value)));
+      capsule_window_dressing_set_palette (self, g_value_get_object (value));
       break;
 
     case PROP_WINDOW:
-      capsule_window_dressing_set_window (self, CAPSULE_WINDOW (g_value_get_object (value)));
+      capsule_window_dressing_set_window (self, g_value_get_object (value));
       break;
 
     default:
@@ -270,14 +279,21 @@ capsule_window_dressing_class_init (CapsuleWindowDressingClass *klass)
   object_class->get_property = capsule_window_dressing_get_property;
   object_class->set_property = capsule_window_dressing_set_property;
 
-  properties [PROP_PALETTE] =
+  properties[PROP_OPACITY] =
+    g_param_spec_double ("opacity", NULL, NULL,
+                         0, 1, 1,
+                         (G_PARAM_READWRITE |
+                          G_PARAM_EXPLICIT_NOTIFY |
+                          G_PARAM_STATIC_STRINGS));
+
+  properties[PROP_PALETTE] =
     g_param_spec_object ("palette", NULL, NULL,
                          CAPSULE_TYPE_PALETTE,
                          (G_PARAM_READWRITE |
                           G_PARAM_EXPLICIT_NOTIFY |
                           G_PARAM_STATIC_STRINGS));
 
-  properties [PROP_WINDOW] =
+  properties[PROP_WINDOW] =
     g_param_spec_object ("window", NULL, NULL,
                          CAPSULE_TYPE_WINDOW,
                          (G_PARAM_READWRITE |
@@ -337,3 +353,24 @@ capsule_window_dressing_set_palette (CapsuleWindowDressing *self,
     }
 }
 
+double
+capsule_window_dressing_get_opacity (CapsuleWindowDressing *self)
+{
+  g_return_val_if_fail (CAPSULE_IS_WINDOW_DRESSING (self), 1.);
+
+  return self->opacity;
+}
+
+void
+capsule_window_dressing_set_opacity (CapsuleWindowDressing *self,
+                                     double                 opacity)
+{
+  g_return_if_fail (CAPSULE_IS_WINDOW_DRESSING (self));
+
+  if (opacity != self->opacity)
+    {
+      self->opacity = opacity;
+      capsule_window_dressing_queue_update (self);
+      g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_OPACITY]);
+    }
+}

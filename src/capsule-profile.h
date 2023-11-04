@@ -88,5 +88,8 @@ void                      capsule_profile_set_preserve_directory  (CapsuleProfil
 CapsulePalette           *capsule_profile_dup_palette             (CapsuleProfile             *self);
 void                      capsule_profile_set_palette             (CapsuleProfile             *self,
                                                                    CapsulePalette             *palette);
+double                    capsule_profile_get_opacity             (CapsuleProfile             *self);
+void                      capsule_profile_set_opacity             (CapsuleProfile             *self,
+                                                                   double                      opacity);
 
 G_END_DECLS

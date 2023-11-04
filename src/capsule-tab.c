@@ -345,6 +345,21 @@ capsule_tab_bell_cb (CapsuleTab      *self,
 }
 
 static void
+capsule_tab_profile_notify_opacity_cb (CapsuleTab     *self,
+                                       GParamSpec     *pspec,
+                                       CapsuleProfile *profile)
+{
+  gboolean clear_background;
+
+  g_assert (CAPSULE_IS_TAB (self));
+  g_assert (CAPSULE_IS_PROFILE (profile));
+
+  clear_background = capsule_profile_get_opacity (profile) >= 1.0;
+
+  vte_terminal_set_clear_background (VTE_TERMINAL (self->terminal), clear_background);
+}
+
+static void
 capsule_tab_constructed (GObject *object)
 {
   CapsuleTab *self = (CapsuleTab *)object;
@@ -353,6 +368,13 @@ capsule_tab_constructed (GObject *object)
 
   g_object_bind_property (self->profile, "palette", self->terminal, "palette",
                           G_BINDING_SYNC_CREATE);
+
+  g_signal_connect_object (self->profile,
+                           "notify::opacity",
+                           G_CALLBACK (capsule_tab_profile_notify_opacity_cb),
+                           self,
+                           G_CONNECT_SWAPPED);
+  capsule_tab_profile_notify_opacity_cb (self, NULL, self->profile);
 }
 
 static void
