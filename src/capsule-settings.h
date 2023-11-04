@@ -25,6 +25,10 @@
 
 G_BEGIN_DECLS
 
+#define CAPSULE_SETTING_KEY_DEFAULT_PROFILE_UUID "default-profile-uuid"
+#define CAPSULE_SETTING_KEY_NEW_TAB_POSITION     "new-tab-position"
+#define CAPSULE_SETTING_KEY_PROFILE_UUIDS        "profile-uuids"
+
 typedef enum _CapsuleNewTabPosition
 {
   CAPSULE_NEW_TAB_POSITION_LAST = 0,
@@ -36,6 +40,7 @@ typedef enum _CapsuleNewTabPosition
 G_DECLARE_FINAL_TYPE (CapsuleSettings, capsule_settings, CAPSULE, SETTINGS, GObject)
 
 CapsuleSettings        *capsule_settings_new                      (void);
+GSettings              *capsule_settings_get_settings             (CapsuleSettings       *self);
 char                   *capsule_settings_dup_default_profile_uuid (CapsuleSettings       *self);
 void                    capsule_settings_set_default_profile_uuid (CapsuleSettings       *self,
                                                                    const char            *uuid);

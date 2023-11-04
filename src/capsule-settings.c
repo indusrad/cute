@@ -26,10 +26,6 @@
 #include "capsule-enums.h"
 #include "capsule-settings.h"
 
-#define CAPSULE_SETTING_KEY_DEFAULT_PROFILE_UUID "default-profile-uuid"
-#define CAPSULE_SETTING_KEY_NEW_TAB_POSITION     "new-tab-position"
-#define CAPSULE_SETTING_KEY_PROFILE_UUIDS        "profile-uuids"
-
 struct _CapsuleSettings
 {
   GObject    parent_instance;
@@ -284,4 +280,12 @@ capsule_settings_set_new_tab_position (CapsuleSettings       *self,
   g_settings_set_enum (self->settings,
                        CAPSULE_SETTING_KEY_NEW_TAB_POSITION,
                        new_tab_position);
+}
+
+GSettings *
+capsule_settings_get_settings (CapsuleSettings *self)
+{
+  g_return_val_if_fail (CAPSULE_IS_SETTINGS (self), NULL);
+
+  return self->settings;
 }
