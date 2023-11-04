@@ -134,8 +134,14 @@ capsule_tab_wait_check_cb (GObject      *object,
       break;
 
     case CAPSULE_EXIT_ACTION_NONE:
-    default:
+      adw_banner_set_title (self->banner, _("Process Exited"));
+      adw_banner_set_revealed (self->banner, TRUE);
+      adw_banner_set_button_label (self->banner, _("_Restart"));
+      gtk_actionable_set_action_name (GTK_ACTIONABLE (self->banner), "tab.respawn");
       break;
+
+    default:
+      g_assert_not_reached ();
     }
 }
 
@@ -252,6 +258,20 @@ capsule_tab_respawn (CapsuleTab *self)
                                  NULL,
                                  capsule_tab_spawn_cb,
                                  g_object_ref (self));
+}
+
+static void
+capsule_tab_respawn_action (GtkWidget  *widget,
+                            const char *action_name,
+                            GVariant   *params)
+{
+  CapsuleTab *self = (CapsuleTab *)widget;
+
+  g_assert (CAPSULE_IS_TAB (self));
+
+  if (self->state == CAPSULE_TAB_STATE_FAILED ||
+      self->state == CAPSULE_TAB_STATE_EXITED)
+    capsule_tab_respawn (self);
 }
 
 static void
@@ -449,6 +469,8 @@ capsule_tab_class_init (CapsuleTabClass *klass)
   gtk_widget_class_bind_template_callback (widget_class, capsule_tab_notify_window_subtitle_cb);
   gtk_widget_class_bind_template_callback (widget_class, capsule_tab_increase_font_size_cb);
   gtk_widget_class_bind_template_callback (widget_class, capsule_tab_decrease_font_size_cb);
+
+  gtk_widget_class_install_action (widget_class, "tab.respawn", NULL, capsule_tab_respawn_action);
 
   g_type_ensure (CAPSULE_TYPE_TERMINAL);
 }
