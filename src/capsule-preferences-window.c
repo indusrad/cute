@@ -69,6 +69,13 @@ capsule_preferences_window_profile_row_activated_cb (CapsulePreferencesWindow *s
   capsule_preferences_window_edit_profile (self, profile);
 }
 
+static GtkWidget *
+capsule_preferences_window_create_profile_row_cb (gpointer item,
+                                                  gpointer user_data)
+{
+  return capsule_profile_row_new (CAPSULE_PROFILE (item));
+}
+
 static gboolean
 string_to_index (GValue   *value,
                  GVariant *variant,
@@ -114,6 +121,7 @@ capsule_preferences_window_constructed (GObject *object)
   CapsuleApplication *app = CAPSULE_APPLICATION_DEFAULT;
   CapsuleSettings *settings = capsule_application_get_settings (app);
   GSettings *gsettings = capsule_settings_get_settings (settings);
+  g_autoptr(GListModel) profiles = NULL;
 
   G_OBJECT_CLASS (capsule_preferences_window_parent_class)->constructed (object);
 
@@ -126,6 +134,13 @@ capsule_preferences_window_constructed (GObject *object)
                                 index_to_string,
                                 g_object_ref (self->tab_positions),
                                 g_object_unref);
+
+  profiles = capsule_application_list_profiles (app);
+
+  gtk_list_box_bind_model (self->profiles_list_box,
+                           profiles,
+                           capsule_preferences_window_create_profile_row_cb,
+                           NULL, NULL);
 }
 
 static void

@@ -49,6 +49,12 @@ capsule_profile_row_duplicate (GtkWidget  *widget,
                                const char *action_name,
                                GVariant   *param)
 {
+  CapsuleProfileRow *self = (CapsuleProfileRow *)widget;
+  g_autoptr(CapsuleProfile) profile = NULL;
+
+  g_assert (CAPSULE_IS_PROFILE_ROW (self));
+
+  profile = capsule_profile_duplicate (self->profile);
 }
 
 static void
@@ -64,6 +70,9 @@ capsule_profile_row_remove (GtkWidget  *widget,
                             const char *action_name,
                             GVariant   *param)
 {
+  CapsuleProfileRow *self = CAPSULE_PROFILE_ROW (widget);
+
+  capsule_application_remove_profile (CAPSULE_APPLICATION_DEFAULT, self->profile);
 }
 
 static void
@@ -71,12 +80,48 @@ capsule_profile_row_make_default (GtkWidget  *widget,
                                   const char *action_name,
                                   GVariant   *param)
 {
+  CapsuleProfileRow *self = CAPSULE_PROFILE_ROW (widget);
+
+  capsule_application_set_default_profile (CAPSULE_APPLICATION_DEFAULT, self->profile);
+}
+
+static void
+capsule_profile_row_default_profile_changed_cb (CapsuleProfileRow *self,
+                                                GParamSpec        *pspec,
+                                                CapsuleSettings   *settings)
+{
+  const char *default_uuid;
+  gboolean is_default;
+
+  g_assert (CAPSULE_IS_PROFILE_ROW (self));
+  g_assert (CAPSULE_IS_SETTINGS (settings));
+
+  default_uuid = capsule_settings_dup_default_profile_uuid (settings);
+
+  is_default = g_strcmp0 (default_uuid, capsule_profile_get_uuid (self->profile)) == 0;
+
+  gtk_widget_set_visible (GTK_WIDGET (self->checkmark), is_default);
 }
 
 static void
 capsule_profile_row_constructed (GObject *object)
 {
+  CapsuleProfileRow *self = (CapsuleProfileRow *)object;
+  CapsuleApplication *app = CAPSULE_APPLICATION_DEFAULT;
+  CapsuleSettings *settings = capsule_application_get_settings (app);
+
   G_OBJECT_CLASS (capsule_profile_row_parent_class)->constructed (object);
+
+  g_signal_connect_object (settings,
+                           "notify::default-profile-uuid",
+                           G_CALLBACK (capsule_profile_row_default_profile_changed_cb),
+                           self,
+                           G_CONNECT_SWAPPED);
+
+  capsule_profile_row_default_profile_changed_cb (self, NULL, settings);
+
+  g_object_bind_property (self->profile, "label", self, "title",
+                          G_BINDING_SYNC_CREATE);
 }
 
 static void
