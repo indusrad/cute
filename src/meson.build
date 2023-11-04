@@ -22,7 +22,7 @@ capsule_sources = [
   'capsule-unix-fd-map.c',
   'capsule-user.c',
   'capsule-util.c',
-  'capsule-window-style.c',
+  'capsule-window-dressing.c',
   'capsule-window.c',
   'eggshell.c',
 ]

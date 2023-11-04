@@ -23,20 +23,22 @@
 #include "capsule-application.h"
 #include "capsule-settings.h"
 #include "capsule-window.h"
+#include "capsule-window-dressing.h"
 
 struct _CapsuleWindow
 {
-  AdwApplicationWindow  parent_instance;
+  AdwApplicationWindow   parent_instance;
 
-  GSignalGroup         *active_tab_signals;
+  AdwHeaderBar          *header_bar;
+  AdwTabBar             *tab_bar;
+  AdwTabOverview        *tab_overview;
+  AdwTabView            *tab_view;
 
-  AdwHeaderBar         *header_bar;
-  AdwTabBar            *tab_bar;
-  AdwTabOverview       *tab_overview;
-  AdwTabView           *tab_view;
-  GtkBox               *visual_bell;
+  GSignalGroup          *active_tab_signals;
+  CapsuleWindowDressing *dressing;
+  GtkBox                *visual_bell;
 
-  guint                 visual_bell_source;
+  guint                  visual_bell_source;
 };
 
 G_DEFINE_FINAL_TYPE (CapsuleWindow, capsule_window, ADW_TYPE_APPLICATION_WINDOW)
@@ -297,6 +299,16 @@ capsule_window_active_tab_bell_cb (CapsuleWindow *self,
 }
 
 static void
+capsule_window_constructed (GObject *object)
+{
+  CapsuleWindow *self = (CapsuleWindow *)object;
+
+  G_OBJECT_CLASS (capsule_window_parent_class)->constructed (object);
+
+  self->dressing = capsule_window_dressing_new (self);
+}
+
+static void
 capsule_window_dispose (GObject *object)
 {
   CapsuleWindow *self = (CapsuleWindow *)object;
@@ -362,6 +374,7 @@ capsule_window_class_init (CapsuleWindowClass *klass)
   GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
+  object_class->constructed = capsule_window_constructed;
   object_class->dispose = capsule_window_dispose;
   object_class->finalize = capsule_window_finalize;
   object_class->get_property = capsule_window_get_property;
