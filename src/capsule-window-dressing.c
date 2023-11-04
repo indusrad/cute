@@ -118,11 +118,11 @@ capsule_window_dressing_update (CapsuleWindowDressing *self)
 
       if (rgba_is_dark (bg_rgba))
         g_string_append_printf (string,
-                                "window.%s toolbarview > revealer > windowhandle { color: %s; background: shade(%s,1.25); }\n",
+                                "window.%s toolbarview > revealer > windowhandle { color: %s; background: alpha(shade(%s,1.25),.5); }\n",
                                 self->css_class, fg, bg);
       else
         g_string_append_printf (string,
-                                "window.%s toolbarview > revealer > windowhandle { color: %s; background: shade(%s, .95); }\n",
+                                "window.%s toolbarview > revealer > windowhandle { color: %s; background: alpha(shade(%s, .95),.5); }\n",
                                 self->css_class, fg, bg);
     }
 
