@@ -604,6 +604,7 @@ capsule_profile_apply (CapsuleProfile    *self,
 
   capsule_run_context_set_pty (run_context, pty);
   capsule_run_context_setenv (run_context, "CAPSULE_PROFILE", self->uuid);
+  capsule_run_context_setenv (run_context, "CAPSULE_VERSION", PACKAGE_VERSION);
 
   if (default_shell == NULL)
     default_shell = "/bin/sh";
