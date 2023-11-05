@@ -603,6 +603,7 @@ capsule_profile_apply (CapsuleProfile    *self,
   g_assert (VTE_IS_PTY (pty));
 
   capsule_run_context_set_pty (run_context, pty);
+  capsule_run_context_setenv (run_context, "CAPSULE_PROFILE", self->uuid);
 
   if (default_shell == NULL)
     default_shell = "/bin/sh";
