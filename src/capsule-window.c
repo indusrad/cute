@@ -157,6 +157,26 @@ capsule_window_apply_current_settings (CapsuleWindow *self,
     }
 }
 
+static CapsuleProfile *
+capsule_window_dup_profile_for_param (CapsuleWindow *self,
+                                      const char    *profile_uuid)
+{
+  g_autoptr(CapsuleProfile) profile = NULL;
+  CapsuleApplication *app;
+
+  g_assert (CAPSULE_IS_WINDOW (self));
+  g_assert (profile_uuid != NULL);
+
+  app = CAPSULE_APPLICATION_DEFAULT;
+
+  if (profile_uuid[0] == 0 || g_str_equal (profile_uuid, "default"))
+    profile = capsule_application_dup_default_profile (app);
+  else
+    profile = capsule_application_dup_profile (app, profile_uuid);
+
+  return g_steal_pointer (&profile);
+}
+
 static void
 capsule_window_new_tab_action (GtkWidget  *widget,
                                const char *action_name,
@@ -164,21 +184,15 @@ capsule_window_new_tab_action (GtkWidget  *widget,
 {
   CapsuleWindow *self = (CapsuleWindow *)widget;
   g_autoptr(CapsuleProfile) profile = NULL;
-  CapsuleApplication *app;
-  CapsuleTab *tab;
   const char *profile_uuid;
+  CapsuleTab *tab;
 
   g_assert (CAPSULE_IS_WINDOW (self));
   g_assert (param != NULL);
   g_assert (g_variant_is_of_type (param, G_VARIANT_TYPE_STRING));
 
-  app = CAPSULE_APPLICATION_DEFAULT;
   profile_uuid = g_variant_get_string (param, NULL);
-
-  if (profile_uuid[0] == 0 || g_str_equal (profile_uuid, "default"))
-    profile = capsule_application_dup_default_profile (app);
-  else
-    profile = capsule_application_dup_profile (app, profile_uuid);
+  profile = capsule_window_dup_profile_for_param (self, profile_uuid);
 
   tab = capsule_tab_new (profile);
   capsule_window_apply_current_settings (self, tab);
@@ -194,22 +208,16 @@ capsule_window_new_window_action (GtkWidget  *widget,
 {
   CapsuleWindow *self = (CapsuleWindow *)widget;
   g_autoptr(CapsuleProfile) profile = NULL;
-  CapsuleApplication *app;
   CapsuleWindow *window;
-  CapsuleTab *tab;
   const char *profile_uuid;
+  CapsuleTab *tab;
 
   g_assert (CAPSULE_IS_WINDOW (self));
   g_assert (param != NULL);
   g_assert (g_variant_is_of_type (param, G_VARIANT_TYPE_STRING));
 
-  app = CAPSULE_APPLICATION_DEFAULT;
   profile_uuid = g_variant_get_string (param, NULL);
-
-  if (profile_uuid[0] == 0 || g_str_equal (profile_uuid, "default"))
-    profile = capsule_application_dup_default_profile (app);
-  else
-    profile = capsule_application_dup_profile (app, profile_uuid);
+  profile = capsule_window_dup_profile_for_param (self, profile_uuid);
 
   tab = capsule_tab_new (profile);
   capsule_window_apply_current_settings (self, tab);
