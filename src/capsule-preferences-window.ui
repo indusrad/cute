@@ -85,6 +85,26 @@
                 </property>
               </object>
             </child>
+            <child>
+              <object class="AdwActionRow">
+                <property name="title" translatable="yes">Transparency</property>
+                <property name="subtitle" translatable="yes">Reduces the opacity of the background window</property>
+                <property name="activatable-widget">opacity</property>
+                <child type="suffix">
+                  <object class="GtkScale" id="opacity">
+                    <property name="width-request">150</property>
+                    <property name="adjustment">
+                      <object class="GtkAdjustment" id="opacity_adjustment">
+                        <property name="lower">0</property>
+                        <property name="upper">1</property>
+                        <property name="step-increment">.05</property>
+                        <property name="page-increment">.25</property>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+              </object>
+            </child>
           </object>
         </child>
         <child>

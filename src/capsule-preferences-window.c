@@ -40,6 +40,7 @@ struct _CapsulePreferencesWindow
   GListModel           *cursor_shapes;
   GtkLabel             *font_name;
   AdwSwitchRow         *limit_scrollback;
+  GtkAdjustment        *opacity_adjustment;
   AdwComboRow          *palette;
   GListStore           *palettes;
   GtkListBox           *profiles_list_box;
@@ -219,6 +220,9 @@ capsule_preferences_window_notify_default_profile_cb (CapsulePreferencesWindow *
   profile = capsule_application_dup_default_profile (app);
   gsettings = capsule_profile_dup_settings (profile);
 
+  g_object_bind_property (profile, "opacity",
+                          self->opacity_adjustment, "value",
+                          G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
   g_object_bind_property (profile, "limit-scrollback",
                           self->limit_scrollback, "active",
                           G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
@@ -341,6 +345,7 @@ capsule_preferences_window_class_init (CapsulePreferencesWindowClass *klass)
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, cursor_shapes);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, font_name);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, limit_scrollback);
+  gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, opacity_adjustment);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, palette);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, palettes);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, profiles_list_box);
