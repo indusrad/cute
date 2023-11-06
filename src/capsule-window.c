@@ -51,6 +51,19 @@ enum {
 
 static GParamSpec *properties[N_PROPS];
 
+static void
+capsule_window_setup_menu_cb (CapsuleWindow *self,
+                              AdwTabPage    *page,
+                              AdwTabView    *view)
+{
+  g_assert (CAPSULE_IS_WINDOW (self));
+  g_assert (!page || ADW_IS_TAB_PAGE (page));
+  g_assert (ADW_IS_TAB_VIEW (view));
+
+  if (page != NULL)
+    adw_tab_view_set_selected_page (view, page);
+}
+
 static AdwTabView *
 capsule_window_create_window_cb (CapsuleWindow *self,
                                  AdwTabView    *tab_view)
@@ -430,6 +443,7 @@ capsule_window_class_init (CapsuleWindowClass *klass)
   gtk_widget_class_bind_template_callback (widget_class, capsule_window_page_detached_cb);
   gtk_widget_class_bind_template_callback (widget_class, capsule_window_notify_selected_page_cb);
   gtk_widget_class_bind_template_callback (widget_class, capsule_window_create_window_cb);
+  gtk_widget_class_bind_template_callback (widget_class, capsule_window_setup_menu_cb);
 
   gtk_widget_class_install_action (widget_class, "win.new-tab", "s", capsule_window_new_tab_action);
   gtk_widget_class_install_action (widget_class, "win.new-window", "s", capsule_window_new_window_action);
