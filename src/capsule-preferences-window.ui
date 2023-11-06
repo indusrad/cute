@@ -213,6 +213,24 @@
                 <property name="subtitle" translatable="yes">Restrict the number of lines saved for scrollback</property>
               </object>
             </child>
+            <child>
+              <object class="AdwSpinRow" id="scrollback_lines">
+                <binding name="sensitive">
+                  <lookup name="active">limit_scrollback</lookup>
+                </binding>
+                <property name="title" translatable="yes">Scrollback Lines</property>
+                <property name="subtitle" translatable="yes">The number of lines to keep for scrollback</property>
+                <property name="numeric">1</property>
+                <property name="adjustment">
+                  <object class="GtkAdjustment">
+                    <property name="lower">0</property>
+                    <property name="upper">2147483647</property>
+                    <property name="step-increment">10</property>
+                    <property name="page-increment">100</property>
+                  </object>
+                </property>
+              </object>
+            </child>
           </object>
         </child>
       </object>

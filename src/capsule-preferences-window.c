@@ -41,6 +41,7 @@ struct _CapsulePreferencesWindow
   GtkLabel             *font_name;
   AdwSwitchRow         *limit_scrollback;
   GtkListBox           *profiles_list_box;
+  AdwSpinRow           *scrollback_lines;
   AdwSwitchRow         *scroll_on_output;
   AdwSwitchRow         *scroll_on_keystroke;
   AdwComboRow          *tab_position;
@@ -223,6 +224,9 @@ capsule_preferences_window_notify_default_profile_cb (CapsulePreferencesWindow *
   g_object_bind_property (profile, "scroll-on-keystroke",
                           self->scroll_on_keystroke, "active",
                           G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
+  g_object_bind_property (profile, "scrollback-lines",
+                          self->scrollback_lines, "value",
+                          G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
 }
 
 static void
@@ -326,6 +330,7 @@ capsule_preferences_window_class_init (CapsulePreferencesWindowClass *klass)
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, profiles_list_box);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, scroll_on_keystroke);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, scroll_on_output);
+  gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, scrollback_lines);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, tab_position);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, tab_positions);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, use_system_font);
