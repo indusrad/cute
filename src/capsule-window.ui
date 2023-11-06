@@ -143,6 +143,7 @@
                 <signal name="page-attached" handler="capsule_window_page_attached_cb" swapped="1"/>
                 <signal name="page-detached" handler="capsule_window_page_detached_cb" swapped="1"/>
                 <signal name="create-window" handler="capsule_window_create_window_cb" swapped="1"/>
+                <property name="menu-model">tab_menu</property>
               </object>
             </property>
           </object>
@@ -185,6 +186,12 @@
     </section>
     <section>
       <item>
+        <attribute name="label" translatable="yes">Read Only</attribute>
+        <attribute name="action">win.tab.read-only</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
         <attribute name="label" translatable="yes">_Preferences</attribute>
         <attribute name="action">app.preferences</attribute>
       </item>
@@ -195,6 +202,14 @@
       <item>
         <attribute name="label" translatable="yes">_About Capsule</attribute>
         <attribute name="action">app.about</attribute>
+      </item>
+    </section>
+  </menu>
+  <menu id="tab_menu">
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">Read Only</attribute>
+        <attribute name="action">win.tab.read-only</attribute>
       </item>
     </section>
   </menu>

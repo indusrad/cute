@@ -60,6 +60,7 @@ struct _CapsuleTab
 enum {
   PROP_0,
   PROP_PROFILE,
+  PROP_READ_ONLY,
   PROP_TITLE,
   PROP_TITLE_PREFIX,
   PROP_SUBTITLE,
@@ -423,6 +424,10 @@ capsule_tab_get_property (GObject    *object,
       g_value_set_object (value, capsule_tab_get_profile (self));
       break;
 
+    case PROP_READ_ONLY:
+      g_value_set_boolean (value, !vte_terminal_get_input_enabled (VTE_TERMINAL (self->terminal)));
+      break;
+
     case PROP_SUBTITLE:
       g_value_take_string (value, capsule_tab_dup_subtitle (self));
       break;
@@ -458,6 +463,10 @@ capsule_tab_set_property (GObject      *object,
       self->profile = g_value_dup_object (value);
       break;
 
+    case PROP_READ_ONLY:
+      vte_terminal_set_input_enabled (VTE_TERMINAL (self->terminal), !g_value_get_boolean (value));
+      break;
+
     case PROP_TITLE_PREFIX:
       capsule_tab_set_title_prefix (self, g_value_get_string (value));
       break;
@@ -490,6 +499,12 @@ capsule_tab_class_init (CapsuleTabClass *klass)
                          (G_PARAM_READWRITE |
                           G_PARAM_CONSTRUCT_ONLY |
                           G_PARAM_STATIC_STRINGS));
+
+  properties[PROP_READ_ONLY] =
+    g_param_spec_boolean ("read-only", NULL, NULL,
+                          FALSE,
+                          (G_PARAM_READWRITE |
+                           G_PARAM_STATIC_STRINGS));
 
   properties[PROP_SUBTITLE] =
     g_param_spec_string ("subtitle", NULL, NULL,

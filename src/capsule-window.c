@@ -104,6 +104,7 @@ capsule_window_notify_selected_page_cb (CapsuleWindow *self,
                                         GParamSpec    *pspec,
                                         AdwTabView    *tab_view)
 {
+  g_autoptr(GPropertyAction) read_only = NULL;
   AdwTabPage *page;
   gboolean has_page = FALSE;
 
@@ -126,12 +127,18 @@ capsule_window_notify_selected_page_cb (CapsuleWindow *self,
                               self->dressing, "opacity",
                               G_BINDING_SYNC_CREATE);
 
+      read_only = g_property_action_new ("tab.read-only", tab, "read-only");
+
       gtk_widget_grab_focus (GTK_WIDGET (tab));
     }
 
   gtk_widget_action_set_enabled (GTK_WIDGET (self), "win.zoom-in", has_page);
   gtk_widget_action_set_enabled (GTK_WIDGET (self), "win.zoom-out", has_page);
   gtk_widget_action_set_enabled (GTK_WIDGET (self), "win.zoom-one", has_page);
+
+  g_action_map_remove_action (G_ACTION_MAP (self), "tab.read-only");
+  if (read_only != NULL)
+    g_action_map_add_action (G_ACTION_MAP (self), G_ACTION (read_only));
 
   g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_ACTIVE_TAB]);
 }
