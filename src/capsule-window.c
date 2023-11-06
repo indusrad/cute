@@ -163,13 +163,17 @@ capsule_window_dup_profile_for_param (CapsuleWindow *self,
 {
   g_autoptr(CapsuleProfile) profile = NULL;
   CapsuleApplication *app;
+  CapsuleProfile *active_profile;
 
   g_assert (CAPSULE_IS_WINDOW (self));
   g_assert (profile_uuid != NULL);
 
   app = CAPSULE_APPLICATION_DEFAULT;
+  active_profile = capsule_window_get_active_profile (self);
 
-  if (profile_uuid[0] == 0 || g_str_equal (profile_uuid, "default"))
+  if (profile_uuid[0] == 0 && active_profile != NULL)
+    profile = g_object_ref (active_profile);
+  else if (profile_uuid[0] == 0 || g_str_equal (profile_uuid, "default"))
     profile = capsule_application_dup_default_profile (app);
   else
     profile = capsule_application_dup_profile (app, profile_uuid);
