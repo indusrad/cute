@@ -223,6 +223,10 @@
         <attribute name="label" translatable="yes">Move _Right</attribute>
         <attribute name="action">page.move-right</attribute>
       </item>
+      <item>
+        <attribute name="label" translatable="yes">Move to New _Window</attribute>
+        <attribute name="action">page.detach</attribute>
+      </item>
     </section>
     <section>
       <item>

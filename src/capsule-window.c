@@ -377,6 +377,29 @@ capsule_window_close_others_action (GtkWidget  *widget,
 }
 
 static void
+capsule_window_detach_action (GtkWidget  *widget,
+                              const char *action_name,
+                              GVariant   *param)
+{
+  CapsuleWindow *self = (CapsuleWindow *)widget;
+  CapsuleWindow *new_window;
+  CapsuleTab *tab;
+  AdwTabPage *tab_page;
+
+  g_assert (CAPSULE_IS_WINDOW (self));
+
+  if (!(tab = capsule_window_get_active_tab (self)))
+    return;
+
+  tab_page = adw_tab_view_get_page (self->tab_view, GTK_WIDGET (tab));
+
+  new_window = g_object_new (CAPSULE_TYPE_WINDOW, NULL);
+  adw_tab_view_transfer_page (self->tab_view, tab_page, new_window->tab_view, 0);
+
+  gtk_window_present (GTK_WINDOW (new_window));
+}
+
+static void
 capsule_window_move_left_action (GtkWidget  *widget,
                                  const char *action_name,
                                  GVariant   *param)
@@ -530,6 +553,7 @@ capsule_window_class_init (CapsuleWindowClass *klass)
   gtk_widget_class_install_action (widget_class, "page.move-right", NULL, capsule_window_move_right_action);
   gtk_widget_class_install_action (widget_class, "page.close", NULL, capsule_window_close_action);
   gtk_widget_class_install_action (widget_class, "page.close-others", NULL, capsule_window_close_others_action);
+  gtk_widget_class_install_action (widget_class, "page.detach", NULL, capsule_window_detach_action);
 }
 
 static void
