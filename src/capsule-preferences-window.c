@@ -38,13 +38,92 @@ struct _CapsulePreferencesWindow
   GListModel           *cursor_blink_modes;
   AdwComboRow          *cursor_shape;
   GListModel           *cursor_shapes;
+  GtkLabel             *font_name;
   GtkListBox           *profiles_list_box;
   AdwComboRow          *tab_position;
   GListModel           *tab_positions;
+  AdwSwitchRow         *use_system_font;
   AdwSwitchRow         *visual_bell;
 };
 
 G_DEFINE_FINAL_TYPE (CapsulePreferencesWindow, capsule_preferences_window, ADW_TYPE_PREFERENCES_WINDOW)
+
+static gboolean
+monospace_filter (gpointer item,
+                  gpointer user_data)
+{
+  PangoFontFamily *family = NULL;
+
+  if (PANGO_IS_FONT_FAMILY (item))
+    family = PANGO_FONT_FAMILY (item);
+  else if (PANGO_IS_FONT_FACE (item))
+    family = pango_font_face_get_family (PANGO_FONT_FACE (item));
+
+  return family ? pango_font_family_is_monospace (family) : FALSE;
+}
+
+static void
+capsule_preferences_window_select_custom_font_cb (GObject      *object,
+                                                  GAsyncResult *result,
+                                                  gpointer      user_data)
+{
+  GtkFontDialog *dialog = GTK_FONT_DIALOG (object);
+  g_autoptr(PangoFontDescription) font_desc = NULL;
+  g_autoptr(CapsuleSettings) settings = user_data;
+  g_autoptr(GError) error = NULL;
+
+  g_assert (GTK_IS_FONT_DIALOG (dialog));
+  g_assert (G_IS_ASYNC_RESULT (result));
+  g_assert (CAPSULE_IS_SETTINGS (settings));
+
+  if ((font_desc = gtk_font_dialog_choose_font_finish (dialog, result, &error)))
+    {
+      g_autofree char *font_name = pango_font_description_to_string (font_desc);
+
+      if (font_name != NULL)
+        capsule_settings_set_font_name (settings, font_name);
+    }
+}
+
+static void
+capsule_preferences_window_select_custom_font (GtkWidget  *widget,
+                                               const char *action_name,
+                                               GVariant   *param)
+{
+  CapsulePreferencesWindow *self = (CapsulePreferencesWindow *)widget;
+  g_autoptr(PangoFontDescription) font_desc = NULL;
+  g_autoptr(GtkCustomFilter) filter = NULL;
+  g_autoptr(GtkFontDialog) dialog = NULL;
+  g_autofree char *font_name = NULL;
+  CapsuleApplication *app;
+  CapsuleSettings *settings;
+
+  g_assert (CAPSULE_IS_PREFERENCES_WINDOW (self));
+
+  app = CAPSULE_APPLICATION_DEFAULT;
+  settings = capsule_application_get_settings (app);
+
+  if (!(font_name = capsule_settings_dup_font_name (settings)) || font_name[0] == 0)
+    {
+      g_free (font_name);
+      font_name = g_strdup (capsule_application_get_system_font_name (app));
+    }
+
+  font_desc = pango_font_description_from_string (font_name);
+
+  filter = gtk_custom_filter_new (monospace_filter, NULL, NULL);
+  dialog = (GtkFontDialog *)g_object_new (GTK_TYPE_FONT_DIALOG,
+                                          "title", _("Select Font"),
+                                          "filter", filter,
+                                          NULL);
+
+  gtk_font_dialog_choose_font (dialog,
+                               GTK_WINDOW (gtk_widget_get_root (widget)),
+                               font_desc,
+                               NULL,
+                               capsule_preferences_window_select_custom_font_cb,
+                               g_object_ref (settings));
+}
 
 static void
 capsule_preferences_window_add_profile (GtkWidget  *widget,
@@ -174,6 +253,12 @@ capsule_preferences_window_constructed (GObject *object)
   g_object_bind_property (settings, "visual-bell",
                           self->visual_bell, "active",
                           G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
+  g_object_bind_property (settings, "use-system-font",
+                          self->use_system_font, "active",
+                          G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
+  g_object_bind_property (settings, "font-name",
+                          self->font_name, "label",
+                          G_BINDING_SYNC_CREATE);
 }
 
 static void
@@ -198,20 +283,26 @@ capsule_preferences_window_class_init (CapsulePreferencesWindowClass *klass)
   gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/Capsule/capsule-preferences-window.ui");
 
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, add_profile_row);
+  gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, audible_bell);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, cursor_blink_mode);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, cursor_blink_modes);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, cursor_shape);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, cursor_shapes);
-  gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, audible_bell);
+  gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, font_name);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, profiles_list_box);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, tab_position);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, tab_positions);
+  gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, use_system_font);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, visual_bell);
 
   gtk_widget_class_install_action (widget_class,
                                    "profile.add",
                                    NULL,
                                    capsule_preferences_window_add_profile);
+  gtk_widget_class_install_action (widget_class,
+                                   "settings.select-custom-font",
+                                   NULL,
+                                   capsule_preferences_window_select_custom_font);
 
   g_type_ensure (CAPSULE_TYPE_PREFERENCES_LIST_ITEM);
   //g_type_ensure (CAPSULE_TYPE_PROFILE_EDITOR);

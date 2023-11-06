@@ -32,6 +32,41 @@
     <child>
       <object class="AdwPreferencesPage">
         <property name="title" translatable="yes">Preferences</property>
+          <child>
+            <object class="AdwPreferencesGroup">
+              <property name="title" translatable="yes">Font</property>
+              <child>
+                <object class="AdwSwitchRow" id="use_system_font">
+                  <property name="title" translatable="yes">Use System Font</property>
+                </object>
+              </child>
+              <child>
+                <object class="AdwActionRow" id="font_name_row">
+                  <property name="action-name">settings.select-custom-font</property>
+                  <property name="activatable">true</property>
+                  <property name="title" translatable="yes">Custom Font</property>
+                  <child type="suffix">
+                    <object class="GtkBox">
+                      <property name="hexpand">true</property>
+                      <property name="spacing">12</property>
+                      <child>
+                        <object class="GtkLabel" id="font_name">
+                          <property name="hexpand">true</property>
+                          <property name="xalign">1</property>
+                          <property name="ellipsize">end</property>
+                        </object>
+                      </child>
+                      <child>
+                        <object class="GtkImage">
+                          <property name="icon-name">go-next-symbolic</property>
+                        </object>
+                      </child>
+                    </object>
+                  </child>
+                </object>
+              </child>
+            </object>
+          </child>
         <child>
           <object class="AdwPreferencesGroup">
             <property name="title" translatable="yes">Behavior</property>
