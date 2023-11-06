@@ -35,6 +35,60 @@
         <property name="icon-name">font-select-symbolic</property>
         <child>
           <object class="AdwPreferencesGroup">
+            <property name="title" translatable="yes">Color</property>
+            <child>
+              <object class="AdwComboRow" id="palette">
+                <property name="title" translatable="yes">Palette</property>
+                <property name="expression">
+                  <lookup name="title" type="CapsulePreferencesListItem"/>
+                </property>
+                <property name="model">
+                  <object class="GListStore" id="palettes">
+                    <property name="item-type">CapsulePreferencesListItem</property>
+                    <child>
+                      <object class="CapsulePreferencesListItem">
+                        <property name="title" translatable="yes">GNOME</property>
+                        <property name="value">'gnome'</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="CapsulePreferencesListItem">
+                        <property name="title" translatable="yes">Solarized</property>
+                        <property name="value">'solarized'</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="CapsulePreferencesListItem">
+                        <property name="title" translatable="yes">Tango</property>
+                        <property name="value">'tango'</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="CapsulePreferencesListItem">
+                        <property name="title" translatable="yes">XTerm</property>
+                        <property name="value">'xterm'</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="CapsulePreferencesListItem">
+                        <property name="title" translatable="yes">Linux</property>
+                        <property name="value">'linux'</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="CapsulePreferencesListItem">
+                        <property name="title" translatable="yes">RXVT</property>
+                        <property name="value">'rxvt'</property>
+                      </object>
+                    </child>
+                  </object>
+                </property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
             <property name="title" translatable="yes">Font</property>
             <child>
               <object class="AdwSwitchRow" id="use_system_font">

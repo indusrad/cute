@@ -29,6 +29,17 @@
 
 G_BEGIN_DECLS
 
+#define CAPSULE_PROFILE_KEY_DEFAULT_CONTAINER   "default-container"
+#define CAPSULE_PROFILE_KEY_EXIT_ACTION         "exit-action"
+#define CAPSULE_PROFILE_KEY_LABEL               "label"
+#define CAPSULE_PROFILE_KEY_LIMIT_SCROLLBACK    "limit-scrollback"
+#define CAPSULE_PROFILE_KEY_OPACITY             "opacity"
+#define CAPSULE_PROFILE_KEY_PALETTE             "palette"
+#define CAPSULE_PROFILE_KEY_PRESERVE_DIRECTORY  "preserve-directory"
+#define CAPSULE_PROFILE_KEY_SCROLL_ON_KEYSTROKE "scroll-on-keystroke"
+#define CAPSULE_PROFILE_KEY_SCROLL_ON_OUTPUT    "scroll-on-output"
+#define CAPSULE_PROFILE_KEY_SCROLLBACK_LINES    "scrollback-lines"
+
 typedef enum _CapsuleExitAction
 {
   CAPSULE_EXIT_ACTION_NONE = 0,
@@ -49,6 +60,7 @@ G_DECLARE_FINAL_TYPE (CapsuleProfile, capsule_profile, CAPSULE, PROFILE, GObject
 
 CapsuleProfile           *capsule_profile_new                     (const char                 *uuid);
 CapsuleProfile           *capsule_profile_duplicate               (CapsuleProfile             *self);
+GSettings                *capsule_profile_dup_settings            (CapsuleProfile             *self);
 void                      capsule_profile_apply                   (CapsuleProfile             *self,
                                                                    CapsuleRunContext          *run_context,
                                                                    VtePty                     *pty,

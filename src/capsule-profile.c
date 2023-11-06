@@ -30,17 +30,6 @@
 #include "capsule-profile.h"
 #include "capsule-util.h"
 
-#define CAPSULE_PROFILE_KEY_DEFAULT_CONTAINER   "default-container"
-#define CAPSULE_PROFILE_KEY_EXIT_ACTION         "exit-action"
-#define CAPSULE_PROFILE_KEY_LABEL               "label"
-#define CAPSULE_PROFILE_KEY_LIMIT_SCROLLBACK    "limit-scrollback"
-#define CAPSULE_PROFILE_KEY_OPACITY             "opacity"
-#define CAPSULE_PROFILE_KEY_PALETTE             "palette"
-#define CAPSULE_PROFILE_KEY_PRESERVE_DIRECTORY  "preserve-directory"
-#define CAPSULE_PROFILE_KEY_SCROLL_ON_KEYSTROKE "scroll-on-keystroke"
-#define CAPSULE_PROFILE_KEY_SCROLL_ON_OUTPUT    "scroll-on-output"
-#define CAPSULE_PROFILE_KEY_SCROLLBACK_LINES    "scrollback-lines"
-
 struct _CapsuleProfile
 {
   GObject parent_instance;
@@ -665,4 +654,12 @@ capsule_profile_set_scrollback_lines (CapsuleProfile *self,
   g_settings_set_int (self->settings,
                       CAPSULE_PROFILE_KEY_SCROLLBACK_LINES,
                       scrollback_lines);
+}
+
+GSettings *
+capsule_profile_dup_settings (CapsuleProfile *self)
+{
+  g_return_val_if_fail (CAPSULE_IS_PROFILE (self), NULL);
+
+  return g_object_ref (self->settings);
 }

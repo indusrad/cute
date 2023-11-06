@@ -40,6 +40,8 @@ struct _CapsulePreferencesWindow
   GListModel           *cursor_shapes;
   GtkLabel             *font_name;
   AdwSwitchRow         *limit_scrollback;
+  AdwComboRow          *palette;
+  GListStore           *palettes;
   GtkListBox           *profiles_list_box;
   AdwSpinRow           *scrollback_lines;
   AdwSwitchRow         *scroll_on_output;
@@ -209,11 +211,13 @@ capsule_preferences_window_notify_default_profile_cb (CapsulePreferencesWindow *
                                                       CapsuleApplication       *app)
 {
   g_autoptr(CapsuleProfile) profile = NULL;
+  g_autoptr(GSettings) gsettings = NULL;
 
   g_assert (CAPSULE_IS_PREFERENCES_WINDOW (self));
   g_assert (CAPSULE_IS_APPLICATION (app));
 
   profile = capsule_application_dup_default_profile (app);
+  gsettings = capsule_profile_dup_settings (profile);
 
   g_object_bind_property (profile, "limit-scrollback",
                           self->limit_scrollback, "active",
@@ -227,6 +231,16 @@ capsule_preferences_window_notify_default_profile_cb (CapsulePreferencesWindow *
   g_object_bind_property (profile, "scrollback-lines",
                           self->scrollback_lines, "value",
                           G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
+
+  g_settings_bind_with_mapping (gsettings,
+                                CAPSULE_PROFILE_KEY_PALETTE,
+                                self->palette,
+                                "selected",
+                                G_SETTINGS_BIND_DEFAULT,
+                                string_to_index,
+                                index_to_string,
+                                g_object_ref (self->palettes),
+                                g_object_unref);
 }
 
 static void
@@ -327,6 +341,8 @@ capsule_preferences_window_class_init (CapsulePreferencesWindowClass *klass)
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, cursor_shapes);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, font_name);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, limit_scrollback);
+  gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, palette);
+  gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, palettes);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, profiles_list_box);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, scroll_on_keystroke);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, scroll_on_output);
