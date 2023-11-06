@@ -308,6 +308,56 @@
             </child>
           </object>
         </child>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title" translatable="yes">Compatibility</property>
+            <child>
+              <object class="AdwComboRow" id="backspace_binding">
+                <property name="title" translatable="yes">Backspace Key</property>
+                <property name="subtitle" translatable="yes">Sequence to send for Backspace key</property>
+                <property name="expression">
+                  <lookup name="title" type="CapsulePreferencesListItem"/>
+                </property>
+                <property name="model">erase_bindings</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwComboRow" id="delete_binding">
+                <property name="title" translatable="yes">Delete Key</property>
+                <property name="subtitle" translatable="yes">Sequence to send for Delete key</property>
+                <property name="expression">
+                  <lookup name="title" type="CapsulePreferencesListItem"/>
+                </property>
+                <property name="model">erase_bindings</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwComboRow" id="cjk_ambiguous_width">
+                <property name="title" translatable="yes">Ambiguous-width Characters</property>
+                <property name="expression">
+                  <lookup name="title" type="CapsulePreferencesListItem"/>
+                </property>
+                <property name="model">
+                  <object class="GListStore" id="cjk_ambiguous_widths">
+                    <property name="item-type">CapsulePreferencesListItem</property>
+                    <child>
+                      <object class="CapsulePreferencesListItem">
+                        <property name="title" translatable="yes">Narrow</property>
+                        <property name="value">'narrow'</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="CapsulePreferencesListItem">
+                        <property name="title" translatable="yes">Wide</property>
+                        <property name="value">'wide'</property>
+                      </object>
+                    </child>
+                  </object>
+                </property>
+              </object>
+            </child>
+          </object>
+        </child>
       </object>
     </child>
     <child>
@@ -368,4 +418,37 @@
       </object>
     </child>
   </template>
+  <object class="GListStore" id="erase_bindings">
+    <property name="item-type">CapsulePreferencesListItem</property>
+    <child>
+      <object class="CapsulePreferencesListItem">
+        <property name="title" translatable="yes">Automatic</property>
+        <property name="value">'auto'</property>
+      </object>
+    </child>
+    <child>
+      <object class="CapsulePreferencesListItem">
+        <property name="title" translatable="yes">Control-H</property>
+        <property name="value">'ascii-backspace'</property>
+      </object>
+    </child>
+    <child>
+      <object class="CapsulePreferencesListItem">
+        <property name="title" translatable="yes">ASCII DEL</property>
+        <property name="value">'ascii-delete'</property>
+      </object>
+    </child>
+    <child>
+      <object class="CapsulePreferencesListItem">
+        <property name="title" translatable="yes">Escape Sequence</property>
+        <property name="value">'delete-sequence'</property>
+      </object>
+    </child>
+    <child>
+      <object class="CapsulePreferencesListItem">
+        <property name="title" translatable="yes">TTY Erase</property>
+        <property name="value">'tty'</property>
+      </object>
+    </child>
+  </object>
 </interface>

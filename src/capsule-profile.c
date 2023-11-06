@@ -39,7 +39,10 @@ struct _CapsuleProfile
 
 enum {
   PROP_0,
+  PROP_BACKSPACE_BINDING,
+  PROP_CJK_AMBIGUOUS_WIDTH,
   PROP_DEFAULT_CONTAINER,
+  PROP_DELETE_BINDING,
   PROP_EXIT_ACTION,
   PROP_LABEL,
   PROP_LIMIT_SCROLLBACK,
@@ -81,6 +84,12 @@ capsule_profile_changed_cb (CapsuleProfile *self,
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_LIMIT_SCROLLBACK]);
   else if (g_str_equal (key, CAPSULE_PROFILE_KEY_SCROLLBACK_LINES))
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_SCROLLBACK_LINES]);
+  else if (g_str_equal (key, CAPSULE_PROFILE_KEY_BACKSPACE_BINDING))
+    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_BACKSPACE_BINDING]);
+  else if (g_str_equal (key, CAPSULE_PROFILE_KEY_DELETE_BINDING))
+    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_DELETE_BINDING]);
+  else if (g_str_equal (key, CAPSULE_PROFILE_KEY_CJK_AMBIGUOUS_WIDTH))
+    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_CJK_AMBIGUOUS_WIDTH]);
 }
 
 static void
@@ -125,8 +134,20 @@ capsule_profile_get_property (GObject    *object,
 
   switch (prop_id)
     {
+    case PROP_CJK_AMBIGUOUS_WIDTH:
+      g_value_set_enum (value, capsule_profile_get_cjk_ambiguous_width (self));
+      break;
+
+    case PROP_BACKSPACE_BINDING:
+      g_value_set_enum (value, capsule_profile_get_backspace_binding (self));
+      break;
+
     case PROP_DEFAULT_CONTAINER:
       g_value_take_string (value, capsule_profile_dup_default_container (self));
+      break;
+
+    case PROP_DELETE_BINDING:
+      g_value_set_enum (value, capsule_profile_get_delete_binding (self));
       break;
 
     case PROP_EXIT_ACTION:
@@ -184,8 +205,20 @@ capsule_profile_set_property (GObject      *object,
 
   switch (prop_id)
     {
+    case PROP_CJK_AMBIGUOUS_WIDTH:
+      capsule_profile_set_cjk_ambiguous_width (self, g_value_get_enum (value));
+      break;
+
+    case PROP_BACKSPACE_BINDING:
+      capsule_profile_set_backspace_binding (self, g_value_get_enum (value));
+      break;
+
     case PROP_DEFAULT_CONTAINER:
       capsule_profile_set_default_container (self, g_value_get_string (value));
+      break;
+
+    case PROP_DELETE_BINDING:
+      capsule_profile_set_delete_binding (self, g_value_get_enum (value));
       break;
 
     case PROP_EXIT_ACTION:
@@ -243,12 +276,36 @@ capsule_profile_class_init (CapsuleProfileClass *klass)
   object_class->get_property = capsule_profile_get_property;
   object_class->set_property = capsule_profile_set_property;
 
+  properties[PROP_CJK_AMBIGUOUS_WIDTH] =
+    g_param_spec_enum ("cjk-ambiguous-width", NULL, NULL,
+                       CAPSULE_TYPE_CJK_AMBIGUOUS_WIDTH,
+                       CAPSULE_CJK_AMBIGUOUS_WIDTH_NARROW,
+                       (G_PARAM_READWRITE |
+                        G_PARAM_EXPLICIT_NOTIFY |
+                        G_PARAM_STATIC_STRINGS));
+
+  properties[PROP_BACKSPACE_BINDING] =
+    g_param_spec_enum ("backspace-binding", NULL, NULL,
+                       VTE_TYPE_ERASE_BINDING,
+                       VTE_ERASE_AUTO,
+                       (G_PARAM_READWRITE |
+                        G_PARAM_EXPLICIT_NOTIFY |
+                        G_PARAM_STATIC_STRINGS));
+
   properties[PROP_DEFAULT_CONTAINER] =
     g_param_spec_string ("default-container", NULL, NULL,
                          NULL,
                          (G_PARAM_READWRITE |
                           G_PARAM_EXPLICIT_NOTIFY |
                           G_PARAM_STATIC_STRINGS));
+
+  properties[PROP_DELETE_BINDING] =
+    g_param_spec_enum ("delete-binding", NULL, NULL,
+                       VTE_TYPE_ERASE_BINDING,
+                       VTE_ERASE_AUTO,
+                       (G_PARAM_READWRITE |
+                        G_PARAM_EXPLICIT_NOTIFY |
+                        G_PARAM_STATIC_STRINGS));
 
   properties[PROP_EXIT_ACTION] =
     g_param_spec_enum ("exit-action", NULL, NULL,
@@ -662,4 +719,61 @@ capsule_profile_dup_settings (CapsuleProfile *self)
   g_return_val_if_fail (CAPSULE_IS_PROFILE (self), NULL);
 
   return g_object_ref (self->settings);
+}
+
+VteEraseBinding
+capsule_profile_get_backspace_binding (CapsuleProfile *self)
+{
+  g_return_val_if_fail (CAPSULE_IS_PROFILE (self), 0);
+
+  return g_settings_get_enum (self->settings, CAPSULE_PROFILE_KEY_BACKSPACE_BINDING);
+}
+
+void
+capsule_profile_set_backspace_binding (CapsuleProfile  *self,
+                                       VteEraseBinding  backspace_binding)
+{
+  g_return_if_fail (CAPSULE_IS_PROFILE (self));
+
+  g_settings_set_enum (self->settings,
+                       CAPSULE_PROFILE_KEY_BACKSPACE_BINDING,
+                       backspace_binding);
+}
+
+VteEraseBinding
+capsule_profile_get_delete_binding (CapsuleProfile *self)
+{
+  g_return_val_if_fail (CAPSULE_IS_PROFILE (self), 0);
+
+  return g_settings_get_enum (self->settings, CAPSULE_PROFILE_KEY_DELETE_BINDING);
+}
+
+void
+capsule_profile_set_delete_binding (CapsuleProfile  *self,
+                                    VteEraseBinding  delete_binding)
+{
+  g_return_if_fail (CAPSULE_IS_PROFILE (self));
+
+  g_settings_set_enum (self->settings,
+                       CAPSULE_PROFILE_KEY_DELETE_BINDING,
+                       delete_binding);
+}
+
+CapsuleCjkAmbiguousWidth
+capsule_profile_get_cjk_ambiguous_width (CapsuleProfile *self)
+{
+  g_return_val_if_fail (CAPSULE_IS_PROFILE (self), 1);
+
+  return g_settings_get_enum (self->settings, CAPSULE_PROFILE_KEY_CJK_AMBIGUOUS_WIDTH);
+}
+
+void
+capsule_profile_set_cjk_ambiguous_width (CapsuleProfile           *self,
+                                         CapsuleCjkAmbiguousWidth  cjk_ambiguous_width)
+{
+  g_return_if_fail (CAPSULE_IS_PROFILE (self));
+
+  g_settings_set_enum (self->settings,
+                       CAPSULE_PROFILE_KEY_CJK_AMBIGUOUS_WIDTH,
+                       cjk_ambiguous_width);
 }

@@ -19,6 +19,11 @@
 -->
 <schemalist gettext-domain=@GETTEXT_PACKAGE@>
 
+  <enum id="org.gnome.Capsule.CjkAmbiguousWidth">
+    <value nick="narrow" value="1"/>
+    <value nick="wide" value="2"/>
+  </enum>
+
   <enum id="org.gnome.Capsule.CursorBlinkMode">
     <value nick="system" value="0"/>
     <value nick="on" value="1"/>
@@ -29,6 +34,14 @@
     <value nick="block" value="0"/>
     <value nick="ibeam" value="1"/>
     <value nick="underline" value="2"/>
+  </enum>
+
+  <enum id="org.gnome.Capsule.EraseBinding">
+    <value nick="auto" value="0"/>
+    <value nick="ascii-backspace" value="1"/>
+    <value nick="ascii-delete" value="2"/>
+    <value nick="delete-sequence" value="3"/>
+    <value nick="tty" value="4"/>
   </enum>
 
   <enum id="org.gnome.Capsule.ExitAction">
@@ -168,6 +181,24 @@
       <default>1</default>
       <summary>Opacity</summary>
       <description>The opacity of the palette background</description>
+    </key>
+
+    <key name="cjk-ambiguous-width" enum="org.gnome.Capsule.CjkAmbiguousWidth">
+      <default>'narrow'</default>
+      <summary>CJK Ambiguous Width</summary>
+      <description>The size to apply to ambiguous width characters</description>
+    </key>
+
+    <key name="backspace-binding" enum="org.gnome.Capsule.EraseBinding">
+      <default>'ascii-delete'</default>
+      <summary>Backspace Binding</summary>
+      <description>What to send to the PTY when a backspace is entered</description>
+    </key>
+
+    <key name="delete-binding" enum="org.gnome.Capsule.EraseBinding">
+      <default>'delete-sequence'</default>
+      <summary>Backspace Binding</summary>
+      <description>What to send to the PTY when a backspace is entered</description>
     </key>
 
   </schema>

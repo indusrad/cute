@@ -57,6 +57,21 @@
                     <lookup name="profile">CapsuleTab</lookup>
                   </lookup>
                 </binding>
+                <binding name="backspace-binding">
+                  <lookup name="backspace-binding" type="CapsuleProfile">
+                    <lookup name="profile">CapsuleTab</lookup>
+                  </lookup>
+                </binding>
+                <binding name="delete-binding">
+                  <lookup name="delete-binding" type="CapsuleProfile">
+                    <lookup name="profile">CapsuleTab</lookup>
+                  </lookup>
+                </binding>
+                <binding name="cjk-ambiguous-width">
+                  <lookup name="cjk-ambiguous-width" type="CapsuleProfile">
+                    <lookup name="profile">CapsuleTab</lookup>
+                  </lookup>
+                </binding>
               </object>
             </child>
           </object>

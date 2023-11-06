@@ -34,10 +34,15 @@ struct _CapsulePreferencesWindow
 
   GtkListBoxRow        *add_profile_row;
   AdwSwitchRow         *audible_bell;
+  AdwComboRow          *backspace_binding;
+  AdwComboRow          *cjk_ambiguous_width;
+  GListModel           *cjk_ambiguous_widths;
   AdwComboRow          *cursor_blink_mode;
   GListModel           *cursor_blink_modes;
   AdwComboRow          *cursor_shape;
   GListModel           *cursor_shapes;
+  AdwComboRow          *delete_binding;
+  GListModel           *erase_bindings;
   GtkLabel             *font_name;
   AdwSwitchRow         *limit_scrollback;
   GtkAdjustment        *opacity_adjustment;
@@ -245,6 +250,36 @@ capsule_preferences_window_notify_default_profile_cb (CapsulePreferencesWindow *
                                 index_to_string,
                                 g_object_ref (self->palettes),
                                 g_object_unref);
+
+  g_settings_bind_with_mapping (gsettings,
+                                CAPSULE_PROFILE_KEY_BACKSPACE_BINDING,
+                                self->backspace_binding,
+                                "selected",
+                                G_SETTINGS_BIND_DEFAULT,
+                                string_to_index,
+                                index_to_string,
+                                g_object_ref (self->erase_bindings),
+                                g_object_unref);
+
+  g_settings_bind_with_mapping (gsettings,
+                                CAPSULE_PROFILE_KEY_DELETE_BINDING,
+                                self->delete_binding,
+                                "selected",
+                                G_SETTINGS_BIND_DEFAULT,
+                                string_to_index,
+                                index_to_string,
+                                g_object_ref (self->erase_bindings),
+                                g_object_unref);
+
+  g_settings_bind_with_mapping (gsettings,
+                                CAPSULE_PROFILE_KEY_CJK_AMBIGUOUS_WIDTH,
+                                self->cjk_ambiguous_width,
+                                "selected",
+                                G_SETTINGS_BIND_DEFAULT,
+                                string_to_index,
+                                index_to_string,
+                                g_object_ref (self->cjk_ambiguous_widths),
+                                g_object_unref);
 }
 
 static void
@@ -339,10 +374,15 @@ capsule_preferences_window_class_init (CapsulePreferencesWindowClass *klass)
 
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, add_profile_row);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, audible_bell);
+  gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, backspace_binding);
+  gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, cjk_ambiguous_width);
+  gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, cjk_ambiguous_widths);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, cursor_blink_mode);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, cursor_blink_modes);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, cursor_shape);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, cursor_shapes);
+  gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, delete_binding);
+  gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, erase_bindings);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, font_name);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, limit_scrollback);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, opacity_adjustment);

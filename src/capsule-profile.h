@@ -29,7 +29,10 @@
 
 G_BEGIN_DECLS
 
+#define CAPSULE_PROFILE_KEY_BACKSPACE_BINDING   "backspace-binding"
+#define CAPSULE_PROFILE_KEY_CJK_AMBIGUOUS_WIDTH "cjk-ambiguous-width"
 #define CAPSULE_PROFILE_KEY_DEFAULT_CONTAINER   "default-container"
+#define CAPSULE_PROFILE_KEY_DELETE_BINDING      "delete-binding"
 #define CAPSULE_PROFILE_KEY_EXIT_ACTION         "exit-action"
 #define CAPSULE_PROFILE_KEY_LABEL               "label"
 #define CAPSULE_PROFILE_KEY_LIMIT_SCROLLBACK    "limit-scrollback"
@@ -53,6 +56,12 @@ typedef enum _CapsulePreserveDirectory
   CAPSULE_PRESERVE_DIRECTORY_SAFE,
   CAPSULE_PRESERVE_DIRECTORY_ALWAYS,
 } CapsulePreserveDirectory;
+
+typedef enum _CapsuleCjkAmbiguousWidth
+{
+  CAPSULE_CJK_AMBIGUOUS_WIDTH_NARROW = 1,
+  CAPSULE_CJK_AMBIGUOUS_WIDTH_WIDE   = 2,
+} CapsuleCjkAmbiguousWidth;
 
 #define CAPSULE_TYPE_PROFILE (capsule_profile_get_type())
 
@@ -97,5 +106,14 @@ void                      capsule_profile_set_palette             (CapsuleProfil
 double                    capsule_profile_get_opacity             (CapsuleProfile             *self);
 void                      capsule_profile_set_opacity             (CapsuleProfile             *self,
                                                                    double                      opacity);
+VteEraseBinding           capsule_profile_get_backspace_binding   (CapsuleProfile             *self);
+void                      capsule_profile_set_backspace_binding   (CapsuleProfile             *self,
+                                                                   VteEraseBinding             backspace_binding);
+VteEraseBinding           capsule_profile_get_delete_binding      (CapsuleProfile             *self);
+void                      capsule_profile_set_delete_binding      (CapsuleProfile             *self,
+                                                                   VteEraseBinding             delete_binding);
+CapsuleCjkAmbiguousWidth  capsule_profile_get_cjk_ambiguous_width (CapsuleProfile             *self);
+void                      capsule_profile_set_cjk_ambiguous_width (CapsuleProfile             *self,
+                                                                   CapsuleCjkAmbiguousWidth    cjk_ambiguous_width);
 
 G_END_DECLS
