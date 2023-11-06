@@ -21,11 +21,12 @@
 
 #pragma once
 
-#include <glib-object.h>
+#include <vte/vte.h>
 
 G_BEGIN_DECLS
 
 #define CAPSULE_SETTING_KEY_AUDIBLE_BELL         "audible-bell"
+#define CAPSULE_SETTING_KEY_CURSOR_SHAPE         "cursor-shape"
 #define CAPSULE_SETTING_KEY_DEFAULT_PROFILE_UUID "default-profile-uuid"
 #define CAPSULE_SETTING_KEY_NEW_TAB_POSITION     "new-tab-position"
 #define CAPSULE_SETTING_KEY_PROFILE_UUIDS        "profile-uuids"
@@ -60,5 +61,8 @@ void                    capsule_settings_set_audible_bell         (CapsuleSettin
 gboolean                capsule_settings_get_visual_bell          (CapsuleSettings       *self);
 void                    capsule_settings_set_visual_bell          (CapsuleSettings       *self,
                                                                    gboolean               visual_bell);
+VteCursorShape          capsule_settings_get_cursor_shape         (CapsuleSettings       *self);
+void                    capsule_settings_set_cursor_shape         (CapsuleSettings       *self,
+                                                                   VteCursorShape         cursor_shape);
 
 G_END_DECLS

@@ -363,6 +363,7 @@ static void
 capsule_tab_constructed (GObject *object)
 {
   CapsuleTab *self = (CapsuleTab *)object;
+  CapsuleSettings *settings;
 
   G_OBJECT_CLASS (capsule_tab_parent_class)->constructed (object);
 
@@ -375,6 +376,10 @@ capsule_tab_constructed (GObject *object)
                            self,
                            G_CONNECT_SWAPPED);
   capsule_tab_profile_notify_opacity_cb (self, NULL, self->profile);
+
+  settings = capsule_application_get_settings (CAPSULE_APPLICATION_DEFAULT);
+  g_object_bind_property (settings, "cursor-shape", self->terminal, "cursor-shape",
+                          G_BINDING_SYNC_CREATE);
 }
 
 static void

@@ -65,6 +65,41 @@
         <child>
           <object class="AdwPreferencesGroup">
             <child>
+              <object class="AdwComboRow" id="cursor_shape">
+                <property name="title" translatable="yes">Cursor Shape</property>
+                <property name="expression">
+                  <lookup name="title" type="CapsulePreferencesListItem"/>
+                </property>
+                <property name="model">
+                  <object class="GListStore" id="cursor_shapes">
+                    <property name="item-type">CapsulePreferencesListItem</property>
+                    <child>
+                      <object class="CapsulePreferencesListItem">
+                        <property name="title" translatable="yes">Block</property>
+                        <property name="value">'block'</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="CapsulePreferencesListItem">
+                        <property name="title" translatable="yes">I-Beam</property>
+                        <property name="value">'ibeam'</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="CapsulePreferencesListItem">
+                        <property name="title" translatable="yes">Underline</property>
+                        <property name="value">'underline'</property>
+                      </object>
+                    </child>
+                  </object>
+                </property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <child>
               <object class="AdwSwitchRow" id="audible_bell">
                 <property name="title" translatable="yes">Audible Bell</property>
                 <property name="subtitle" translatable="yes">Emit an audible bell when requested by active tab</property>

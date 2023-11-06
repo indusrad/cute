@@ -34,6 +34,8 @@ struct _CapsulePreferencesWindow
 
   GtkListBoxRow        *add_profile_row;
   AdwSwitchRow         *audible_bell;
+  AdwComboRow          *cursor_shape;
+  GListModel           *cursor_shapes;
   GtkListBox           *profiles_list_box;
   AdwComboRow          *tab_position;
   GListModel           *tab_positions;
@@ -137,6 +139,16 @@ capsule_preferences_window_constructed (GObject *object)
                                 g_object_ref (self->tab_positions),
                                 g_object_unref);
 
+  g_settings_bind_with_mapping (gsettings,
+                                CAPSULE_SETTING_KEY_CURSOR_SHAPE,
+                                self->cursor_shape,
+                                "selected",
+                                G_SETTINGS_BIND_DEFAULT,
+                                string_to_index,
+                                index_to_string,
+                                g_object_ref (self->cursor_shapes),
+                                g_object_unref);
+
   profiles = capsule_application_list_profiles (app);
 
   gtk_list_box_bind_model (self->profiles_list_box,
@@ -174,6 +186,8 @@ capsule_preferences_window_class_init (CapsulePreferencesWindowClass *klass)
   gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/Capsule/capsule-preferences-window.ui");
 
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, add_profile_row);
+  gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, cursor_shape);
+  gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, cursor_shapes);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, audible_bell);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, profiles_list_box);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, tab_position);

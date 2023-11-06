@@ -35,6 +35,7 @@ struct _CapsuleSettings
 enum {
   PROP_0,
   PROP_AUDIBLE_BELL,
+  PROP_CURSOR_SHAPE,
   PROP_DEFAULT_PROFILE_UUID,
   PROP_NEW_TAB_POSITION,
   PROP_PROFILE_UUIDS,
@@ -65,6 +66,8 @@ capsule_settings_changed_cb (CapsuleSettings *self,
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_AUDIBLE_BELL]);
   else if (g_str_equal (key, CAPSULE_SETTING_KEY_VISUAL_BELL))
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_VISUAL_BELL]);
+  else if (g_str_equal (key, CAPSULE_SETTING_KEY_CURSOR_SHAPE))
+    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_CURSOR_SHAPE]);
 }
 
 static void
@@ -89,6 +92,10 @@ capsule_settings_get_property (GObject    *object,
     {
     case PROP_AUDIBLE_BELL:
       g_value_set_boolean (value, capsule_settings_get_audible_bell (self));
+      break;
+
+    case PROP_CURSOR_SHAPE:
+      g_value_set_enum (value, capsule_settings_get_cursor_shape (self));
       break;
 
     case PROP_DEFAULT_PROFILE_UUID:
@@ -126,6 +133,10 @@ capsule_settings_set_property (GObject      *object,
       capsule_settings_set_audible_bell (self, g_value_get_boolean (value));
       break;
 
+    case PROP_CURSOR_SHAPE:
+      capsule_settings_set_cursor_shape (self, g_value_get_enum (value));
+      break;
+
     case PROP_NEW_TAB_POSITION:
       capsule_settings_set_new_tab_position (self, g_value_get_enum (value));
       break;
@@ -158,6 +169,14 @@ capsule_settings_class_init (CapsuleSettingsClass *klass)
                           (G_PARAM_READWRITE |
                            G_PARAM_EXPLICIT_NOTIFY |
                            G_PARAM_STATIC_STRINGS));
+
+  properties[PROP_CURSOR_SHAPE] =
+    g_param_spec_enum ("cursor-shape", NULL, NULL,
+                       VTE_TYPE_CURSOR_SHAPE,
+                       VTE_CURSOR_SHAPE_BLOCK,
+                       (G_PARAM_READWRITE |
+                        G_PARAM_EXPLICIT_NOTIFY |
+                        G_PARAM_STATIC_STRINGS));
 
   properties[PROP_NEW_TAB_POSITION] =
     g_param_spec_enum ("new-tab-position", NULL, NULL,
@@ -371,4 +390,23 @@ capsule_settings_set_visual_bell (CapsuleSettings *self,
   g_settings_set_boolean (self->settings,
                           CAPSULE_SETTING_KEY_VISUAL_BELL,
                           visual_bell);
+}
+
+VteCursorShape
+capsule_settings_get_cursor_shape (CapsuleSettings *self)
+{
+  g_return_val_if_fail (CAPSULE_IS_SETTINGS (self), 0);
+
+  return g_settings_get_enum (self->settings, CAPSULE_SETTING_KEY_CURSOR_SHAPE);
+}
+
+void
+capsule_settings_set_cursor_shape (CapsuleSettings *self,
+                                   VteCursorShape   cursor_shape)
+{
+  g_return_if_fail (CAPSULE_IS_SETTINGS (self));
+
+  g_settings_set_enum (self->settings,
+                       CAPSULE_SETTING_KEY_CURSOR_SHAPE,
+                       cursor_shape);
 }
