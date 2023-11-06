@@ -341,6 +341,80 @@ capsule_window_active_tab_bell_cb (CapsuleWindow *self,
 }
 
 static void
+capsule_window_close_action (GtkWidget  *widget,
+                             const char *action_name,
+                             GVariant   *param)
+{
+  CapsuleWindow *self = (CapsuleWindow *)widget;
+  CapsuleTab *tab;
+  AdwTabPage *tab_page;
+
+  g_assert (CAPSULE_IS_WINDOW (self));
+
+  if (!(tab = capsule_window_get_active_tab (self)))
+    return;
+
+  tab_page = adw_tab_view_get_page (self->tab_view, GTK_WIDGET (tab));
+  adw_tab_view_close_page (self->tab_view, tab_page);
+}
+
+static void
+capsule_window_close_others_action (GtkWidget  *widget,
+                                    const char *action_name,
+                                    GVariant   *param)
+{
+  CapsuleWindow *self = (CapsuleWindow *)widget;
+  CapsuleTab *tab;
+  AdwTabPage *tab_page;
+
+  g_assert (CAPSULE_IS_WINDOW (self));
+
+  if (!(tab = capsule_window_get_active_tab (self)))
+    return;
+
+  tab_page = adw_tab_view_get_page (self->tab_view, GTK_WIDGET (tab));
+  adw_tab_view_close_other_pages (self->tab_view, tab_page);
+}
+
+static void
+capsule_window_move_left_action (GtkWidget  *widget,
+                                 const char *action_name,
+                                 GVariant   *param)
+{
+  CapsuleWindow *self = (CapsuleWindow *)widget;
+  CapsuleTab *tab;
+  AdwTabPage *tab_page;
+
+  g_assert (CAPSULE_IS_WINDOW (self));
+
+  if (!(tab = capsule_window_get_active_tab (self)))
+    return;
+
+  tab_page = adw_tab_view_get_page (self->tab_view, GTK_WIDGET (tab));
+  adw_tab_view_reorder_backward (self->tab_view, tab_page);
+  capsule_tab_raise (tab);
+}
+
+static void
+capsule_window_move_right_action (GtkWidget  *widget,
+                                  const char *action_name,
+                                  GVariant   *param)
+{
+  CapsuleWindow *self = (CapsuleWindow *)widget;
+  CapsuleTab *tab;
+  AdwTabPage *tab_page;
+
+  g_assert (CAPSULE_IS_WINDOW (self));
+
+  if (!(tab = capsule_window_get_active_tab (self)))
+    return;
+
+  tab_page = adw_tab_view_get_page (self->tab_view, GTK_WIDGET (tab));
+  adw_tab_view_reorder_forward (self->tab_view, tab_page);
+  capsule_tab_raise (tab);
+}
+
+static void
 capsule_window_constructed (GObject *object)
 {
   CapsuleWindow *self = (CapsuleWindow *)object;
@@ -452,6 +526,10 @@ capsule_window_class_init (CapsuleWindowClass *klass)
   gtk_widget_class_install_action (widget_class, "win.zoom-in", NULL, capsule_window_zoom_in_action);
   gtk_widget_class_install_action (widget_class, "win.zoom-out", NULL, capsule_window_zoom_out_action);
   gtk_widget_class_install_action (widget_class, "win.zoom-one", NULL, capsule_window_zoom_one_action);
+  gtk_widget_class_install_action (widget_class, "page.move-left", NULL, capsule_window_move_left_action);
+  gtk_widget_class_install_action (widget_class, "page.move-right", NULL, capsule_window_move_right_action);
+  gtk_widget_class_install_action (widget_class, "page.close", NULL, capsule_window_close_action);
+  gtk_widget_class_install_action (widget_class, "page.close-others", NULL, capsule_window_close_others_action);
 }
 
 static void

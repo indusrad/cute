@@ -209,8 +209,28 @@
   <menu id="tab_menu">
     <section>
       <item>
+        <attribute name="label" translatable="yes">Move _Left</attribute>
+        <attribute name="action">page.move-left</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Move _Right</attribute>
+        <attribute name="action">page.move-right</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
         <attribute name="label" translatable="yes">Read Only</attribute>
         <attribute name="action">win.tab.read-only</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">Close _Other Tabs</attribute>
+        <attribute name="action">page.close-others</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">_Close Tab</attribute>
+        <attribute name="action">page.close</attribute>
       </item>
     </section>
   </menu>
