@@ -40,6 +40,7 @@ struct _CapsuleProfile
 enum {
   PROP_0,
   PROP_BACKSPACE_BINDING,
+  PROP_BOLD_IS_BRIGHT,
   PROP_CJK_AMBIGUOUS_WIDTH,
   PROP_DEFAULT_CONTAINER,
   PROP_DELETE_BINDING,
@@ -90,6 +91,8 @@ capsule_profile_changed_cb (CapsuleProfile *self,
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_DELETE_BINDING]);
   else if (g_str_equal (key, CAPSULE_PROFILE_KEY_CJK_AMBIGUOUS_WIDTH))
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_CJK_AMBIGUOUS_WIDTH]);
+  else if (g_str_equal (key, CAPSULE_PROFILE_KEY_BOLD_IS_BRIGHT))
+    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_BOLD_IS_BRIGHT]);
 }
 
 static void
@@ -140,6 +143,10 @@ capsule_profile_get_property (GObject    *object,
 
     case PROP_BACKSPACE_BINDING:
       g_value_set_enum (value, capsule_profile_get_backspace_binding (self));
+      break;
+
+    case PROP_BOLD_IS_BRIGHT:
+      g_value_set_boolean (value, capsule_profile_get_bold_is_bright (self));
       break;
 
     case PROP_DEFAULT_CONTAINER:
@@ -211,6 +218,10 @@ capsule_profile_set_property (GObject      *object,
 
     case PROP_BACKSPACE_BINDING:
       capsule_profile_set_backspace_binding (self, g_value_get_enum (value));
+      break;
+
+    case PROP_BOLD_IS_BRIGHT:
+      capsule_profile_set_bold_is_bright (self, g_value_get_boolean (value));
       break;
 
     case PROP_DEFAULT_CONTAINER:
@@ -291,6 +302,13 @@ capsule_profile_class_init (CapsuleProfileClass *klass)
                        (G_PARAM_READWRITE |
                         G_PARAM_EXPLICIT_NOTIFY |
                         G_PARAM_STATIC_STRINGS));
+
+  properties[PROP_BOLD_IS_BRIGHT] =
+    g_param_spec_boolean ("bold-is-bright", NULL, NULL,
+                          FALSE,
+                          (G_PARAM_READWRITE |
+                           G_PARAM_EXPLICIT_NOTIFY |
+                           G_PARAM_STATIC_STRINGS));
 
   properties[PROP_DEFAULT_CONTAINER] =
     g_param_spec_string ("default-container", NULL, NULL,
@@ -776,4 +794,23 @@ capsule_profile_set_cjk_ambiguous_width (CapsuleProfile           *self,
   g_settings_set_enum (self->settings,
                        CAPSULE_PROFILE_KEY_CJK_AMBIGUOUS_WIDTH,
                        cjk_ambiguous_width);
+}
+
+gboolean
+capsule_profile_get_bold_is_bright (CapsuleProfile *self)
+{
+  g_return_val_if_fail (CAPSULE_IS_PROFILE (self), FALSE);
+
+  return g_settings_get_boolean (self->settings, CAPSULE_PROFILE_KEY_BOLD_IS_BRIGHT);
+}
+
+void
+capsule_profile_set_bold_is_bright (CapsuleProfile *self,
+                                    gboolean        bold_is_bright)
+{
+  g_return_if_fail (CAPSULE_IS_PROFILE (self));
+
+  g_settings_set_boolean (self->settings,
+                          CAPSULE_PROFILE_KEY_BOLD_IS_BRIGHT,
+                          bold_is_bright);
 }

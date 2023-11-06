@@ -35,6 +35,7 @@ struct _CapsulePreferencesWindow
   GtkListBoxRow        *add_profile_row;
   AdwSwitchRow         *audible_bell;
   AdwComboRow          *backspace_binding;
+  AdwSwitchRow         *bold_is_bright;
   AdwComboRow          *cjk_ambiguous_width;
   GListModel           *cjk_ambiguous_widths;
   AdwComboRow          *cursor_blink_mode;
@@ -240,6 +241,9 @@ capsule_preferences_window_notify_default_profile_cb (CapsulePreferencesWindow *
   g_object_bind_property (profile, "scrollback-lines",
                           self->scrollback_lines, "value",
                           G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
+  g_object_bind_property (profile, "bold-is-bright",
+                          self->bold_is_bright, "active",
+                          G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
 
   g_settings_bind_with_mapping (gsettings,
                                 CAPSULE_PROFILE_KEY_PALETTE,
@@ -375,6 +379,7 @@ capsule_preferences_window_class_init (CapsulePreferencesWindowClass *klass)
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, add_profile_row);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, audible_bell);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, backspace_binding);
+  gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, bold_is_bright);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, cjk_ambiguous_width);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, cjk_ambiguous_widths);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, cursor_blink_mode);

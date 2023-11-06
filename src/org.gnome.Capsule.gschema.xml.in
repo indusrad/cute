@@ -183,6 +183,12 @@
       <description>The opacity of the palette background</description>
     </key>
 
+    <key name="bold-is-bright" type="b">
+      <default>false</default>
+      <summary>Bold is Bright</summary>
+      <description>Setting bold on one of the lower 8 colors in the palette will use bright variant (upper 8 colors)</description>
+    </key>
+
     <key name="cjk-ambiguous-width" enum="org.gnome.Capsule.CjkAmbiguousWidth">
       <default>'narrow'</default>
       <summary>CJK Ambiguous Width</summary>

@@ -30,6 +30,7 @@
 G_BEGIN_DECLS
 
 #define CAPSULE_PROFILE_KEY_BACKSPACE_BINDING   "backspace-binding"
+#define CAPSULE_PROFILE_KEY_BOLD_IS_BRIGHT      "bold-is-bright"
 #define CAPSULE_PROFILE_KEY_CJK_AMBIGUOUS_WIDTH "cjk-ambiguous-width"
 #define CAPSULE_PROFILE_KEY_DEFAULT_CONTAINER   "default-container"
 #define CAPSULE_PROFILE_KEY_DELETE_BINDING      "delete-binding"
@@ -94,6 +95,9 @@ void                      capsule_profile_set_scroll_on_keystroke (CapsuleProfil
 gboolean                  capsule_profile_get_scroll_on_output    (CapsuleProfile             *self);
 void                      capsule_profile_set_scroll_on_output    (CapsuleProfile             *self,
                                                                    gboolean                    scroll_on_output);
+gboolean                  capsule_profile_get_bold_is_bright      (CapsuleProfile             *self);
+void                      capsule_profile_set_bold_is_bright      (CapsuleProfile             *self,
+                                                                   gboolean                    bold_is_bright);
 CapsuleExitAction         capsule_profile_get_exit_action         (CapsuleProfile             *self);
 void                      capsule_profile_set_exit_action         (CapsuleProfile             *self,
                                                                    CapsuleExitAction           exit_action);

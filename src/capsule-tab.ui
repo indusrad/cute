@@ -72,6 +72,11 @@
                     <lookup name="profile">CapsuleTab</lookup>
                   </lookup>
                 </binding>
+                <binding name="bold-is-bright">
+                  <lookup name="bold-is-bright" type="CapsuleProfile">
+                    <lookup name="profile">CapsuleTab</lookup>
+                  </lookup>
+                </binding>
               </object>
             </child>
           </object>

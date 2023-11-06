@@ -157,6 +157,15 @@
         </child>
         <child>
           <object class="AdwPreferencesGroup">
+            <child>
+              <object class="AdwSwitchRow" id="bold_is_bright">
+                <property name="title" translatable="yes">Use Bright Colors for Bold</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
             <property name="title" translatable="yes">Cursor</property>
             <child>
               <object class="AdwComboRow" id="cursor_shape">
