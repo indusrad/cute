@@ -35,6 +35,7 @@ struct _CapsuleSettings
 enum {
   PROP_0,
   PROP_AUDIBLE_BELL,
+  PROP_CURSOR_BLINK_MODE,
   PROP_CURSOR_SHAPE,
   PROP_DEFAULT_PROFILE_UUID,
   PROP_NEW_TAB_POSITION,
@@ -68,6 +69,8 @@ capsule_settings_changed_cb (CapsuleSettings *self,
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_VISUAL_BELL]);
   else if (g_str_equal (key, CAPSULE_SETTING_KEY_CURSOR_SHAPE))
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_CURSOR_SHAPE]);
+  else if (g_str_equal (key, CAPSULE_SETTING_KEY_CURSOR_BLINK_MODE))
+    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_CURSOR_BLINK_MODE]);
 }
 
 static void
@@ -92,6 +95,10 @@ capsule_settings_get_property (GObject    *object,
     {
     case PROP_AUDIBLE_BELL:
       g_value_set_boolean (value, capsule_settings_get_audible_bell (self));
+      break;
+
+    case PROP_CURSOR_BLINK_MODE:
+      g_value_set_enum (value, capsule_settings_get_cursor_blink_mode (self));
       break;
 
     case PROP_CURSOR_SHAPE:
@@ -133,6 +140,10 @@ capsule_settings_set_property (GObject      *object,
       capsule_settings_set_audible_bell (self, g_value_get_boolean (value));
       break;
 
+    case PROP_CURSOR_BLINK_MODE:
+      capsule_settings_set_cursor_blink_mode (self, g_value_get_enum (value));
+      break;
+
     case PROP_CURSOR_SHAPE:
       capsule_settings_set_cursor_shape (self, g_value_get_enum (value));
       break;
@@ -169,6 +180,14 @@ capsule_settings_class_init (CapsuleSettingsClass *klass)
                           (G_PARAM_READWRITE |
                            G_PARAM_EXPLICIT_NOTIFY |
                            G_PARAM_STATIC_STRINGS));
+
+  properties[PROP_CURSOR_BLINK_MODE] =
+    g_param_spec_enum ("cursor-blink-mode", NULL, NULL,
+                       VTE_TYPE_CURSOR_BLINK_MODE,
+                       VTE_CURSOR_BLINK_SYSTEM,
+                       (G_PARAM_READWRITE |
+                        G_PARAM_EXPLICIT_NOTIFY |
+                        G_PARAM_STATIC_STRINGS));
 
   properties[PROP_CURSOR_SHAPE] =
     g_param_spec_enum ("cursor-shape", NULL, NULL,
@@ -390,6 +409,25 @@ capsule_settings_set_visual_bell (CapsuleSettings *self,
   g_settings_set_boolean (self->settings,
                           CAPSULE_SETTING_KEY_VISUAL_BELL,
                           visual_bell);
+}
+
+VteCursorBlinkMode
+capsule_settings_get_cursor_blink_mode (CapsuleSettings *self)
+{
+  g_return_val_if_fail (CAPSULE_IS_SETTINGS (self), 0);
+
+  return g_settings_get_enum (self->settings, CAPSULE_SETTING_KEY_CURSOR_BLINK_MODE);
+}
+
+void
+capsule_settings_set_cursor_blink_mode (CapsuleSettings    *self,
+                                        VteCursorBlinkMode  cursor_blink_mode)
+{
+  g_return_if_fail (CAPSULE_IS_SETTINGS (self));
+
+  g_settings_set_enum (self->settings,
+                       CAPSULE_SETTING_KEY_CURSOR_BLINK_MODE,
+                       cursor_blink_mode);
 }
 
 VteCursorShape

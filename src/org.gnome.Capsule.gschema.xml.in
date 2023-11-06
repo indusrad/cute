@@ -19,6 +19,12 @@
 -->
 <schemalist gettext-domain=@GETTEXT_PACKAGE@>
 
+  <enum id="org.gnome.Capsule.CursorBlinkMode">
+    <value nick="system" value="0"/>
+    <value nick="on" value="1"/>
+    <value nick="off" value="2"/>
+  </enum>
+
   <enum id="org.gnome.Capsule.CursorShape">
     <value nick="block" value="0"/>
     <value nick="ibeam" value="1"/>
@@ -78,6 +84,12 @@
       <default>'block'</default>
       <summary>Cursor Shape</summary>
       <description>The default shape of the cursor</description>
+    </key>
+
+    <key name="cursor-blink-mode" enum="org.gnome.Capsule.CursorBlinkMode">
+      <default>'system'</default>
+      <summary>Cursor Blink Mode</summary>
+      <description>The default blink mode cursor</description>
     </key>
 
   </schema>

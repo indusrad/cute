@@ -378,7 +378,11 @@ capsule_tab_constructed (GObject *object)
   capsule_tab_profile_notify_opacity_cb (self, NULL, self->profile);
 
   settings = capsule_application_get_settings (CAPSULE_APPLICATION_DEFAULT);
-  g_object_bind_property (settings, "cursor-shape", self->terminal, "cursor-shape",
+  g_object_bind_property (settings, "cursor-shape",
+                          self->terminal, "cursor-shape",
+                          G_BINDING_SYNC_CREATE);
+  g_object_bind_property (settings, "cursor-blink-mode",
+                          self->terminal, "cursor-blink-mode",
                           G_BINDING_SYNC_CREATE);
 }
 

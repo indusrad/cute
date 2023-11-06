@@ -95,6 +95,37 @@
                 </property>
               </object>
             </child>
+            <child>
+              <object class="AdwComboRow" id="cursor_blink_mode">
+                <property name="title" translatable="yes">Cursor Blinking</property>
+                <property name="expression">
+                  <lookup name="title" type="CapsulePreferencesListItem"/>
+                </property>
+                <property name="model">
+                  <object class="GListStore" id="cursor_blink_modes">
+                    <property name="item-type">CapsulePreferencesListItem</property>
+                    <child>
+                      <object class="CapsulePreferencesListItem">
+                        <property name="title" translatable="yes">Default</property>
+                        <property name="value">'system'</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="CapsulePreferencesListItem">
+                        <property name="title" translatable="yes">Enabled</property>
+                        <property name="value">'on'</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="CapsulePreferencesListItem">
+                        <property name="title" translatable="yes">Disabled</property>
+                        <property name="value">'off'</property>
+                      </object>
+                    </child>
+                  </object>
+                </property>
+              </object>
+            </child>
           </object>
         </child>
         <child>
