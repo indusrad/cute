@@ -31,15 +31,16 @@ G_BEGIN_DECLS
 
 G_DECLARE_FINAL_TYPE (CapsuleWindow, capsule_window, CAPSULE, WINDOW, AdwApplicationWindow)
 
-CapsuleWindow *capsule_window_new             (void);
-CapsuleWindow *capsule_window_new_for_profile (CapsuleProfile *profile);
-void           capsule_window_add_tab         (CapsuleWindow  *self,
-                                               CapsuleTab     *tab);
-void           capsule_window_append_tab      (CapsuleWindow  *self,
-                                               CapsuleTab     *tab);
-CapsuleTab    *capsule_window_get_active_tab  (CapsuleWindow  *self);
-void           capsule_window_set_active_tab  (CapsuleWindow  *self,
-                                               CapsuleTab     *active_tab);
-void           capsule_window_visual_bell     (CapsuleWindow  *self);
+CapsuleWindow  *capsule_window_new                (void);
+CapsuleWindow  *capsule_window_new_for_profile    (CapsuleProfile *profile);
+void            capsule_window_add_tab            (CapsuleWindow  *self,
+                                                   CapsuleTab     *tab);
+void            capsule_window_append_tab         (CapsuleWindow  *self,
+                                                   CapsuleTab     *tab);
+CapsuleProfile *capsule_window_get_active_profile (CapsuleWindow  *self);
+CapsuleTab     *capsule_window_get_active_tab     (CapsuleWindow  *self);
+void            capsule_window_set_active_tab     (CapsuleWindow  *self,
+                                                   CapsuleTab     *active_tab);
+void            capsule_window_visual_bell        (CapsuleWindow  *self);
 
 G_END_DECLS

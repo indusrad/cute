@@ -607,3 +607,23 @@ capsule_window_visual_bell (CapsuleWindow *self)
                                                  g_object_ref (self),
                                                  g_object_unref);
 }
+
+/**
+ * capsule_window_get_active_profile:
+ * @self: a #CapsuleWindow
+ *
+ * Returns: (transfer none) (nullable): the profile of the active tab
+ *   or %NULL if no tab is active.
+ */
+CapsuleProfile *
+capsule_window_get_active_profile (CapsuleWindow *self)
+{
+  CapsuleTab *active_tab;
+
+  g_return_val_if_fail (CAPSULE_IS_WINDOW (self), NULL);
+
+  if ((active_tab = capsule_window_get_active_tab (self)))
+    return capsule_tab_get_profile (active_tab);
+
+  return NULL;
+}
