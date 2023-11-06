@@ -67,5 +67,6 @@ void              capsule_tab_set_zoom                           (CapsuleTab    
                                                                   CapsuleZoomLevel  zoom);
 void              capsule_tab_zoom_in                            (CapsuleTab       *self);
 void              capsule_tab_zoom_out                           (CapsuleTab       *self);
+void              capsule_tab_raise                              (CapsuleTab       *self);
 
 G_END_DECLS

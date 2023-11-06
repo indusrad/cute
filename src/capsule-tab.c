@@ -755,3 +755,16 @@ capsule_tab_get_terminal (CapsuleTab *self)
 
   return self->terminal;
 }
+
+void
+capsule_tab_raise (CapsuleTab *self)
+{
+  AdwTabView *tab_view;
+  AdwTabPage *tab_page;
+
+  g_return_if_fail (CAPSULE_IS_TAB (self));
+
+  if ((tab_view = ADW_TAB_VIEW (gtk_widget_get_ancestor (GTK_WIDGET (self), ADW_TYPE_TAB_VIEW))) &&
+      (tab_page = adw_tab_view_get_page (tab_view, GTK_WIDGET (self))))
+    adw_tab_view_set_selected_page (tab_view, tab_page);
+}
