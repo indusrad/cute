@@ -243,7 +243,7 @@ capsule_settings_class_init (CapsuleSettingsClass *klass)
                          G_PARAM_STATIC_STRINGS));
 
   properties[PROP_FONT_NAME] =
-    g_param_spec_string ("font-string", NULL, NULL,
+    g_param_spec_string ("font-name", NULL, NULL,
                          NULL,
                          (G_PARAM_READWRITE |
                           G_PARAM_EXPLICIT_NOTIFY |
