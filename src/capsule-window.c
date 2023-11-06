@@ -305,7 +305,6 @@ capsule_window_active_tab_bell_cb (CapsuleWindow *self,
   g_assert (CAPSULE_IS_WINDOW (self));
   g_assert (CAPSULE_IS_TAB (tab));
 
-  capsule_window_audible_bell (self);
   capsule_window_visual_bell (self);
 }
 
@@ -599,22 +598,4 @@ capsule_window_visual_bell (CapsuleWindow *self)
                                                  capsule_window_remove_visual_bell,
                                                  g_object_ref (self),
                                                  g_object_unref);
-}
-
-void
-capsule_window_audible_bell (CapsuleWindow *self)
-{
-  CapsuleSettings *settings;
-  GdkSurface *surface;
-
-  g_return_if_fail (CAPSULE_IS_WINDOW (self));
-
-  settings = capsule_application_get_settings (CAPSULE_APPLICATION_DEFAULT);
-  if (!capsule_settings_get_audible_bell (settings))
-    return;
-
-  if (!(surface = gtk_native_get_surface (GTK_NATIVE (self))))
-    return;
-
-  gdk_surface_beep (surface);
 }
