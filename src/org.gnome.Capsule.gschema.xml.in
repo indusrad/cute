@@ -19,6 +19,12 @@
 -->
 <schemalist gettext-domain=@GETTEXT_PACKAGE@>
 
+  <enum id="org.gnome.Capsule.CursorShape">
+    <value nick="block" value="0"/>
+    <value nick="ibeam" value="1"/>
+    <value nick="underline" value="2"/>
+  </enum>
+
   <enum id="org.gnome.Capsule.ExitAction">
     <value nick="none" value="0"/>
     <value nick="restart" value="1"/>
@@ -66,6 +72,12 @@
       <default>true</default>
       <summary>Visible Bell</summary>
       <description>If a visual bell should be used</description>
+    </key>
+
+    <key name="cursor-shape" enum="org.gnome.Capsule.CursorShape">
+      <default>'block'</default>
+      <summary>Cursor Shape</summary>
+      <description>The default shape of the cursor</description>
     </key>
 
   </schema>
