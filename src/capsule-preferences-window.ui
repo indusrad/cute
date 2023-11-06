@@ -65,6 +65,18 @@
                     </child>
                     <child>
                       <object class="CapsulePreferencesListItem">
+                        <property name="title" translatable="yes">Dracula</property>
+                        <property name="value">'dracula'</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="CapsulePreferencesListItem">
+                        <property name="title" translatable="yes">Nord</property>
+                        <property name="value">'nord'</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="CapsulePreferencesListItem">
                         <property name="title" translatable="yes">XTerm</property>
                         <property name="value">'xterm'</property>
                       </object>

@@ -144,6 +144,68 @@ static const CapsulePaletteData palettes[] = {
   },
 
   {
+    .id = "dracula",
+    .name = N_("Dracula"),
+    .light = {
+      .foreground = GDK_RGBA ("F8F8F2"),
+      .background = GDK_RGBA ("282A36"),
+    },
+    .dark = {
+      .foreground = GDK_RGBA ("F8F8F2"),
+      .background = GDK_RGBA ("282A36"),
+    },
+    .indexed = {
+      GDK_RGBA ("21222c"),
+      GDK_RGBA ("ff5555"),
+      GDK_RGBA ("50fa7b"),
+      GDK_RGBA ("f1fa8c"),
+      GDK_RGBA ("bd93f9"),
+      GDK_RGBA ("ff79c6"),
+      GDK_RGBA ("8be9fd"),
+      GDK_RGBA ("f8f8f2"),
+      GDK_RGBA ("6272a4"),
+      GDK_RGBA ("ff6e6e"),
+      GDK_RGBA ("69ff94"),
+      GDK_RGBA ("ffffa5"),
+      GDK_RGBA ("d6acff"),
+      GDK_RGBA ("ff92df"),
+      GDK_RGBA ("a4ffff"),
+      GDK_RGBA ("ffffff"),
+    }
+  },
+
+  {
+    .id = "nord",
+    .name = N_("Nord"),
+    .light = {
+      .foreground = GDK_RGBA ("d8dee9"),
+      .background = GDK_RGBA ("2e3440"),
+    },
+    .dark = {
+      .foreground = GDK_RGBA ("d8dee9"),
+      .background = GDK_RGBA ("2e3440"),
+    },
+    .indexed = {
+      GDK_RGBA ("3b4252"),
+      GDK_RGBA ("bf616a"),
+      GDK_RGBA ("a3be8c"),
+      GDK_RGBA ("ebcb8b"),
+      GDK_RGBA ("81a1c1"),
+      GDK_RGBA ("b48ead"),
+      GDK_RGBA ("88c0d0"),
+      GDK_RGBA ("e5e9f0"),
+      GDK_RGBA ("4c566a"),
+      GDK_RGBA ("bf616a"),
+      GDK_RGBA ("a3be8c"),
+      GDK_RGBA ("ebcb8b"),
+      GDK_RGBA ("81a1c1"),
+      GDK_RGBA ("b48ead"),
+      GDK_RGBA ("8fbcbb"),
+      GDK_RGBA ("eceff4"),
+    }
+  },
+
+  {
     .id = "linux",
     .name = N_("Linux"),
     .light = {
