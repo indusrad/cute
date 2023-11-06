@@ -31,74 +31,46 @@
     <property name="default-height">700</property>
     <child>
       <object class="AdwPreferencesPage">
-        <property name="title" translatable="yes">Preferences</property>
-          <child>
-            <object class="AdwPreferencesGroup">
-              <property name="title" translatable="yes">Font</property>
-              <child>
-                <object class="AdwSwitchRow" id="use_system_font">
-                  <property name="title" translatable="yes">Use System Font</property>
-                </object>
-              </child>
-              <child>
-                <object class="AdwActionRow" id="font_name_row">
-                  <property name="action-name">settings.select-custom-font</property>
-                  <property name="activatable">true</property>
-                  <property name="title" translatable="yes">Custom Font</property>
-                  <child type="suffix">
-                    <object class="GtkBox">
-                      <property name="hexpand">true</property>
-                      <property name="spacing">12</property>
-                      <child>
-                        <object class="GtkLabel" id="font_name">
-                          <property name="hexpand">true</property>
-                          <property name="xalign">1</property>
-                          <property name="ellipsize">end</property>
-                        </object>
-                      </child>
-                      <child>
-                        <object class="GtkImage">
-                          <property name="icon-name">go-next-symbolic</property>
-                        </object>
-                      </child>
-                    </object>
-                  </child>
-                </object>
-              </child>
-            </object>
-          </child>
+        <property name="title" translatable="yes">Appearance</property>
+        <property name="icon-name">font-select-symbolic</property>
         <child>
           <object class="AdwPreferencesGroup">
-            <property name="title" translatable="yes">Behavior</property>
+            <property name="title" translatable="yes">Font</property>
             <child>
-              <object class="AdwComboRow" id="tab_position">
-                <property name="title" translatable="yes">New Tab Position</property>
-                <property name="expression">
-                  <lookup name="title" type="CapsulePreferencesListItem"/>
-                </property>
-                <property name="model">
-                  <object class="GListStore" id="tab_positions">
-                    <property name="item-type">CapsulePreferencesListItem</property>
+              <object class="AdwSwitchRow" id="use_system_font">
+                <property name="title" translatable="yes">Use System Font</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwActionRow" id="font_name_row">
+                <property name="action-name">settings.select-custom-font</property>
+                <property name="activatable">true</property>
+                <property name="title" translatable="yes">Custom Font</property>
+                <child type="suffix">
+                  <object class="GtkBox">
+                    <property name="hexpand">true</property>
+                    <property name="spacing">12</property>
                     <child>
-                      <object class="CapsulePreferencesListItem">
-                        <property name="title" translatable="yes">Next</property>
-                        <property name="value">'next'</property>
+                      <object class="GtkLabel" id="font_name">
+                        <property name="hexpand">true</property>
+                        <property name="xalign">1</property>
+                        <property name="ellipsize">end</property>
                       </object>
                     </child>
                     <child>
-                      <object class="CapsulePreferencesListItem">
-                        <property name="title" translatable="yes">Last</property>
-                        <property name="value">'last'</property>
+                      <object class="GtkImage">
+                        <property name="icon-name">go-next-symbolic</property>
                       </object>
                     </child>
                   </object>
-                </property>
+                </child>
               </object>
             </child>
           </object>
         </child>
         <child>
           <object class="AdwPreferencesGroup">
+            <property name="title" translatable="yes">Cursor</property>
             <child>
               <object class="AdwComboRow" id="cursor_shape">
                 <property name="title" translatable="yes">Cursor Shape</property>
@@ -163,8 +135,45 @@
             </child>
           </object>
         </child>
+      </object>
+    </child>
+    <child>
+      <object class="AdwPreferencesPage">
+        <property name="title" translatable="yes">Behavior</property>
+        <property name="icon-name">preferences-desktop-accessibility-symbolic</property>
         <child>
           <object class="AdwPreferencesGroup">
+            <property name="title" translatable="yes">Tabs</property>
+            <child>
+              <object class="AdwComboRow" id="tab_position">
+                <property name="title" translatable="yes">New Tab Position</property>
+                <property name="expression">
+                  <lookup name="title" type="CapsulePreferencesListItem"/>
+                </property>
+                <property name="model">
+                  <object class="GListStore" id="tab_positions">
+                    <property name="item-type">CapsulePreferencesListItem</property>
+                    <child>
+                      <object class="CapsulePreferencesListItem">
+                        <property name="title" translatable="yes">Next</property>
+                        <property name="value">'next'</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="CapsulePreferencesListItem">
+                        <property name="title" translatable="yes">Last</property>
+                        <property name="value">'last'</property>
+                      </object>
+                    </child>
+                  </object>
+                </property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title" translatable="yes">Bell</property>
             <child>
               <object class="AdwSwitchRow" id="audible_bell">
                 <property name="title" translatable="yes">Audible Bell</property>
@@ -179,6 +188,12 @@
             </child>
           </object>
         </child>
+      </object>
+    </child>
+    <child>
+      <object class="AdwPreferencesPage">
+        <property name="title" translatable="yes">Shortcuts</property>
+        <property name="icon-name">preferences-desktop-keyboard-shortcuts-symbolic</property>
         <child>
           <object class="AdwPreferencesGroup">
             <child>
@@ -195,6 +210,12 @@
             </child>
           </object>
         </child>
+      </object>
+    </child>
+    <child>
+      <object class="AdwPreferencesPage">
+        <property name="title" translatable="yes">Profiles</property>
+        <property name="icon-name">system-users-symbolic</property>
         <child>
           <object class="AdwPreferencesGroup">
             <property name="title" translatable="yes">Profiles</property>
@@ -228,4 +249,3 @@
     </child>
   </template>
 </interface>
-
