@@ -234,6 +234,7 @@ capsule_preferences_window_get_default (void)
   if (instance == NULL)
     {
       instance = g_object_new (CAPSULE_TYPE_PREFERENCES_WINDOW, NULL);
+      gtk_window_set_modal (GTK_WINDOW (instance), FALSE);
       g_object_add_weak_pointer (G_OBJECT (instance), (gpointer *)&instance);
     }
 
