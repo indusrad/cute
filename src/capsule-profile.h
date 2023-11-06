@@ -55,9 +55,6 @@ void                      capsule_profile_apply                   (CapsuleProfil
                                                                    const char                 *current_directory_uri,
                                                                    const char                 *default_shell);
 const char               *capsule_profile_get_uuid                (CapsuleProfile             *self);
-gboolean                  capsule_profile_get_audible_bell        (CapsuleProfile             *self);
-void                      capsule_profile_set_audible_bell        (CapsuleProfile             *self,
-                                                                   gboolean                    audible_bell);
 char                     *capsule_profile_dup_default_container   (CapsuleProfile             *self);
 void                      capsule_profile_set_default_container   (CapsuleProfile             *self,
                                                                    const char                 *default_container);
