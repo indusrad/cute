@@ -120,6 +120,13 @@
       <description>Limit the number of lines to keep for scrollback</description>
     </key>
 
+    <key name="scrollback-lines" type="i">
+      <default>10000</default>
+      <range min="0" max="2147483647"/>
+      <summary>Scrollback Lines</summary>
+      <description>The number of lines to keep in the scrollback, zero for no scrollback</description>
+    </key>
+
     <key name="scroll-on-output" type="b">
       <default>false</default>
       <summary>Scroll on Output</summary>

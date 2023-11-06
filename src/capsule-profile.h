@@ -64,6 +64,9 @@ void                      capsule_profile_set_label               (CapsuleProfil
 gboolean                  capsule_profile_get_limit_scrollback    (CapsuleProfile             *self);
 void                      capsule_profile_set_limit_scrollback    (CapsuleProfile             *self,
                                                                    gboolean                    limit_scrollback);
+int                       capsule_profile_get_scrollback_lines    (CapsuleProfile             *self);
+void                      capsule_profile_set_scrollback_lines    (CapsuleProfile             *self,
+                                                                   int                         scrollback_lines);
 gboolean                  capsule_profile_get_scroll_on_keystroke (CapsuleProfile             *self);
 void                      capsule_profile_set_scroll_on_keystroke (CapsuleProfile             *self,
                                                                    gboolean                    scroll_on_keystroke);

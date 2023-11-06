@@ -99,6 +99,19 @@ static double zoom_font_scales[] = {
 };
 
 static void
+capsule_tab_update_scrollback_lines (CapsuleTab *self)
+{
+  long scrollback_lines = -1;
+
+  g_assert (CAPSULE_IS_TAB (self));
+
+  if (capsule_profile_get_limit_scrollback (self->profile))
+    scrollback_lines = capsule_profile_get_scrollback_lines (self->profile);
+
+  vte_terminal_set_scrollback_lines (VTE_TERMINAL (self->terminal), scrollback_lines);
+}
+
+static void
 capsule_tab_wait_check_cb (GObject      *object,
                            GAsyncResult *result,
                            gpointer      user_data)
@@ -388,6 +401,18 @@ capsule_tab_constructed (GObject *object)
   g_object_bind_property (settings, "font-desc",
                           self->terminal, "font-desc",
                           G_BINDING_SYNC_CREATE);
+
+  g_signal_connect_object (G_OBJECT (self->profile),
+                           "notify::limit-scrollback",
+                           G_CALLBACK (capsule_tab_update_scrollback_lines),
+                           self,
+                           G_CONNECT_SWAPPED);
+  g_signal_connect_object (G_OBJECT (self->profile),
+                           "notify::scrollback-lines",
+                           G_CALLBACK (capsule_tab_update_scrollback_lines),
+                           self,
+                           G_CONNECT_SWAPPED);
+  capsule_tab_update_scrollback_lines (self);
 }
 
 static void

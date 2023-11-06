@@ -39,6 +39,7 @@
 #define CAPSULE_PROFILE_KEY_PRESERVE_DIRECTORY  "preserve-directory"
 #define CAPSULE_PROFILE_KEY_SCROLL_ON_KEYSTROKE "scroll-on-keystroke"
 #define CAPSULE_PROFILE_KEY_SCROLL_ON_OUTPUT    "scroll-on-output"
+#define CAPSULE_PROFILE_KEY_SCROLLBACK_LINES    "scrollback-lines"
 
 struct _CapsuleProfile
 {
@@ -58,6 +59,7 @@ enum {
   PROP_PRESERVE_DIRECTORY,
   PROP_SCROLL_ON_KEYSTROKE,
   PROP_SCROLL_ON_OUTPUT,
+  PROP_SCROLLBACK_LINES,
   PROP_UUID,
   N_PROPS
 };
@@ -88,6 +90,8 @@ capsule_profile_changed_cb (CapsuleProfile *self,
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_OPACITY]);
   else if (g_str_equal (key, CAPSULE_PROFILE_KEY_LIMIT_SCROLLBACK))
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_LIMIT_SCROLLBACK]);
+  else if (g_str_equal (key, CAPSULE_PROFILE_KEY_SCROLLBACK_LINES))
+    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_SCROLLBACK_LINES]);
 }
 
 static void
@@ -168,6 +172,10 @@ capsule_profile_get_property (GObject    *object,
       g_value_set_boolean (value, capsule_profile_get_scroll_on_output (self));
       break;
 
+    case PROP_SCROLLBACK_LINES:
+      g_value_set_int (value, capsule_profile_get_scrollback_lines (self));
+      break;
+
     case PROP_UUID:
       g_value_set_string (value, capsule_profile_get_uuid (self));
       break;
@@ -221,6 +229,10 @@ capsule_profile_set_property (GObject      *object,
 
     case PROP_SCROLL_ON_OUTPUT:
       capsule_profile_set_scroll_on_output (self, g_value_get_boolean (value));
+      break;
+
+    case PROP_SCROLLBACK_LINES:
+      capsule_profile_set_scrollback_lines (self, g_value_get_int (value));
       break;
 
     case PROP_UUID:
@@ -306,6 +318,13 @@ capsule_profile_class_init (CapsuleProfileClass *klass)
                          (G_PARAM_READWRITE |
                           G_PARAM_EXPLICIT_NOTIFY |
                           G_PARAM_STATIC_STRINGS));
+
+  properties[PROP_SCROLLBACK_LINES] =
+    g_param_spec_int ("scrollback-lines", NULL, NULL,
+                      0, G_MAXINT, 10000,
+                      (G_PARAM_READWRITE |
+                       G_PARAM_EXPLICIT_NOTIFY |
+                       G_PARAM_STATIC_STRINGS));
 
   properties[PROP_UUID] =
     g_param_spec_string ("uuid", NULL, NULL,
@@ -627,4 +646,23 @@ capsule_profile_set_limit_scrollback (CapsuleProfile *self,
   g_settings_set_boolean (self->settings,
                           CAPSULE_PROFILE_KEY_LIMIT_SCROLLBACK,
                           limit_scrollback);
+}
+
+int
+capsule_profile_get_scrollback_lines (CapsuleProfile *self)
+{
+  g_return_val_if_fail (CAPSULE_IS_PROFILE (self), 0);
+
+  return g_settings_get_int (self->settings, CAPSULE_PROFILE_KEY_SCROLLBACK_LINES);
+}
+
+void
+capsule_profile_set_scrollback_lines (CapsuleProfile *self,
+                                      int             scrollback_lines)
+{
+  g_return_if_fail (CAPSULE_IS_PROFILE (self));
+
+  g_settings_set_int (self->settings,
+                      CAPSULE_PROFILE_KEY_SCROLLBACK_LINES,
+                      scrollback_lines);
 }
