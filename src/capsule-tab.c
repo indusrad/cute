@@ -266,6 +266,9 @@ capsule_tab_respawn (CapsuleTab *self)
           return;
         }
 
+      if (!vte_pty_set_utf8 (new_pty, TRUE, &error))
+        g_debug ("Failed to set UTF-8 mode for PTY: %s", error->message);
+
       vte_terminal_set_pty (VTE_TERMINAL (self->terminal), new_pty);
 
       pty = new_pty;
