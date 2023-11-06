@@ -367,9 +367,6 @@ capsule_tab_constructed (GObject *object)
 
   G_OBJECT_CLASS (capsule_tab_parent_class)->constructed (object);
 
-  g_object_bind_property (self->profile, "palette", self->terminal, "palette",
-                          G_BINDING_SYNC_CREATE);
-
   g_signal_connect_object (self->profile,
                            "notify::opacity",
                            G_CALLBACK (capsule_tab_profile_notify_opacity_cb),
@@ -386,6 +383,9 @@ capsule_tab_constructed (GObject *object)
                           G_BINDING_SYNC_CREATE);
   g_object_bind_property (settings, "cursor-blink-mode",
                           self->terminal, "cursor-blink-mode",
+                          G_BINDING_SYNC_CREATE);
+  g_object_bind_property (settings, "font-desc",
+                          self->terminal, "font-desc",
                           G_BINDING_SYNC_CREATE);
 }
 

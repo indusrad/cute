@@ -80,6 +80,18 @@
       <description>If a visual bell should be used</description>
     </key>
 
+    <key name="use-system-font" type="b">
+      <default>true</default>
+      <summary>Use System Font</summary>
+      <description>If the default system monospace font should be used</description>
+    </key>
+
+    <key name="font-name" type="s">
+      <default>''</default>
+      <summary>Font Name</summary>
+      <description>The font description to use if use-system-font is set to False</description>
+    </key>
+
     <key name="cursor-shape" enum="org.gnome.Capsule.CursorShape">
       <default>'block'</default>
       <summary>Cursor Shape</summary>
@@ -100,18 +112,6 @@
       <default>''</default>
       <summary>Label</summary>
       <description>The label for the profile</description>
-    </key>
-
-    <key name="use-system-font" type="b">
-      <default>true</default>
-      <summary>Use System Font</summary>
-      <description>If the default system monospace font should be used</description>
-    </key>
-
-    <key name="font-name" type="s">
-      <default>''</default>
-      <summary>Font Name</summary>
-      <description>The font description to use if use-system-font is set to False</description>
     </key>
 
     <key name="scroll-on-output" type="b">

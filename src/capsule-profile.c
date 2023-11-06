@@ -32,14 +32,12 @@
 
 #define CAPSULE_PROFILE_KEY_DEFAULT_CONTAINER   "default-container"
 #define CAPSULE_PROFILE_KEY_EXIT_ACTION         "exit-action"
-#define CAPSULE_PROFILE_KEY_FONT_NAME           "font-name"
 #define CAPSULE_PROFILE_KEY_LABEL               "label"
 #define CAPSULE_PROFILE_KEY_OPACITY             "opacity"
 #define CAPSULE_PROFILE_KEY_PALETTE             "palette"
 #define CAPSULE_PROFILE_KEY_PRESERVE_DIRECTORY  "preserve-directory"
 #define CAPSULE_PROFILE_KEY_SCROLL_ON_KEYSTROKE "scroll-on-keystroke"
 #define CAPSULE_PROFILE_KEY_SCROLL_ON_OUTPUT    "scroll-on-output"
-#define CAPSULE_PROFILE_KEY_USE_SYSTEM_FONT     "use-system-font"
 
 struct _CapsuleProfile
 {
@@ -52,15 +50,12 @@ enum {
   PROP_0,
   PROP_DEFAULT_CONTAINER,
   PROP_EXIT_ACTION,
-  PROP_FONT_DESC,
-  PROP_FONT_NAME,
   PROP_LABEL,
   PROP_OPACITY,
   PROP_PALETTE,
   PROP_PRESERVE_DIRECTORY,
   PROP_SCROLL_ON_KEYSTROKE,
   PROP_SCROLL_ON_OUTPUT,
-  PROP_USE_SYSTEM_FONT,
   PROP_UUID,
   N_PROPS
 };
@@ -79,16 +74,6 @@ capsule_profile_changed_cb (CapsuleProfile *self,
   g_assert (G_IS_SETTINGS (settings));
 
   if (FALSE) {}
-  else if (g_str_equal (key, CAPSULE_PROFILE_KEY_FONT_NAME))
-    {
-      g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_FONT_NAME]);
-      g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_FONT_DESC]);
-    }
-  else if (g_str_equal (key, CAPSULE_PROFILE_KEY_USE_SYSTEM_FONT))
-    {
-      g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_USE_SYSTEM_FONT]);
-      g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_FONT_DESC]);
-    }
   else if (g_str_equal (key, CAPSULE_PROFILE_KEY_LABEL))
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_LABEL]);
   else if (g_str_equal (key, CAPSULE_PROFILE_KEY_DEFAULT_CONTAINER))
@@ -151,14 +136,6 @@ capsule_profile_get_property (GObject    *object,
       g_value_set_enum (value, capsule_profile_get_exit_action (self));
       break;
 
-    case PROP_FONT_DESC:
-      g_value_take_boxed (value, capsule_profile_dup_font_desc (self));
-      break;
-
-    case PROP_FONT_NAME:
-      g_value_take_string (value, capsule_profile_dup_font_name (self));
-      break;
-
     case PROP_LABEL:
       g_value_take_string (value, capsule_profile_dup_label (self));
       break;
@@ -181,10 +158,6 @@ capsule_profile_get_property (GObject    *object,
 
     case PROP_SCROLL_ON_OUTPUT:
       g_value_set_boolean (value, capsule_profile_get_scroll_on_output (self));
-      break;
-
-    case PROP_USE_SYSTEM_FONT:
-      g_value_set_boolean (value, capsule_profile_get_use_system_font (self));
       break;
 
     case PROP_UUID:
@@ -214,14 +187,6 @@ capsule_profile_set_property (GObject      *object,
       capsule_profile_set_exit_action (self, g_value_get_enum (value));
       break;
 
-    case PROP_FONT_DESC:
-      capsule_profile_set_font_desc (self, g_value_get_boxed (value));
-      break;
-
-    case PROP_FONT_NAME:
-      capsule_profile_set_font_name (self, g_value_get_string (value));
-      break;
-
     case PROP_LABEL:
       capsule_profile_set_label (self, g_value_get_string (value));
       break;
@@ -244,10 +209,6 @@ capsule_profile_set_property (GObject      *object,
 
     case PROP_SCROLL_ON_OUTPUT:
       capsule_profile_set_scroll_on_output (self, g_value_get_boolean (value));
-      break;
-
-    case PROP_USE_SYSTEM_FONT:
-      capsule_profile_set_use_system_font (self, g_value_get_boolean (value));
       break;
 
     case PROP_UUID:
@@ -283,20 +244,6 @@ capsule_profile_class_init (CapsuleProfileClass *klass)
                        (G_PARAM_READWRITE |
                         G_PARAM_EXPLICIT_NOTIFY |
                         G_PARAM_STATIC_STRINGS));
-
-  properties[PROP_FONT_DESC] =
-    g_param_spec_boxed ("font-desc", NULL, NULL,
-                        PANGO_TYPE_FONT_DESCRIPTION,
-                        (G_PARAM_READWRITE |
-                         G_PARAM_EXPLICIT_NOTIFY |
-                         G_PARAM_STATIC_STRINGS));
-
-  properties[PROP_FONT_NAME] =
-    g_param_spec_string ("font-name", NULL, NULL,
-                         NULL,
-                         (G_PARAM_READWRITE |
-                          G_PARAM_EXPLICIT_NOTIFY |
-                          G_PARAM_STATIC_STRINGS));
 
   properties[PROP_LABEL] =
     g_param_spec_string ("label", NULL, NULL,
@@ -341,13 +288,6 @@ capsule_profile_class_init (CapsuleProfileClass *klass)
                           G_PARAM_EXPLICIT_NOTIFY |
                           G_PARAM_STATIC_STRINGS));
 
-  properties[PROP_USE_SYSTEM_FONT] =
-    g_param_spec_boolean ("use-system-font", NULL, NULL,
-                          FALSE,
-                          (G_PARAM_READWRITE |
-                           G_PARAM_EXPLICIT_NOTIFY |
-                           G_PARAM_STATIC_STRINGS));
-
   properties[PROP_UUID] =
     g_param_spec_string ("uuid", NULL, NULL,
                          NULL,
@@ -385,77 +325,6 @@ capsule_profile_get_uuid (CapsuleProfile *self)
   g_return_val_if_fail (CAPSULE_IS_PROFILE (self), NULL);
 
   return self->uuid;
-}
-
-char *
-capsule_profile_dup_font_name (CapsuleProfile *self)
-{
-  g_return_val_if_fail (CAPSULE_IS_PROFILE (self), NULL);
-
-  return g_settings_get_string (self->settings, CAPSULE_PROFILE_KEY_FONT_NAME);
-}
-
-void
-capsule_profile_set_font_name (CapsuleProfile *self,
-                               const char     *font_name)
-{
-  g_return_if_fail (CAPSULE_IS_PROFILE (self));
-
-  if (font_name == NULL)
-    font_name = "";
-
-  g_settings_set_string (self->settings, CAPSULE_PROFILE_KEY_FONT_NAME, font_name);
-}
-
-gboolean
-capsule_profile_get_use_system_font (CapsuleProfile *self)
-{
-  g_return_val_if_fail (CAPSULE_IS_PROFILE (self), FALSE);
-
-  return g_settings_get_boolean (self->settings, CAPSULE_PROFILE_KEY_USE_SYSTEM_FONT);
-}
-
-void
-capsule_profile_set_use_system_font (CapsuleProfile *self,
-                                     gboolean        use_system_font)
-{
-  g_return_if_fail (CAPSULE_IS_PROFILE (self));
-
-  g_settings_set_boolean (self->settings, CAPSULE_PROFILE_KEY_USE_SYSTEM_FONT, use_system_font);
-}
-
-PangoFontDescription *
-capsule_profile_dup_font_desc (CapsuleProfile *self)
-{
-  CapsuleApplication *app;
-  g_autofree char *font_name = NULL;
-  const char *system_font_name;
-
-  g_return_val_if_fail (CAPSULE_IS_PROFILE (self), NULL);
-
-  app = CAPSULE_APPLICATION_DEFAULT;
-  system_font_name = capsule_application_get_system_font_name (app);
-
-  if (capsule_profile_get_use_system_font (self) ||
-      !(font_name = capsule_profile_dup_font_name (self)) ||
-      font_name[0] == 0)
-    return pango_font_description_from_string (system_font_name);
-
-  return pango_font_description_from_string (font_name);
-}
-
-void
-capsule_profile_set_font_desc (CapsuleProfile             *self,
-                               const PangoFontDescription *font_desc)
-{
-  g_autofree char *font_name = NULL;
-
-  g_return_if_fail (CAPSULE_IS_PROFILE (self));
-
-  if (font_desc != NULL)
-    font_name = pango_font_description_to_string (font_desc);
-
-  capsule_profile_set_font_name (self, font_name);
 }
 
 char *

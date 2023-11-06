@@ -42,8 +42,8 @@
                 <signal name="decrease-font-size" handler="capsule_tab_decrease_font_size_cb" swapped="1"/>
                 <signal name="increase-font-size" handler="capsule_tab_increase_font_size_cb" swapped="1"/>
                 <signal name="bell" handler="capsule_tab_bell_cb" swapped="1"/>
-                <binding name="font-desc">
-                  <lookup name="font-desc" type="CapsuleProfile">
+                <binding name="palette">
+                  <lookup name="palette" type="CapsuleProfile">
                     <lookup name="profile">CapsuleTab</lookup>
                   </lookup>
                 </binding>

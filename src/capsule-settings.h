@@ -29,8 +29,10 @@ G_BEGIN_DECLS
 #define CAPSULE_SETTING_KEY_CURSOR_BLINK_MODE    "cursor-blink-mode"
 #define CAPSULE_SETTING_KEY_CURSOR_SHAPE         "cursor-shape"
 #define CAPSULE_SETTING_KEY_DEFAULT_PROFILE_UUID "default-profile-uuid"
+#define CAPSULE_SETTING_KEY_FONT_NAME            "font-name"
 #define CAPSULE_SETTING_KEY_NEW_TAB_POSITION     "new-tab-position"
 #define CAPSULE_SETTING_KEY_PROFILE_UUIDS        "profile-uuids"
+#define CAPSULE_SETTING_KEY_USE_SYSTEM_FONT      "use-system-font"
 #define CAPSULE_SETTING_KEY_VISUAL_BELL          "visual-bell"
 
 typedef enum _CapsuleNewTabPosition
@@ -44,29 +46,38 @@ typedef enum _CapsuleNewTabPosition
 G_DECLARE_FINAL_TYPE (CapsuleSettings, capsule_settings, CAPSULE, SETTINGS, GObject)
 
 CapsuleSettings        *capsule_settings_new                      (void);
-GSettings              *capsule_settings_get_settings             (CapsuleSettings       *self);
-char                   *capsule_settings_dup_default_profile_uuid (CapsuleSettings       *self);
-void                    capsule_settings_set_default_profile_uuid (CapsuleSettings       *self,
-                                                                   const char            *uuid);
-char                  **capsule_settings_dup_profile_uuids        (CapsuleSettings       *self);
-void                    capsule_settings_add_profile_uuid         (CapsuleSettings       *self,
-                                                                   const char            *uuid);
-void                    capsule_settings_remove_profile_uuid      (CapsuleSettings       *self,
-                                                                   const char            *uuid);
-CapsuleNewTabPosition   capsule_settings_get_new_tab_position     (CapsuleSettings       *self);
-void                    capsule_settings_set_new_tab_position     (CapsuleSettings       *self,
-                                                                   CapsuleNewTabPosition  new_tab_position);
-gboolean                capsule_settings_get_audible_bell         (CapsuleSettings       *self);
-void                    capsule_settings_set_audible_bell         (CapsuleSettings       *self,
-                                                                   gboolean               audible_bell);
-gboolean                capsule_settings_get_visual_bell          (CapsuleSettings       *self);
-void                    capsule_settings_set_visual_bell          (CapsuleSettings       *self,
-                                                                   gboolean               visual_bell);
-VteCursorBlinkMode      capsule_settings_get_cursor_blink_mode    (CapsuleSettings       *self);
-void                    capsule_settings_set_cursor_blink_mode    (CapsuleSettings       *self,
-                                                                   VteCursorBlinkMode     blink_mode);
-VteCursorShape          capsule_settings_get_cursor_shape         (CapsuleSettings       *self);
-void                    capsule_settings_set_cursor_shape         (CapsuleSettings       *self,
-                                                                   VteCursorShape         cursor_shape);
+GSettings              *capsule_settings_get_settings             (CapsuleSettings            *self);
+char                   *capsule_settings_dup_default_profile_uuid (CapsuleSettings            *self);
+void                    capsule_settings_set_default_profile_uuid (CapsuleSettings            *self,
+                                                                   const char                 *uuid);
+char                  **capsule_settings_dup_profile_uuids        (CapsuleSettings            *self);
+void                    capsule_settings_add_profile_uuid         (CapsuleSettings            *self,
+                                                                   const char                 *uuid);
+void                    capsule_settings_remove_profile_uuid      (CapsuleSettings            *self,
+                                                                   const char                 *uuid);
+CapsuleNewTabPosition   capsule_settings_get_new_tab_position     (CapsuleSettings            *self);
+void                    capsule_settings_set_new_tab_position     (CapsuleSettings            *self,
+                                                                   CapsuleNewTabPosition       new_tab_position);
+gboolean                capsule_settings_get_audible_bell         (CapsuleSettings            *self);
+void                    capsule_settings_set_audible_bell         (CapsuleSettings            *self,
+                                                                   gboolean                    audible_bell);
+gboolean                capsule_settings_get_visual_bell          (CapsuleSettings            *self);
+void                    capsule_settings_set_visual_bell          (CapsuleSettings            *self,
+                                                                   gboolean                    visual_bell);
+VteCursorBlinkMode      capsule_settings_get_cursor_blink_mode    (CapsuleSettings            *self);
+void                    capsule_settings_set_cursor_blink_mode    (CapsuleSettings            *self,
+                                                                   VteCursorBlinkMode          blink_mode);
+VteCursorShape          capsule_settings_get_cursor_shape         (CapsuleSettings            *self);
+void                    capsule_settings_set_cursor_shape         (CapsuleSettings            *self,
+                                                                   VteCursorShape              cursor_shape);
+PangoFontDescription   *capsule_settings_dup_font_desc            (CapsuleSettings            *self);
+void                    capsule_settings_set_font_desc            (CapsuleSettings            *self,
+                                                                   const PangoFontDescription *font_desc);
+char                   *capsule_settings_dup_font_name            (CapsuleSettings            *self);
+void                    capsule_settings_set_font_name            (CapsuleSettings            *self,
+                                                                   const char                 *font_name);
+gboolean                capsule_settings_get_use_system_font      (CapsuleSettings            *self);
+void                    capsule_settings_set_use_system_font      (CapsuleSettings            *self,
+                                                                   gboolean                    use_system_font);
 
 G_END_DECLS

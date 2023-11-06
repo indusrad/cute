@@ -23,6 +23,7 @@
 
 #include <gio/gio.h>
 
+#include "capsule-application.h"
 #include "capsule-enums.h"
 #include "capsule-settings.h"
 
@@ -38,8 +39,11 @@ enum {
   PROP_CURSOR_BLINK_MODE,
   PROP_CURSOR_SHAPE,
   PROP_DEFAULT_PROFILE_UUID,
+  PROP_FONT_DESC,
+  PROP_FONT_NAME,
   PROP_NEW_TAB_POSITION,
   PROP_PROFILE_UUIDS,
+  PROP_USE_SYSTEM_FONT,
   PROP_VISUAL_BELL,
   N_PROPS
 };
@@ -71,6 +75,16 @@ capsule_settings_changed_cb (CapsuleSettings *self,
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_CURSOR_SHAPE]);
   else if (g_str_equal (key, CAPSULE_SETTING_KEY_CURSOR_BLINK_MODE))
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_CURSOR_BLINK_MODE]);
+  else if (g_str_equal (key, CAPSULE_SETTING_KEY_FONT_NAME))
+    {
+      g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_FONT_NAME]);
+      g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_FONT_DESC]);
+    }
+  else if (g_str_equal (key, CAPSULE_SETTING_KEY_USE_SYSTEM_FONT))
+    {
+      g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_USE_SYSTEM_FONT]);
+      g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_FONT_DESC]);
+    }
 }
 
 static void
@@ -109,12 +123,24 @@ capsule_settings_get_property (GObject    *object,
       g_value_take_string (value, capsule_settings_dup_default_profile_uuid (self));
       break;
 
+    case PROP_FONT_DESC:
+      g_value_take_boxed (value, capsule_settings_dup_font_desc (self));
+      break;
+
+    case PROP_FONT_NAME:
+      g_value_take_string (value, capsule_settings_dup_font_name (self));
+      break;
+
     case PROP_NEW_TAB_POSITION:
       g_value_set_enum (value, capsule_settings_get_new_tab_position (self));
       break;
 
     case PROP_PROFILE_UUIDS:
       g_value_take_boxed (value, capsule_settings_dup_profile_uuids (self));
+      break;
+
+    case PROP_USE_SYSTEM_FONT:
+      g_value_set_boolean (value, capsule_settings_get_use_system_font (self));
       break;
 
     case PROP_VISUAL_BELL:
@@ -148,12 +174,24 @@ capsule_settings_set_property (GObject      *object,
       capsule_settings_set_cursor_shape (self, g_value_get_enum (value));
       break;
 
+    case PROP_FONT_DESC:
+      capsule_settings_set_font_desc (self, g_value_get_boxed (value));
+      break;
+
+    case PROP_FONT_NAME:
+      capsule_settings_set_font_name (self, g_value_get_string (value));
+      break;
+
     case PROP_NEW_TAB_POSITION:
       capsule_settings_set_new_tab_position (self, g_value_get_enum (value));
       break;
 
     case PROP_DEFAULT_PROFILE_UUID:
       capsule_settings_set_default_profile_uuid (self, g_value_get_string (value));
+      break;
+
+    case PROP_USE_SYSTEM_FONT:
+      capsule_settings_set_use_system_font (self, g_value_get_boolean (value));
       break;
 
     case PROP_VISUAL_BELL:
@@ -197,6 +235,20 @@ capsule_settings_class_init (CapsuleSettingsClass *klass)
                         G_PARAM_EXPLICIT_NOTIFY |
                         G_PARAM_STATIC_STRINGS));
 
+  properties[PROP_FONT_DESC] =
+    g_param_spec_boxed ("font-desc", NULL, NULL,
+                        PANGO_TYPE_FONT_DESCRIPTION,
+                        (G_PARAM_READWRITE |
+                         G_PARAM_EXPLICIT_NOTIFY |
+                         G_PARAM_STATIC_STRINGS));
+
+  properties[PROP_FONT_NAME] =
+    g_param_spec_string ("font-string", NULL, NULL,
+                         NULL,
+                         (G_PARAM_READWRITE |
+                          G_PARAM_EXPLICIT_NOTIFY |
+                          G_PARAM_STATIC_STRINGS));
+
   properties[PROP_NEW_TAB_POSITION] =
     g_param_spec_enum ("new-tab-position", NULL, NULL,
                        CAPSULE_TYPE_NEW_TAB_POSITION,
@@ -217,6 +269,13 @@ capsule_settings_class_init (CapsuleSettingsClass *klass)
                         G_TYPE_STRV,
                         (G_PARAM_READABLE |
                          G_PARAM_STATIC_STRINGS));
+
+  properties[PROP_USE_SYSTEM_FONT] =
+    g_param_spec_boolean ("use-system-font", NULL, NULL,
+                          FALSE,
+                          (G_PARAM_READWRITE |
+                           G_PARAM_EXPLICIT_NOTIFY |
+                           G_PARAM_STATIC_STRINGS));
 
   properties[PROP_VISUAL_BELL] =
     g_param_spec_boolean ("visual-bell", NULL, NULL,
@@ -448,3 +507,75 @@ capsule_settings_set_cursor_shape (CapsuleSettings *self,
                        CAPSULE_SETTING_KEY_CURSOR_SHAPE,
                        cursor_shape);
 }
+
+char *
+capsule_settings_dup_font_name (CapsuleSettings *self)
+{
+  g_return_val_if_fail (CAPSULE_IS_SETTINGS (self), NULL);
+
+  return g_settings_get_string (self->settings, CAPSULE_SETTING_KEY_FONT_NAME);
+}
+
+void
+capsule_settings_set_font_name (CapsuleSettings *self,
+                                const char      *font_name)
+{
+  g_return_if_fail (CAPSULE_IS_SETTINGS (self));
+
+  if (font_name == NULL)
+    font_name = "";
+
+  g_settings_set_string (self->settings, CAPSULE_SETTING_KEY_FONT_NAME, font_name);
+}
+
+gboolean
+capsule_settings_get_use_system_font (CapsuleSettings *self)
+{
+  g_return_val_if_fail (CAPSULE_IS_SETTINGS (self), FALSE);
+
+  return g_settings_get_boolean (self->settings, CAPSULE_SETTING_KEY_USE_SYSTEM_FONT);
+}
+
+void
+capsule_settings_set_use_system_font (CapsuleSettings *self,
+                                      gboolean         use_system_font)
+{
+  g_return_if_fail (CAPSULE_IS_SETTINGS (self));
+
+  g_settings_set_boolean (self->settings, CAPSULE_SETTING_KEY_USE_SYSTEM_FONT, use_system_font);
+}
+
+PangoFontDescription *
+capsule_settings_dup_font_desc (CapsuleSettings *self)
+{
+  CapsuleApplication *app;
+  g_autofree char *font_name = NULL;
+  const char *system_font_name;
+
+  g_return_val_if_fail (CAPSULE_IS_SETTINGS (self), NULL);
+
+  app = CAPSULE_APPLICATION_DEFAULT;
+  system_font_name = capsule_application_get_system_font_name (app);
+
+  if (capsule_settings_get_use_system_font (self) ||
+      !(font_name = capsule_settings_dup_font_name (self)) ||
+      font_name[0] == 0)
+    return pango_font_description_from_string (system_font_name);
+
+  return pango_font_description_from_string (font_name);
+}
+
+void
+capsule_settings_set_font_desc (CapsuleSettings            *self,
+                                const PangoFontDescription *font_desc)
+{
+  g_autofree char *font_name = NULL;
+
+  g_return_if_fail (CAPSULE_IS_SETTINGS (self));
+
+  if (font_desc != NULL)
+    font_name = pango_font_description_to_string (font_desc);
+
+  capsule_settings_set_font_name (self, font_name);
+}
+

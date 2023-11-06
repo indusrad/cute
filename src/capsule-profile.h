@@ -61,15 +61,6 @@ void                      capsule_profile_set_audible_bell        (CapsuleProfil
 char                     *capsule_profile_dup_default_container   (CapsuleProfile             *self);
 void                      capsule_profile_set_default_container   (CapsuleProfile             *self,
                                                                    const char                 *default_container);
-PangoFontDescription     *capsule_profile_dup_font_desc           (CapsuleProfile             *self);
-void                      capsule_profile_set_font_desc           (CapsuleProfile             *self,
-                                                                   const PangoFontDescription *font_desc);
-char                     *capsule_profile_dup_font_name           (CapsuleProfile             *self);
-void                      capsule_profile_set_font_name           (CapsuleProfile             *self,
-                                                                   const char                 *font_name);
-gboolean                  capsule_profile_get_use_system_font     (CapsuleProfile             *self);
-void                      capsule_profile_set_use_system_font     (CapsuleProfile             *self,
-                                                                   gboolean                    use_system_font);
 char                     *capsule_profile_dup_label               (CapsuleProfile             *self);
 void                      capsule_profile_set_label               (CapsuleProfile             *self,
                                                                    const char                 *label);
