@@ -187,6 +187,13 @@
     </section>
     <section>
       <item>
+        <attribute name="label" translatable="yes">View Open Tabs</attribute>
+        <attribute name="action">win.tab-overview</attribute>
+        <attribute name="accel">&lt;ctrl&gt;&lt;shift&gt;o</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
         <attribute name="label" translatable="yes">Read Only</attribute>
         <attribute name="action">win.tab.read-only</attribute>
       </item>
