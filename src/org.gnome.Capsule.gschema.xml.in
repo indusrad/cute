@@ -61,6 +61,12 @@
     <value nick="next" value="1"/>
   </enum>
 
+  <enum id="org.gnome.Capsule.ScrollbarPolicy">
+    <value nick="never" value="0"/>
+    <value nick="system" value="1"/>
+    <value nick="always" value="2"/>
+  </enum>
+
   <schema id=@APP_SCHEMA_ID@ path=@APP_SCHEMA_PATH@>
 
     <key name="default-profile-uuid" type="s">
@@ -115,6 +121,12 @@
       <default>'system'</default>
       <summary>Cursor Blink Mode</summary>
       <description>The default blink mode cursor</description>
+    </key>
+
+    <key name="scrollbar-policy" enum="org.gnome.Capsule.ScrollbarPolicy">
+      <default>'system'</default>
+      <summary>Scrollbar Policy</summary>
+      <description>If scrollbars should be displayed</description>
     </key>
 
   </schema>

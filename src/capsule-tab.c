@@ -376,6 +376,61 @@ capsule_tab_profile_notify_opacity_cb (CapsuleTab     *self,
   vte_terminal_set_clear_background (VTE_TERMINAL (self->terminal), clear_background);
 }
 
+static gboolean
+scrollbar_policy_to_overlay_scrolling (GBinding     *binding,
+                                       const GValue *from_value,
+                                       GValue       *to_value,
+                                       gpointer      user_data)
+{
+  CapsuleScrollbarPolicy policy = g_value_get_enum (from_value);
+
+  switch (policy)
+    {
+    case CAPSULE_SCROLLBAR_POLICY_NEVER:
+    case CAPSULE_SCROLLBAR_POLICY_ALWAYS:
+      g_value_set_boolean (to_value, FALSE);
+      break;
+
+    case CAPSULE_SCROLLBAR_POLICY_SYSTEM:
+      g_value_set_boolean (to_value, TRUE);
+      break;
+
+    default:
+      g_assert_not_reached ();
+    }
+
+  return TRUE;
+}
+
+static gboolean
+scrollbar_policy_to_vscroll_policy (GBinding     *binding,
+                                    const GValue *from_value,
+                                    GValue       *to_value,
+                                    gpointer      user_data)
+{
+  CapsuleScrollbarPolicy policy = g_value_get_enum (from_value);
+
+  switch (policy)
+    {
+    case CAPSULE_SCROLLBAR_POLICY_NEVER:
+      g_value_set_enum (to_value, GTK_POLICY_NEVER);
+      break;
+
+    case CAPSULE_SCROLLBAR_POLICY_SYSTEM:
+      g_value_set_enum (to_value, GTK_POLICY_AUTOMATIC);
+      break;
+
+    case CAPSULE_SCROLLBAR_POLICY_ALWAYS:
+      g_value_set_enum (to_value, GTK_POLICY_ALWAYS);
+      break;
+
+    default:
+      g_assert_not_reached ();
+    }
+
+  return TRUE;
+}
+
 static void
 capsule_tab_constructed (GObject *object)
 {
@@ -404,6 +459,17 @@ capsule_tab_constructed (GObject *object)
   g_object_bind_property (settings, "font-desc",
                           self->terminal, "font-desc",
                           G_BINDING_SYNC_CREATE);
+
+  g_object_bind_property_full (settings, "scrollbar-policy",
+                               self->scrolled_window, "vscrollbar-policy",
+                               G_BINDING_SYNC_CREATE,
+                               scrollbar_policy_to_vscroll_policy,
+                               NULL, NULL, NULL);
+  g_object_bind_property_full (settings, "scrollbar-policy",
+                               self->scrolled_window, "overlay-scrolling",
+                               G_BINDING_SYNC_CREATE,
+                               scrollbar_policy_to_overlay_scrolling,
+                               NULL, NULL, NULL);
 
   g_signal_connect_object (G_OBJECT (self->profile),
                            "notify::limit-scrollback",

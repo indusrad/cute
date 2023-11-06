@@ -32,6 +32,7 @@ G_BEGIN_DECLS
 #define CAPSULE_SETTING_KEY_FONT_NAME            "font-name"
 #define CAPSULE_SETTING_KEY_NEW_TAB_POSITION     "new-tab-position"
 #define CAPSULE_SETTING_KEY_PROFILE_UUIDS        "profile-uuids"
+#define CAPSULE_SETTING_KEY_SCROLLBAR_POLICY     "scrollbar-policy"
 #define CAPSULE_SETTING_KEY_USE_SYSTEM_FONT      "use-system-font"
 #define CAPSULE_SETTING_KEY_VISUAL_BELL          "visual-bell"
 
@@ -40,6 +41,13 @@ typedef enum _CapsuleNewTabPosition
   CAPSULE_NEW_TAB_POSITION_LAST = 0,
   CAPSULE_NEW_TAB_POSITION_NEXT,
 } CapsuleNewTabPosition;
+
+typedef enum _CapsuleScrollbarPolicy
+{
+  CAPSULE_SCROLLBAR_POLICY_NEVER  = 0,
+  CAPSULE_SCROLLBAR_POLICY_SYSTEM = 1,
+  CAPSULE_SCROLLBAR_POLICY_ALWAYS = 2,
+} CapsuleScrollbarPolicy;
 
 #define CAPSULE_TYPE_SETTINGS (capsule_settings_get_type())
 
@@ -79,5 +87,8 @@ void                    capsule_settings_set_font_name            (CapsuleSettin
 gboolean                capsule_settings_get_use_system_font      (CapsuleSettings            *self);
 void                    capsule_settings_set_use_system_font      (CapsuleSettings            *self,
                                                                    gboolean                    use_system_font);
+CapsuleScrollbarPolicy  capsule_settings_get_scrollbar_policy     (CapsuleSettings            *self);
+void                    capsule_settings_set_scrollbar_policy     (CapsuleSettings            *self,
+                                                                   CapsuleScrollbarPolicy      scrollbar_policy);
 
 G_END_DECLS

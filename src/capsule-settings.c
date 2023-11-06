@@ -43,6 +43,7 @@ enum {
   PROP_FONT_NAME,
   PROP_NEW_TAB_POSITION,
   PROP_PROFILE_UUIDS,
+  PROP_SCROLLBAR_POLICY,
   PROP_USE_SYSTEM_FONT,
   PROP_VISUAL_BELL,
   N_PROPS
@@ -75,6 +76,8 @@ capsule_settings_changed_cb (CapsuleSettings *self,
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_CURSOR_SHAPE]);
   else if (g_str_equal (key, CAPSULE_SETTING_KEY_CURSOR_BLINK_MODE))
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_CURSOR_BLINK_MODE]);
+  else if (g_str_equal (key, CAPSULE_SETTING_KEY_SCROLLBAR_POLICY))
+    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_SCROLLBAR_POLICY]);
   else if (g_str_equal (key, CAPSULE_SETTING_KEY_FONT_NAME))
     {
       g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_FONT_NAME]);
@@ -139,6 +142,10 @@ capsule_settings_get_property (GObject    *object,
       g_value_take_boxed (value, capsule_settings_dup_profile_uuids (self));
       break;
 
+    case PROP_SCROLLBAR_POLICY:
+      g_value_set_enum (value, capsule_settings_get_scrollbar_policy (self));
+      break;
+
     case PROP_USE_SYSTEM_FONT:
       g_value_set_boolean (value, capsule_settings_get_use_system_font (self));
       break;
@@ -188,6 +195,10 @@ capsule_settings_set_property (GObject      *object,
 
     case PROP_DEFAULT_PROFILE_UUID:
       capsule_settings_set_default_profile_uuid (self, g_value_get_string (value));
+      break;
+
+    case PROP_SCROLLBAR_POLICY:
+      capsule_settings_set_scrollbar_policy (self, g_value_get_enum (value));
       break;
 
     case PROP_USE_SYSTEM_FONT:
@@ -269,6 +280,14 @@ capsule_settings_class_init (CapsuleSettingsClass *klass)
                         G_TYPE_STRV,
                         (G_PARAM_READABLE |
                          G_PARAM_STATIC_STRINGS));
+
+  properties[PROP_SCROLLBAR_POLICY] =
+    g_param_spec_enum ("scrollbar-policy", NULL, NULL,
+                       CAPSULE_TYPE_SCROLLBAR_POLICY,
+                       CAPSULE_SCROLLBAR_POLICY_SYSTEM,
+                       (G_PARAM_READWRITE |
+                        G_PARAM_EXPLICIT_NOTIFY |
+                        G_PARAM_STATIC_STRINGS));
 
   properties[PROP_USE_SYSTEM_FONT] =
     g_param_spec_boolean ("use-system-font", NULL, NULL,
@@ -579,3 +598,21 @@ capsule_settings_set_font_desc (CapsuleSettings            *self,
   capsule_settings_set_font_name (self, font_name);
 }
 
+CapsuleScrollbarPolicy
+capsule_settings_get_scrollbar_policy (CapsuleSettings *self)
+{
+  g_return_val_if_fail (CAPSULE_IS_SETTINGS (self), 0);
+
+  return g_settings_get_enum (self->settings, CAPSULE_SETTING_KEY_SCROLLBAR_POLICY);
+}
+
+void
+capsule_settings_set_scrollbar_policy (CapsuleSettings        *self,
+                                       CapsuleScrollbarPolicy  scrollbar_policy)
+{
+  g_return_if_fail (CAPSULE_IS_SETTINGS (self));
+
+  g_settings_set_enum (self->settings,
+                       CAPSULE_SETTING_KEY_SCROLLBAR_POLICY,
+                       scrollbar_policy);
+}
