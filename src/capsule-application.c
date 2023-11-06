@@ -61,6 +61,7 @@ G_DEFINE_FINAL_TYPE_WITH_CODE (CapsuleApplication, capsule_application, ADW_TYPE
 
 enum {
   PROP_0,
+  PROP_DEFAULT_PROFILE,
   PROP_PROFILE_MENU,
   PROP_SYSTEM_FONT_NAME,
   N_PROPS
@@ -168,6 +169,17 @@ parse_portal_settings (CapsuleApplication *self,
 }
 
 static void
+capsule_application_notify_default_profile_uuid_cb (CapsuleApplication *self,
+                                                    GParamSpec         *pspec,
+                                                    CapsuleSettings    *settings)
+{
+  g_assert (CAPSULE_IS_APPLICATION (self));
+  g_assert (CAPSULE_IS_SETTINGS (settings));
+
+  g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_DEFAULT_PROFILE]);
+}
+
+static void
 capsule_application_notify_profile_uuids_cb (CapsuleApplication *self,
                                              GParamSpec         *pspec,
                                              CapsuleSettings    *settings)
@@ -268,6 +280,11 @@ capsule_application_startup (GApplication *application)
                            G_CALLBACK (capsule_application_notify_profile_uuids_cb),
                            self,
                            G_CONNECT_SWAPPED);
+  g_signal_connect_object (self->settings,
+                           "notify::default-profile-uuid",
+                           G_CALLBACK (capsule_application_notify_default_profile_uuid_cb),
+                           self,
+                           G_CONNECT_SWAPPED);
 
   capsule_application_notify_profile_uuids_cb (self, NULL, self->settings);
 
@@ -308,6 +325,10 @@ capsule_application_get_property (GObject    *object,
 
   switch (prop_id)
     {
+    case PROP_DEFAULT_PROFILE:
+      g_value_take_object (value, capsule_application_dup_default_profile (self));
+      break;
+
     case PROP_PROFILE_MENU:
       g_value_set_object (value, self->profile_menu);
       break;
@@ -332,6 +353,12 @@ capsule_application_class_init (CapsuleApplicationClass *klass)
   app_class->activate = capsule_application_activate;
   app_class->startup = capsule_application_startup;
   app_class->shutdown = capsule_application_shutdown;
+
+  properties[PROP_DEFAULT_PROFILE] =
+    g_param_spec_object ("default-profile", NULL, NULL,
+                         CAPSULE_TYPE_PROFILE,
+                         (G_PARAM_READABLE |
+                          G_PARAM_STATIC_STRINGS));
 
   properties[PROP_PROFILE_MENU] =
     g_param_spec_object ("profile-menu", NULL, NULL,
