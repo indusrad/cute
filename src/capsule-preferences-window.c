@@ -39,7 +39,10 @@ struct _CapsulePreferencesWindow
   AdwComboRow          *cursor_shape;
   GListModel           *cursor_shapes;
   GtkLabel             *font_name;
+  AdwSwitchRow         *limit_scrollback;
   GtkListBox           *profiles_list_box;
+  AdwSwitchRow         *scroll_on_output;
+  AdwSwitchRow         *scroll_on_keystroke;
   AdwComboRow          *tab_position;
   GListModel           *tab_positions;
   AdwSwitchRow         *use_system_font;
@@ -200,6 +203,29 @@ index_to_string (const GValue       *value,
 }
 
 static void
+capsule_preferences_window_notify_default_profile_cb (CapsulePreferencesWindow *self,
+                                                      GParamSpec               *pspec,
+                                                      CapsuleApplication       *app)
+{
+  g_autoptr(CapsuleProfile) profile = NULL;
+
+  g_assert (CAPSULE_IS_PREFERENCES_WINDOW (self));
+  g_assert (CAPSULE_IS_APPLICATION (app));
+
+  profile = capsule_application_dup_default_profile (app);
+
+  g_object_bind_property (profile, "limit-scrollback",
+                          self->limit_scrollback, "active",
+                          G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
+  g_object_bind_property (profile, "scroll-on-output",
+                          self->scroll_on_output, "active",
+                          G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
+  g_object_bind_property (profile, "scroll-on-keystroke",
+                          self->scroll_on_keystroke, "active",
+                          G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
+}
+
+static void
 capsule_preferences_window_constructed (GObject *object)
 {
   CapsulePreferencesWindow *self = (CapsulePreferencesWindow *)object;
@@ -209,6 +235,13 @@ capsule_preferences_window_constructed (GObject *object)
   g_autoptr(GListModel) profiles = NULL;
 
   G_OBJECT_CLASS (capsule_preferences_window_parent_class)->constructed (object);
+
+  g_signal_connect_object (app,
+                           "notify::default-profile",
+                           G_CALLBACK (capsule_preferences_window_notify_default_profile_cb),
+                           self,
+                           G_CONNECT_SWAPPED);
+  capsule_preferences_window_notify_default_profile_cb (self, NULL, app);
 
   g_settings_bind_with_mapping (gsettings,
                                 CAPSULE_SETTING_KEY_NEW_TAB_POSITION,
@@ -289,7 +322,10 @@ capsule_preferences_window_class_init (CapsulePreferencesWindowClass *klass)
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, cursor_shape);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, cursor_shapes);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, font_name);
+  gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, limit_scrollback);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, profiles_list_box);
+  gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, scroll_on_keystroke);
+  gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, scroll_on_output);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, tab_position);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, tab_positions);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, use_system_font);

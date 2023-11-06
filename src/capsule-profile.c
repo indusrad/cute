@@ -33,6 +33,7 @@
 #define CAPSULE_PROFILE_KEY_DEFAULT_CONTAINER   "default-container"
 #define CAPSULE_PROFILE_KEY_EXIT_ACTION         "exit-action"
 #define CAPSULE_PROFILE_KEY_LABEL               "label"
+#define CAPSULE_PROFILE_KEY_LIMIT_SCROLLBACK    "limit-scrollback"
 #define CAPSULE_PROFILE_KEY_OPACITY             "opacity"
 #define CAPSULE_PROFILE_KEY_PALETTE             "palette"
 #define CAPSULE_PROFILE_KEY_PRESERVE_DIRECTORY  "preserve-directory"
@@ -51,6 +52,7 @@ enum {
   PROP_DEFAULT_CONTAINER,
   PROP_EXIT_ACTION,
   PROP_LABEL,
+  PROP_LIMIT_SCROLLBACK,
   PROP_OPACITY,
   PROP_PALETTE,
   PROP_PRESERVE_DIRECTORY,
@@ -84,6 +86,8 @@ capsule_profile_changed_cb (CapsuleProfile *self,
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_PALETTE]);
   else if (g_str_equal (key, CAPSULE_PROFILE_KEY_OPACITY))
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_OPACITY]);
+  else if (g_str_equal (key, CAPSULE_PROFILE_KEY_LIMIT_SCROLLBACK))
+    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_LIMIT_SCROLLBACK]);
 }
 
 static void
@@ -140,6 +144,10 @@ capsule_profile_get_property (GObject    *object,
       g_value_take_string (value, capsule_profile_dup_label (self));
       break;
 
+    case PROP_LIMIT_SCROLLBACK:
+      g_value_set_boolean (value, capsule_profile_get_limit_scrollback (self));
+      break;
+
     case PROP_OPACITY:
       g_value_set_double (value, capsule_profile_get_opacity (self));
       break;
@@ -189,6 +197,10 @@ capsule_profile_set_property (GObject      *object,
 
     case PROP_LABEL:
       capsule_profile_set_label (self, g_value_get_string (value));
+      break;
+
+    case PROP_LIMIT_SCROLLBACK:
+      capsule_profile_set_limit_scrollback (self, g_value_get_boolean (value));
       break;
 
     case PROP_OPACITY:
@@ -248,6 +260,13 @@ capsule_profile_class_init (CapsuleProfileClass *klass)
   properties[PROP_LABEL] =
     g_param_spec_string ("label", NULL, NULL,
                          NULL,
+                         (G_PARAM_READWRITE |
+                          G_PARAM_EXPLICIT_NOTIFY |
+                          G_PARAM_STATIC_STRINGS));
+
+  properties[PROP_LIMIT_SCROLLBACK] =
+    g_param_spec_boolean ("limit-scrollback", NULL, NULL,
+                         FALSE,
                          (G_PARAM_READWRITE |
                           G_PARAM_EXPLICIT_NOTIFY |
                           G_PARAM_STATIC_STRINGS));
@@ -589,4 +608,23 @@ capsule_profile_set_opacity (CapsuleProfile *self,
   g_settings_set_double (self->settings,
                          CAPSULE_PROFILE_KEY_OPACITY,
                          opacity);
+}
+
+gboolean
+capsule_profile_get_limit_scrollback (CapsuleProfile *self)
+{
+  g_return_val_if_fail (CAPSULE_IS_PROFILE (self), FALSE);
+
+  return g_settings_get_boolean (self->settings, CAPSULE_PROFILE_KEY_LIMIT_SCROLLBACK);
+}
+
+void
+capsule_profile_set_limit_scrollback (CapsuleProfile *self,
+                                      gboolean        limit_scrollback)
+{
+  g_return_if_fail (CAPSULE_IS_PROFILE (self));
+
+  g_settings_set_boolean (self->settings,
+                          CAPSULE_PROFILE_KEY_LIMIT_SCROLLBACK,
+                          limit_scrollback);
 }

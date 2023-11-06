@@ -114,6 +114,12 @@
       <description>The label for the profile</description>
     </key>
 
+    <key name="limit-scrollback" type="b">
+      <default>true</default>
+      <summary>Limit Scrollback</summary>
+      <description>Limit the number of lines to keep for scrollback</description>
+    </key>
+
     <key name="scroll-on-output" type="b">
       <default>false</default>
       <summary>Scroll on Output</summary>

@@ -188,6 +188,33 @@
             </child>
           </object>
         </child>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title" translatable="yes">Scrolling</property>
+            <child>
+              <object class="AdwSwitchRow" id="scroll_on_keystroke">
+                <property name="title" translatable="yes">Scroll on Keystroke</property>
+                <property name="subtitle" translatable="yes">Scroll to the bottom upon input keystroke</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwSwitchRow" id="scroll_on_output">
+                <property name="title" translatable="yes">Scroll on Output</property>
+                <property name="subtitle" translatable="yes">Scroll to the bottom when new content is available</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <child>
+              <object class="AdwSwitchRow" id="limit_scrollback">
+                <property name="title" translatable="yes">Limit Scrollback</property>
+                <property name="subtitle" translatable="yes">Restrict the number of lines saved for scrollback</property>
+              </object>
+            </child>
+          </object>
+        </child>
       </object>
     </child>
     <child>
