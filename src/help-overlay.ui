@@ -21,6 +21,12 @@
                 <property name="accelerator">&lt;ctrl&gt;&lt;shift&gt;o</property>
               </object>
             </child>
+            <child>
+              <object class="GtkShortcutsShortcut">
+                <property name="title" translatable="yes" context="shortcut window">Edit Preferences</property>
+                <property name="accelerator">&lt;ctrl&gt;comma</property>
+              </object>
+            </child>
           </object>
         </child>
         <child>
