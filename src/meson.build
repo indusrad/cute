@@ -17,6 +17,7 @@ capsule_sources = [
   'capsule-profile-menu.c',
   'capsule-settings.c',
   'capsule-shortcut-accel-dialog.c',
+  'capsule-shortcut-row.c',
   'capsule-shortcuts.c',
   'capsule-tab.c',
   'capsule-terminal.c',

@@ -486,16 +486,209 @@
         <property name="icon-name">preferences-desktop-keyboard-shortcuts-symbolic</property>
         <child>
           <object class="AdwPreferencesGroup">
+            <property name="title" translatable="yes">Terminal</property>
             <child>
-              <object class="AdwActionRow">
-                <property name="title" translatable="yes">View and Customize Shortcuts</property>
-                <property name="action-name">preferences.view-shortcuts</property>
-                <property name="activatable">true</property>
-                <child type="suffix">
-                  <object class="GtkImage">
-                    <property name="icon-name">go-next-symbolic</property>
-                  </object>
-                </child>
+              <object class="CapsuleShortcutRow" id="shortcut_copy_clipboard">
+                <property name="title" translatable="yes">Copy to Clipboard</property>
+              </object>
+            </child>
+            <child>
+              <object class="CapsuleShortcutRow" id="shortcut_paste_clipboard">
+                <property name="title" translatable="yes">Paste from Clipboard</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <child>
+              <object class="CapsuleShortcutRow" id="shortcut_select_all">
+                <property name="title" translatable="yes">Select All</property>
+              </object>
+            </child>
+            <child>
+              <object class="CapsuleShortcutRow" id="shortcut_select_none">
+                <property name="title" translatable="yes">Clear Selection</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <child>
+              <object class="CapsuleShortcutRow" id="shortcut_zoom_in">
+                <property name="title" translatable="yes">Zoom In</property>
+              </object>
+            </child>
+            <child>
+              <object class="CapsuleShortcutRow" id="shortcut_zoom_out">
+                <property name="title" translatable="yes">Zoom Out</property>
+              </object>
+            </child>
+            <child>
+              <object class="CapsuleShortcutRow" id="shortcut_zoom_one">
+                <property name="title" translatable="yes">Reset Zoom</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <child>
+              <object class="CapsuleShortcutRow" id="shortcut_popup_menu">
+                <property name="title" translatable="yes">Show Context Menu</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <child>
+              <object class="CapsuleShortcutRow" id="shortcut_reset">
+                <property name="title" translatable="yes">Reset</property>
+              </object>
+            </child>
+            <child>
+              <object class="CapsuleShortcutRow" id="shortcut_reset_and_clear">
+                <property name="title" translatable="yes">Reset and Clear</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title" translatable="yes">Tabs</property>
+            <child>
+              <object class="CapsuleShortcutRow" id="shortcut_new_tab">
+                <property name="title" translatable="yes">New Tab</property>
+                <property name="subtitle" translatable="yes">Open a new tab in the current window</property>
+              </object>
+            </child>
+            <child>
+              <object class="CapsuleShortcutRow" id="shortcut_new_window">
+                <property name="title" translatable="yes">New Window</property>
+                <property name="subtitle" translatable="yes">Open a new tab in a new window</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <child>
+              <object class="CapsuleShortcutRow" id="shortcut_tab_overview">
+                <property name="title" translatable="yes">View Tab Overview</property>
+                <property name="subtitle" translatable="yes">Show an overview of all tabs within the window</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <child>
+              <object class="CapsuleShortcutRow" id="shortcut_close_tab">
+                <property name="title" translatable="yes">Close Tab</property>
+                <property name="subtitle" translatable="yes">Close the current tab</property>
+              </object>
+            </child>
+            <child>
+              <object class="CapsuleShortcutRow" id="shortcut_close_other_tabs">
+                <property name="title" translatable="yes">Close Other Tabs</property>
+                <property name="subtitle" translatable="yes">Close all tabs except the active tab</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <child>
+              <object class="CapsuleShortcutRow" id="shortcut_move_tab_left">
+                <property name="title" translatable="yes">Move Tab Left</property>
+                <property name="subtitle" translatable="yes">Move the tab one position to the left</property>
+              </object>
+            </child>
+            <child>
+              <object class="CapsuleShortcutRow" id="shortcut_move_tab_right">
+                <property name="title" translatable="yes">Move Tab Right</property>
+                <property name="subtitle" translatable="yes">Move the tab one position to the right</property>
+              </object>
+            </child>
+            <child>
+              <object class="CapsuleShortcutRow" id="shortcut_detach_tab">
+                <property name="title" translatable="yes">Move Tab to New Window</property>
+                <property name="subtitle" translatable="yes">Detach the current tab and move it to a new window</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <child>
+              <object class="CapsuleShortcutRow" id="shortcut_focus_tab_1">
+                <property name="title" translatable="yes">Focus Tab 1</property>
+              </object>
+            </child>
+            <child>
+              <object class="CapsuleShortcutRow" id="shortcut_focus_tab_2">
+                <property name="title" translatable="yes">Focus Tab 2</property>
+              </object>
+            </child>
+            <child>
+              <object class="CapsuleShortcutRow" id="shortcut_focus_tab_3">
+                <property name="title" translatable="yes">Focus Tab 3</property>
+              </object>
+            </child>
+            <child>
+              <object class="CapsuleShortcutRow" id="shortcut_focus_tab_4">
+                <property name="title" translatable="yes">Focus Tab 4</property>
+              </object>
+            </child>
+            <child>
+              <object class="CapsuleShortcutRow" id="shortcut_focus_tab_5">
+                <property name="title" translatable="yes">Focus Tab 5</property>
+              </object>
+            </child>
+            <child>
+              <object class="CapsuleShortcutRow" id="shortcut_focus_tab_6">
+                <property name="title" translatable="yes">Focus Tab 6</property>
+              </object>
+            </child>
+            <child>
+              <object class="CapsuleShortcutRow" id="shortcut_focus_tab_7">
+                <property name="title" translatable="yes">Focus Tab 7</property>
+              </object>
+            </child>
+            <child>
+              <object class="CapsuleShortcutRow" id="shortcut_focus_tab_8">
+                <property name="title" translatable="yes">Focus Tab 8</property>
+              </object>
+            </child>
+            <child>
+              <object class="CapsuleShortcutRow" id="shortcut_focus_tab_9">
+                <property name="title" translatable="yes">Focus Tab 9</property>
+              </object>
+            </child>
+            <child>
+              <object class="CapsuleShortcutRow" id="shortcut_focus_tab_10">
+                <property name="title" translatable="yes">Focus Tab 10</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title" translatable="yes">Application</property>
+            <child>
+              <object class="CapsuleShortcutRow" id="shortcut_toggle_fullscreen">
+                <property name="title" translatable="yes">Toggle Fullscreen</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <child>
+              <object class="CapsuleShortcutRow" id="shortcut_preferences">
+                <property name="title" translatable="yes">Preferences</property>
               </object>
             </child>
           </object>

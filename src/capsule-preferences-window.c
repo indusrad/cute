@@ -28,6 +28,7 @@
 #include "capsule-preferences-window.h"
 #include "capsule-profile-editor.h"
 #include "capsule-profile-row.h"
+#include "capsule-shortcut-row.h"
 
 struct _CapsulePreferencesWindow
 {
@@ -59,6 +60,36 @@ struct _CapsulePreferencesWindow
   AdwSwitchRow         *scroll_on_keystroke;
   AdwComboRow          *scrollbar_policy;
   GListModel           *scrollbar_policies;
+  CapsuleShortcutRow   *shortcut_close_other_tabs;
+  CapsuleShortcutRow   *shortcut_close_tab;
+  CapsuleShortcutRow   *shortcut_copy_clipboard;
+  CapsuleShortcutRow   *shortcut_detach_tab;
+  CapsuleShortcutRow   *shortcut_focus_tab_10;
+  CapsuleShortcutRow   *shortcut_focus_tab_1;
+  CapsuleShortcutRow   *shortcut_focus_tab_2;
+  CapsuleShortcutRow   *shortcut_focus_tab_3;
+  CapsuleShortcutRow   *shortcut_focus_tab_4;
+  CapsuleShortcutRow   *shortcut_focus_tab_5;
+  CapsuleShortcutRow   *shortcut_focus_tab_6;
+  CapsuleShortcutRow   *shortcut_focus_tab_7;
+  CapsuleShortcutRow   *shortcut_focus_tab_8;
+  CapsuleShortcutRow   *shortcut_focus_tab_9;
+  CapsuleShortcutRow   *shortcut_move_tab_left;
+  CapsuleShortcutRow   *shortcut_move_tab_right;
+  CapsuleShortcutRow   *shortcut_new_tab;
+  CapsuleShortcutRow   *shortcut_new_window;
+  CapsuleShortcutRow   *shortcut_paste_clipboard;
+  CapsuleShortcutRow   *shortcut_popup_menu;
+  CapsuleShortcutRow   *shortcut_preferences;
+  CapsuleShortcutRow   *shortcut_reset;
+  CapsuleShortcutRow   *shortcut_reset_and_clear;
+  CapsuleShortcutRow   *shortcut_select_all;
+  CapsuleShortcutRow   *shortcut_select_none;
+  CapsuleShortcutRow   *shortcut_tab_overview;
+  CapsuleShortcutRow   *shortcut_toggle_fullscreen;
+  CapsuleShortcutRow   *shortcut_zoom_in;
+  CapsuleShortcutRow   *shortcut_zoom_one;
+  CapsuleShortcutRow   *shortcut_zoom_out;
   AdwComboRow          *tab_position;
   GListModel           *tab_positions;
   AdwComboRow          *text_blink_mode;
@@ -320,6 +351,7 @@ capsule_preferences_window_constructed (GObject *object)
   CapsulePreferencesWindow *self = (CapsulePreferencesWindow *)object;
   CapsuleApplication *app = CAPSULE_APPLICATION_DEFAULT;
   CapsuleSettings *settings = capsule_application_get_settings (app);
+  CapsuleShortcuts *shortcuts = capsule_application_get_shortcuts (app);
   GSettings *gsettings = capsule_settings_get_settings (settings);
   g_autoptr(GListModel) profiles = NULL;
 
@@ -404,6 +436,106 @@ capsule_preferences_window_constructed (GObject *object)
   g_object_bind_property (settings, "font-name",
                           self->font_name, "label",
                           G_BINDING_SYNC_CREATE);
+
+  g_object_bind_property (shortcuts, "new-tab",
+                          self->shortcut_new_tab, "accelerator",
+                          G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
+  g_object_bind_property (shortcuts, "new-window",
+                          self->shortcut_new_window, "accelerator",
+                          G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
+  g_object_bind_property (shortcuts, "tab-overview",
+                          self->shortcut_tab_overview, "accelerator",
+                          G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
+
+  g_object_bind_property (shortcuts, "focus-tab-1",
+                          self->shortcut_focus_tab_1, "accelerator",
+                          G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
+  g_object_bind_property (shortcuts, "focus-tab-2",
+                          self->shortcut_focus_tab_2, "accelerator",
+                          G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
+  g_object_bind_property (shortcuts, "focus-tab-3",
+                          self->shortcut_focus_tab_3, "accelerator",
+                          G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
+  g_object_bind_property (shortcuts, "focus-tab-4",
+                          self->shortcut_focus_tab_4, "accelerator",
+                          G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
+  g_object_bind_property (shortcuts, "focus-tab-5",
+                          self->shortcut_focus_tab_5, "accelerator",
+                          G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
+  g_object_bind_property (shortcuts, "focus-tab-6",
+                          self->shortcut_focus_tab_6, "accelerator",
+                          G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
+  g_object_bind_property (shortcuts, "focus-tab-7",
+                          self->shortcut_focus_tab_7, "accelerator",
+                          G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
+  g_object_bind_property (shortcuts, "focus-tab-8",
+                          self->shortcut_focus_tab_8, "accelerator",
+                          G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
+  g_object_bind_property (shortcuts, "focus-tab-9",
+                          self->shortcut_focus_tab_9, "accelerator",
+                          G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
+  g_object_bind_property (shortcuts, "focus-tab-10",
+                          self->shortcut_focus_tab_10, "accelerator",
+                          G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
+
+  g_object_bind_property (shortcuts, "toggle-fullscreen",
+                          self->shortcut_toggle_fullscreen, "accelerator",
+                          G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
+  g_object_bind_property (shortcuts, "preferences",
+                          self->shortcut_preferences, "accelerator",
+                          G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
+
+  g_object_bind_property (shortcuts, "copy-clipboard",
+                          self->shortcut_copy_clipboard, "accelerator",
+                          G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
+  g_object_bind_property (shortcuts, "paste-clipboard",
+                          self->shortcut_paste_clipboard, "accelerator",
+                          G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
+
+  g_object_bind_property (shortcuts, "reset",
+                          self->shortcut_reset, "accelerator",
+                          G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
+  g_object_bind_property (shortcuts, "reset-and-clear",
+                          self->shortcut_reset_and_clear, "accelerator",
+                          G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
+
+  g_object_bind_property (shortcuts, "select-all",
+                          self->shortcut_select_all, "accelerator",
+                          G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
+  g_object_bind_property (shortcuts, "select-none",
+                          self->shortcut_select_none, "accelerator",
+                          G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
+
+  g_object_bind_property (shortcuts, "popup-menu",
+                          self->shortcut_popup_menu, "accelerator",
+                          G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
+
+  g_object_bind_property (shortcuts, "zoom-in",
+                          self->shortcut_zoom_in, "accelerator",
+                          G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
+  g_object_bind_property (shortcuts, "zoom-one",
+                          self->shortcut_zoom_one, "accelerator",
+                          G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
+  g_object_bind_property (shortcuts, "zoom-out",
+                          self->shortcut_zoom_out, "accelerator",
+                          G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
+
+  g_object_bind_property (shortcuts, "close-tab",
+                          self->shortcut_close_tab, "accelerator",
+                          G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
+  g_object_bind_property (shortcuts, "close-other-tabs",
+                          self->shortcut_close_other_tabs, "accelerator",
+                          G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
+
+  g_object_bind_property (shortcuts, "move-tab-left",
+                          self->shortcut_move_tab_left, "accelerator",
+                          G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
+  g_object_bind_property (shortcuts, "move-tab-right",
+                          self->shortcut_move_tab_right, "accelerator",
+                          G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
+  g_object_bind_property (shortcuts, "detach-tab",
+                          self->shortcut_detach_tab, "accelerator",
+                          G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
 }
 
 static void
@@ -453,6 +585,36 @@ capsule_preferences_window_class_init (CapsulePreferencesWindowClass *klass)
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, scrollback_lines);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, scrollbar_policies);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, scrollbar_policy);
+  gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, shortcut_close_other_tabs);
+  gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, shortcut_close_tab);
+  gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, shortcut_copy_clipboard);
+  gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, shortcut_detach_tab);
+  gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, shortcut_focus_tab_1);
+  gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, shortcut_focus_tab_10);
+  gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, shortcut_focus_tab_2);
+  gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, shortcut_focus_tab_3);
+  gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, shortcut_focus_tab_4);
+  gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, shortcut_focus_tab_5);
+  gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, shortcut_focus_tab_6);
+  gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, shortcut_focus_tab_7);
+  gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, shortcut_focus_tab_8);
+  gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, shortcut_focus_tab_9);
+  gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, shortcut_move_tab_left);
+  gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, shortcut_move_tab_right);
+  gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, shortcut_new_tab);
+  gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, shortcut_new_window);
+  gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, shortcut_paste_clipboard);
+  gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, shortcut_popup_menu);
+  gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, shortcut_preferences);
+  gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, shortcut_reset);
+  gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, shortcut_reset_and_clear);
+  gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, shortcut_select_all);
+  gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, shortcut_select_none);
+  gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, shortcut_tab_overview);
+  gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, shortcut_toggle_fullscreen);
+  gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, shortcut_zoom_in);
+  gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, shortcut_zoom_one);
+  gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, shortcut_zoom_out);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, tab_position);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, tab_positions);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, text_blink_mode);
@@ -473,6 +635,8 @@ capsule_preferences_window_class_init (CapsulePreferencesWindowClass *klass)
 
   g_type_ensure (CAPSULE_TYPE_PREFERENCES_LIST_ITEM);
   g_type_ensure (CAPSULE_TYPE_PROFILE_EDITOR);
+  g_type_ensure (CAPSULE_TYPE_PROFILE_ROW);
+  g_type_ensure (CAPSULE_TYPE_SHORTCUT_ROW);
 }
 
 static void
