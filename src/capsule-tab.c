@@ -129,6 +129,8 @@ capsule_tab_wait_check_cb (GObject      *object,
   g_assert (CAPSULE_IS_TAB (self));
   g_assert (self->state == CAPSULE_TAB_STATE_RUNNING);
 
+  g_clear_object (&self->subprocess);
+
   success = g_subprocess_wait_check_finish (subprocess, result, &error);
 
   if (success)
@@ -213,6 +215,8 @@ capsule_tab_spawn_cb (GObject      *object,
     }
 
   self->state = CAPSULE_TAB_STATE_RUNNING;
+
+  g_set_object (&self->subprocess, subprocess);
 
   g_subprocess_wait_check_async (subprocess,
                                  NULL,
@@ -878,4 +882,48 @@ capsule_tab_raise (CapsuleTab *self)
   if ((tab_view = ADW_TAB_VIEW (gtk_widget_get_ancestor (GTK_WIDGET (self), ADW_TYPE_TAB_VIEW))) &&
       (tab_page = adw_tab_view_get_page (tab_view, GTK_WIDGET (self))))
     adw_tab_view_set_selected_page (tab_view, tab_page);
+}
+
+static GPid
+capsule_tab_get_pid (CapsuleTab *self)
+{
+  const char *ident;
+
+  g_assert (CAPSULE_IS_TAB (self));
+
+  /* NOTE: We very likely will need to go through the container API because we
+   * can't expect pid namespaces to match here.
+   */
+
+  if (self->subprocess == NULL)
+    return (GPid)-1;
+
+  if (!(ident = g_subprocess_get_identifier (self->subprocess)))
+    return (GPid)-1;
+
+  return atoi (ident);
+}
+
+gboolean
+capsule_tab_is_running (CapsuleTab *self)
+{
+  VtePty *pty;
+  GPid pid, child_pid;
+  int fd;
+
+  g_return_val_if_fail (CAPSULE_IS_TAB (self), 0);
+
+  if (!(pty = vte_terminal_get_pty (VTE_TERMINAL (self->terminal))) ||
+      -1 == (fd = vte_pty_get_fd (pty)))
+    return FALSE;
+
+  pid = tcgetpgrp (fd);
+  if (pid < 0)
+    return FALSE;
+
+  child_pid = capsule_tab_get_pid (self);
+  if (child_pid < 0)
+    return FALSE;
+
+  return pid != child_pid;
 }
