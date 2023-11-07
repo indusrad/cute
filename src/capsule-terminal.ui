@@ -40,7 +40,6 @@
         </child>
       </object>
     </child>
-    <!--
     <child>
       <object class="GtkGestureClick" id="click_capture">
         <signal name="pressed" handler="capsule_terminal_capture_click_pressed_cb" swapped="1" object="CapsuleTerminal"/>
@@ -55,6 +54,7 @@
         <property name="propagation-phase">bubble</property>
       </object>
     </child>
+    <!--
     <child>
       <object class="GtkDropTargetAsync" id="drop_target">
         <signal name="drop" handler="capsule_terminal_drop_target_drop" swapped="1" object="CapsuleTerminal"/>
@@ -93,4 +93,6 @@
     </child>
     -->
   </template>
+  <menu id="terminal_menu">
+  </menu>
 </interface>

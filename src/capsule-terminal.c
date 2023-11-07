@@ -28,12 +28,16 @@
 #include "capsule-window.h"
 
 #define SIZE_DISMISS_TIMEOUT_MSEC 1000
+#define BUILDER_PCRE2_UCP 0x00020000u
+#define BUILDER_PCRE2_MULTILINE 0x00000400u
 
 struct _CapsuleTerminal
 {
   VteTerminal     parent_instance;
 
   CapsulePalette *palette;
+
+  GMenuModel     *terminal_menu;
 
   GtkRevealer    *size_revealer;
   GtkLabel       *size_label;
@@ -46,9 +50,20 @@ enum {
   N_PROPS
 };
 
+enum {
+  MATCH_CLICKED,
+  N_SIGNALS
+};
+
 G_DEFINE_FINAL_TYPE (CapsuleTerminal, capsule_terminal, VTE_TYPE_TERMINAL)
 
 static GParamSpec *properties [N_PROPS];
+static guint signals[N_SIGNALS];
+static VteRegex *builtin_dingus_regex[2];
+static const char * const builtin_dingus[] = {
+  "(((gopher|news|telnet|nntp|file|http|ftp|https)://)|(www|ftp)[-A-Za-z0-9]*\\.)[-A-Za-z0-9\\.]+(:[0-9]*)?",
+  "(((gopher|news|telnet|nntp|file|http|ftp|https)://)|(www|ftp)[-A-Za-z0-9]*\\.)[-A-Za-z0-9\\.]+(:[0-9]*)?/[-A-Za-z0-9_\\$\\.\\+\\!\\*\\(\\),;:@&=\\?/~\\#\\%]*[^]'\\.}>\\) ,\\\"]",
+};
 
 static gboolean
 capsule_terminal_is_active (CapsuleTerminal *self)
@@ -64,6 +79,105 @@ capsule_terminal_is_active (CapsuleTerminal *self)
     active_terminal = capsule_tab_get_terminal (active_tab);
 
   return active_terminal == self;
+}
+
+static gboolean
+capsule_terminal_match_clicked (CapsuleTerminal *self,
+                                double           x,
+                                double           y,
+                                int              button,
+                                GdkModifierType  state,
+                                const char      *match)
+{
+  gboolean ret = FALSE;
+
+  g_assert (CAPSULE_IS_TERMINAL (self));
+  g_assert (match != NULL);
+
+  g_signal_emit (self, signals[MATCH_CLICKED], 0, x, y, button, state, match, &ret);
+
+  return ret;
+}
+
+static void
+capsule_terminal_popup (CapsuleTerminal *self,
+                        double           x,
+                        double           y)
+{
+  g_assert (CAPSULE_IS_TERMINAL (self));
+
+}
+
+static void
+capsule_terminal_bubble_click_pressed_cb (CapsuleTerminal *self,
+                                          int              n_press,
+                                          double           x,
+                                          double           y,
+                                          GtkGestureClick *click)
+{
+  g_assert (CAPSULE_IS_TERMINAL (self));
+  g_assert (GTK_IS_GESTURE_CLICK (click));
+
+  if (n_press == 1)
+    {
+      GdkModifierType state = gtk_event_controller_get_current_event_state (GTK_EVENT_CONTROLLER (click));
+      int button = gtk_gesture_single_get_current_button (GTK_GESTURE_SINGLE (click));
+
+      if (button == 3)
+        {
+          if (!(state & (GDK_SHIFT_MASK | GDK_CONTROL_MASK | GDK_ALT_MASK)) ||
+              !(state & (GDK_CONTROL_MASK | GDK_ALT_MASK)))
+            {
+              capsule_terminal_popup (self, x, y);
+              gtk_gesture_set_state (GTK_GESTURE (click), GTK_EVENT_SEQUENCE_CLAIMED);
+              return;
+            }
+        }
+    }
+
+  gtk_gesture_set_state (GTK_GESTURE (click), GTK_EVENT_SEQUENCE_DENIED);
+}
+
+static void
+capsule_terminal_capture_click_pressed_cb (CapsuleTerminal *self,
+                                           int              n_press,
+                                           double           x,
+                                           double           y,
+                                           GtkGestureClick *click)
+{
+  g_autofree char *hyperlink = NULL;
+  g_autofree char *match = NULL;
+  GdkModifierType state;
+  gboolean handled = FALSE;
+  GdkEvent *event;
+  int button;
+  int tag = 0;
+
+  g_assert (CAPSULE_IS_TERMINAL (self));
+  g_assert (GTK_IS_GESTURE_CLICK (click));
+
+  event = gtk_event_controller_get_current_event (GTK_EVENT_CONTROLLER (click));
+  state = gdk_event_get_modifier_state (event) & gtk_accelerator_get_default_mod_mask ();
+  button = gtk_gesture_single_get_current_button (GTK_GESTURE_SINGLE (click));
+
+  hyperlink = vte_terminal_check_hyperlink_at (VTE_TERMINAL (self), x, y);
+  match = vte_terminal_check_match_at (VTE_TERMINAL (self), x, y, &tag);
+
+  if (n_press == 1 &&
+      !handled &&
+      (button == 1 || button == 2) &&
+      (state & GDK_CONTROL_MASK))
+    {
+      if (hyperlink != NULL)
+        handled = capsule_terminal_match_clicked (self, x, y, button, state, hyperlink);
+      else if (match != NULL)
+        handled = capsule_terminal_match_clicked (self, x, y, button, state, match);
+    }
+
+  if (handled)
+    gtk_gesture_set_state (GTK_GESTURE (click), GTK_EVENT_SEQUENCE_CLAIMED);
+  else
+    gtk_gesture_set_state (GTK_GESTURE (click), GTK_EVENT_SEQUENCE_DENIED);
 }
 
 static void
@@ -251,16 +365,58 @@ capsule_terminal_class_init (CapsuleTerminalClass *klass)
 
   g_object_class_install_properties (object_class, N_PROPS, properties);
 
+  signals[MATCH_CLICKED] =
+    g_signal_new ("match-clicked",
+                  G_TYPE_FROM_CLASS (klass),
+                  G_SIGNAL_RUN_LAST,
+                  0,
+                  g_signal_accumulator_true_handled, NULL,
+                  NULL,
+                  G_TYPE_BOOLEAN,
+                  5,
+                  G_TYPE_DOUBLE,
+                  G_TYPE_DOUBLE,
+                  G_TYPE_INT,
+                  GDK_TYPE_MODIFIER_TYPE,
+                  G_TYPE_STRING | G_SIGNAL_TYPE_STATIC_SCOPE);
+
   gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/Capsule/capsule-terminal.ui");
 
   gtk_widget_class_bind_template_child (widget_class, CapsuleTerminal, size_label);
   gtk_widget_class_bind_template_child (widget_class, CapsuleTerminal, size_revealer);
+  gtk_widget_class_bind_template_child (widget_class, CapsuleTerminal, terminal_menu);
+
+  gtk_widget_class_bind_template_callback (widget_class, capsule_terminal_bubble_click_pressed_cb);
+  gtk_widget_class_bind_template_callback (widget_class, capsule_terminal_capture_click_pressed_cb);
+
+  for (guint i = 0; i < G_N_ELEMENTS (builtin_dingus); i++)
+    {
+      g_autoptr(GError) error = NULL;
+
+      builtin_dingus_regex[i] = vte_regex_new_for_match (builtin_dingus[i],
+                                                         strlen (builtin_dingus[i]),
+                                                         VTE_REGEX_FLAGS_DEFAULT | BUILDER_PCRE2_MULTILINE | BUILDER_PCRE2_UCP,
+                                                         NULL);
+
+      if (!vte_regex_jit (builtin_dingus_regex[i], 0, &error))
+        g_warning ("Failed to JIT regex: %s: Regex was: %s",
+                   error->message,
+                   builtin_dingus[i]);
+    }
 }
 
 static void
 capsule_terminal_init (CapsuleTerminal *self)
 {
   gtk_widget_init_template (GTK_WIDGET (self));
+
+  for (guint i = 0; i < G_N_ELEMENTS (builtin_dingus_regex); i++)
+    {
+      int tag = vte_terminal_match_add_regex (VTE_TERMINAL (self),
+                                              builtin_dingus_regex[i],
+                                              0);
+      vte_terminal_match_set_cursor_name (VTE_TERMINAL (self), tag, "hand2");
+    }
 }
 
 CapsulePalette *
