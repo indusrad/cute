@@ -492,6 +492,7 @@
                   <class name="boxed-list"/>
                 </style>
                 <property name="selection-mode">none</property>
+                <signal name="row-activated" handler="capsule_preferences_window_profile_row_activated_cb" swapped="1"/>
               </object>
             </child>
           </object>

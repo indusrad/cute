@@ -26,6 +26,7 @@
 #include "capsule-application.h"
 #include "capsule-preferences-list-item.h"
 #include "capsule-preferences-window.h"
+#include "capsule-profile-editor.h"
 #include "capsule-profile-row.h"
 
 struct _CapsulePreferencesWindow
@@ -430,6 +431,8 @@ capsule_preferences_window_class_init (CapsulePreferencesWindowClass *klass)
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, use_system_font);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, visual_bell);
 
+  gtk_widget_class_bind_template_callback (widget_class, capsule_preferences_window_profile_row_activated_cb);
+
   gtk_widget_class_install_action (widget_class,
                                    "profile.add",
                                    NULL,
@@ -440,7 +443,7 @@ capsule_preferences_window_class_init (CapsulePreferencesWindowClass *klass)
                                    capsule_preferences_window_select_custom_font);
 
   g_type_ensure (CAPSULE_TYPE_PREFERENCES_LIST_ITEM);
-  //g_type_ensure (CAPSULE_TYPE_PROFILE_EDITOR);
+  g_type_ensure (CAPSULE_TYPE_PROFILE_EDITOR);
 }
 
 static void
@@ -460,17 +463,15 @@ void
 capsule_preferences_window_edit_profile (CapsulePreferencesWindow *self,
                                          CapsuleProfile           *profile)
 {
-#if 0
-  GtkWidget *editor;
+  CapsuleProfileEditor *editor;
 
   g_return_if_fail (CAPSULE_IS_PREFERENCES_WINDOW (self));
-  g_return_if_fail (G_IS_SETTINGS (settings));
+  g_return_if_fail (CAPSULE_IS_PROFILE (profile));
 
-  editor = capsule_profile_editor_new (settings);
+  editor = capsule_profile_editor_new (profile);
 
   adw_preferences_window_push_subpage (ADW_PREFERENCES_WINDOW (self),
                                        ADW_NAVIGATION_PAGE (editor));
-#endif
 }
 
 /**
