@@ -456,6 +456,71 @@ capsule_window_move_right_action (GtkWidget  *widget,
 }
 
 static void
+capsule_window_fullscreen_action (GtkWidget  *widget,
+                                  const char *action_name,
+                                  GVariant   *param)
+{
+  gtk_window_fullscreen (GTK_WINDOW (widget));
+}
+
+static void
+capsule_window_unfullscreen_action (GtkWidget  *widget,
+                                    const char *action_name,
+                                    GVariant   *param)
+{
+  gtk_window_unfullscreen (GTK_WINDOW (widget));
+}
+
+static void
+capsule_window_toggle_fullscreen (GtkWidget  *widget,
+                                  const char *action_name,
+                                  GVariant   *param)
+{
+  if (gtk_window_is_fullscreen (GTK_WINDOW (widget)))
+    gtk_window_unfullscreen (GTK_WINDOW (widget));
+  else
+    gtk_window_fullscreen (GTK_WINDOW (widget));
+}
+
+static void
+capsule_window_toplevel_state_changed_cb (CapsuleWindow *self,
+                                          GParamSpec    *pspec,
+                                          GdkToplevel   *toplevel)
+{
+  GdkToplevelState state;
+  gboolean is_fullscreen;
+
+  g_assert (CAPSULE_IS_WINDOW (self));
+  g_assert (GDK_IS_TOPLEVEL (toplevel));
+
+  state = gdk_toplevel_get_state (toplevel);
+
+  is_fullscreen = !!(state & GDK_TOPLEVEL_STATE_FULLSCREEN);
+
+  gtk_widget_action_set_enabled (GTK_WIDGET (self), "win.fullscreen", !is_fullscreen);
+  gtk_widget_action_set_enabled (GTK_WIDGET (self), "win.unfullscreen", is_fullscreen);
+}
+
+static void
+capsule_window_realize (GtkWidget *widget)
+{
+  CapsuleWindow *self = (CapsuleWindow *)widget;
+  GdkToplevel *toplevel;
+
+  g_assert (CAPSULE_IS_WINDOW (self));
+
+  GTK_WIDGET_CLASS (capsule_window_parent_class)->realize (widget);
+
+  toplevel = GDK_TOPLEVEL (gtk_native_get_surface (GTK_NATIVE (self)));
+
+  g_signal_connect_object (toplevel,
+                           "notify::state",
+                           G_CALLBACK (capsule_window_toplevel_state_changed_cb),
+                           self,
+                           G_CONNECT_SWAPPED);
+}
+
+static void
 capsule_window_constructed (GObject *object)
 {
   CapsuleWindow *self = (CapsuleWindow *)object;
@@ -463,6 +528,8 @@ capsule_window_constructed (GObject *object)
   G_OBJECT_CLASS (capsule_window_parent_class)->constructed (object);
 
   self->dressing = capsule_window_dressing_new (self);
+
+  gtk_widget_action_set_enabled (GTK_WIDGET (self), "win.unfullscreen", FALSE);
 }
 
 static void
@@ -528,14 +595,16 @@ capsule_window_set_property (GObject      *object,
 static void
 capsule_window_class_init (CapsuleWindowClass *klass)
 {
-  GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
+  GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 
   object_class->constructed = capsule_window_constructed;
   object_class->dispose = capsule_window_dispose;
   object_class->finalize = capsule_window_finalize;
   object_class->get_property = capsule_window_get_property;
   object_class->set_property = capsule_window_set_property;
+
+  widget_class->realize = capsule_window_realize;
 
   properties [PROP_ACTIVE_TAB] =
     g_param_spec_object ("active-tab", NULL, NULL,
@@ -563,6 +632,9 @@ capsule_window_class_init (CapsuleWindowClass *klass)
   gtk_widget_class_install_action (widget_class, "win.new-tab", "s", capsule_window_new_tab_action);
   gtk_widget_class_install_action (widget_class, "win.new-window", "s", capsule_window_new_window_action);
   gtk_widget_class_install_action (widget_class, "win.new-terminal", "s", capsule_window_new_terminal_action);
+  gtk_widget_class_install_action (widget_class, "win.fullscreen", NULL, capsule_window_fullscreen_action);
+  gtk_widget_class_install_action (widget_class, "win.unfullscreen", NULL, capsule_window_unfullscreen_action);
+  gtk_widget_class_install_action (widget_class, "win.toggle-fullscreen", NULL, capsule_window_toggle_fullscreen);
   gtk_widget_class_install_action (widget_class, "win.tab-overview", NULL, capsule_window_tab_overview_action);
   gtk_widget_class_install_action (widget_class, "win.zoom-in", NULL, capsule_window_zoom_in_action);
   gtk_widget_class_install_action (widget_class, "win.zoom-out", NULL, capsule_window_zoom_out_action);

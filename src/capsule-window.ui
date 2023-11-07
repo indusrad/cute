@@ -71,6 +71,12 @@
             <property name="action">action(win.zoom-in)</property>
           </object>
         </child>
+        <child>
+          <object class="GtkShortcut">
+            <property name="trigger">F11</property>
+            <property name="action">action(win.toggle-fullscreen)</property>
+          </object>
+        </child>
       </object>
     </child>
     <property name="content">
@@ -195,6 +201,20 @@
         <attribute name="label" translatable="yes">View Open Tabs</attribute>
         <attribute name="action">win.tab-overview</attribute>
         <attribute name="accel">&lt;ctrl&gt;&lt;shift&gt;o</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">Fullscreen</attribute>
+        <attribute name="action">win.fullscreen</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+        <attribute name="accel">F11</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Leave Fullscreen</attribute>
+        <attribute name="action">win.unfullscreen</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+        <attribute name="accel">F11</attribute>
       </item>
     </section>
     <section>
