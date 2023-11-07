@@ -430,14 +430,19 @@ capsule_window_tab_reset_action (GtkWidget  *widget,
   CapsuleWindow *self = (CapsuleWindow *)widget;
   CapsuleTerminal *terminal;
   CapsuleTab *tab;
+  gboolean clear;
 
   g_assert (CAPSULE_IS_WINDOW (self));
+  g_assert (param != NULL);
+  g_assert (g_variant_is_of_type (param, G_VARIANT_TYPE_BOOLEAN));
+
+  clear = g_variant_get_boolean (param);
 
   if (!(tab = capsule_window_get_active_tab (self)))
     return;
 
   terminal = capsule_tab_get_terminal (tab);
-  vte_terminal_reset (VTE_TERMINAL (terminal), TRUE, TRUE);
+  vte_terminal_reset (VTE_TERMINAL (terminal), TRUE, clear);
 }
 
 static void
@@ -668,7 +673,7 @@ capsule_window_class_init (CapsuleWindowClass *klass)
   gtk_widget_class_install_action (widget_class, "page.close", NULL, capsule_window_close_action);
   gtk_widget_class_install_action (widget_class, "page.close-others", NULL, capsule_window_close_others_action);
   gtk_widget_class_install_action (widget_class, "page.detach", NULL, capsule_window_detach_action);
-  gtk_widget_class_install_action (widget_class, "tab.reset", NULL, capsule_window_tab_reset_action);
+  gtk_widget_class_install_action (widget_class, "tab.reset", "b", capsule_window_tab_reset_action);
 }
 
 static void

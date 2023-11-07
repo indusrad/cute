@@ -141,6 +141,12 @@
       <item>
         <attribute name="label" translatable="yes">Reset</attribute>
         <attribute name="action">tab.reset</attribute>
+        <attribute name="target" type="b">false</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Reset and Clear</attribute>
+        <attribute name="action">tab.reset</attribute>
+        <attribute name="target" type="b">true</attribute>
       </item>
     </section>
     <section>
