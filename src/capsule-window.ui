@@ -29,51 +29,83 @@
         <property name="propagation-phase">capture</property>
         <child>
           <object class="GtkShortcut">
-            <property name="trigger">&lt;ctrl&gt;&lt;shift&gt;n</property>
+            <binding name="trigger">
+              <lookup name="new-window" type="CapsuleShortcuts">
+                <lookup name="shortcuts">CapsuleWindow</lookup>
+              </lookup>
+            </binding>
             <property name="action">action(win.new-window)</property>
             <property name="arguments">''</property>
           </object>
         </child>
         <child>
           <object class="GtkShortcut">
-            <property name="trigger">&lt;ctrl&gt;&lt;shift&gt;t</property>
+            <binding name="trigger">
+              <lookup name="new-tab" type="CapsuleShortcuts">
+                <lookup name="shortcuts">CapsuleWindow</lookup>
+              </lookup>
+            </binding>
             <property name="action">action(win.new-tab)</property>
             <property name="arguments">''</property>
           </object>
         </child>
         <child>
           <object class="GtkShortcut">
-            <property name="trigger">&lt;ctrl&gt;&lt;shift&gt;o</property>
+            <binding name="trigger">
+              <lookup name="tab-overview" type="CapsuleShortcuts">
+                <lookup name="shortcuts">CapsuleWindow</lookup>
+              </lookup>
+            </binding>
             <property name="action">action(win.tab-overview)</property>
           </object>
         </child>
         <child>
           <object class="GtkShortcut">
-            <property name="trigger">&lt;ctrl&gt;comma</property>
+            <binding name="trigger">
+              <lookup name="preferences" type="CapsuleShortcuts">
+                <lookup name="shortcuts">CapsuleWindow</lookup>
+              </lookup>
+            </binding>
             <property name="action">action(app.preferences)</property>
           </object>
         </child>
         <child>
           <object class="GtkShortcut">
-            <property name="trigger">&lt;ctrl&gt;minus</property>
+            <binding name="trigger">
+              <lookup name="zoom-out" type="CapsuleShortcuts">
+                <lookup name="shortcuts">CapsuleWindow</lookup>
+              </lookup>
+            </binding>
             <property name="action">action(win.zoom-out)</property>
           </object>
         </child>
         <child>
           <object class="GtkShortcut">
-            <property name="trigger">&lt;ctrl&gt;0</property>
+            <binding name="trigger">
+              <lookup name="zoom-one" type="CapsuleShortcuts">
+                <lookup name="shortcuts">CapsuleWindow</lookup>
+              </lookup>
+            </binding>
             <property name="action">action(win.zoom-one)</property>
           </object>
         </child>
         <child>
           <object class="GtkShortcut">
-            <property name="trigger">&lt;ctrl&gt;plus</property>
+            <binding name="trigger">
+              <lookup name="zoom-in" type="CapsuleShortcuts">
+                <lookup name="shortcuts">CapsuleWindow</lookup>
+              </lookup>
+            </binding>
             <property name="action">action(win.zoom-in)</property>
           </object>
         </child>
         <child>
           <object class="GtkShortcut">
-            <property name="trigger">F11</property>
+            <binding name="trigger">
+              <lookup name="toggle-fullscreen" type="CapsuleShortcuts">
+                <lookup name="shortcuts">CapsuleWindow</lookup>
+              </lookup>
+            </binding>
             <property name="action">action(win.toggle-fullscreen)</property>
           </object>
         </child>
@@ -168,58 +200,59 @@
     <section>
       <attribute name="display-hint">horizontal-buttons</attribute>
       <item>
+        <attribute name="id">zoom-out</attribute>
         <attribute name="action">win.zoom-out</attribute>
-        <attribute name="accel">&lt;ctrl&gt;minus</attribute>
         <attribute name="verb-icon">zoom-out-symbolic</attribute>
       </item>
       <item>
+        <attribute name="id">zoom-one</attribute>
         <attribute name="action">win.zoom-one</attribute>
-        <attribute name="accel">&lt;ctrl&gt;0</attribute>
         <attribute name="verb-icon">zoom-original-symbolic</attribute>
       </item>
       <item>
+        <attribute name="id">zoom-in</attribute>
         <attribute name="action">win.zoom-in</attribute>
-        <attribute name="accel">&lt;ctrl&gt;plus</attribute>
         <attribute name="verb-icon">zoom-in-symbolic</attribute>
       </item>
     </section>
     <section>
       <item>
+        <attribute name="id">new-tab</attribute>
         <attribute name="label" translatable="yes">New _Tab</attribute>
         <attribute name="action">win.new-tab</attribute>
         <attribute name="target" type="s">'default'</attribute>
-        <attribute name="accel">&lt;ctrl&gt;&lt;shift&gt;t</attribute>
       </item>
       <item>
+        <attribute name="id">new-window</attribute>
         <attribute name="label" translatable="yes">New _Window</attribute>
         <attribute name="action">win.new-window</attribute>
         <attribute name="target" type="s">'default'</attribute>
-        <attribute name="accel">&lt;ctrl&gt;&lt;shift&gt;n</attribute>
       </item>
     </section>
     <section>
       <item>
+        <attribute name="id">tab-overview</attribute>
         <attribute name="label" translatable="yes">View Open Tabs</attribute>
         <attribute name="action">win.tab-overview</attribute>
-        <attribute name="accel">&lt;ctrl&gt;&lt;shift&gt;o</attribute>
       </item>
     </section>
     <section>
       <item>
+        <attribute name="id">toggle-fullscreen</attribute>
         <attribute name="label" translatable="yes">Fullscreen</attribute>
         <attribute name="action">win.fullscreen</attribute>
         <attribute name="hidden-when">action-disabled</attribute>
-        <attribute name="accel">F11</attribute>
       </item>
       <item>
+        <attribute name="id">toggle-fullscreen</attribute>
         <attribute name="label" translatable="yes">Leave Fullscreen</attribute>
         <attribute name="action">win.unfullscreen</attribute>
         <attribute name="hidden-when">action-disabled</attribute>
-        <attribute name="accel">F11</attribute>
       </item>
     </section>
     <section>
       <item>
+        <attribute name="id">preferences</attribute>
         <attribute name="label" translatable="yes">_Preferences</attribute>
         <attribute name="action">app.preferences</attribute>
       </item>

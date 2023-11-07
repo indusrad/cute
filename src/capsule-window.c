@@ -32,7 +32,10 @@ struct _CapsuleWindow
 
   CapsuleCloseDialog    *close_dialog;
 
+  CapsuleShortcuts      *shortcuts;
+
   AdwHeaderBar          *header_bar;
+  GMenu                 *primary_menu;
   AdwTabBar             *tab_bar;
   AdwTabOverview        *tab_overview;
   AdwTabView            *tab_view;
@@ -49,6 +52,7 @@ G_DEFINE_FINAL_TYPE (CapsuleWindow, capsule_window, ADW_TYPE_APPLICATION_WINDOW)
 enum {
   PROP_0,
   PROP_ACTIVE_TAB,
+  PROP_SHORTCUTS,
   N_PROPS
 };
 
@@ -596,6 +600,10 @@ capsule_window_get_property (GObject    *object,
       g_value_set_object (value, capsule_window_get_active_tab (self));
       break;
 
+    case PROP_SHORTCUTS:
+      g_value_set_object (value, self->shortcuts);
+      break;
+
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
     }
@@ -634,11 +642,17 @@ capsule_window_class_init (CapsuleWindowClass *klass)
 
   widget_class->realize = capsule_window_realize;
 
-  properties [PROP_ACTIVE_TAB] =
+  properties[PROP_ACTIVE_TAB] =
     g_param_spec_object ("active-tab", NULL, NULL,
                          CAPSULE_TYPE_TAB,
                          (G_PARAM_READWRITE |
                           G_PARAM_EXPLICIT_NOTIFY |
+                          G_PARAM_STATIC_STRINGS));
+
+  properties[PROP_SHORTCUTS] =
+    g_param_spec_object ("shortcuts", NULL, NULL,
+                         CAPSULE_TYPE_SHORTCUTS,
+                         (G_PARAM_READABLE |
                           G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_properties (object_class, N_PROPS, properties);
@@ -646,6 +660,7 @@ capsule_window_class_init (CapsuleWindowClass *klass)
   gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/Capsule/capsule-window.ui");
 
   gtk_widget_class_bind_template_child (widget_class, CapsuleWindow, header_bar);
+  gtk_widget_class_bind_template_child (widget_class, CapsuleWindow, primary_menu);
   gtk_widget_class_bind_template_child (widget_class, CapsuleWindow, tab_bar);
   gtk_widget_class_bind_template_child (widget_class, CapsuleWindow, tab_overview);
   gtk_widget_class_bind_template_child (widget_class, CapsuleWindow, tab_view);
@@ -687,11 +702,20 @@ capsule_window_init (CapsuleWindow *self)
                                  self,
                                  G_CONNECT_SWAPPED);
 
+  self->shortcuts = g_object_ref (capsule_application_get_shortcuts (CAPSULE_APPLICATION_DEFAULT));
+
   gtk_widget_init_template (GTK_WIDGET (self));
 
 #if DEVELOPMENT_BUILD
   gtk_widget_add_css_class (GTK_WIDGET (self), "devel");
 #endif
+
+  g_signal_connect_object (self->shortcuts,
+                           "notify",
+                           G_CALLBACK (capsule_shortcuts_update_menu),
+                           self->primary_menu,
+                           0);
+  capsule_shortcuts_update_menu (self->shortcuts, self->primary_menu);
 }
 
 CapsuleWindow *

@@ -38,6 +38,7 @@ struct _CapsuleApplication
   GListStore         *profiles;
   GListStore         *containers;
   CapsuleSettings    *settings;
+  CapsuleShortcuts   *shortcuts;
   CapsuleProfileMenu *profile_menu;
   char               *system_font_name;
   GDBusProxy         *portal;
@@ -239,6 +240,7 @@ capsule_application_startup (GApplication *application)
   self->containers = g_list_store_new (CAPSULE_TYPE_CONTAINER);
   self->profiles = g_list_store_new (CAPSULE_TYPE_PROFILE);
   self->settings = capsule_settings_new ();
+  self->shortcuts = capsule_shortcuts_new (NULL);
   self->profile_menu = capsule_profile_menu_new (self->settings);
 
   host = capsule_host_container_new ();
@@ -310,6 +312,7 @@ capsule_application_shutdown (GApplication *application)
   g_clear_object (&self->profiles);
   g_clear_object (&self->containers);
   g_clear_object (&self->portal);
+  g_clear_object (&self->shortcuts);
   g_clear_object (&self->settings);
 
   g_clear_pointer (&self->system_font_name, g_free);
@@ -630,4 +633,20 @@ capsule_application_get_settings (CapsuleApplication *self)
   g_return_val_if_fail (CAPSULE_IS_APPLICATION (self), NULL);
 
   return self->settings;
+}
+
+/**
+ * capsule_application_get_shortcuts:
+ * @self: a #CapsuleApplication
+ *
+ * Gets the shortcuts for the application.
+ *
+ * Returns: (transfer none) (not nullable): a #CapsuleShortcuts
+ */
+CapsuleShortcuts *
+capsule_application_get_shortcuts (CapsuleApplication *self)
+{
+  g_return_val_if_fail (CAPSULE_IS_APPLICATION (self), NULL);
+
+  return self->shortcuts;
 }

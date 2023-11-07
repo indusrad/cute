@@ -252,4 +252,68 @@
 
   </schema>
 
+  <schema id=@APP_SCHEMA_SHORTCUTS_ID@ path=@APP_SCHEMA_SHORTCUTS_PATH@>
+
+    <key name="copy-clipboard" type="s">
+      <default>'&lt;ctrl&gt;&lt;shift&gt;c'</default>
+      <summary>Copy to Clipboard</summary>
+      <description>The shortcut to copy to clipboard</description>
+    </key>
+
+    <key name="paste-clipboard" type="s">
+      <default>'&lt;ctrl&gt;&lt;shift&gt;v'</default>
+      <summary>Paste from Clipboard</summary>
+      <description>The shortcut to paste from the clipboard</description>
+    </key>
+
+    <key name="new-tab" type="s">
+      <default>'&lt;ctrl&gt;&lt;shift&gt;t'</default>
+      <summary>New Tab</summary>
+      <description>The shortcut to create a new tab in the current window</description>
+    </key>
+
+    <key name="new-window" type="s">
+      <default>'&lt;ctrl&gt;&lt;shift&gt;n'</default>
+      <summary>New Window</summary>
+      <description>The shortcut to create a new tab in a new window</description>
+    </key>
+
+    <key name="tab-overview" type="s">
+      <default>'&lt;ctrl&gt;&lt;shift&gt;o'</default>
+      <summary>Tab Overview</summary>
+      <description>The shortcut to show the tab overview</description>
+    </key>
+
+    <key name="preferences" type="s">
+      <default>'&lt;ctrl&gt;&lt;shift&gt;comma'</default>
+      <summary>Preferences</summary>
+      <description>The shortcut to show application preferences</description>
+    </key>
+
+    <key name="zoom-out" type="s">
+      <default>'&lt;ctrl&gt;minus'</default>
+      <summary>Zoom Out</summary>
+      <description>The shortcut to zoom out</description>
+    </key>
+
+    <key name="zoom-one" type="s">
+      <default>'&lt;ctrl&gt;0'</default>
+      <summary>Reset Zoom</summary>
+      <description>The shortcut to reset zoom</description>
+    </key>
+
+    <key name="zoom-in" type="s">
+      <default>'&lt;ctrl&gt;plus'</default>
+      <summary>Zoom In</summary>
+      <description>The shortcut to zoom in</description>
+    </key>
+
+    <key name="toggle-fullscreen" type="s">
+      <default>'F11'</default>
+      <summary>Toggle Fullscreen</summary>
+      <description>The shortcut to toggle fullscreen</description>
+    </key>
+
+  </schema>
+
 </schemalist>

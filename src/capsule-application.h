@@ -25,6 +25,7 @@
 #include "capsule-container.h"
 #include "capsule-profile.h"
 #include "capsule-settings.h"
+#include "capsule-shortcuts.h"
 
 G_BEGIN_DECLS
 
@@ -36,6 +37,7 @@ G_DECLARE_FINAL_TYPE (CapsuleApplication, capsule_application, CAPSULE, APPLICAT
 CapsuleApplication *capsule_application_new                  (const char         *application_id,
                                                               GApplicationFlags   flags);
 CapsuleSettings    *capsule_application_get_settings         (CapsuleApplication *self);
+CapsuleShortcuts   *capsule_application_get_shortcuts        (CapsuleApplication *self);
 const char         *capsule_application_get_system_font_name (CapsuleApplication *self);
 gboolean            capsule_application_control_is_pressed   (CapsuleApplication *self);
 void                capsule_application_add_profile          (CapsuleApplication *self,
