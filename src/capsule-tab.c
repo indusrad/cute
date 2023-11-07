@@ -136,7 +136,6 @@ capsule_tab_wait_check_cb (GObject      *object,
   else
     self->state = CAPSULE_TAB_STATE_FAILED;
 
-
   if (g_subprocess_get_if_signaled (subprocess))
     {
       g_autofree char *title = NULL;
