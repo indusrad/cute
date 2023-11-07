@@ -23,6 +23,8 @@
 
 #include <adwaita.h>
 
+#include <glib/gi18n.h>
+
 #include "capsule-tab.h"
 #include "capsule-terminal.h"
 #include "capsule-window.h"
@@ -67,6 +69,24 @@ static const char * const builtin_dingus[] = {
   "(((gopher|news|telnet|nntp|file|http|ftp|https)://)|(www|ftp)[-A-Za-z0-9]*\\.)[-A-Za-z0-9\\.]+(:[0-9]*)?",
   "(((gopher|news|telnet|nntp|file|http|ftp|https)://)|(www|ftp)[-A-Za-z0-9]*\\.)[-A-Za-z0-9\\.]+(:[0-9]*)?/[-A-Za-z0-9_\\$\\.\\+\\!\\*\\(\\),;:@&=\\?/~\\#\\%]*[^]'\\.}>\\) ,\\\"]",
 };
+
+static void
+capsule_terminal_toast (CapsuleTerminal *self,
+                        int              timeout,
+                        const char      *title)
+{
+  GtkWidget *overlay = gtk_widget_get_ancestor (GTK_WIDGET (self), ADW_TYPE_TOAST_OVERLAY);
+  AdwToast *toast;
+
+  if (overlay == NULL)
+    return;
+
+  toast = g_object_new (ADW_TYPE_TOAST,
+                        "title", title,
+                        "timeout", timeout,
+                        NULL);
+  adw_toast_overlay_add_toast (ADW_TOAST_OVERLAY (overlay), toast);
+}
 
 static gboolean
 capsule_terminal_is_active (CapsuleTerminal *self)
@@ -288,9 +308,13 @@ copy_clipboard_action (GtkWidget  *widget,
                        const char *action_name,
                        GVariant   *param)
 {
+  CapsuleTerminal *self = CAPSULE_TERMINAL (widget);
   GdkClipboard *clipboard = gtk_widget_get_clipboard (widget);
   g_autofree char *text = vte_terminal_get_text_selected (VTE_TERMINAL (widget), VTE_FORMAT_TEXT);
+
   gdk_clipboard_set_text (clipboard, text);
+
+  capsule_terminal_toast (self, 1, _("Copied to clipboard"));
 }
 
 static void
@@ -319,7 +343,10 @@ copy_link_address_action (GtkWidget  *widget,
   g_assert (CAPSULE_IS_TERMINAL (self));
 
   if (self->url && self->url[0])
-    gdk_clipboard_set_text (gtk_widget_get_clipboard (GTK_WIDGET (self)), self->url);
+    {
+      gdk_clipboard_set_text (gtk_widget_get_clipboard (GTK_WIDGET (self)), self->url);
+      capsule_terminal_toast (self, 1, _("Copied to clipboard"));
+    }
 }
 
 static void

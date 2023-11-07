@@ -139,13 +139,17 @@
               </object>
             </child>
             <property name="content">
-              <object class="AdwTabView" id="tab_view">
-                <signal name="notify::selected-page" handler="capsule_window_notify_selected_page_cb" swapped="1"/>
-                <signal name="page-attached" handler="capsule_window_page_attached_cb" swapped="1"/>
-                <signal name="page-detached" handler="capsule_window_page_detached_cb" swapped="1"/>
-                <signal name="create-window" handler="capsule_window_create_window_cb" swapped="1"/>
-                <signal name="setup-menu" handler="capsule_window_setup_menu_cb" swapped="1"/>
-                <property name="menu-model">tab_menu</property>
+              <object class="AdwToastOverlay" id="toasts">
+                <child>
+                  <object class="AdwTabView" id="tab_view">
+                    <signal name="notify::selected-page" handler="capsule_window_notify_selected_page_cb" swapped="1"/>
+                    <signal name="page-attached" handler="capsule_window_page_attached_cb" swapped="1"/>
+                    <signal name="page-detached" handler="capsule_window_page_detached_cb" swapped="1"/>
+                    <signal name="create-window" handler="capsule_window_create_window_cb" swapped="1"/>
+                    <signal name="setup-menu" handler="capsule_window_setup_menu_cb" swapped="1"/>
+                    <property name="menu-model">tab_menu</property>
+                  </object>
+                </child>
               </object>
             </property>
           </object>
