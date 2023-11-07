@@ -312,9 +312,11 @@ copy_clipboard_action (GtkWidget  *widget,
   GdkClipboard *clipboard = gtk_widget_get_clipboard (widget);
   g_autofree char *text = vte_terminal_get_text_selected (VTE_TERMINAL (widget), VTE_FORMAT_TEXT);
 
-  gdk_clipboard_set_text (clipboard, text);
-
-  capsule_terminal_toast (self, 1, _("Copied to clipboard"));
+  if (text && text[0] != 0)
+    {
+      gdk_clipboard_set_text (clipboard, text);
+      capsule_terminal_toast (self, 1, _("Copied to clipboard"));
+    }
 }
 
 static void
