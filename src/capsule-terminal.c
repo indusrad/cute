@@ -825,16 +825,16 @@ capsule_terminal_size_allocate (GtkWidget *widget,
       gtk_revealer_set_reveal_child (self->size_revealer, FALSE);
     }
 
+  G_GNUC_BEGIN_IGNORE_DEPRECATIONS;
+  gtk_style_context_get_padding (gtk_widget_get_style_context (widget), &padding);
+  G_GNUC_END_IGNORE_DEPRECATIONS;
+
   gtk_widget_get_preferred_size (GTK_WIDGET (self->size_revealer), &min, NULL);
-  revealer_alloc.x = width - min.width;
+  revealer_alloc.x = width + padding.right - min.width;
   revealer_alloc.y = height - min.height;
   revealer_alloc.width = min.width;
   revealer_alloc.height = min.height;
   gtk_widget_size_allocate (GTK_WIDGET (self->size_revealer), &revealer_alloc, -1);
-
-  G_GNUC_BEGIN_IGNORE_DEPRECATIONS;
-  gtk_style_context_get_padding (gtk_widget_get_style_context (widget), &padding);
-  G_GNUC_END_IGNORE_DEPRECATIONS;
 
   gtk_widget_get_preferred_size (GTK_WIDGET (self->drop_highlight), &min, NULL);
   dnd_alloc.x = -padding.left + 1;
