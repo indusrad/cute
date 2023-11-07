@@ -285,7 +285,7 @@
     </key>
 
     <key name="preferences" type="s">
-      <default>'&lt;ctrl&gt;&lt;shift&gt;comma'</default>
+      <default>'&lt;ctrl&gt;comma'</default>
       <summary>Preferences</summary>
       <description>The shortcut to show application preferences</description>
     </key>
