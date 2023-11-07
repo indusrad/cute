@@ -32,21 +32,29 @@
 #define SIZE_DISMISS_TIMEOUT_MSEC 1000
 #define BUILDER_PCRE2_UCP 0x00020000u
 #define BUILDER_PCRE2_MULTILINE 0x00000400u
+#define URL_MATCH_CURSOR_NAME "pointer"
+
+#define DROP_REQUEST_PRIORITY               G_PRIORITY_DEFAULT
+#define APPLICATION_VND_PORTAL_FILETRANSFER "application/vnd.portal.filetransfer"
+#define APPLICATION_VND_PORTAL_FILES        "application/vnd.portal.files"
+#define TEXT_X_MOZ_URL                      "text/x-moz-url"
+#define TEXT_URI_LIST                       "text/uri-list"
 
 struct _CapsuleTerminal
 {
-  VteTerminal     parent_instance;
+  VteTerminal         parent_instance;
 
-  CapsulePalette *palette;
+  CapsulePalette     *palette;
+  char               *url;
 
-  GtkPopover     *popover;
-  GMenuModel     *terminal_menu;
+  GtkPopover         *popover;
+  GMenuModel         *terminal_menu;
+  GtkWidget          *drop_highlight;
+  GtkDropTargetAsync *drop_target;
+  GtkRevealer        *size_revealer;
+  GtkLabel           *size_label;
 
-  GtkRevealer    *size_revealer;
-  GtkLabel       *size_label;
-  guint           size_dismiss_source;
-
-  char           *url;
+  guint               size_dismiss_source;
 };
 
 enum {
@@ -370,6 +378,360 @@ open_link_action (GtkWidget  *widget,
                            NULL, NULL, NULL);
 }
 
+typedef struct {
+  CapsuleTerminal *terminal;
+  GdkDrop *drop;
+  GList *files;
+  const char *mime_type;
+} TextUriList;
+
+static void
+text_uri_list_free (TextUriList *uri_list)
+{
+  g_clear_object (&uri_list->terminal);
+  g_clear_object (&uri_list->drop);
+  g_clear_list (&uri_list->files, g_object_unref);
+  uri_list->mime_type = NULL;
+  g_free (uri_list);
+}
+
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (TextUriList, text_uri_list_free)
+
+static void
+capsule_terminal_drop_file_list (CapsuleTerminal *self,
+                                 const GList     *files)
+{
+  g_autoptr(GString) string = NULL;
+
+  g_assert (CAPSULE_IS_TERMINAL (self));
+  g_assert (files == NULL || G_IS_FILE (files->data));
+
+  string = g_string_new (NULL);
+
+  for (const GList *iter = files; iter; iter = iter->next)
+    {
+      GFile *file = G_FILE (iter->data);
+
+      if (g_file_is_native (file))
+        {
+          g_autofree char *quoted = g_shell_quote (g_file_peek_path (file));
+
+          g_string_append (string, quoted);
+          g_string_append_c (string, ' ');
+        }
+      else
+        {
+          g_autofree char *uri = g_file_get_uri (file);
+          g_autofree char *quoted = g_shell_quote (uri);
+
+          g_string_append (string, quoted);
+          g_string_append_c (string, ' ');
+        }
+    }
+
+  if (string->len > 0)
+    vte_terminal_paste_text (VTE_TERMINAL (self), string->str);
+}
+
+static void
+capsule_terminal_drop_uri_list_line_cb (GObject      *object,
+                                        GAsyncResult *result,
+                                        gpointer      user_data)
+{
+  GDataInputStream *line_reader = G_DATA_INPUT_STREAM (object);
+  g_autoptr(TextUriList) state = (TextUriList*)user_data;
+  g_autoptr(GError) error = NULL;
+  g_autofree char *line = NULL;
+  gsize len = 0;
+
+  g_assert (G_IS_ASYNC_RESULT (result));
+  g_assert (state != NULL);
+  g_assert (CAPSULE_IS_TERMINAL (state->terminal));
+  g_assert (GDK_IS_DROP (state->drop));
+
+  line = g_data_input_stream_read_line_finish_utf8 (line_reader, result, &len, &error);
+
+  if (error != NULL)
+    {
+      g_debug ("Failed to receive '%s': %s", state->mime_type, error->message);
+      gdk_drop_finish (state->drop, 0);
+      return;
+    }
+
+  if (line != NULL && line[0] != 0 && line[0] != '#')
+    {
+      GFile *file = g_file_new_for_uri (line);
+
+      if (file != NULL)
+        state->files = g_list_append (state->files, file);
+    }
+
+  if (line == NULL || g_strcmp0 (state->mime_type, TEXT_X_MOZ_URL) == 0)
+    {
+      capsule_terminal_drop_file_list (state->terminal, state->files);
+      gdk_drop_finish (state->drop, GDK_ACTION_COPY);
+      return;
+    }
+
+  g_data_input_stream_read_line_async (line_reader,
+                                       DROP_REQUEST_PRIORITY,
+                                       NULL,
+                                       capsule_terminal_drop_uri_list_line_cb,
+                                       g_steal_pointer (&state));
+}
+
+static void
+capsule_terminal_drop_uri_list_cb (GObject      *object,
+                                   GAsyncResult *result,
+                                   gpointer      user_data)
+{
+  GdkDrop *drop = (GdkDrop *)object;
+  g_autoptr(CapsuleTerminal) self = user_data;
+  g_autoptr(GError) error = NULL;
+  g_autoptr(GInputStream) stream = NULL;
+  g_autoptr(GDataInputStream) line_reader = NULL;
+  g_autoptr(TextUriList) state = NULL;
+  const char *mime_type = NULL;
+
+  g_assert (GDK_IS_DROP (drop));
+  g_assert (G_IS_ASYNC_RESULT (result));
+  g_assert (CAPSULE_IS_TERMINAL (self));
+
+  if (!(stream = gdk_drop_read_finish (drop, result, &mime_type, &error)))
+    {
+      g_debug ("Failed to receive text/uri-list offer: %s", error->message);
+      gdk_drop_finish (drop, 0);
+      return;
+    }
+
+  g_assert (g_strcmp0 (mime_type, TEXT_URI_LIST) == 0);
+  g_assert (G_IS_INPUT_STREAM (stream));
+
+  line_reader = g_data_input_stream_new (stream);
+  g_data_input_stream_set_newline_type (line_reader,
+                                        G_DATA_STREAM_NEWLINE_TYPE_CR_LF);
+
+  state = g_new0 (TextUriList, 1);
+  state->terminal = g_object_ref (self);
+  state->drop = g_object_ref (drop);
+  state->mime_type = g_intern_string (mime_type);
+
+  g_data_input_stream_read_line_async (line_reader,
+                                       DROP_REQUEST_PRIORITY,
+                                       NULL,
+                                       capsule_terminal_drop_uri_list_line_cb,
+                                       g_steal_pointer (&state));
+}
+
+static void
+capsule_terminal_drop_file_list_cb (GObject      *object,
+                                    GAsyncResult *result,
+                                    gpointer      user_data)
+{
+  GdkDrop *drop = (GdkDrop *)object;
+  g_autoptr(CapsuleTerminal) self = user_data;
+  g_autoptr(GError) error = NULL;
+  const GValue *value;
+  const GList *file_list;
+
+  g_assert (GDK_IS_DROP (drop));
+  g_assert (G_IS_ASYNC_RESULT (result));
+  g_assert (CAPSULE_IS_TERMINAL (self));
+
+  if (!(value = gdk_drop_read_value_finish (drop, result, &error)))
+    {
+      g_debug ("Failed to receive file-list offer: %s", error->message);
+
+      /* If the user dragged a directory from Nautilus or another
+       * new-style application, a portal request would be made. But
+       * GTK won't be able to open the directory so the request for
+       * APPLICATION_VND_PORTAL_FILETRANSFER will fail. Fallback to
+       * opening the request via TEXT_URI_LIST gracefully.
+       */
+      if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND) ||
+          g_error_matches (error, G_IO_ERROR, G_DBUS_ERROR_ACCESS_DENIED))
+        gdk_drop_read_async (drop,
+                             (const char **)(const char * const[]){TEXT_URI_LIST, NULL},
+                             DROP_REQUEST_PRIORITY,
+                             NULL,
+                             capsule_terminal_drop_uri_list_cb,
+                             g_object_ref (self));
+      else
+        gdk_drop_finish (drop, 0);
+
+      return;
+    }
+
+  g_assert (value != NULL);
+  g_assert (G_VALUE_HOLDS (value, GDK_TYPE_FILE_LIST));
+
+  file_list = (const GList *)g_value_get_boxed (value);
+  capsule_terminal_drop_file_list (self, file_list);
+  gdk_drop_finish (drop, GDK_ACTION_COPY);
+}
+
+static void
+capsule_terminal_drop_string_cb (GObject      *object,
+                                 GAsyncResult *result,
+                                 gpointer      user_data)
+{
+  GdkDrop *drop = (GdkDrop *)object;
+  g_autoptr(CapsuleTerminal) self = user_data;
+  g_autoptr(GError) error = NULL;
+  const GValue *value;
+  const char *string;
+
+  g_assert (GDK_IS_DROP (drop));
+  g_assert (G_IS_ASYNC_RESULT (result));
+  g_assert (CAPSULE_IS_TERMINAL (self));
+
+  if (!(value = gdk_drop_read_value_finish (drop, result, &error)))
+    {
+      gdk_drop_finish (drop, 0);
+      return;
+    }
+
+  g_assert (value != NULL);
+  g_assert (G_VALUE_HOLDS_STRING (value));
+
+  string = g_value_get_string (value);
+
+  if (string != NULL && string[0] != 0)
+    vte_terminal_paste_text (VTE_TERMINAL (self), string);
+
+  gdk_drop_finish (drop, GDK_ACTION_COPY);
+}
+
+static void
+capsule_terminal_drop_moz_url_cb (GObject      *object,
+                                  GAsyncResult *result,
+                                  gpointer      user_data)
+{
+  GdkDrop *drop = (GdkDrop *)object;
+  g_autoptr(CapsuleTerminal) self = user_data;
+  g_autoptr(GCharsetConverter) converter = NULL;
+  g_autoptr(GDataInputStream) line_reader = NULL;
+  g_autoptr(GInputStream) converter_stream = NULL;
+  g_autoptr(GInputStream) stream = NULL;
+  g_autoptr(GError) error = NULL;
+  const char *mime_type = NULL;
+  TextUriList *state;
+
+  g_assert (GDK_IS_DROP (drop));
+  g_assert (G_IS_ASYNC_RESULT (result));
+  g_assert (CAPSULE_IS_TERMINAL (self));
+
+  if (!(stream = gdk_drop_read_finish (drop, result, &mime_type, &error))) {
+    gdk_drop_finish (drop, 0);
+    return;
+  }
+
+  g_assert (G_IS_INPUT_STREAM (stream));
+
+  if (!(converter = g_charset_converter_new ("UTF-8", "UCS-2", &error))) {
+    g_debug ("Failed to create UTF-8 decoder: %s", error->message);
+    gdk_drop_finish (drop, 0);
+    return;
+  }
+
+  /* TEXT_X_MOZ_URL is in UCS-2 so convert it to UTF-8.
+   *
+   * The data is expected to be URL, a \n, then the title of the web page.
+   *
+   * However, some applications (e.g. dolphin) delimit with a \r\n (see
+   * issue#293) so handle that generically with the line reader.
+   */
+  converter_stream = g_converter_input_stream_new (stream, G_CONVERTER (converter));
+  line_reader = g_data_input_stream_new (converter_stream);
+  g_data_input_stream_set_newline_type (line_reader,
+                                        G_DATA_STREAM_NEWLINE_TYPE_ANY);
+
+  state = g_new0 (TextUriList, 1);
+  state->terminal = g_object_ref (self);
+  state->drop = g_object_ref (drop);
+  state->mime_type = g_intern_string (TEXT_X_MOZ_URL);
+
+  g_data_input_stream_read_line_async (line_reader,
+                                       DROP_REQUEST_PRIORITY,
+                                       NULL,
+                                       capsule_terminal_drop_uri_list_line_cb,
+                                       g_steal_pointer (&state));
+}
+
+static gboolean
+capsule_terminal_drop_target_drop (CapsuleTerminal    *self,
+                                   GdkDrop            *drop,
+                                   double              x,
+                                   double              y,
+                                   GtkDropTargetAsync *drop_target)
+{
+  GdkContentFormats *formats;
+
+  g_assert (CAPSULE_IS_TERMINAL (self));
+  g_assert (GDK_IS_DROP (drop));
+  g_assert (GTK_IS_DROP_TARGET_ASYNC (drop_target));
+
+  formats = gdk_drop_get_formats (drop);
+
+  if (gdk_content_formats_contain_gtype (formats, GDK_TYPE_FILE_LIST) ||
+      gdk_content_formats_contain_gtype (formats, G_TYPE_FILE) ||
+      gdk_content_formats_contain_mime_type (formats, TEXT_URI_LIST) ||
+      gdk_content_formats_contain_mime_type (formats, APPLICATION_VND_PORTAL_FILETRANSFER) ||
+      gdk_content_formats_contain_mime_type (formats, APPLICATION_VND_PORTAL_FILES)) {
+    gdk_drop_read_value_async (drop,
+                               GDK_TYPE_FILE_LIST,
+                               DROP_REQUEST_PRIORITY,
+                               NULL,
+                               capsule_terminal_drop_file_list_cb,
+                               g_object_ref (self));
+    return TRUE;
+  } else if (gdk_content_formats_contain_mime_type (formats, TEXT_X_MOZ_URL)) {
+    gdk_drop_read_async (drop,
+                         (const char **)(const char * const []){TEXT_X_MOZ_URL, NULL},
+                         DROP_REQUEST_PRIORITY,
+                         NULL,
+                         capsule_terminal_drop_moz_url_cb,
+                         g_object_ref (self));
+    return TRUE;
+  } else if (gdk_content_formats_contain_gtype (formats, G_TYPE_STRING)) {
+    gdk_drop_read_value_async (drop,
+                               G_TYPE_STRING,
+                               DROP_REQUEST_PRIORITY,
+                               NULL,
+                               capsule_terminal_drop_string_cb,
+                               g_object_ref (self));
+    return TRUE;
+  }
+
+  return FALSE;
+}
+
+static GdkDragAction
+capsule_terminal_drop_target_drag_enter (CapsuleTerminal    *self,
+                                         GdkDrop            *drop,
+                                         double              x,
+                                         double              y,
+                                         GtkDropTargetAsync *drop_target)
+{
+  g_assert (CAPSULE_IS_TERMINAL (self));
+  g_assert (GTK_IS_DROP_TARGET_ASYNC (drop_target));
+
+  gtk_widget_set_visible (self->drop_highlight, TRUE);
+
+  return GDK_ACTION_COPY;
+}
+
+static void
+capsule_terminal_drop_target_drag_leave (CapsuleTerminal    *self,
+                                         GdkDrop            *drop,
+                                         GtkDropTargetAsync *drop_target)
+{
+  g_assert (CAPSULE_IS_TERMINAL (self));
+  g_assert (GTK_IS_DROP_TARGET_ASYNC (drop_target));
+
+  gtk_widget_set_visible (self->drop_highlight, FALSE);
+}
+
 static void
 capsule_terminal_measure (GtkWidget      *widget,
                           GtkOrientation  orientation,
@@ -402,7 +764,7 @@ capsule_terminal_measure (GtkWidget      *widget,
 static gboolean
 dismiss_size_label_cb (gpointer user_data)
 {
-  CapsuleTerminal *self = CAPSULE_TERMINAL (user_data);
+  CapsuleTerminal *self = user_data;
 
   gtk_revealer_set_reveal_child (self->size_revealer, FALSE);
   self->size_dismiss_source = 0;
@@ -418,7 +780,8 @@ capsule_terminal_size_allocate (GtkWidget *widget,
 {
   CapsuleTerminal *self = CAPSULE_TERMINAL (widget);
   GtkRequisition min;
-  GtkAllocation revealer_alloc;
+  GtkAllocation revealer_alloc, dnd_alloc;
+  GtkBorder padding;
   GtkRoot *root;
   int prev_column_count, column_count;
   int prev_row_count, row_count;
@@ -469,6 +832,17 @@ capsule_terminal_size_allocate (GtkWidget *widget,
   revealer_alloc.height = min.height;
   gtk_widget_size_allocate (GTK_WIDGET (self->size_revealer), &revealer_alloc, -1);
 
+  G_GNUC_BEGIN_IGNORE_DEPRECATIONS;
+  gtk_style_context_get_padding (gtk_widget_get_style_context (widget), &padding);
+  G_GNUC_END_IGNORE_DEPRECATIONS;
+
+  gtk_widget_get_preferred_size (GTK_WIDGET (self->drop_highlight), &min, NULL);
+  dnd_alloc.x = -padding.left + 1;
+  dnd_alloc.y = 1;
+  dnd_alloc.width = padding.left - 1 + width + padding.right - 1;
+  dnd_alloc.height = height - 2;
+  gtk_widget_size_allocate (GTK_WIDGET (self->drop_highlight), &dnd_alloc, -1);
+
   if (self->popover)
     gtk_popover_present (self->popover);
 }
@@ -482,6 +856,7 @@ capsule_terminal_snapshot (GtkWidget   *widget,
   GTK_WIDGET_CLASS (capsule_terminal_parent_class)->snapshot (widget, snapshot);
 
   gtk_widget_snapshot_child (widget, GTK_WIDGET (self->size_revealer), snapshot);
+  gtk_widget_snapshot_child (widget, GTK_WIDGET (self->drop_highlight), snapshot);
 }
 
 static void
@@ -581,12 +956,17 @@ capsule_terminal_class_init (CapsuleTerminalClass *klass)
 
   gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/Capsule/capsule-terminal.ui");
 
+  gtk_widget_class_bind_template_child (widget_class, CapsuleTerminal, drop_highlight);
+  gtk_widget_class_bind_template_child (widget_class, CapsuleTerminal, drop_target);
   gtk_widget_class_bind_template_child (widget_class, CapsuleTerminal, size_label);
   gtk_widget_class_bind_template_child (widget_class, CapsuleTerminal, size_revealer);
   gtk_widget_class_bind_template_child (widget_class, CapsuleTerminal, terminal_menu);
 
   gtk_widget_class_bind_template_callback (widget_class, capsule_terminal_bubble_click_pressed_cb);
   gtk_widget_class_bind_template_callback (widget_class, capsule_terminal_capture_click_pressed_cb);
+  gtk_widget_class_bind_template_callback (widget_class, capsule_terminal_drop_target_drag_enter);
+  gtk_widget_class_bind_template_callback (widget_class, capsule_terminal_drop_target_drag_leave);
+  gtk_widget_class_bind_template_callback (widget_class, capsule_terminal_drop_target_drop);
 
   gtk_widget_class_install_action (widget_class, "clipboard.copy", NULL, copy_clipboard_action);
   gtk_widget_class_install_action (widget_class, "clipboard.copy-link", NULL, copy_link_address_action);
@@ -613,6 +993,9 @@ capsule_terminal_class_init (CapsuleTerminalClass *klass)
 static void
 capsule_terminal_init (CapsuleTerminal *self)
 {
+  g_autoptr(GdkContentFormats) formats = NULL;
+  GdkContentFormatsBuilder *builder;
+
   gtk_widget_init_template (GTK_WIDGET (self));
 
   for (guint i = 0; i < G_N_ELEMENTS (builtin_dingus_regex); i++)
@@ -620,8 +1003,24 @@ capsule_terminal_init (CapsuleTerminal *self)
       int tag = vte_terminal_match_add_regex (VTE_TERMINAL (self),
                                               builtin_dingus_regex[i],
                                               0);
-      vte_terminal_match_set_cursor_name (VTE_TERMINAL (self), tag, "hand2");
+      vte_terminal_match_set_cursor_name (VTE_TERMINAL (self),
+                                          tag,
+                                          URL_MATCH_CURSOR_NAME);
     }
+
+  builder = gdk_content_formats_builder_new ();
+  gdk_content_formats_builder_add_gtype (builder, G_TYPE_STRING);
+  gdk_content_formats_builder_add_gtype (builder, GDK_TYPE_FILE_LIST);
+  gdk_content_formats_builder_add_mime_type (builder, APPLICATION_VND_PORTAL_FILES);
+  gdk_content_formats_builder_add_mime_type (builder, APPLICATION_VND_PORTAL_FILETRANSFER);
+  gdk_content_formats_builder_add_mime_type (builder, TEXT_URI_LIST);
+  gdk_content_formats_builder_add_mime_type (builder, TEXT_X_MOZ_URL);
+  formats = gdk_content_formats_builder_free_to_formats (builder);
+
+  gtk_drop_target_async_set_actions (self->drop_target,
+                                     (GDK_ACTION_COPY |
+                                      GDK_ACTION_MOVE));
+  gtk_drop_target_async_set_formats (self->drop_target, formats);
 }
 
 CapsulePalette *
