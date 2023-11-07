@@ -137,7 +137,7 @@
                           <lookup name="title" type="CapsulePreferencesListItem"/>
                         </property>
                         <property name="model">
-                          <object class="GListStore" id="text_blink_modes">
+                          <object class="GListStore" id="preserve_directories">
                             <property name="item-type">CapsulePreferencesListItem</property>
                             <child>
                               <object class="CapsulePreferencesListItem">
