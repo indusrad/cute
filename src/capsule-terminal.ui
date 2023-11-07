@@ -96,6 +96,14 @@
   <menu id="terminal_menu">
     <section>
       <item>
+        <attribute name="label" translatable="yes">Leave Fullscreen</attribute>
+        <attribute name="action">win.unfullscreen</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+        <attribute name="accel">F11</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
         <attribute name="label" translatable="yes">_Open Link</attribute>
         <attribute name="action">terminal.open-link</attribute>
         <attribute name="hidden-when">action-disabled</attribute>
