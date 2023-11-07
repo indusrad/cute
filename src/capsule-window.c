@@ -37,6 +37,7 @@ struct _CapsuleWindow
   AdwHeaderBar          *header_bar;
   GMenu                 *primary_menu;
   AdwTabBar             *tab_bar;
+  GMenu                 *tab_menu;
   AdwTabOverview        *tab_overview;
   AdwTabView            *tab_view;
 
@@ -427,6 +428,28 @@ capsule_window_detach_action (GtkWidget  *widget,
 }
 
 static void
+capsule_window_tab_focus_action (GtkWidget  *widget,
+                                 const char *action_name,
+                                 GVariant   *param)
+{
+  CapsuleWindow *self = (CapsuleWindow *)widget;
+  int position;
+
+  g_assert (CAPSULE_IS_WINDOW (self));
+  g_assert (param != NULL);
+  g_assert (g_variant_is_of_type (param, G_VARIANT_TYPE_INT32));
+
+  position = g_variant_get_int32 (param);
+
+  if (position > 0 && position <= adw_tab_view_get_n_pages (self->tab_view))
+    {
+      AdwTabPage *page = adw_tab_view_get_nth_page (self->tab_view, position - 1);
+
+      adw_tab_view_set_selected_page (self->tab_view, page);
+    }
+}
+
+static void
 capsule_window_tab_reset_action (GtkWidget  *widget,
                                  const char *action_name,
                                  GVariant   *param)
@@ -662,6 +685,7 @@ capsule_window_class_init (CapsuleWindowClass *klass)
   gtk_widget_class_bind_template_child (widget_class, CapsuleWindow, header_bar);
   gtk_widget_class_bind_template_child (widget_class, CapsuleWindow, primary_menu);
   gtk_widget_class_bind_template_child (widget_class, CapsuleWindow, tab_bar);
+  gtk_widget_class_bind_template_child (widget_class, CapsuleWindow, tab_menu);
   gtk_widget_class_bind_template_child (widget_class, CapsuleWindow, tab_overview);
   gtk_widget_class_bind_template_child (widget_class, CapsuleWindow, tab_view);
   gtk_widget_class_bind_template_child (widget_class, CapsuleWindow, visual_bell);
@@ -689,6 +713,7 @@ capsule_window_class_init (CapsuleWindowClass *klass)
   gtk_widget_class_install_action (widget_class, "page.close-others", NULL, capsule_window_close_others_action);
   gtk_widget_class_install_action (widget_class, "page.detach", NULL, capsule_window_detach_action);
   gtk_widget_class_install_action (widget_class, "tab.reset", "b", capsule_window_tab_reset_action);
+  gtk_widget_class_install_action (widget_class, "tab.focus", "i", capsule_window_tab_focus_action);
 }
 
 static void
@@ -715,7 +740,15 @@ capsule_window_init (CapsuleWindow *self)
                            G_CALLBACK (capsule_shortcuts_update_menu),
                            self->primary_menu,
                            0);
+  g_signal_connect_object (self->shortcuts,
+                           "notify",
+                           G_CALLBACK (capsule_shortcuts_update_menu),
+                           self->tab_menu,
+                           0);
   capsule_shortcuts_update_menu (self->shortcuts, self->primary_menu);
+  capsule_shortcuts_update_menu (self->shortcuts, self->tab_menu);
+
+  adw_tab_view_set_shortcuts (self->tab_view, 0);
 }
 
 CapsuleWindow *

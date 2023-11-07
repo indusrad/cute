@@ -344,6 +344,96 @@
       <description>Shortcut to show the popup menu for the terminal</description>
     </key>
 
+    <key name="move-tab-left" type="s">
+      <default>'&lt;ctrl&gt;&lt;shift&gt;Page_Up'</default>
+      <summary>Move Tab Left</summary>
+      <description>Shortcut to move the current tab to the right one position</description>
+    </key>
+
+    <key name="move-tab-right" type="s">
+      <default>'&lt;ctrl&gt;&lt;shift&gt;Page_Down'</default>
+      <summary>Move Tab Right</summary>
+      <description>Shortcut to move the current tab to the left one position</description>
+    </key>
+
+    <key name="detach-tab" type="s">
+      <default>''</default>
+      <summary>Move Tab to New Window</summary>
+      <description>Shortcut to move the current tab into a new window</description>
+    </key>
+
+    <key name="close-tab" type="s">
+      <default>''</default>
+      <summary>Close Tab</summary>
+      <description>Shortcut to close the current tab</description>
+    </key>
+
+    <key name="close-other-tabs" type="s">
+      <default>''</default>
+      <summary>Close Other Tabs</summary>
+      <description>Shortcut to close all tabs in the window but the current one</description>
+    </key>
+
+    <key name="focus-tab-1" type="s">
+      <default>'&lt;alt&gt;1'</default>
+      <summary>Focus Tab 1</summary>
+      <description>Shortcut to focus tab 1</description>
+    </key>
+
+    <key name="focus-tab-2" type="s">
+      <default>'&lt;alt&gt;2'</default>
+      <summary>Focus Tab 2</summary>
+      <description>Shortcut to focus tab 2</description>
+    </key>
+
+    <key name="focus-tab-3" type="s">
+      <default>'&lt;alt&gt;3'</default>
+      <summary>Focus Tab 3</summary>
+      <description>Shortcut to focus tab 3</description>
+    </key>
+
+    <key name="focus-tab-4" type="s">
+      <default>'&lt;alt&gt;4'</default>
+      <summary>Focus Tab 4</summary>
+      <description>Shortcut to focus tab 4</description>
+    </key>
+
+    <key name="focus-tab-5" type="s">
+      <default>'&lt;alt&gt;5'</default>
+      <summary>Focus Tab 5</summary>
+      <description>Shortcut to focus tab 5</description>
+    </key>
+
+    <key name="focus-tab-6" type="s">
+      <default>'&lt;alt&gt;6'</default>
+      <summary>Focus Tab 6</summary>
+      <description>Shortcut to focus tab 6</description>
+    </key>
+
+    <key name="focus-tab-7" type="s">
+      <default>'&lt;alt&gt;7'</default>
+      <summary>Focus Tab 7</summary>
+      <description>Shortcut to focus tab 7</description>
+    </key>
+
+    <key name="focus-tab-8" type="s">
+      <default>'&lt;alt&gt;8'</default>
+      <summary>Focus Tab 8</summary>
+      <description>Shortcut to focus tab 8</description>
+    </key>
+
+    <key name="focus-tab-9" type="s">
+      <default>'&lt;alt&gt;9'</default>
+      <summary>Focus Tab 9</summary>
+      <description>Shortcut to focus tab 9</description>
+    </key>
+
+    <key name="focus-tab-10" type="s">
+      <default>'&lt;alt&gt;0'</default>
+      <summary>Focus Tab 10</summary>
+      <description>Shortcut to focus tab 10</description>
+    </key>
+
   </schema>
 
 </schemalist>

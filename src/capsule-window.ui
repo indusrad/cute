@@ -109,6 +109,167 @@
             <property name="action">action(win.toggle-fullscreen)</property>
           </object>
         </child>
+        <child>
+          <object class="GtkShortcut">
+            <binding name="trigger">
+              <lookup name="move-tab-left" type="CapsuleShortcuts">
+                <lookup name="shortcuts">CapsuleWindow</lookup>
+              </lookup>
+            </binding>
+            <property name="action">action(page.move-left)</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkShortcut">
+            <binding name="trigger">
+              <lookup name="move-tab-right" type="CapsuleShortcuts">
+                <lookup name="shortcuts">CapsuleWindow</lookup>
+              </lookup>
+            </binding>
+            <property name="action">action(page.move-right)</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkShortcut">
+            <binding name="trigger">
+              <lookup name="detach-tab" type="CapsuleShortcuts">
+                <lookup name="shortcuts">CapsuleWindow</lookup>
+              </lookup>
+            </binding>
+            <property name="action">action(win.new-tab)</property>
+            <property name="arguments">''</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkShortcut">
+            <binding name="trigger">
+              <lookup name="close-tab" type="CapsuleShortcuts">
+                <lookup name="shortcuts">CapsuleWindow</lookup>
+              </lookup>
+            </binding>
+            <property name="action">action(page.close)</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkShortcut">
+            <binding name="trigger">
+              <lookup name="close-other-tabs" type="CapsuleShortcuts">
+                <lookup name="shortcuts">CapsuleWindow</lookup>
+              </lookup>
+            </binding>
+            <property name="action">action(page.close-others)</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkShortcut">
+            <binding name="trigger">
+              <lookup name="focus-tab-1" type="CapsuleShortcuts">
+                <lookup name="shortcuts">CapsuleWindow</lookup>
+              </lookup>
+            </binding>
+            <property name="action">action(tab.focus)</property>
+            <property name="arguments">1</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkShortcut">
+            <binding name="trigger">
+              <lookup name="focus-tab-2" type="CapsuleShortcuts">
+                <lookup name="shortcuts">CapsuleWindow</lookup>
+              </lookup>
+            </binding>
+            <property name="action">action(tab.focus)</property>
+            <property name="arguments">2</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkShortcut">
+            <binding name="trigger">
+              <lookup name="focus-tab-3" type="CapsuleShortcuts">
+                <lookup name="shortcuts">CapsuleWindow</lookup>
+              </lookup>
+            </binding>
+            <property name="action">action(tab.focus)</property>
+            <property name="arguments">3</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkShortcut">
+            <binding name="trigger">
+              <lookup name="focus-tab-4" type="CapsuleShortcuts">
+                <lookup name="shortcuts">CapsuleWindow</lookup>
+              </lookup>
+            </binding>
+            <property name="action">action(tab.focus)</property>
+            <property name="arguments">4</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkShortcut">
+            <binding name="trigger">
+              <lookup name="focus-tab-5" type="CapsuleShortcuts">
+                <lookup name="shortcuts">CapsuleWindow</lookup>
+              </lookup>
+            </binding>
+            <property name="action">action(tab.focus)</property>
+            <property name="arguments">5</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkShortcut">
+            <binding name="trigger">
+              <lookup name="focus-tab-6" type="CapsuleShortcuts">
+                <lookup name="shortcuts">CapsuleWindow</lookup>
+              </lookup>
+            </binding>
+            <property name="action">action(tab.focus)</property>
+            <property name="arguments">6</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkShortcut">
+            <binding name="trigger">
+              <lookup name="focus-tab-7" type="CapsuleShortcuts">
+                <lookup name="shortcuts">CapsuleWindow</lookup>
+              </lookup>
+            </binding>
+            <property name="action">action(tab.focus)</property>
+            <property name="arguments">7</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkShortcut">
+            <binding name="trigger">
+              <lookup name="focus-tab-8" type="CapsuleShortcuts">
+                <lookup name="shortcuts">CapsuleWindow</lookup>
+              </lookup>
+            </binding>
+            <property name="action">action(tab.focus)</property>
+            <property name="arguments">8</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkShortcut">
+            <binding name="trigger">
+              <lookup name="focus-tab-9" type="CapsuleShortcuts">
+                <lookup name="shortcuts">CapsuleWindow</lookup>
+              </lookup>
+            </binding>
+            <property name="action">action(tab.focus)</property>
+            <property name="arguments">9</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkShortcut">
+            <binding name="trigger">
+              <lookup name="focus-tab-10" type="CapsuleShortcuts">
+                <lookup name="shortcuts">CapsuleWindow</lookup>
+              </lookup>
+            </binding>
+            <property name="action">action(tab.focus)</property>
+            <property name="arguments">10</property>
+          </object>
+        </child>
       </object>
     </child>
     <property name="content">
@@ -180,7 +341,7 @@
               <object class="AdwToastOverlay" id="toasts">
                 <child>
                   <object class="AdwTabView" id="tab_view">
-                    <signal name="notify::selected-page" handler="capsule_window_notify_selected_page_cb" swapped="1"/>
+                    <signal name="notify::selected-page" handler="capsule_window_notify_selected_page_cb" swapped="1" after="1"/>
                     <signal name="page-attached" handler="capsule_window_page_attached_cb" swapped="1"/>
                     <signal name="page-detached" handler="capsule_window_page_detached_cb" swapped="1"/>
                     <signal name="create-window" handler="capsule_window_create_window_cb" swapped="1"/>
@@ -269,25 +430,30 @@
   <menu id="tab_menu">
     <section>
       <item>
+        <attribute name="id">move-tab-left</attribute>
         <attribute name="label" translatable="yes">Move _Left</attribute>
         <attribute name="action">page.move-left</attribute>
       </item>
       <item>
+        <attribute name="id">move-tab-right</attribute>
         <attribute name="label" translatable="yes">Move _Right</attribute>
         <attribute name="action">page.move-right</attribute>
       </item>
       <item>
+        <attribute name="id">detach-tab</attribute>
         <attribute name="label" translatable="yes">Move to New _Window</attribute>
         <attribute name="action">page.detach</attribute>
       </item>
     </section>
     <section>
       <item>
+        <attribute name="id">reset</attribute>
         <attribute name="label" translatable="yes">Reset</attribute>
         <attribute name="action">tab.reset</attribute>
         <attribute name="target" type="b">false</attribute>
       </item>
       <item>
+        <attribute name="id">reset-and-clear</attribute>
         <attribute name="label" translatable="yes">Reset and Clear</attribute>
         <attribute name="action">tab.reset</attribute>
         <attribute name="target" type="b">true</attribute>
@@ -301,10 +467,12 @@
     </section>
     <section>
       <item>
+        <attribute name="id">close-other-tabs</attribute>
         <attribute name="label" translatable="yes">Close _Other Tabs</attribute>
         <attribute name="action">page.close-others</attribute>
       </item>
       <item>
+        <attribute name="id">close-tab</attribute>
         <attribute name="label" translatable="yes">_Close Tab</attribute>
         <attribute name="action">page.close</attribute>
       </item>

@@ -111,6 +111,16 @@ capsule_tab_update_scrollback_lines (CapsuleTab *self)
   vte_terminal_set_scrollback_lines (VTE_TERMINAL (self->terminal), scrollback_lines);
 }
 
+static gboolean
+capsule_tab_grab_focus (GtkWidget *widget)
+{
+  CapsuleTab *self = (CapsuleTab *)widget;
+
+  g_assert (CAPSULE_IS_TAB (self));
+
+  return gtk_widget_grab_focus (GTK_WIDGET (self->terminal));
+}
+
 static void
 capsule_tab_wait_check_cb (GObject      *object,
                            GAsyncResult *result,
@@ -606,6 +616,7 @@ capsule_tab_class_init (CapsuleTabClass *klass)
   object_class->get_property = capsule_tab_get_property;
   object_class->set_property = capsule_tab_set_property;
 
+  widget_class->grab_focus = capsule_tab_grab_focus;
   widget_class->map = capsule_tab_map;
 
   properties[PROP_PROFILE] =
