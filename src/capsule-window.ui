@@ -78,6 +78,7 @@
         <property name="view">tab_view</property>
         <property name="child">
           <object class="AdwToolbarView">
+            <property name="top-bar-style">raised</property>
             <child type="top">
               <object class="GtkBox" id="visual_bell">
                 <property name="orientation">vertical</property>
