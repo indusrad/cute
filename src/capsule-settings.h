@@ -33,6 +33,7 @@ G_BEGIN_DECLS
 #define CAPSULE_SETTING_KEY_NEW_TAB_POSITION     "new-tab-position"
 #define CAPSULE_SETTING_KEY_PROFILE_UUIDS        "profile-uuids"
 #define CAPSULE_SETTING_KEY_SCROLLBAR_POLICY     "scrollbar-policy"
+#define CAPSULE_SETTING_KEY_TEXT_BLINK_MODE      "text-blink-mode"
 #define CAPSULE_SETTING_KEY_USE_SYSTEM_FONT      "use-system-font"
 #define CAPSULE_SETTING_KEY_VISUAL_BELL          "visual-bell"
 
@@ -90,5 +91,8 @@ void                    capsule_settings_set_use_system_font      (CapsuleSettin
 CapsuleScrollbarPolicy  capsule_settings_get_scrollbar_policy     (CapsuleSettings            *self);
 void                    capsule_settings_set_scrollbar_policy     (CapsuleSettings            *self,
                                                                    CapsuleScrollbarPolicy      scrollbar_policy);
+VteTextBlinkMode        capsule_settings_get_text_blink_mode      (CapsuleSettings            *self);
+void                    capsule_settings_set_text_blink_mode      (CapsuleSettings            *self,
+                                                                   VteTextBlinkMode            text_blink_mode);
 
 G_END_DECLS

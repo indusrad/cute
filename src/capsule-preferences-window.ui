@@ -166,6 +166,47 @@
         </child>
         <child>
           <object class="AdwPreferencesGroup">
+            <child>
+              <object class="AdwComboRow" id="text_blink_mode">
+                <property name="title" translatable="yes">Blinking Text</property>
+                <property name="expression">
+                  <lookup name="title" type="CapsulePreferencesListItem"/>
+                </property>
+                <property name="model">
+                  <object class="GListStore" id="text_blink_modes">
+                    <property name="item-type">CapsulePreferencesListItem</property>
+                    <child>
+                      <object class="CapsulePreferencesListItem">
+                        <property name="title" translatable="yes">Never</property>
+                        <property name="value">'never'</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="CapsulePreferencesListItem">
+                        <property name="title" translatable="yes">Focused</property>
+                        <property name="value">'focused'</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="CapsulePreferencesListItem">
+                        <property name="title" translatable="yes">Unfocused</property>
+                        <property name="value">'unfocused'</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="CapsulePreferencesListItem">
+                        <property name="title" translatable="yes">Always</property>
+                        <property name="value">'always'</property>
+                      </object>
+                    </child>
+                  </object>
+                </property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
             <property name="title" translatable="yes">Cursor</property>
             <child>
               <object class="AdwComboRow" id="cursor_shape">

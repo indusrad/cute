@@ -44,6 +44,7 @@ enum {
   PROP_NEW_TAB_POSITION,
   PROP_PROFILE_UUIDS,
   PROP_SCROLLBAR_POLICY,
+  PROP_TEXT_BLINK_MODE,
   PROP_USE_SYSTEM_FONT,
   PROP_VISUAL_BELL,
   N_PROPS
@@ -78,6 +79,8 @@ capsule_settings_changed_cb (CapsuleSettings *self,
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_CURSOR_BLINK_MODE]);
   else if (g_str_equal (key, CAPSULE_SETTING_KEY_SCROLLBAR_POLICY))
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_SCROLLBAR_POLICY]);
+  else if (g_str_equal (key, CAPSULE_SETTING_KEY_TEXT_BLINK_MODE))
+    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_TEXT_BLINK_MODE]);
   else if (g_str_equal (key, CAPSULE_SETTING_KEY_FONT_NAME))
     {
       g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_FONT_NAME]);
@@ -146,6 +149,10 @@ capsule_settings_get_property (GObject    *object,
       g_value_set_enum (value, capsule_settings_get_scrollbar_policy (self));
       break;
 
+    case PROP_TEXT_BLINK_MODE:
+      g_value_set_enum (value, capsule_settings_get_text_blink_mode (self));
+      break;
+
     case PROP_USE_SYSTEM_FONT:
       g_value_set_boolean (value, capsule_settings_get_use_system_font (self));
       break;
@@ -199,6 +206,10 @@ capsule_settings_set_property (GObject      *object,
 
     case PROP_SCROLLBAR_POLICY:
       capsule_settings_set_scrollbar_policy (self, g_value_get_enum (value));
+      break;
+
+    case PROP_TEXT_BLINK_MODE:
+      capsule_settings_set_text_blink_mode (self, g_value_get_enum (value));
       break;
 
     case PROP_USE_SYSTEM_FONT:
@@ -285,6 +296,14 @@ capsule_settings_class_init (CapsuleSettingsClass *klass)
     g_param_spec_enum ("scrollbar-policy", NULL, NULL,
                        CAPSULE_TYPE_SCROLLBAR_POLICY,
                        CAPSULE_SCROLLBAR_POLICY_SYSTEM,
+                       (G_PARAM_READWRITE |
+                        G_PARAM_EXPLICIT_NOTIFY |
+                        G_PARAM_STATIC_STRINGS));
+
+  properties[PROP_TEXT_BLINK_MODE] =
+    g_param_spec_enum ("text-blink-mode", NULL, NULL,
+                       VTE_TYPE_TEXT_BLINK_MODE,
+                       VTE_TEXT_BLINK_ALWAYS,
                        (G_PARAM_READWRITE |
                         G_PARAM_EXPLICIT_NOTIFY |
                         G_PARAM_STATIC_STRINGS));
@@ -615,4 +634,23 @@ capsule_settings_set_scrollbar_policy (CapsuleSettings        *self,
   g_settings_set_enum (self->settings,
                        CAPSULE_SETTING_KEY_SCROLLBAR_POLICY,
                        scrollbar_policy);
+}
+
+VteTextBlinkMode
+capsule_settings_get_text_blink_mode (CapsuleSettings *self)
+{
+  g_return_val_if_fail (CAPSULE_IS_SETTINGS (self), 0);
+
+  return g_settings_get_enum (self->settings, CAPSULE_SETTING_KEY_TEXT_BLINK_MODE);
+}
+
+void
+capsule_settings_set_text_blink_mode (CapsuleSettings  *self,
+                                      VteTextBlinkMode  text_blink_mode)
+{
+  g_return_if_fail (CAPSULE_IS_SETTINGS (self));
+
+  g_settings_set_enum (self->settings,
+                       CAPSULE_SETTING_KEY_TEXT_BLINK_MODE,
+                       text_blink_mode);
 }

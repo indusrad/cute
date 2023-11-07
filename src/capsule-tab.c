@@ -459,6 +459,9 @@ capsule_tab_constructed (GObject *object)
   g_object_bind_property (settings, "font-desc",
                           self->terminal, "font-desc",
                           G_BINDING_SYNC_CREATE);
+  g_object_bind_property (settings, "text-blink-mode",
+                          self->terminal, "text-blink-mode",
+                          G_BINDING_SYNC_CREATE);
 
   g_object_bind_property_full (settings, "scrollbar-policy",
                                self->scrolled_window, "vscrollbar-policy",

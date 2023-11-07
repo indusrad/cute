@@ -67,6 +67,13 @@
     <value nick="always" value="2"/>
   </enum>
 
+  <enum id="org.gnome.Capsule.TextBlinkMode">
+    <value nick="never" value="0"/>
+    <value nick="focused" value="1"/>
+    <value nick="unfocused" value="2"/>
+    <value nick="always" value="3"/>
+  </enum>
+
   <schema id=@APP_SCHEMA_ID@ path=@APP_SCHEMA_PATH@>
 
     <key name="default-profile-uuid" type="s">
@@ -127,6 +134,12 @@
       <default>'system'</default>
       <summary>Scrollbar Policy</summary>
       <description>If scrollbars should be displayed</description>
+    </key>
+
+    <key name="text-blink-mode" enum="org.gnome.Capsule.TextBlinkMode">
+      <default>'always'</default>
+      <summary>Text Blink Mode</summary>
+      <description>When text blinking is allowed</description>
     </key>
 
   </schema>

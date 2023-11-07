@@ -57,6 +57,8 @@ struct _CapsulePreferencesWindow
   GListModel           *scrollbar_policies;
   AdwComboRow          *tab_position;
   GListModel           *tab_positions;
+  AdwComboRow          *text_blink_mode;
+  GListModel           *text_blink_modes;
   AdwSwitchRow         *use_system_font;
   AdwSwitchRow         *visual_bell;
 };
@@ -346,6 +348,16 @@ capsule_preferences_window_constructed (GObject *object)
                                 g_object_ref (self->scrollbar_policies),
                                 g_object_unref);
 
+  g_settings_bind_with_mapping (gsettings,
+                                CAPSULE_SETTING_KEY_TEXT_BLINK_MODE,
+                                self->text_blink_mode,
+                                "selected",
+                                G_SETTINGS_BIND_DEFAULT,
+                                string_to_index,
+                                index_to_string,
+                                g_object_ref (self->text_blink_modes),
+                                g_object_unref);
+
   profiles = capsule_application_list_profiles (app);
 
   gtk_list_box_bind_model (self->profiles_list_box,
@@ -413,6 +425,8 @@ capsule_preferences_window_class_init (CapsulePreferencesWindowClass *klass)
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, scrollbar_policies);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, tab_position);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, tab_positions);
+  gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, text_blink_mode);
+  gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, text_blink_modes);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, use_system_font);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, visual_bell);
 
