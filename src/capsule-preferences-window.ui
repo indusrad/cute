@@ -197,7 +197,7 @@
                     <property name="item-type">CapsulePreferencesListItem</property>
                     <child>
                       <object class="CapsulePreferencesListItem">
-                        <property name="title" translatable="yes">Default</property>
+                        <property name="title" translatable="yes">Follow System</property>
                         <property name="value">'system'</property>
                       </object>
                     </child>
