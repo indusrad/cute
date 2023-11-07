@@ -152,6 +152,12 @@
       <description>The label for the profile</description>
     </key>
 
+    <key name="login-shell" type="b">
+      <default>false</default>
+      <summary>Login Shell</summary>
+      <description>Use a login shell</description>
+    </key>
+
     <key name="limit-scrollback" type="b">
       <default>true</default>
       <summary>Limit Scrollback</summary>

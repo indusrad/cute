@@ -37,6 +37,7 @@ G_BEGIN_DECLS
 #define CAPSULE_PROFILE_KEY_EXIT_ACTION         "exit-action"
 #define CAPSULE_PROFILE_KEY_LABEL               "label"
 #define CAPSULE_PROFILE_KEY_LIMIT_SCROLLBACK    "limit-scrollback"
+#define CAPSULE_PROFILE_KEY_LOGIN_SHELL         "login-shell"
 #define CAPSULE_PROFILE_KEY_OPACITY             "opacity"
 #define CAPSULE_PROFILE_KEY_PALETTE             "palette"
 #define CAPSULE_PROFILE_KEY_PRESERVE_DIRECTORY  "preserve-directory"
@@ -119,5 +120,8 @@ void                      capsule_profile_set_delete_binding      (CapsuleProfil
 CapsuleCjkAmbiguousWidth  capsule_profile_get_cjk_ambiguous_width (CapsuleProfile             *self);
 void                      capsule_profile_set_cjk_ambiguous_width (CapsuleProfile             *self,
                                                                    CapsuleCjkAmbiguousWidth    cjk_ambiguous_width);
+gboolean                  capsule_profile_get_login_shell         (CapsuleProfile             *self);
+void                      capsule_profile_set_login_shell         (CapsuleProfile             *self,
+                                                                   gboolean                    login_shell);
 
 G_END_DECLS

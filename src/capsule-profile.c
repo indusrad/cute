@@ -47,6 +47,7 @@ enum {
   PROP_EXIT_ACTION,
   PROP_LABEL,
   PROP_LIMIT_SCROLLBACK,
+  PROP_LOGIN_SHELL,
   PROP_OPACITY,
   PROP_PALETTE,
   PROP_PRESERVE_DIRECTORY,
@@ -93,6 +94,8 @@ capsule_profile_changed_cb (CapsuleProfile *self,
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_CJK_AMBIGUOUS_WIDTH]);
   else if (g_str_equal (key, CAPSULE_PROFILE_KEY_BOLD_IS_BRIGHT))
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_BOLD_IS_BRIGHT]);
+  else if (g_str_equal (key, CAPSULE_PROFILE_KEY_LOGIN_SHELL))
+    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_LOGIN_SHELL]);
 }
 
 static void
@@ -169,6 +172,10 @@ capsule_profile_get_property (GObject    *object,
       g_value_set_boolean (value, capsule_profile_get_limit_scrollback (self));
       break;
 
+    case PROP_LOGIN_SHELL:
+      g_value_set_boolean (value, capsule_profile_get_login_shell (self));
+      break;
+
     case PROP_OPACITY:
       g_value_set_double (value, capsule_profile_get_opacity (self));
       break;
@@ -242,6 +249,10 @@ capsule_profile_set_property (GObject      *object,
 
     case PROP_LIMIT_SCROLLBACK:
       capsule_profile_set_limit_scrollback (self, g_value_get_boolean (value));
+      break;
+
+    case PROP_LOGIN_SHELL:
+      capsule_profile_set_login_shell (self, g_value_get_boolean (value));
       break;
 
     case PROP_OPACITY:
@@ -346,6 +357,13 @@ capsule_profile_class_init (CapsuleProfileClass *klass)
                          (G_PARAM_READWRITE |
                           G_PARAM_EXPLICIT_NOTIFY |
                           G_PARAM_STATIC_STRINGS));
+
+  properties[PROP_LOGIN_SHELL] =
+    g_param_spec_boolean ("login-shell", NULL, NULL,
+                          FALSE,
+                          (G_PARAM_READWRITE |
+                           G_PARAM_EXPLICIT_NOTIFY |
+                           G_PARAM_STATIC_STRINGS));
 
   properties[PROP_OPACITY] =
     g_param_spec_double ("opacity", NULL, NULL,
@@ -585,6 +603,10 @@ capsule_profile_apply (CapsuleProfile    *self,
 
   capsule_run_context_append_argv (run_context, arg0);
 
+  if (capsule_profile_get_login_shell (self) &&
+      capsule_shell_supports_dash_l (arg0))
+    capsule_run_context_append_argv (run_context, "-l");
+
   if (current_directory_uri != NULL)
     last_directory = g_file_new_for_uri (current_directory_uri);
 
@@ -813,4 +835,23 @@ capsule_profile_set_bold_is_bright (CapsuleProfile *self,
   g_settings_set_boolean (self->settings,
                           CAPSULE_PROFILE_KEY_BOLD_IS_BRIGHT,
                           bold_is_bright);
+}
+
+gboolean
+capsule_profile_get_login_shell (CapsuleProfile *self)
+{
+  g_return_val_if_fail (CAPSULE_IS_PROFILE (self), FALSE);
+
+  return g_settings_get_boolean (self->settings, CAPSULE_PROFILE_KEY_LOGIN_SHELL);
+}
+
+void
+capsule_profile_set_login_shell (CapsuleProfile *self,
+                                 gboolean        login_shell)
+{
+  g_return_if_fail (CAPSULE_IS_PROFILE (self));
+
+  g_settings_set_boolean (self->settings,
+                          CAPSULE_PROFILE_KEY_LOGIN_SHELL,
+                          login_shell);
 }
