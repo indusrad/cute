@@ -25,6 +25,8 @@
 
 #include <glib/gi18n.h>
 
+#include "capsule-application.h"
+#include "capsule-shortcuts.h"
 #include "capsule-tab.h"
 #include "capsule-terminal.h"
 #include "capsule-window.h"
@@ -44,11 +46,12 @@ struct _CapsuleTerminal
 {
   VteTerminal         parent_instance;
 
+  CapsuleShortcuts   *shortcuts;
   CapsulePalette     *palette;
   char               *url;
 
   GtkPopover         *popover;
-  GMenuModel         *terminal_menu;
+  GMenu              *terminal_menu;
   GtkWidget          *drop_highlight;
   GtkDropTargetAsync *drop_target;
   GtkRevealer        *size_revealer;
@@ -60,6 +63,7 @@ struct _CapsuleTerminal
 enum {
   PROP_0,
   PROP_PALETTE,
+  PROP_SHORTCUTS,
   N_PROPS
 };
 
@@ -869,6 +873,7 @@ capsule_terminal_dispose (GObject *object)
   gtk_widget_dispose_template (GTK_WIDGET (self), CAPSULE_TYPE_TERMINAL);
 
   g_clear_object (&self->palette);
+  g_clear_object (&self->shortcuts);
   g_clear_handle_id (&self->size_dismiss_source, g_source_remove);
   g_clear_pointer (&self->url, g_free);
 
@@ -886,7 +891,11 @@ capsule_terminal_get_property (GObject    *object,
   switch (prop_id)
     {
     case PROP_PALETTE:
-      capsule_terminal_set_palette (self, g_value_get_object (value));
+      g_value_set_object (value, capsule_terminal_get_palette (self));
+      break;
+
+    case PROP_SHORTCUTS:
+      g_value_set_object (value, self->shortcuts);
       break;
 
     default:
@@ -930,11 +939,17 @@ capsule_terminal_class_init (CapsuleTerminalClass *klass)
 
   terminal_class->selection_changed = capsule_terminal_selection_changed;
 
-  properties [PROP_PALETTE] =
+  properties[PROP_PALETTE] =
     g_param_spec_object ("palette", NULL, NULL,
                          CAPSULE_TYPE_PALETTE,
                          (G_PARAM_READWRITE |
                           G_PARAM_EXPLICIT_NOTIFY |
+                          G_PARAM_STATIC_STRINGS));
+
+  properties[PROP_SHORTCUTS] =
+    g_param_spec_object ("shortcuts", NULL, NULL,
+                         CAPSULE_TYPE_SHORTCUTS,
+                         (G_PARAM_READABLE |
                           G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_properties (object_class, N_PROPS, properties);
@@ -995,8 +1010,19 @@ capsule_terminal_init (CapsuleTerminal *self)
 {
   g_autoptr(GdkContentFormats) formats = NULL;
   GdkContentFormatsBuilder *builder;
+  CapsuleApplication *app = CAPSULE_APPLICATION_DEFAULT;
+  CapsuleShortcuts *shortcuts = capsule_application_get_shortcuts (app);
+
+  g_set_object (&self->shortcuts, shortcuts);
 
   gtk_widget_init_template (GTK_WIDGET (self));
+
+  g_signal_connect_object (shortcuts,
+                           "notify",
+                           G_CALLBACK (capsule_shortcuts_update_menu),
+                           self->terminal_menu,
+                           0);
+  capsule_shortcuts_update_menu (shortcuts, self->terminal_menu);
 
   for (guint i = 0; i < G_N_ELEMENTS (builtin_dingus_regex); i++)
     {

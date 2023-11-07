@@ -314,6 +314,36 @@
       <description>The shortcut to toggle fullscreen</description>
     </key>
 
+    <key name="reset" type="s">
+      <default>''</default>
+      <summary>Reset Terminal</summary>
+      <description>Reset the terminal state for misbehaving clients</description>
+    </key>
+
+    <key name="reset-and-clear" type="s">
+      <default>''</default>
+      <summary>Reset Terminal and Clear History</summary>
+      <description>Reset the terminal state and clear history for misbehaving clients</description>
+    </key>
+
+    <key name="select-all" type="s">
+      <default>'&lt;ctrl&gt;&lt;shift&gt;a'</default>
+      <summary>Select All</summary>
+      <description>Shortcut to select all the the terminal scrollback</description>
+    </key>
+
+    <key name="select-none" type="s">
+      <default>''</default>
+      <summary>Select None</summary>
+      <description>Shortcut to clear the terminal selection</description>
+    </key>
+
+    <key name="popup-menu" type="s">
+      <default>'&lt;shift&gt;F10'</default>
+      <summary>Popup Menu</summary>
+      <description>Shortcut to show the popup menu for the terminal</description>
+    </key>
+
   </schema>
 
 </schemalist>

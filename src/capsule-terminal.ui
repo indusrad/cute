@@ -28,7 +28,11 @@
         <property name="propagation-phase">capture</property>
         <child>
           <object class="GtkShortcut">
-            <property name="trigger">&lt;shift&gt;F10</property>
+            <binding name="trigger">
+              <lookup name="popup-menu" type="CapsuleShortcuts">
+                <lookup name="shortcuts">CapsuleTerminal</lookup>
+              </lookup>
+            </binding>
             <property name="action">action(menu.popup)</property>
           </object>
         </child>
@@ -40,14 +44,44 @@
         </child>
         <child>
           <object class="GtkShortcut">
-            <property name="trigger">&lt;ctrl&gt;&lt;shift&gt;c</property>
+            <binding name="trigger">
+              <lookup name="copy-clipboard" type="CapsuleShortcuts">
+                <lookup name="shortcuts">CapsuleTerminal</lookup>
+              </lookup>
+            </binding>
             <property name="action">action(clipboard.copy)</property>
           </object>
         </child>
         <child>
           <object class="GtkShortcut">
-            <property name="trigger">&lt;ctrl&gt;&lt;shift&gt;v</property>
+            <binding name="trigger">
+              <lookup name="paste-clipboard" type="CapsuleShortcuts">
+                <lookup name="shortcuts">CapsuleTerminal</lookup>
+              </lookup>
+            </binding>
             <property name="action">action(clipboard.paste)</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkShortcut">
+            <binding name="trigger">
+              <lookup name="select-all" type="CapsuleShortcuts">
+                <lookup name="shortcuts">CapsuleTerminal</lookup>
+              </lookup>
+            </binding>
+            <property name="action">action(terminal.select-all)</property>
+            <property name="arguments">true</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkShortcut">
+            <binding name="trigger">
+              <lookup name="select-none" type="CapsuleShortcuts">
+                <lookup name="shortcuts">CapsuleTerminal</lookup>
+              </lookup>
+            </binding>
+            <property name="action">action(terminal.select-none)</property>
+            <property name="arguments">false</property>
           </object>
         </child>
       </object>
@@ -104,10 +138,10 @@
   <menu id="terminal_menu">
     <section>
       <item>
+        <attribute name="id">toggle-fullscreen</attribute>
         <attribute name="label" translatable="yes">Leave Fullscreen</attribute>
         <attribute name="action">win.unfullscreen</attribute>
         <attribute name="hidden-when">action-disabled</attribute>
-        <attribute name="accel">F11</attribute>
       </item>
     </section>
     <section>
@@ -119,11 +153,10 @@
     </section>
     <section>
       <item>
-        <attribute name="id">copy</attribute>
+        <attribute name="id">copy-clipboard</attribute>
         <attribute name="label" translatable="yes">_Copy</attribute>
         <attribute name="description" translatable="yes">Copy selection from terminal to clipboard</attribute>
         <attribute name="action">clipboard.copy</attribute>
-        <attribute name="accel">&lt;ctrl&gt;&lt;shift&gt;c</attribute>
       </item>
       <item>
         <attribute name="label" translatable="yes">_Copy Link</attribute>
@@ -131,19 +164,21 @@
         <attribute name="hidden-when">action-disabled</attribute>
       </item>
       <item>
+        <attribute name="id">paste-clipboard</attribute>
         <attribute name="label" translatable="yes">_Paste</attribute>
         <attribute name="description" translatable="yes">Paste from clipboard into the terminal</attribute>
         <attribute name="action">clipboard.paste</attribute>
-        <attribute name="accel">&lt;ctrl&gt;&lt;shift&gt;v</attribute>
       </item>
     </section>
     <section>
       <item>
+        <attribute name="id">reset</attribute>
         <attribute name="label" translatable="yes">Reset</attribute>
         <attribute name="action">tab.reset</attribute>
         <attribute name="target" type="b">false</attribute>
       </item>
       <item>
+        <attribute name="id">reset-and-clear</attribute>
         <attribute name="label" translatable="yes">Reset and Clear</attribute>
         <attribute name="action">tab.reset</attribute>
         <attribute name="target" type="b">true</attribute>
@@ -157,13 +192,14 @@
     </section>
     <section>
       <item>
+        <attribute name="id">select-all</attribute>
         <attribute name="label" translatable="yes">Select _All</attribute>
         <attribute name="description" translatable="yes">Selection all text from terminal including scrollback</attribute>
         <attribute name="action">terminal.select-all</attribute>
         <attribute name="target" type="b">true</attribute>
-        <attribute name="accel">&lt;ctrl&gt;&lt;shift&gt;a</attribute>
       </item>
       <item>
+        <attribute name="id">select-none</attribute>
         <attribute name="label" translatable="yes">Select _None</attribute>
         <attribute name="action">terminal.select-all</attribute>
         <attribute name="target" type="b">false</attribute>
