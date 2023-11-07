@@ -42,6 +42,7 @@ enum {
   PROP_BACKSPACE_BINDING,
   PROP_BOLD_IS_BRIGHT,
   PROP_CJK_AMBIGUOUS_WIDTH,
+  PROP_CUSTOM_COMMAND,
   PROP_DEFAULT_CONTAINER,
   PROP_DELETE_BINDING,
   PROP_EXIT_ACTION,
@@ -54,6 +55,7 @@ enum {
   PROP_SCROLL_ON_KEYSTROKE,
   PROP_SCROLL_ON_OUTPUT,
   PROP_SCROLLBACK_LINES,
+  PROP_USE_CUSTOM_COMMAND,
   PROP_UUID,
   N_PROPS
 };
@@ -96,6 +98,10 @@ capsule_profile_changed_cb (CapsuleProfile *self,
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_BOLD_IS_BRIGHT]);
   else if (g_str_equal (key, CAPSULE_PROFILE_KEY_LOGIN_SHELL))
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_LOGIN_SHELL]);
+  else if (g_str_equal (key, CAPSULE_PROFILE_KEY_CUSTOM_COMMAND))
+    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_CUSTOM_COMMAND]);
+  else if (g_str_equal (key, CAPSULE_PROFILE_KEY_USE_CUSTOM_COMMAND))
+    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_USE_CUSTOM_COMMAND]);
 }
 
 static void
@@ -152,6 +158,10 @@ capsule_profile_get_property (GObject    *object,
       g_value_set_boolean (value, capsule_profile_get_bold_is_bright (self));
       break;
 
+    case PROP_CUSTOM_COMMAND:
+      g_value_take_string (value, capsule_profile_dup_custom_command (self));
+      break;
+
     case PROP_DEFAULT_CONTAINER:
       g_value_take_string (value, capsule_profile_dup_default_container (self));
       break;
@@ -200,6 +210,10 @@ capsule_profile_get_property (GObject    *object,
       g_value_set_int (value, capsule_profile_get_scrollback_lines (self));
       break;
 
+    case PROP_USE_CUSTOM_COMMAND:
+      g_value_set_boolean (value, capsule_profile_get_use_custom_command (self));
+      break;
+
     case PROP_UUID:
       g_value_set_string (value, capsule_profile_get_uuid (self));
       break;
@@ -229,6 +243,10 @@ capsule_profile_set_property (GObject      *object,
 
     case PROP_BOLD_IS_BRIGHT:
       capsule_profile_set_bold_is_bright (self, g_value_get_boolean (value));
+      break;
+
+    case PROP_CUSTOM_COMMAND:
+      capsule_profile_set_custom_command (self, g_value_get_string (value));
       break;
 
     case PROP_DEFAULT_CONTAINER:
@@ -279,6 +297,10 @@ capsule_profile_set_property (GObject      *object,
       capsule_profile_set_scrollback_lines (self, g_value_get_int (value));
       break;
 
+    case PROP_USE_CUSTOM_COMMAND:
+      capsule_profile_set_use_custom_command (self, g_value_get_boolean (value));
+      break;
+
     case PROP_UUID:
       self->uuid = g_value_dup_string (value);
       break;
@@ -305,6 +327,13 @@ capsule_profile_class_init (CapsuleProfileClass *klass)
                        (G_PARAM_READWRITE |
                         G_PARAM_EXPLICIT_NOTIFY |
                         G_PARAM_STATIC_STRINGS));
+
+  properties[PROP_CUSTOM_COMMAND] =
+    g_param_spec_string ("custom-command", NULL, NULL,
+                         NULL,
+                         (G_PARAM_READWRITE |
+                          G_PARAM_EXPLICIT_NOTIFY |
+                          G_PARAM_STATIC_STRINGS));
 
   properties[PROP_BACKSPACE_BINDING] =
     g_param_spec_enum ("backspace-binding", NULL, NULL,
@@ -407,6 +436,13 @@ capsule_profile_class_init (CapsuleProfileClass *klass)
                       (G_PARAM_READWRITE |
                        G_PARAM_EXPLICIT_NOTIFY |
                        G_PARAM_STATIC_STRINGS));
+
+  properties[PROP_USE_CUSTOM_COMMAND] =
+    g_param_spec_boolean ("use-custom-command", NULL, NULL,
+                          FALSE,
+                          (G_PARAM_READWRITE |
+                           G_PARAM_EXPLICIT_NOTIFY |
+                           G_PARAM_STATIC_STRINGS));
 
   properties[PROP_UUID] =
     g_param_spec_string ("uuid", NULL, NULL,
@@ -854,4 +890,43 @@ capsule_profile_set_login_shell (CapsuleProfile *self,
   g_settings_set_boolean (self->settings,
                           CAPSULE_PROFILE_KEY_LOGIN_SHELL,
                           login_shell);
+}
+
+gboolean
+capsule_profile_get_use_custom_command (CapsuleProfile *self)
+{
+  g_return_val_if_fail (CAPSULE_IS_PROFILE (self), FALSE);
+
+  return g_settings_get_boolean (self->settings, CAPSULE_PROFILE_KEY_USE_CUSTOM_COMMAND);
+}
+
+void
+capsule_profile_set_use_custom_command (CapsuleProfile *self,
+                                        gboolean        use_custom_command)
+{
+  g_return_if_fail (CAPSULE_IS_PROFILE (self));
+
+  g_settings_set_boolean (self->settings,
+                          CAPSULE_PROFILE_KEY_USE_CUSTOM_COMMAND,
+                          use_custom_command);
+}
+
+char *
+capsule_profile_dup_custom_command (CapsuleProfile *self)
+{
+  g_return_val_if_fail (CAPSULE_IS_PROFILE (self), NULL);
+
+  return g_settings_get_string (self->settings, CAPSULE_PROFILE_KEY_CUSTOM_COMMAND);
+}
+
+void
+capsule_profile_set_custom_command (CapsuleProfile *self,
+                                    const char     *custom_command)
+{
+  g_return_if_fail (CAPSULE_IS_PROFILE (self));
+
+  if (custom_command == NULL)
+    custom_command = "";
+
+  g_settings_set_string (self->settings, CAPSULE_PROFILE_KEY_CUSTOM_COMMAND, custom_command);
 }

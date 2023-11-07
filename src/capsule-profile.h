@@ -32,6 +32,7 @@ G_BEGIN_DECLS
 #define CAPSULE_PROFILE_KEY_BACKSPACE_BINDING   "backspace-binding"
 #define CAPSULE_PROFILE_KEY_BOLD_IS_BRIGHT      "bold-is-bright"
 #define CAPSULE_PROFILE_KEY_CJK_AMBIGUOUS_WIDTH "cjk-ambiguous-width"
+#define CAPSULE_PROFILE_KEY_CUSTOM_COMMAND      "custom-command"
 #define CAPSULE_PROFILE_KEY_DEFAULT_CONTAINER   "default-container"
 #define CAPSULE_PROFILE_KEY_DELETE_BINDING      "delete-binding"
 #define CAPSULE_PROFILE_KEY_EXIT_ACTION         "exit-action"
@@ -44,6 +45,7 @@ G_BEGIN_DECLS
 #define CAPSULE_PROFILE_KEY_SCROLL_ON_KEYSTROKE "scroll-on-keystroke"
 #define CAPSULE_PROFILE_KEY_SCROLL_ON_OUTPUT    "scroll-on-output"
 #define CAPSULE_PROFILE_KEY_SCROLLBACK_LINES    "scrollback-lines"
+#define CAPSULE_PROFILE_KEY_USE_CUSTOM_COMMAND  "use-custom-command"
 
 typedef enum _CapsuleExitAction
 {
@@ -123,5 +125,11 @@ void                      capsule_profile_set_cjk_ambiguous_width (CapsuleProfil
 gboolean                  capsule_profile_get_login_shell         (CapsuleProfile             *self);
 void                      capsule_profile_set_login_shell         (CapsuleProfile             *self,
                                                                    gboolean                    login_shell);
+char                     *capsule_profile_dup_custom_command      (CapsuleProfile             *self);
+void                      capsule_profile_set_custom_command      (CapsuleProfile             *self,
+                                                                   const char                 *custom_command);
+gboolean                  capsule_profile_get_use_custom_command  (CapsuleProfile             *self);
+void                      capsule_profile_set_use_custom_command  (CapsuleProfile             *self,
+                                                                   gboolean                    use_custom_command);
 
 G_END_DECLS

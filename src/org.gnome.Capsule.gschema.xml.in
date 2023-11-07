@@ -183,6 +183,18 @@
       <description>Scroll to the bottom upon user keystroke</description>
     </key>
 
+    <key name="use-custom-command" type="b">
+      <default>false</default>
+      <summary>Use Custom Command</summary>
+      <description>If a custom command should be used</description>
+    </key>
+
+    <key name="custom-command" type="s">
+      <default>''</default>
+      <summary>Custom Command</summary>
+      <description>A custom command for the shell</description>
+    </key>
+
     <key name="default-container" type="s">
       <default>'host'</default>
       <summary>Default Container</summary>
