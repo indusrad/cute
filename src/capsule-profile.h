@@ -74,11 +74,12 @@ G_DECLARE_FINAL_TYPE (CapsuleProfile, capsule_profile, CAPSULE, PROFILE, GObject
 CapsuleProfile           *capsule_profile_new                     (const char                 *uuid);
 CapsuleProfile           *capsule_profile_duplicate               (CapsuleProfile             *self);
 GSettings                *capsule_profile_dup_settings            (CapsuleProfile             *self);
-void                      capsule_profile_apply                   (CapsuleProfile             *self,
+gboolean                  capsule_profile_apply                   (CapsuleProfile             *self,
                                                                    CapsuleRunContext          *run_context,
                                                                    VtePty                     *pty,
                                                                    const char                 *current_directory_uri,
-                                                                   const char                 *default_shell);
+                                                                   const char                 *default_shell,
+                                                                   GError                     **error);
 const char               *capsule_profile_get_uuid                (CapsuleProfile             *self);
 char                     *capsule_profile_dup_default_container   (CapsuleProfile             *self);
 void                      capsule_profile_set_default_container   (CapsuleProfile             *self,

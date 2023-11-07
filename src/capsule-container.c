@@ -145,13 +145,13 @@ capsule_container_spawn_discover_cb (GObject      *object,
 
   default_shell = capsule_user_discover_shell_finish (user, result, NULL);
 
-  capsule_profile_apply (state->profile,
-                         state->run_context,
-                         state->pty,
-                         state->current_directory_uri,
-                         default_shell);
-
-  if (!(subprocess = capsule_run_context_spawn (state->run_context, &error)))
+  if (!capsule_profile_apply (state->profile,
+                              state->run_context,
+                              state->pty,
+                              state->current_directory_uri,
+                              default_shell,
+                              &error) ||
+      !(subprocess = capsule_run_context_spawn (state->run_context, &error)))
     g_task_return_error (task, g_steal_pointer (&error));
   else
     g_task_return_pointer (task, g_steal_pointer (&subprocess), g_object_unref);

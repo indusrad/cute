@@ -611,15 +611,18 @@ capsule_profile_set_preserve_directory (CapsuleProfile           *self,
 }
 
 
-void
-capsule_profile_apply (CapsuleProfile    *self,
-                       CapsuleRunContext *run_context,
-                       VtePty            *pty,
-                       const char        *current_directory_uri,
-                       const char        *default_shell)
+gboolean
+capsule_profile_apply (CapsuleProfile     *self,
+                       CapsuleRunContext  *run_context,
+                       VtePty             *pty,
+                       const char         *current_directory_uri,
+                       const char         *default_shell,
+                       GError            **error)
 {
   CapsulePreserveDirectory preserve_directory;
+  g_autofree char *custom_command = NULL;
   g_autoptr(GFile) last_directory = NULL;
+  g_auto(GStrv) argv = NULL;
   const char *cwd = NULL;
   const char *arg0 = NULL;
 
@@ -634,10 +637,21 @@ capsule_profile_apply (CapsuleProfile    *self,
   if (default_shell == NULL)
     default_shell = "/bin/sh";
 
-  /* TODO: figure out shell/args */
-  arg0 = default_shell;
+  if (capsule_profile_get_use_custom_command (self))
+    {
+      custom_command = capsule_profile_dup_custom_command (self);
 
-  capsule_run_context_append_argv (run_context, arg0);
+      if (!g_shell_parse_argv (custom_command, NULL, &argv, error))
+        return FALSE;
+
+      capsule_run_context_append_args (run_context, (const char * const *)argv);
+      arg0 = argv[0];
+    }
+  else
+    {
+      arg0 = default_shell;
+      capsule_run_context_append_argv (run_context, arg0);
+    }
 
   if (capsule_profile_get_login_shell (self) &&
       capsule_shell_supports_dash_l (arg0))
@@ -672,6 +686,8 @@ capsule_profile_apply (CapsuleProfile    *self,
 
   if (cwd != NULL)
     capsule_run_context_set_cwd (run_context, cwd);
+
+  return TRUE;
 }
 
 CapsuleProfile *
