@@ -344,6 +344,18 @@
       <description>Shortcut to show the popup menu for the terminal</description>
     </key>
 
+    <key name="move-previous-tab" type="s">
+      <default>'&lt;ctrl&gt;Page_Up'</default>
+      <summary>Move to Previous Tab</summary>
+      <description>Shortcut to move to the previous tab</description>
+    </key>
+
+    <key name="move-next-tab" type="s">
+      <default>'&lt;ctrl&gt;Page_Down'</default>
+      <summary>Move to Next Tab</summary>
+      <description>Shortcut to move to the next tab</description>
+    </key>
+
     <key name="move-tab-left" type="s">
       <default>'&lt;ctrl&gt;&lt;shift&gt;Page_Up'</default>
       <summary>Move Tab Left</summary>

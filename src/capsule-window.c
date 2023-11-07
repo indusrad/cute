@@ -483,6 +483,22 @@ capsule_window_detach_action (GtkWidget  *widget,
 }
 
 static void
+capsule_window_page_previous_action (GtkWidget  *widget,
+                                     const char *action_name,
+                                     GVariant   *param)
+{
+  adw_tab_view_select_previous_page (CAPSULE_WINDOW (widget)->tab_view);
+}
+
+static void
+capsule_window_page_next_action (GtkWidget  *widget,
+                                 const char *action_name,
+                                 GVariant   *param)
+{
+  adw_tab_view_select_next_page (CAPSULE_WINDOW (widget)->tab_view);
+}
+
+static void
 capsule_window_tab_focus_action (GtkWidget  *widget,
                                  const char *action_name,
                                  GVariant   *param)
@@ -771,6 +787,8 @@ capsule_window_class_init (CapsuleWindowClass *klass)
   gtk_widget_class_install_action (widget_class, "page.detach", NULL, capsule_window_detach_action);
   gtk_widget_class_install_action (widget_class, "tab.reset", "b", capsule_window_tab_reset_action);
   gtk_widget_class_install_action (widget_class, "tab.focus", "i", capsule_window_tab_focus_action);
+  gtk_widget_class_install_action (widget_class, "page.next", NULL, capsule_window_page_next_action);
+  gtk_widget_class_install_action (widget_class, "page.previous", NULL, capsule_window_page_previous_action);
 }
 
 static void

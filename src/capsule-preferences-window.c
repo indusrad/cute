@@ -74,6 +74,8 @@ struct _CapsulePreferencesWindow
   CapsuleShortcutRow   *shortcut_focus_tab_7;
   CapsuleShortcutRow   *shortcut_focus_tab_8;
   CapsuleShortcutRow   *shortcut_focus_tab_9;
+  CapsuleShortcutRow   *shortcut_move_next_tab;
+  CapsuleShortcutRow   *shortcut_move_previous_tab;
   CapsuleShortcutRow   *shortcut_move_tab_left;
   CapsuleShortcutRow   *shortcut_move_tab_right;
   CapsuleShortcutRow   *shortcut_new_tab;
@@ -527,6 +529,13 @@ capsule_preferences_window_constructed (GObject *object)
                           self->shortcut_close_other_tabs, "accelerator",
                           G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
 
+  g_object_bind_property (shortcuts, "move-next-tab",
+                          self->shortcut_move_next_tab, "accelerator",
+                          G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
+  g_object_bind_property (shortcuts, "move-previous-tab",
+                          self->shortcut_move_previous_tab, "accelerator",
+                          G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
+
   g_object_bind_property (shortcuts, "move-tab-left",
                           self->shortcut_move_tab_left, "accelerator",
                           G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
@@ -599,6 +608,8 @@ capsule_preferences_window_class_init (CapsulePreferencesWindowClass *klass)
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, shortcut_focus_tab_7);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, shortcut_focus_tab_8);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, shortcut_focus_tab_9);
+  gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, shortcut_move_next_tab);
+  gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, shortcut_move_previous_tab);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, shortcut_move_tab_left);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, shortcut_move_tab_right);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, shortcut_new_tab);

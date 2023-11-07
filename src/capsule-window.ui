@@ -112,6 +112,26 @@
         <child>
           <object class="GtkShortcut">
             <binding name="trigger">
+              <lookup name="move-next-tab" type="CapsuleShortcuts">
+                <lookup name="shortcuts">CapsuleWindow</lookup>
+              </lookup>
+            </binding>
+            <property name="action">action(page.next)</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkShortcut">
+            <binding name="trigger">
+              <lookup name="move-previous-tab" type="CapsuleShortcuts">
+                <lookup name="shortcuts">CapsuleWindow</lookup>
+              </lookup>
+            </binding>
+            <property name="action">action(page.previous)</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkShortcut">
+            <binding name="trigger">
               <lookup name="move-tab-left" type="CapsuleShortcuts">
                 <lookup name="shortcuts">CapsuleWindow</lookup>
               </lookup>

@@ -601,6 +601,20 @@
         <child>
           <object class="AdwPreferencesGroup">
             <child>
+              <object class="CapsuleShortcutRow" id="shortcut_move_previous_tab">
+                <property name="title" translatable="yes">Move to Previous Tab</property>
+              </object>
+            </child>
+            <child>
+              <object class="CapsuleShortcutRow" id="shortcut_move_next_tab">
+                <property name="title" translatable="yes">Move to Next Tab</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <child>
               <object class="CapsuleShortcutRow" id="shortcut_move_tab_left">
                 <property name="title" translatable="yes">Move Tab Left</property>
                 <property name="subtitle" translatable="yes">Move the tab one position to the left</property>
