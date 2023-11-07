@@ -274,6 +274,7 @@
     </child>
     <property name="content">
       <object class="AdwTabOverview" id="tab_overview">
+        <signal name="notify::open" handler="capsule_window_tab_overview_notify_open_cb" swapped="1" after="1"/>
         <property name="view">tab_view</property>
         <property name="child">
           <object class="AdwToolbarView">

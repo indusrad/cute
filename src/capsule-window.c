@@ -46,6 +46,7 @@ struct _CapsuleWindow
   GtkBox                *visual_bell;
 
   guint                  visual_bell_source;
+  guint                  focus_active_tab_source;
 };
 
 G_DEFINE_FINAL_TYPE (CapsuleWindow, capsule_window, ADW_TYPE_APPLICATION_WINDOW)
@@ -77,6 +78,60 @@ capsule_window_close_page_cb (CapsuleWindow *self,
   /* TODO: Setup dialog to confirm close */
 
   return GDK_EVENT_STOP;
+}
+
+static gboolean
+capsule_window_focus_active_tab_cb (gpointer data)
+{
+  CapsuleWindow *self = data;
+  CapsuleTab *active_tab;
+
+  g_assert (CAPSULE_IS_WINDOW (self));
+
+  self->focus_active_tab_source = 0;
+
+  if ((active_tab = capsule_window_get_active_tab (self)))
+    gtk_widget_grab_focus (GTK_WIDGET (active_tab));
+
+  return G_SOURCE_REMOVE;
+}
+
+static void
+capsule_window_tab_overview_notify_open_cb (CapsuleWindow  *self,
+                                            GParamSpec     *pspec,
+                                            AdwTabOverview *tab_overview)
+{
+  g_assert (CAPSULE_IS_WINDOW (self));
+  g_assert (ADW_IS_TAB_OVERVIEW (tab_overview));
+
+  /* For some reason when we get here the selected page is not
+   * getting focused. So work around libadwaita by deferring the
+   * focus to an idle so that we can ensure we're working with
+   * the appropriate focus tab.
+   *
+   * See https://gitlab.gnome.org/GNOME/libadwaita/-/issues/670
+   */
+
+  g_clear_handle_id (&self->focus_active_tab_source, g_source_remove);
+
+  if (!adw_tab_overview_get_open (tab_overview))
+    {
+      GtkSettings *settings = gtk_settings_get_default ();
+      gboolean gtk_enable_animations = TRUE;
+      guint delay_msec = 410; /* Sync with libadwaita */
+
+      g_object_get (settings,
+                    "gtk-enable-animations", &gtk_enable_animations,
+                    NULL);
+
+      if (!gtk_enable_animations)
+        delay_msec = 10;
+
+      self->focus_active_tab_source = g_timeout_add_full (G_PRIORITY_LOW,
+                                                          delay_msec,
+                                                          capsule_window_focus_active_tab_cb,
+                                                          self, NULL);
+    }
 }
 
 static void
@@ -595,6 +650,7 @@ capsule_window_dispose (GObject *object)
   gtk_widget_dispose_template (GTK_WIDGET (self), CAPSULE_TYPE_WINDOW);
 
   g_signal_group_set_target (self->active_tab_signals, NULL);
+  g_clear_handle_id (&self->focus_active_tab_source, g_source_remove);
 
   G_OBJECT_CLASS (capsule_window_parent_class)->dispose (object);
 }
@@ -696,6 +752,7 @@ capsule_window_class_init (CapsuleWindowClass *klass)
   gtk_widget_class_bind_template_callback (widget_class, capsule_window_create_window_cb);
   gtk_widget_class_bind_template_callback (widget_class, capsule_window_close_page_cb);
   gtk_widget_class_bind_template_callback (widget_class, capsule_window_setup_menu_cb);
+  gtk_widget_class_bind_template_callback (widget_class, capsule_window_tab_overview_notify_open_cb);
 
   gtk_widget_class_install_action (widget_class, "win.new-tab", "s", capsule_window_new_tab_action);
   gtk_widget_class_install_action (widget_class, "win.new-window", "s", capsule_window_new_window_action);
