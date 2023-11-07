@@ -21,6 +21,7 @@
 #include "config.h"
 
 #include "capsule-application.h"
+#include "capsule-close-dialog.h"
 #include "capsule-settings.h"
 #include "capsule-window.h"
 #include "capsule-window-dressing.h"
@@ -28,6 +29,8 @@
 struct _CapsuleWindow
 {
   AdwApplicationWindow   parent_instance;
+
+  CapsuleCloseDialog    *close_dialog;
 
   AdwHeaderBar          *header_bar;
   AdwTabBar             *tab_bar;
@@ -50,6 +53,26 @@ enum {
 };
 
 static GParamSpec *properties[N_PROPS];
+
+static gboolean
+capsule_window_close_page_cb (CapsuleWindow *self,
+                              AdwTabPage    *tab_page,
+                              AdwTabView    *tab_view)
+{
+  CapsuleTab *tab;
+
+  g_assert (CAPSULE_IS_WINDOW (self));
+  g_assert (ADW_IS_TAB_PAGE (tab_page));
+  g_assert (ADW_IS_TAB_VIEW (tab_view));
+
+  tab = CAPSULE_TAB (adw_tab_page_get_child (tab_page));
+  if (!capsule_tab_is_running (tab))
+    return GDK_EVENT_PROPAGATE;
+
+  /* TODO: Setup dialog to confirm close */
+
+  return GDK_EVENT_STOP;
+}
 
 static void
 capsule_window_setup_menu_cb (CapsuleWindow *self,
@@ -627,6 +650,7 @@ capsule_window_class_init (CapsuleWindowClass *klass)
   gtk_widget_class_bind_template_callback (widget_class, capsule_window_page_detached_cb);
   gtk_widget_class_bind_template_callback (widget_class, capsule_window_notify_selected_page_cb);
   gtk_widget_class_bind_template_callback (widget_class, capsule_window_create_window_cb);
+  gtk_widget_class_bind_template_callback (widget_class, capsule_window_close_page_cb);
   gtk_widget_class_bind_template_callback (widget_class, capsule_window_setup_menu_cb);
 
   gtk_widget_class_install_action (widget_class, "win.new-tab", "s", capsule_window_new_tab_action);

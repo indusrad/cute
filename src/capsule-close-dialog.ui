@@ -18,4 +18,22 @@
   SPDX-License-Identifier: GPL-3.0-or-later
 -->
 <interface>
+  <template class="CapsuleCloseDialog" parent="AdwMessageDialog">
+    <property name="default-response">cancel</property>
+    <property name="close-response">cancel</property>
+    <signal name="response::cancel" handler="capsule_close_dialog_response_cancel_cb"/>
+    <signal name="response::discard" handler="capsule_close_dialog_response_discard_cb"/>
+    <responses>
+      <response id="cancel" translatable="yes">_Cancel</response>
+      <response id="discard" translatable="yes" appearance="destructive">_Discard</response>
+    </responses>
+    <property name="extra-child">
+      <object class="AdwPreferencesPage" id="page">
+        <child>
+          <object class="AdwPreferencesGroup" id="group">
+          </object>
+        </child>
+      </object>
+    </property>
+  </template>
 </interface>
