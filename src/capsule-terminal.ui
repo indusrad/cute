@@ -38,6 +38,18 @@
             <property name="action">action(menu.popup)</property>
           </object>
         </child>
+        <child>
+          <object class="GtkShortcut">
+            <property name="trigger">&lt;ctrl&gt;&lt;shift&gt;c</property>
+            <property name="action">action(clipboard.copy)</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkShortcut">
+            <property name="trigger">&lt;ctrl&gt;&lt;shift&gt;v</property>
+            <property name="action">action(clipboard.paste)</property>
+          </object>
+        </child>
       </object>
     </child>
     <child>
