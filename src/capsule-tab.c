@@ -136,6 +136,21 @@ capsule_tab_wait_check_cb (GObject      *object,
   else
     self->state = CAPSULE_TAB_STATE_FAILED;
 
+
+  if (g_subprocess_get_if_signaled (subprocess))
+    {
+      g_autofree char *title = NULL;
+
+      title = g_strdup_printf (_("Process Exited from Signal %d"),
+                               g_subprocess_get_term_sig (subprocess));
+
+      adw_banner_set_title (self->banner, title);
+      adw_banner_set_revealed (self->banner, TRUE);
+      adw_banner_set_button_label (self->banner, _("_Restart"));
+      gtk_actionable_set_action_name (GTK_ACTIONABLE (self->banner), "tab.respawn");
+      return;
+    }
+
   exit_action = capsule_profile_get_exit_action (self->profile);
   tab_view = gtk_widget_get_ancestor (GTK_WIDGET (self), ADW_TYPE_TAB_VIEW);
 
