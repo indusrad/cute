@@ -24,6 +24,7 @@
 #include <glib/gi18n.h>
 
 #include "capsule-palette.h"
+#include "capsule-preferences-list-item.h"
 #include "capsule-util.h"
 
 typedef struct _CapsulePaletteData
@@ -382,4 +383,28 @@ capsule_palette_get_indexed_colors (CapsulePalette *self,
 
   *n_colors = 16;
   return self->palette->indexed;
+}
+
+GListModel *
+capsule_palette_list_model_get_default (void)
+{
+  static GListStore *instance;
+
+  if (instance == NULL)
+    {
+      instance = g_list_store_new (CAPSULE_TYPE_PREFERENCES_LIST_ITEM);
+      g_object_add_weak_pointer (G_OBJECT (instance), (gpointer *)&instance);
+
+      for (guint i = 0; i < G_N_ELEMENTS (palettes); i++)
+        {
+          g_autoptr(GVariant) value = g_variant_take_ref (g_variant_new_string (palettes[i].id));
+          g_autoptr(CapsulePreferencesListItem) item = g_object_new (CAPSULE_TYPE_PREFERENCES_LIST_ITEM,
+                                                                     "title", g_dgettext (GETTEXT_PACKAGE, palettes[i].name),
+                                                                     "value", value,
+                                                                     NULL);
+          g_list_store_append (instance, item);
+        }
+    }
+
+  return G_LIST_MODEL (instance);
 }

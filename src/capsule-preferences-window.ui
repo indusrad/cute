@@ -42,59 +42,6 @@
                 <property name="expression">
                   <lookup name="title" type="CapsulePreferencesListItem"/>
                 </property>
-                <property name="model">
-                  <object class="GListStore" id="palettes">
-                    <property name="item-type">CapsulePreferencesListItem</property>
-                    <child>
-                      <object class="CapsulePreferencesListItem">
-                        <property name="title" translatable="yes">GNOME</property>
-                        <property name="value">'gnome'</property>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="CapsulePreferencesListItem">
-                        <property name="title" translatable="yes">Solarized</property>
-                        <property name="value">'solarized'</property>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="CapsulePreferencesListItem">
-                        <property name="title" translatable="yes">Tango</property>
-                        <property name="value">'tango'</property>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="CapsulePreferencesListItem">
-                        <property name="title" translatable="yes">Dracula</property>
-                        <property name="value">'dracula'</property>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="CapsulePreferencesListItem">
-                        <property name="title" translatable="yes">Nord</property>
-                        <property name="value">'nord'</property>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="CapsulePreferencesListItem">
-                        <property name="title" translatable="yes">XTerm</property>
-                        <property name="value">'xterm'</property>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="CapsulePreferencesListItem">
-                        <property name="title" translatable="yes">Linux</property>
-                        <property name="value">'linux'</property>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="CapsulePreferencesListItem">
-                        <property name="title" translatable="yes">RXVT</property>
-                        <property name="value">'rxvt'</property>
-                      </object>
-                    </child>
-                  </object>
-                </property>
               </object>
             </child>
             <child>
@@ -399,6 +346,82 @@
                     <property name="upper">2147483647</property>
                     <property name="step-increment">10</property>
                     <property name="page-increment">100</property>
+                  </object>
+                </property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title" translatable="yes">Shell</property>
+            <child>
+              <object class="AdwSwitchRow" id="login_shell">
+                <property name="title" translatable="yes">Use Login Shell</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <child>
+              <object class="AdwComboRow" id="preserve_directory">
+                <property name="title" translatable="yes">Preserve Working Directory</property>
+                <property name="expression">
+                  <lookup name="title" type="CapsulePreferencesListItem"/>
+                </property>
+                <property name="model">
+                  <object class="GListStore" id="preserve_directories">
+                    <property name="item-type">CapsulePreferencesListItem</property>
+                    <child>
+                      <object class="CapsulePreferencesListItem">
+                        <property name="title" translatable="yes">Never</property>
+                        <property name="value">'never'</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="CapsulePreferencesListItem">
+                        <property name="title" translatable="yes">Safe</property>
+                        <property name="value">'safe'</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="CapsulePreferencesListItem">
+                        <property name="title" translatable="yes">Always</property>
+                        <property name="value">'always'</property>
+                      </object>
+                    </child>
+                  </object>
+                </property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwComboRow" id="exit_action">
+                <property name="title" translatable="yes">Exit Action</property>
+                <property name="expression">
+                  <lookup name="title" type="CapsulePreferencesListItem"/>
+                </property>
+                <property name="model">
+                  <object class="GListStore" id="exit_actions">
+                    <property name="item-type">CapsulePreferencesListItem</property>
+                    <child>
+                      <object class="CapsulePreferencesListItem">
+                        <property name="title" translatable="yes">No Action</property>
+                        <property name="value">'none'</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="CapsulePreferencesListItem">
+                        <property name="title" translatable="yes">Restart</property>
+                        <property name="value">'restart'</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="CapsulePreferencesListItem">
+                        <property name="title" translatable="yes">Close</property>
+                        <property name="value">'close'</property>
+                      </object>
+                    </child>
                   </object>
                 </property>
               </object>

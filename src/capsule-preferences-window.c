@@ -45,11 +45,14 @@ struct _CapsulePreferencesWindow
   GListModel           *cursor_shapes;
   AdwComboRow          *delete_binding;
   GListModel           *erase_bindings;
+  AdwComboRow          *exit_action;
+  GListModel           *exit_actions;
   GtkLabel             *font_name;
   AdwSwitchRow         *limit_scrollback;
   GtkAdjustment        *opacity_adjustment;
   AdwComboRow          *palette;
-  GListStore           *palettes;
+  AdwComboRow          *preserve_directory;
+  GListModel           *preserve_directories;
   GtkListBox           *profiles_list_box;
   AdwSpinRow           *scrollback_lines;
   AdwSwitchRow         *scroll_on_output;
@@ -257,7 +260,7 @@ capsule_preferences_window_notify_default_profile_cb (CapsulePreferencesWindow *
                                 G_SETTINGS_BIND_DEFAULT,
                                 string_to_index,
                                 index_to_string,
-                                g_object_ref (self->palettes),
+                                g_object_ref (capsule_palette_list_model_get_default ()),
                                 g_object_unref);
 
   g_settings_bind_with_mapping (gsettings,
@@ -289,6 +292,26 @@ capsule_preferences_window_notify_default_profile_cb (CapsulePreferencesWindow *
                                 index_to_string,
                                 g_object_ref (self->cjk_ambiguous_widths),
                                 g_object_unref);
+
+  g_settings_bind_with_mapping (gsettings,
+                                CAPSULE_PROFILE_KEY_EXIT_ACTION,
+                                self->exit_action,
+                                "selected",
+                                G_SETTINGS_BIND_DEFAULT,
+                                string_to_index,
+                                index_to_string,
+                                g_object_ref (self->exit_actions),
+                                g_object_unref);
+
+  g_settings_bind_with_mapping (gsettings,
+                                CAPSULE_PROFILE_KEY_PRESERVE_DIRECTORY,
+                                self->preserve_directory,
+                                "selected",
+                                G_SETTINGS_BIND_DEFAULT,
+                                string_to_index,
+                                index_to_string,
+                                g_object_ref (self->preserve_directories),
+                                g_object_unref);
 }
 
 static void
@@ -301,6 +324,9 @@ capsule_preferences_window_constructed (GObject *object)
   g_autoptr(GListModel) profiles = NULL;
 
   G_OBJECT_CLASS (capsule_preferences_window_parent_class)->constructed (object);
+
+  adw_combo_row_set_model (self->palette,
+                           capsule_palette_list_model_get_default ());
 
   g_signal_connect_object (app,
                            "notify::default-profile",
@@ -413,17 +439,20 @@ capsule_preferences_window_class_init (CapsulePreferencesWindowClass *klass)
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, cursor_shapes);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, delete_binding);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, erase_bindings);
+  gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, exit_action);
+  gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, exit_actions);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, font_name);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, limit_scrollback);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, opacity_adjustment);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, palette);
-  gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, palettes);
+  gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, preserve_directories);
+  gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, preserve_directory);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, profiles_list_box);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, scroll_on_keystroke);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, scroll_on_output);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, scrollback_lines);
-  gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, scrollbar_policy);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, scrollbar_policies);
+  gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, scrollbar_policy);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, tab_position);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, tab_positions);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, text_blink_mode);
