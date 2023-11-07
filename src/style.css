@@ -10,7 +10,7 @@ vte-terminal
 {
   50% {
     color: #000;
-    background-color: shade(@orange_2, 1.1);
+    background-color: alpha(shade(@orange_2, 1.1), .66);
   }
 }
 
