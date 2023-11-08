@@ -21,6 +21,7 @@
 #include "config.h"
 
 #include <errno.h>
+#include <sys/stat.h>
 #include <unistd.h>
 
 #include "capsule-process.h"
@@ -46,6 +47,25 @@ static GParamSpec *properties [N_PROPS];
 static CapsuleProcessLeaderKind
 capsule_process_real_get_leader_kind (CapsuleProcess *self)
 {
+  CapsuleProcessPrivate *priv = capsule_process_get_instance_private (self);
+
+  if (!priv->wait_completed && priv->pty != NULL)
+    {
+      int fd = vte_pty_get_fd (priv->pty);
+      GPid pid = tcgetpgrp (fd);
+
+      if (pid > 0)
+        {
+          g_autofree char *path = g_strdup_printf ("/proc/%d/", pid);
+          struct stat st;
+
+          if (stat (path, &st) == 0)
+            {
+              if (st.st_uid == 0)
+                return CAPSULE_PROCESS_LEADER_KIND_SUPERUSER;
+            }
+        }
+    }
 
   return CAPSULE_PROCESS_LEADER_KIND_UNKNOWN;
 }
