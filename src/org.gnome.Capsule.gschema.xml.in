@@ -326,6 +326,12 @@
       <description>Reset the terminal state and clear history for misbehaving clients</description>
     </key>
 
+    <key name="search" type="s">
+      <default>'&lt;ctrl&gt;&lt;shift&gt;f'</default>
+      <summary>Search History</summary>
+      <description>Shortcut to begin searching the terminal history</description>
+    </key>
+
     <key name="select-all" type="s">
       <default>'&lt;ctrl&gt;&lt;shift&gt;a'</default>
       <summary>Select All</summary>

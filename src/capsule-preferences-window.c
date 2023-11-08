@@ -85,6 +85,7 @@ struct _CapsulePreferencesWindow
   CapsuleShortcutRow   *shortcut_preferences;
   CapsuleShortcutRow   *shortcut_reset;
   CapsuleShortcutRow   *shortcut_reset_and_clear;
+  CapsuleShortcutRow   *shortcut_search;
   CapsuleShortcutRow   *shortcut_select_all;
   CapsuleShortcutRow   *shortcut_select_none;
   CapsuleShortcutRow   *shortcut_tab_overview;
@@ -501,6 +502,10 @@ capsule_preferences_window_constructed (GObject *object)
                           self->shortcut_reset_and_clear, "accelerator",
                           G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
 
+  g_object_bind_property (shortcuts, "search",
+                          self->shortcut_search, "accelerator",
+                          G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
+
   g_object_bind_property (shortcuts, "select-all",
                           self->shortcut_select_all, "accelerator",
                           G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
@@ -619,6 +624,7 @@ capsule_preferences_window_class_init (CapsulePreferencesWindowClass *klass)
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, shortcut_preferences);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, shortcut_reset);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, shortcut_reset_and_clear);
+  gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, shortcut_search);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, shortcut_select_all);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, shortcut_select_none);
   gtk_widget_class_bind_template_child (widget_class, CapsulePreferencesWindow, shortcut_tab_overview);

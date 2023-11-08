@@ -535,6 +535,15 @@
         <child>
           <object class="AdwPreferencesGroup">
             <child>
+              <object class="CapsuleShortcutRow" id="shortcut_search">
+                <property name="title" translatable="yes">Search History</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <child>
               <object class="CapsuleShortcutRow" id="shortcut_popup_menu">
                 <property name="title" translatable="yes">Show Context Menu</property>
               </object>

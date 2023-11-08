@@ -24,6 +24,7 @@
 
 #include "capsule-application.h"
 #include "capsule-close-dialog.h"
+#include "capsule-find-bar.h"
 #include "capsule-settings.h"
 #include "capsule-title-dialog.h"
 #include "capsule-window.h"
@@ -37,6 +38,8 @@ struct _CapsuleWindow
 
   CapsuleShortcuts      *shortcuts;
 
+  CapsuleFindBar        *find_bar;
+  GtkRevealer           *find_bar_revealer;
   AdwHeaderBar          *header_bar;
   GMenu                 *primary_menu;
   AdwTabBar             *tab_bar;
@@ -204,6 +207,7 @@ capsule_window_notify_selected_page_cb (CapsuleWindow *self,
                                         AdwTabView    *tab_view)
 {
   g_autoptr(GPropertyAction) read_only = NULL;
+  CapsuleTerminal *terminal = NULL;
   AdwTabPage *page;
   gboolean has_page = FALSE;
 
@@ -216,6 +220,8 @@ capsule_window_notify_selected_page_cb (CapsuleWindow *self,
       CapsuleProfile *profile = capsule_tab_get_profile (tab);
 
       has_page = TRUE;
+
+      terminal = capsule_tab_get_terminal (tab);
 
       g_signal_group_set_target (self->active_tab_signals, tab);
 
@@ -231,9 +237,15 @@ capsule_window_notify_selected_page_cb (CapsuleWindow *self,
       gtk_widget_grab_focus (GTK_WIDGET (tab));
     }
 
+  if (terminal == NULL)
+    gtk_revealer_set_reveal_child (self->find_bar_revealer, FALSE);
+
+  capsule_find_bar_set_terminal (self->find_bar, terminal);
+
   gtk_widget_action_set_enabled (GTK_WIDGET (self), "win.zoom-in", has_page);
   gtk_widget_action_set_enabled (GTK_WIDGET (self), "win.zoom-out", has_page);
   gtk_widget_action_set_enabled (GTK_WIDGET (self), "win.zoom-one", has_page);
+  gtk_widget_action_set_enabled (GTK_WIDGET (self), "win.search", has_page);
 
   g_action_map_remove_action (G_ACTION_MAP (self), "tab.read-only");
   if (read_only != NULL)
@@ -687,6 +699,19 @@ capsule_window_set_title_action (GtkWidget  *widget,
 }
 
 static void
+capsule_window_search_action (GtkWidget  *widget,
+                              const char *action_name,
+                              GVariant   *param)
+{
+  CapsuleWindow *self = (CapsuleWindow *)widget;
+
+  g_assert (CAPSULE_IS_WINDOW (self));
+
+  gtk_revealer_set_reveal_child (self->find_bar_revealer, TRUE);
+  gtk_widget_grab_focus (GTK_WIDGET (self->find_bar));
+}
+
+static void
 capsule_window_constructed (GObject *object)
 {
   CapsuleWindow *self = (CapsuleWindow *)object;
@@ -794,6 +819,8 @@ capsule_window_class_init (CapsuleWindowClass *klass)
 
   gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/Capsule/capsule-window.ui");
 
+  gtk_widget_class_bind_template_child (widget_class, CapsuleWindow, find_bar);
+  gtk_widget_class_bind_template_child (widget_class, CapsuleWindow, find_bar_revealer);
   gtk_widget_class_bind_template_child (widget_class, CapsuleWindow, header_bar);
   gtk_widget_class_bind_template_child (widget_class, CapsuleWindow, primary_menu);
   gtk_widget_class_bind_template_child (widget_class, CapsuleWindow, tab_bar);
@@ -830,6 +857,9 @@ capsule_window_class_init (CapsuleWindowClass *klass)
   gtk_widget_class_install_action (widget_class, "page.next", NULL, capsule_window_page_next_action);
   gtk_widget_class_install_action (widget_class, "page.previous", NULL, capsule_window_page_previous_action);
   gtk_widget_class_install_action (widget_class, "win.set-title", NULL, capsule_window_set_title_action);
+  gtk_widget_class_install_action (widget_class, "win.search", NULL, capsule_window_search_action);
+
+  g_type_ensure (CAPSULE_TYPE_FIND_BAR);
 }
 
 static void

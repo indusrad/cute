@@ -37,3 +37,15 @@ vte-terminal revealer.size label
   border-top: 1px solid alpha(@borders,.5);
   border-left: 1px solid alpha(@borders,.5);
 }
+
+findbar .close-button
+{
+  min-height: 0;
+  min-width: 0;
+  border-radius: 99px;
+}
+
+findbar .close-button image
+{
+  padding: 0;
+}

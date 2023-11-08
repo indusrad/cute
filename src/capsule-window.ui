@@ -30,6 +30,16 @@
         <child>
           <object class="GtkShortcut">
             <binding name="trigger">
+              <lookup name="search" type="CapsuleShortcuts">
+                <lookup name="shortcuts">CapsuleWindow</lookup>
+              </lookup>
+            </binding>
+            <property name="action">action(win.search)</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkShortcut">
+            <binding name="trigger">
               <lookup name="new-window" type="CapsuleShortcuts">
                 <lookup name="shortcuts">CapsuleWindow</lookup>
               </lookup>
@@ -373,6 +383,15 @@
                 </child>
               </object>
             </property>
+            <child type="bottom">
+              <object class="GtkRevealer" id="find_bar_revealer">
+                <property name="reveal-child">false</property>
+                <child>
+                  <object class="CapsuleFindBar" id="find_bar">
+                  </object>
+                </child>
+              </object>
+            </child>
           </object>
         </property>
       </object>
@@ -474,22 +493,15 @@
     </section>
     <section>
       <item>
-        <attribute name="id">reset</attribute>
-        <attribute name="label" translatable="yes">Reset</attribute>
-        <attribute name="action">tab.reset</attribute>
-        <attribute name="target" type="b">false</attribute>
-      </item>
-      <item>
-        <attribute name="id">reset-and-clear</attribute>
-        <attribute name="label" translatable="yes">Reset and Clear</attribute>
-        <attribute name="action">tab.reset</attribute>
-        <attribute name="target" type="b">true</attribute>
+        <attribute name="label" translatable="yes">Read Only</attribute>
+        <attribute name="action">win.tab.read-only</attribute>
       </item>
     </section>
     <section>
       <item>
-        <attribute name="label" translatable="yes">Read Only</attribute>
-        <attribute name="action">win.tab.read-only</attribute>
+        <attribute name="id">search</attribute>
+        <attribute name="label" translatable="yes">Search…</attribute>
+        <attribute name="action">win.search</attribute>
       </item>
     </section>
     <section>
@@ -502,6 +514,20 @@
         <attribute name="id">close-tab</attribute>
         <attribute name="label" translatable="yes">_Close Tab</attribute>
         <attribute name="action">page.close</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="id">reset</attribute>
+        <attribute name="label" translatable="yes">Reset</attribute>
+        <attribute name="action">tab.reset</attribute>
+        <attribute name="target" type="b">false</attribute>
+      </item>
+      <item>
+        <attribute name="id">reset-and-clear</attribute>
+        <attribute name="label" translatable="yes">Reset and Clear</attribute>
+        <attribute name="action">tab.reset</attribute>
+        <attribute name="target" type="b">true</attribute>
       </item>
     </section>
   </menu>
