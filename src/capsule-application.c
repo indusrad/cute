@@ -48,12 +48,15 @@ static void capsule_application_about        (CapsuleApplication *self,
                                               GVariant           *param);
 static void capsule_application_edit_profile (CapsuleApplication *self,
                                               GVariant           *param);
+static void capsule_application_help_overlay (CapsuleApplication *self,
+                                              GVariant           *param);
 static void capsule_application_preferences  (CapsuleApplication *self,
                                               GVariant           *param);
 
 CAPSULE_DEFINE_ACTION_GROUP (CapsuleApplication, capsule_application, {
   { "about", capsule_application_about },
   { "edit-profile", capsule_application_edit_profile, "s" },
+  { "help-overlay", capsule_application_help_overlay },
   { "preferences", capsule_application_preferences },
 })
 
@@ -248,6 +251,10 @@ capsule_application_startup (GApplication *application)
 
   G_APPLICATION_CLASS (capsule_application_parent_class)->startup (application);
 
+  gtk_application_set_accels_for_action (GTK_APPLICATION (self),
+                                         "app.help-overlay",
+                                         (const char * const []) {"<ctrl>question", NULL});
+
   /* Setup portal to get settings */
   self->portal = g_dbus_proxy_new_for_bus_sync (G_BUS_TYPE_SESSION,
                                                 G_DBUS_PROXY_FLAGS_NONE,
@@ -431,7 +438,19 @@ capsule_application_preferences (CapsuleApplication *self,
   g_assert (CAPSULE_IS_APPLICATION (self));
 
   window = capsule_preferences_window_get_default ();
+  gtk_window_present (GTK_WINDOW (window));
+}
 
+static void
+capsule_application_help_overlay (CapsuleApplication *self,
+                                  GVariant           *param)
+{
+  CapsulePreferencesWindow *window;
+
+  g_assert (CAPSULE_IS_APPLICATION (self));
+
+  window = capsule_preferences_window_get_default ();
+  capsule_preferences_window_edit_shortcuts (window);
   gtk_window_present (GTK_WINDOW (window));
 }
 

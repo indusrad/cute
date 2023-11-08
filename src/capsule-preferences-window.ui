@@ -482,6 +482,7 @@
     </child>
     <child>
       <object class="AdwPreferencesPage">
+        <property name="name">shortcuts</property>
         <property name="title" translatable="yes">Shortcuts</property>
         <property name="icon-name">preferences-desktop-keyboard-shortcuts-symbolic</property>
         <child>

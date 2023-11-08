@@ -29,9 +29,10 @@ G_BEGIN_DECLS
 
 G_DECLARE_FINAL_TYPE (CapsulePreferencesWindow, capsule_preferences_window, CAPSULE, PREFERENCES_WINDOW, AdwPreferencesWindow)
 
-CapsulePreferencesWindow *capsule_preferences_window_get_default  (void);
-GtkWindow                *capsule_preferences_window_new          (GtkApplication           *application);
-void                      capsule_preferences_window_edit_profile (CapsulePreferencesWindow *self,
-                                                                   CapsuleProfile           *profile);
+CapsulePreferencesWindow *capsule_preferences_window_get_default    (void);
+GtkWindow                *capsule_preferences_window_new            (GtkApplication           *application);
+void                      capsule_preferences_window_edit_profile   (CapsulePreferencesWindow *self,
+                                                                     CapsuleProfile           *profile);
+void                      capsule_preferences_window_edit_shortcuts (CapsulePreferencesWindow *self);
 
 G_END_DECLS

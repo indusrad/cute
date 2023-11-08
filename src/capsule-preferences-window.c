@@ -705,3 +705,12 @@ capsule_preferences_window_get_default (void)
 
   return instance;
 }
+
+void
+capsule_preferences_window_edit_shortcuts (CapsulePreferencesWindow *self)
+{
+  g_return_if_fail (CAPSULE_IS_PREFERENCES_WINDOW (self));
+
+  adw_preferences_window_pop_subpage (ADW_PREFERENCES_WINDOW (self));
+  adw_preferences_window_set_visible_page_name (ADW_PREFERENCES_WINDOW (self), "shortcuts");
+}

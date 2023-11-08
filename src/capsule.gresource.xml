@@ -14,7 +14,4 @@
     <file preprocess="xml-stripblanks">icons/enter-keyboard-shortcut.svg</file>
     <file>style.css</file>
   </gresource>
-  <gresource prefix="/org/gnome/Capsule/gtk">
-    <file preprocess="xml-stripblanks">help-overlay.ui</file>
-  </gresource>
 </gresources>
