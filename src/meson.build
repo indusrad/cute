@@ -11,6 +11,7 @@ capsule_sources = [
   'capsule-podman-provider.c',
   'capsule-preferences-list-item.c',
   'capsule-preferences-window.c',
+  'capsule-process.c',
   'capsule-profile-editor.c',
   'capsule-profile-menu.c',
   'capsule-profile-row.c',

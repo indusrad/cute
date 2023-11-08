@@ -26,6 +26,7 @@
 #include "capsule-application.h"
 #include "capsule-container.h"
 #include "capsule-enums.h"
+#include "capsule-process.h"
 #include "capsule-tab.h"
 #include "capsule-terminal.h"
 #include "capsule-util.h"
@@ -46,7 +47,7 @@ struct _CapsuleTab
 
   char              *previous_working_directory_uri;
   CapsuleProfile    *profile;
-  GSubprocess       *subprocess;
+  CapsuleProcess    *process;
   char              *title_prefix;
 
   AdwBanner         *banner;
@@ -128,7 +129,7 @@ capsule_tab_wait_check_cb (GObject      *object,
                            GAsyncResult *result,
                            gpointer      user_data)
 {
-  GSubprocess *subprocess = (GSubprocess *)object;
+  CapsuleProcess *process = (CapsuleProcess *)object;
   g_autoptr(CapsuleTab) self = user_data;
   g_autoptr(GError) error = NULL;
   CapsuleExitAction exit_action;
@@ -136,14 +137,14 @@ capsule_tab_wait_check_cb (GObject      *object,
   GtkWidget *tab_view;
   gboolean success;
 
-  g_assert (G_IS_SUBPROCESS (subprocess));
+  g_assert (CAPSULE_IS_PROCESS (process));
   g_assert (G_IS_ASYNC_RESULT (result));
   g_assert (CAPSULE_IS_TAB (self));
   g_assert (self->state == CAPSULE_TAB_STATE_RUNNING);
 
-  g_clear_object (&self->subprocess);
+  g_clear_object (&self->process);
 
-  success = g_subprocess_wait_check_finish (subprocess, result, &error);
+  success = capsule_process_wait_check_finish (process, result, &error);
 
   if (success)
     self->state = CAPSULE_TAB_STATE_EXITED;
@@ -153,12 +154,12 @@ capsule_tab_wait_check_cb (GObject      *object,
   if (self->forced_exit)
     return;
 
-  if (g_subprocess_get_if_signaled (subprocess))
+  if (capsule_process_get_if_signaled (process))
     {
       g_autofree char *title = NULL;
 
       title = g_strdup_printf (_("Process Exited from Signal %d"),
-                               g_subprocess_get_term_sig (subprocess));
+                               capsule_process_get_term_sig (process));
 
       adw_banner_set_title (self->banner, title);
       adw_banner_set_revealed (self->banner, TRUE);
@@ -202,9 +203,11 @@ capsule_tab_spawn_cb (GObject      *object,
                       gpointer      user_data)
 {
   CapsuleContainer *container = (CapsuleContainer *)object;
+  g_autoptr(CapsuleProcess) process = NULL;
   g_autoptr(CapsuleTab) self = user_data;
   g_autoptr(GSubprocess) subprocess = NULL;
   g_autoptr(GError) error = NULL;
+  VtePty *pty;
 
   g_assert (CAPSULE_IS_CONTAINER (container));
   g_assert (G_IS_ASYNC_RESULT (result));
@@ -231,12 +234,15 @@ capsule_tab_spawn_cb (GObject      *object,
 
   self->state = CAPSULE_TAB_STATE_RUNNING;
 
-  g_set_object (&self->subprocess, subprocess);
+  pty = vte_terminal_get_pty (VTE_TERMINAL (self->terminal));
+  process = capsule_process_new (subprocess, pty);
 
-  g_subprocess_wait_check_async (subprocess,
-                                 NULL,
-                                 capsule_tab_wait_check_cb,
-                                 g_object_ref (self));
+  g_set_object (&self->process, process);
+
+  capsule_process_wait_check_async (process,
+                                    NULL,
+                                    capsule_tab_wait_check_cb,
+                                    g_object_ref (self));
 }
 
 static void
@@ -532,7 +538,7 @@ capsule_tab_dispose (GObject *object)
     gtk_widget_unparent (child);
 
   g_clear_object (&self->profile);
-  g_clear_object (&self->subprocess);
+  g_clear_object (&self->process);
 
   g_clear_pointer (&self->previous_working_directory_uri, g_free);
   g_clear_pointer (&self->title_prefix, g_free);
@@ -900,48 +906,15 @@ capsule_tab_raise (CapsuleTab *self)
     adw_tab_view_set_selected_page (tab_view, tab_page);
 }
 
-static GPid
-capsule_tab_get_pid (CapsuleTab *self)
-{
-  const char *ident;
-
-  g_assert (CAPSULE_IS_TAB (self));
-
-  /* NOTE: We very likely will need to go through the container API because we
-   * can't expect pid namespaces to match here.
-   */
-
-  if (self->subprocess == NULL)
-    return (GPid)-1;
-
-  if (!(ident = g_subprocess_get_identifier (self->subprocess)))
-    return (GPid)-1;
-
-  return atoi (ident);
-}
-
 gboolean
 capsule_tab_is_running (CapsuleTab *self)
 {
-  VtePty *pty;
-  GPid pid, child_pid;
-  int fd;
-
   g_return_val_if_fail (CAPSULE_IS_TAB (self), 0);
 
-  if (!(pty = vte_terminal_get_pty (VTE_TERMINAL (self->terminal))) ||
-      -1 == (fd = vte_pty_get_fd (pty)))
+  if (self->process == NULL)
     return FALSE;
 
-  pid = tcgetpgrp (fd);
-  if (pid < 0)
-    return FALSE;
-
-  child_pid = capsule_tab_get_pid (self);
-  if (child_pid < 0)
-    return FALSE;
-
-  return pid != child_pid;
+  return capsule_process_has_leader (self->process);
 }
 
 void
@@ -951,6 +924,6 @@ capsule_tab_force_quit (CapsuleTab *self)
 
   self->forced_exit = TRUE;
 
-  if (self->subprocess != NULL)
-    g_subprocess_force_exit (self->subprocess);
+  if (self->process != NULL)
+    capsule_process_force_exit (self->process);
 }
