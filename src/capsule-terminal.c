@@ -29,11 +29,10 @@
 #include "capsule-shortcuts.h"
 #include "capsule-tab.h"
 #include "capsule-terminal.h"
+#include "capsule-util.h"
 #include "capsule-window.h"
 
 #define SIZE_DISMISS_TIMEOUT_MSEC 1000
-#define BUILDER_PCRE2_UCP 0x00020000u
-#define BUILDER_PCRE2_MULTILINE 0x00000400u
 #define URL_MATCH_CURSOR_NAME "pointer"
 
 #define DROP_REQUEST_PRIORITY               G_PRIORITY_DEFAULT
@@ -1006,7 +1005,7 @@ capsule_terminal_class_init (CapsuleTerminalClass *klass)
 
       builtin_dingus_regex[i] = vte_regex_new_for_match (builtin_dingus[i],
                                                          strlen (builtin_dingus[i]),
-                                                         VTE_REGEX_FLAGS_DEFAULT | BUILDER_PCRE2_MULTILINE | BUILDER_PCRE2_UCP,
+                                                         VTE_REGEX_FLAGS_DEFAULT | VTE_PCRE2_MULTILINE | VTE_PCRE2_UCP,
                                                          NULL);
 
       if (!vte_regex_jit (builtin_dingus_regex[i], 0, &error))

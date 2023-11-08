@@ -22,6 +22,7 @@
 #include "config.h"
 
 #include "capsule-find-bar.h"
+#include "capsule-util.h"
 
 struct _CapsuleFindBar
 {
@@ -30,6 +31,9 @@ struct _CapsuleFindBar
   CapsuleTerminal *terminal;
 
   GtkEntry        *entry;
+  GtkCheckButton  *use_regex;
+  GtkCheckButton  *whole_words;
+  GtkCheckButton  *match_case;
 };
 
 enum {
@@ -63,6 +67,74 @@ static gboolean
 capsule_find_bar_grab_focus (GtkWidget *widget)
 {
   return gtk_widget_grab_focus (GTK_WIDGET (CAPSULE_FIND_BAR (widget)->entry));
+}
+
+static char *
+capsule_find_bar_get_search (CapsuleFindBar *self,
+                             guint          *flags)
+{
+  const char *text;
+
+  g_assert (CAPSULE_IS_FIND_BAR (self));
+
+  text = gtk_editable_get_text (GTK_EDITABLE (self->entry));
+
+  if (text[0] == 0)
+    return NULL;
+
+  if (!gtk_check_button_get_active (GTK_CHECK_BUTTON (self->match_case)))
+    *flags |= VTE_PCRE2_CASELESS;
+
+  if (!gtk_check_button_get_active (GTK_CHECK_BUTTON (self->use_regex)))
+    return g_regex_escape_string (text, -1);
+
+  return g_strdup (text);
+}
+
+static void
+capsule_find_bar_next (GtkWidget  *widget,
+                       const char *action_name,
+                       GVariant   *param)
+{
+  CapsuleFindBar *self = (CapsuleFindBar *)widget;
+  g_autoptr(VteRegex) regex = NULL;
+  g_autoptr(GError) error = NULL;
+  g_autofree char *query = NULL;
+  guint flags = VTE_PCRE2_MULTILINE;
+
+  g_assert (CAPSULE_IS_FIND_BAR (self));
+
+  if (self->terminal == NULL)
+    return;
+
+  if ((query = capsule_find_bar_get_search (self, &flags)))
+    regex = vte_regex_new_for_search (query, -1, flags, &error);
+
+  vte_terminal_search_set_regex (VTE_TERMINAL (self->terminal), regex, 0);
+  vte_terminal_search_find_next (VTE_TERMINAL (self->terminal));
+}
+
+static void
+capsule_find_bar_previous (GtkWidget  *widget,
+                           const char *action_name,
+                           GVariant   *param)
+{
+  CapsuleFindBar *self = (CapsuleFindBar *)widget;
+  g_autoptr(VteRegex) regex = NULL;
+  g_autoptr(GError) error = NULL;
+  g_autofree char *query = NULL;
+  guint flags = VTE_PCRE2_MULTILINE;
+
+  g_assert (CAPSULE_IS_FIND_BAR (self));
+
+  if (self->terminal == NULL)
+    return;
+
+  if ((query = capsule_find_bar_get_search (self, &flags)))
+    regex = vte_regex_new_for_search (query, -1, flags, &error);
+
+  vte_terminal_search_set_regex (VTE_TERMINAL (self->terminal), regex, 0);
+  vte_terminal_search_find_previous (VTE_TERMINAL (self->terminal));
 }
 
 static void
@@ -145,10 +217,17 @@ capsule_find_bar_class_init (CapsuleFindBarClass *klass)
   gtk_widget_class_set_css_name (widget_class, "findbar");
 
   gtk_widget_class_bind_template_child (widget_class, CapsuleFindBar, entry);
+  gtk_widget_class_bind_template_child (widget_class, CapsuleFindBar, use_regex);
+  gtk_widget_class_bind_template_child (widget_class, CapsuleFindBar, whole_words);
+  gtk_widget_class_bind_template_child (widget_class, CapsuleFindBar, match_case);
 
   gtk_widget_class_install_action (widget_class, "search.dismiss", NULL, capsule_find_bar_dismiss);
+  gtk_widget_class_install_action (widget_class, "search.down", NULL, capsule_find_bar_next);
+  gtk_widget_class_install_action (widget_class, "search.up", NULL, capsule_find_bar_previous);
 
   gtk_widget_class_add_binding_action (widget_class, GDK_KEY_Escape, 0, "search.dismiss", NULL);
+  gtk_widget_class_add_binding_action (widget_class, GDK_KEY_g, GDK_CONTROL_MASK, "search.up", NULL);
+  gtk_widget_class_add_binding_action (widget_class, GDK_KEY_g, GDK_CONTROL_MASK|GDK_SHIFT_MASK, "search.down", NULL);
 }
 
 static void

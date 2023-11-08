@@ -47,13 +47,15 @@
                 <child>
                   <object class="GtkButton">
                     <property name="icon-name">go-up-symbolic</property>
-                    <property name="tooltip-text" translatable="yes">Move to next result</property>
+                    <property name="tooltip-text" translatable="yes">Search up to next result</property>
+                    <property name="action-name">search.up</property>
                   </object>
                 </child>
                 <child>
                   <object class="GtkButton">
                     <property name="icon-name">go-down-symbolic</property>
-                    <property name="tooltip-text" translatable="yes">Move to previous result</property>
+                    <property name="tooltip-text" translatable="yes">Search down to next result</property>
+                    <property name="action-name">search.down</property>
                   </object>
                 </child>
               </object>
@@ -89,19 +91,20 @@
               <object class="GtkBox">
                 <property name="margin-top">6</property>
                 <child>
-                  <object class="GtkCheckButton">
+                  <object class="GtkCheckButton" id="match_case">
                     <property name="label" translatable="yes">Match _Case</property>
                     <property name="use-underline">true</property>
                   </object>
                 </child>
                 <child>
-                  <object class="GtkCheckButton">
+                  <object class="GtkCheckButton" id="whole_words">
                     <property name="label" translatable="yes">Whole _Words</property>
                     <property name="use-underline">true</property>
+                    <property name="sensitive" bind-source="use_regex" bind-property="active" bind-flags="sync-create|invert-boolean"/>
                   </object>
                 </child>
                 <child>
-                  <object class="GtkCheckButton">
+                  <object class="GtkCheckButton" id="use_regex">
                     <property name="label" translatable="yes">Use _Regular Expressions</property>
                     <property name="use-underline">true</property>
                   </object>
