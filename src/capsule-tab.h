@@ -69,5 +69,6 @@ void              capsule_tab_zoom_in                            (CapsuleTab    
 void              capsule_tab_zoom_out                           (CapsuleTab       *self);
 void              capsule_tab_raise                              (CapsuleTab       *self);
 gboolean          capsule_tab_is_running                         (CapsuleTab       *self);
+void              capsule_tab_force_quit                         (CapsuleTab       *self);
 
 G_END_DECLS

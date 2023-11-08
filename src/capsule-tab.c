@@ -55,6 +55,8 @@ struct _CapsuleTab
 
   CapsuleZoomLevel   zoom;
   CapsuleTabState    state;
+
+  guint              forced_exit : 1;
 };
 
 enum {
@@ -147,6 +149,9 @@ capsule_tab_wait_check_cb (GObject      *object,
     self->state = CAPSULE_TAB_STATE_EXITED;
   else
     self->state = CAPSULE_TAB_STATE_FAILED;
+
+  if (self->forced_exit)
+    return;
 
   if (g_subprocess_get_if_signaled (subprocess))
     {
@@ -937,4 +942,15 @@ capsule_tab_is_running (CapsuleTab *self)
     return FALSE;
 
   return pid != child_pid;
+}
+
+void
+capsule_tab_force_quit (CapsuleTab *self)
+{
+  g_return_if_fail (CAPSULE_IS_TAB (self));
+
+  self->forced_exit = TRUE;
+
+  if (self->subprocess != NULL)
+    g_subprocess_force_exit (self->subprocess);
 }

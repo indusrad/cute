@@ -42,5 +42,8 @@ CapsuleTab     *capsule_window_get_active_tab     (CapsuleWindow  *self);
 void            capsule_window_set_active_tab     (CapsuleWindow  *self,
                                                    CapsuleTab     *active_tab);
 void            capsule_window_visual_bell        (CapsuleWindow  *self);
+void            capsule_window_confirm_close      (CapsuleWindow  *self,
+                                                   CapsuleTab     *tab,
+                                                   gboolean        confirm);
 
 G_END_DECLS

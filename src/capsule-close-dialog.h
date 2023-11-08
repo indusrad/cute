@@ -1,7 +1,7 @@
 /*
  * capsule-close-dialog.h
  *
- * Copyright 2023 Christian Hergert <chergert@redhat.com>
+ * Copyright 2021-2023 Christian Hergert <chergert@redhat.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,22 +23,14 @@
 
 #include <adwaita.h>
 
-#include "capsule-tab.h"
-
 G_BEGIN_DECLS
 
-#define CAPSULE_TYPE_CLOSE_DIALOG (capsule_close_dialog_get_type())
-
-G_DECLARE_FINAL_TYPE (CapsuleCloseDialog, capsule_close_dialog, CAPSULE, CLOSE_DIALOG, AdwMessageDialog)
-
-CapsuleCloseDialog *capsule_close_dialog_new            (void);
-void                capsule_close_dialog_confirm        (CapsuleCloseDialog   *self,
-                                                         CapsuleTab           *tab,
-                                                         GCancellable         *cancellable,
-                                                         GAsyncReadyCallback   callback,
-                                                         gpointer              user_data);
-gboolean            capsule_close_dialog_confirm_finish (CapsuleCloseDialog   *self,
-                                                         GAsyncResult         *result,
-                                                         GError              **error);
+void     _capsule_close_dialog_run_async  (GtkWindow            *parent,
+                                           GPtrArray            *tabs,
+                                           GCancellable         *cancellable,
+                                           GAsyncReadyCallback   callback,
+                                           gpointer              user_data);
+gboolean _capsule_close_dialog_run_finish (GAsyncResult         *result,
+                                           GError              **error);
 
 G_END_DECLS

@@ -34,8 +34,6 @@ struct _CapsuleWindow
 {
   AdwApplicationWindow   parent_instance;
 
-  CapsuleCloseDialog    *close_dialog;
-
   CapsuleShortcuts      *shortcuts;
 
   CapsuleFindBar        *find_bar;
@@ -731,16 +729,56 @@ capsule_window_search_action (GtkWidget  *widget,
   gtk_widget_grab_focus (GTK_WIDGET (self->find_bar));
 }
 
+static void
+capsule_window_close_request_cb (GObject      *object,
+                                 GAsyncResult *result,
+                                 gpointer      user_data)
+{
+  g_autoptr(CapsuleWindow) self = user_data;
+  g_autoptr(GError) error = NULL;
+
+  g_assert (G_IS_ASYNC_RESULT (result));
+  g_assert (CAPSULE_IS_WINDOW (self));
+
+  if (!_capsule_close_dialog_run_finish (result, &error))
+    return;
+
+  gtk_window_destroy (GTK_WINDOW (self));
+}
+
 static gboolean
 capsule_window_close_request (GtkWindow *window)
 {
   CapsuleWindow *self = (CapsuleWindow *)window;
+  g_autoptr(GPtrArray) tabs = NULL;
+  guint n_pages;
 
   g_assert (CAPSULE_IS_WINDOW (self));
 
   capsule_window_save_size (self);
 
-  return FALSE;
+  tabs = g_ptr_array_new_with_free_func (g_object_unref);
+  n_pages = adw_tab_view_get_n_pages (self->tab_view);
+
+  for (guint i = 0; i < n_pages; i++)
+    {
+      AdwTabPage *page = adw_tab_view_get_nth_page (self->tab_view, i);
+      CapsuleTab *tab = CAPSULE_TAB (adw_tab_page_get_child (page));
+
+      if (capsule_tab_is_running (tab))
+        g_ptr_array_add (tabs, g_object_ref (tab));
+    }
+
+  if (tabs->len == 0)
+    return GDK_EVENT_PROPAGATE;
+
+  _capsule_close_dialog_run_async (GTK_WINDOW (self),
+                                   tabs,
+                                   NULL,
+                                   capsule_window_close_request_cb,
+                                   g_object_ref (self));
+
+  return GDK_EVENT_STOP;
 }
 
 static void
@@ -1115,4 +1153,18 @@ capsule_window_get_active_profile (CapsuleWindow *self)
     return capsule_tab_get_profile (active_tab);
 
   return NULL;
+}
+
+void
+capsule_window_confirm_close (CapsuleWindow *self,
+                              CapsuleTab    *tab,
+                              gboolean       confirm)
+{
+  AdwTabPage *page;
+
+  g_return_if_fail (CAPSULE_IS_WINDOW (self));
+  g_return_if_fail (CAPSULE_IS_TAB (tab));
+
+  page = adw_tab_view_get_page (self->tab_view, GTK_WIDGET (tab));
+  adw_tab_view_close_page_finish (self->tab_view, page, confirm);
 }
