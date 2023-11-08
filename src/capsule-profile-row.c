@@ -70,9 +70,19 @@ capsule_profile_row_remove (GtkWidget  *widget,
                             const char *action_name,
                             GVariant   *param)
 {
-  CapsuleProfileRow *self = CAPSULE_PROFILE_ROW (widget);
+  CapsuleProfileRow *self = (CapsuleProfileRow *)widget;
+  AdwPreferencesWindow *window;
+  AdwToast *toast;
+
+  g_assert (CAPSULE_IS_PROFILE_ROW (self));
+
+  window = ADW_PREFERENCES_WINDOW (gtk_widget_get_ancestor (widget, ADW_TYPE_PREFERENCES_WINDOW));
+  toast = adw_toast_new_format (_("Removed profile “%s”"),
+                                capsule_profile_dup_label (self->profile));
 
   capsule_application_remove_profile (CAPSULE_APPLICATION_DEFAULT, self->profile);
+
+  adw_preferences_window_add_toast (window, toast);
 }
 
 static void
