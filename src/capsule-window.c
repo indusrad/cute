@@ -66,6 +66,24 @@ enum {
 
 static GParamSpec *properties[N_PROPS];
 
+static void
+capsule_window_save_size (CapsuleWindow *self)
+{
+  CapsuleTab *active_tab;
+
+  g_assert (CAPSULE_IS_WINDOW (self));
+
+  if ((active_tab = capsule_window_get_active_tab (self)))
+    {
+      CapsuleSettings *settings = capsule_application_get_settings (CAPSULE_APPLICATION_DEFAULT);
+      CapsuleTerminal *terminal = capsule_tab_get_terminal (active_tab);
+      guint columns = vte_terminal_get_column_count (VTE_TERMINAL (terminal));
+      guint rows = vte_terminal_get_row_count (VTE_TERMINAL (terminal));
+
+      capsule_settings_set_window_size (settings, columns, rows);
+    }
+}
+
 static gboolean
 capsule_window_close_page_cb (CapsuleWindow *self,
                               AdwTabPage    *tab_page,
@@ -76,6 +94,8 @@ capsule_window_close_page_cb (CapsuleWindow *self,
   g_assert (CAPSULE_IS_WINDOW (self));
   g_assert (ADW_IS_TAB_PAGE (tab_page));
   g_assert (ADW_IS_TAB_VIEW (tab_view));
+
+  capsule_window_save_size (self);
 
   tab = CAPSULE_TAB (adw_tab_page_get_child (tab_page));
   if (!capsule_tab_is_running (tab))
@@ -711,6 +731,18 @@ capsule_window_search_action (GtkWidget  *widget,
   gtk_widget_grab_focus (GTK_WIDGET (self->find_bar));
 }
 
+static gboolean
+capsule_window_close_request (GtkWindow *window)
+{
+  CapsuleWindow *self = (CapsuleWindow *)window;
+
+  g_assert (CAPSULE_IS_WINDOW (self));
+
+  capsule_window_save_size (self);
+
+  return FALSE;
+}
+
 static void
 capsule_window_constructed (GObject *object)
 {
@@ -793,6 +825,7 @@ capsule_window_class_init (CapsuleWindowClass *klass)
 {
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
   GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
+  GtkWindowClass *window_class = GTK_WINDOW_CLASS (klass);
 
   object_class->constructed = capsule_window_constructed;
   object_class->dispose = capsule_window_dispose;
@@ -801,6 +834,8 @@ capsule_window_class_init (CapsuleWindowClass *klass)
   object_class->set_property = capsule_window_set_property;
 
   widget_class->realize = capsule_window_realize;
+
+  window_class->close_request = capsule_window_close_request;
 
   properties[PROP_ACTIVE_TAB] =
     g_param_spec_object ("active-tab", NULL, NULL,
@@ -901,10 +936,16 @@ CapsuleWindow *
 capsule_window_new_for_profile (CapsuleProfile *profile)
 {
   g_autoptr(CapsuleProfile) default_profile = NULL;
+  CapsuleSettings *settings;
+  CapsuleTerminal *terminal;
   CapsuleWindow *self;
   CapsuleTab *tab;
+  guint columns;
+  guint rows;
 
   g_return_val_if_fail (!profile || CAPSULE_IS_PROFILE (profile), NULL);
+
+  settings = capsule_application_get_settings (CAPSULE_APPLICATION_DEFAULT);
 
   if (profile == NULL)
     {
@@ -919,8 +960,12 @@ capsule_window_new_for_profile (CapsuleProfile *profile)
                        NULL);
 
   tab = capsule_tab_new (profile);
-
+  terminal = capsule_tab_get_terminal (tab);
+  capsule_settings_get_window_size (settings, &columns, &rows);
+  vte_terminal_set_size (VTE_TERMINAL (terminal), columns, rows);
   capsule_window_append_tab (self, tab);
+
+  gtk_window_set_default_size (GTK_WINDOW (self), -1, -1);
 
   return self;
 }

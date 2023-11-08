@@ -142,6 +142,10 @@
       <description>When text blinking is allowed</description>
     </key>
 
+    <key name="window-size" type="(uu)">
+      <default>(80,24)</default>
+    </key>
+
   </schema>
 
   <schema id=@APP_SCHEMA_PROFILE_ID@>

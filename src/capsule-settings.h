@@ -94,5 +94,11 @@ void                    capsule_settings_set_scrollbar_policy     (CapsuleSettin
 VteTextBlinkMode        capsule_settings_get_text_blink_mode      (CapsuleSettings            *self);
 void                    capsule_settings_set_text_blink_mode      (CapsuleSettings            *self,
                                                                    VteTextBlinkMode            text_blink_mode);
+void                    capsule_settings_get_window_size          (CapsuleSettings            *self,
+                                                                   guint                      *columns,
+                                                                   guint                      *rows);
+void                    capsule_settings_set_window_size          (CapsuleSettings            *self,
+                                                                   guint                       columns,
+                                                                   guint                       rows);
 
 G_END_DECLS

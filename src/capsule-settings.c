@@ -654,3 +654,25 @@ capsule_settings_set_text_blink_mode (CapsuleSettings  *self,
                        CAPSULE_SETTING_KEY_TEXT_BLINK_MODE,
                        text_blink_mode);
 }
+
+void
+capsule_settings_get_window_size (CapsuleSettings *self,
+                                  guint           *columns,
+                                  guint           *rows)
+{
+  g_return_if_fail (CAPSULE_IS_SETTINGS (self));
+  g_return_if_fail (columns != NULL);
+  g_return_if_fail (rows != NULL);
+
+  g_settings_get (self->settings, "window-size", "(uu)", columns, rows);
+}
+
+void
+capsule_settings_set_window_size (CapsuleSettings *self,
+                                  guint            columns,
+                                  guint            rows)
+{
+  g_return_if_fail (CAPSULE_IS_SETTINGS (self));
+
+  g_settings_set (self->settings, "window-size", "(uu)", columns, rows);
+}
