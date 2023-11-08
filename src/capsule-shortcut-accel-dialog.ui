@@ -79,7 +79,7 @@
                     </child>
                     <child>
                       <object class="GtkImage">
-                        <property name="resource">/org/gnome/libide-gtk/icons/enter-keyboard-shortcut.svg</property>
+                        <property name="resource">/org/gnome/Capsule/icons/enter-keyboard-shortcut.svg</property>
                         <property name="hexpand">true</property>
                         <property name="vexpand">true</property>
                       </object>

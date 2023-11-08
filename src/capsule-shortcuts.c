@@ -298,7 +298,10 @@ capsule_shortcuts_update_menu (CapsuleShortcuts *self,
   guint n_items;
 
   g_return_if_fail (CAPSULE_IS_SHORTCUTS (self));
-  g_return_if_fail (G_IS_MENU (menu));
+  g_return_if_fail (!menu || G_IS_MENU (menu));
+
+  if (menu == NULL)
+    return;
 
   klass = G_OBJECT_GET_CLASS (self);
   n_items = g_menu_model_get_n_items (G_MENU_MODEL (menu));
@@ -313,7 +316,7 @@ capsule_shortcuts_update_menu (CapsuleShortcuts *self,
       if ((section = g_menu_model_get_item_link (G_MENU_MODEL (menu), i, G_MENU_LINK_SECTION)) && G_IS_MENU (section))
         capsule_shortcuts_update_menu (self, G_MENU (section));
 
-      if ((submenu = g_menu_model_get_item_link (G_MENU_MODEL (menu), i, G_MENU_LINK_SUBMENU)) && G_IS_MENU (section))
+      if ((submenu = g_menu_model_get_item_link (G_MENU_MODEL (menu), i, G_MENU_LINK_SUBMENU)) && G_IS_MENU (submenu))
         capsule_shortcuts_update_menu (self, G_MENU (submenu));
 
       if (!g_menu_model_get_item_attribute (G_MENU_MODEL (menu), i, "id", "s", &id))

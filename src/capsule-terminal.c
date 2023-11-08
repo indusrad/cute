@@ -864,6 +864,17 @@ capsule_terminal_snapshot (GtkWidget   *widget,
 }
 
 static void
+capsule_terminal_shortcuts_notify_cb (CapsuleTerminal  *self,
+                                      GParamSpec       *pspec,
+                                      CapsuleShortcuts *shortcuts)
+{
+  g_assert (CAPSULE_IS_TERMINAL (self));
+  g_assert (CAPSULE_IS_SHORTCUTS (shortcuts));
+
+  capsule_shortcuts_update_menu (shortcuts, self->terminal_menu);
+}
+
+static void
 capsule_terminal_dispose (GObject *object)
 {
   CapsuleTerminal *self = (CapsuleTerminal *)object;
@@ -1019,10 +1030,10 @@ capsule_terminal_init (CapsuleTerminal *self)
 
   g_signal_connect_object (shortcuts,
                            "notify",
-                           G_CALLBACK (capsule_shortcuts_update_menu),
-                           self->terminal_menu,
-                           0);
-  capsule_shortcuts_update_menu (shortcuts, self->terminal_menu);
+                           G_CALLBACK (capsule_terminal_shortcuts_notify_cb),
+                           self,
+                           G_CONNECT_SWAPPED);
+  capsule_terminal_shortcuts_notify_cb (self, NULL, shortcuts);
 
   for (guint i = 0; i < G_N_ELEMENTS (builtin_dingus_regex); i++)
     {

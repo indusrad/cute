@@ -21,6 +21,8 @@
   <requires lib="gtk" version="4.0"/>
   <requires lib="Adw" version="1.0"/>
   <template class="CapsuleShortcutRow" parent="AdwActionRow">
+    <property name="activatable">true</property>
+    <property name="action-name">shortcut.select</property>
     <child type="suffix">
       <object class="GtkLabel" id="label">
       </object>

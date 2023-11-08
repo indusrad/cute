@@ -23,6 +23,7 @@
 
 #include <glib/gi18n.h>
 
+#include "capsule-shortcut-accel-dialog.h"
 #include "capsule-shortcut-row.h"
 
 struct _CapsuleShortcutRow
@@ -43,6 +44,43 @@ enum {
 G_DEFINE_FINAL_TYPE (CapsuleShortcutRow, capsule_shortcut_row, ADW_TYPE_ACTION_ROW)
 
 static GParamSpec *properties [N_PROPS];
+
+static void
+capsule_shortcut_row_dialog_shortcut_set_cb (CapsuleShortcutRow         *self,
+                                             const char                 *accelerator,
+                                             CapsuleShortcutAccelDialog *dialog)
+{
+  g_assert (CAPSULE_IS_SHORTCUT_ROW (self));
+  g_assert (CAPSULE_IS_SHORTCUT_ACCEL_DIALOG (dialog));
+
+  capsule_shortcut_row_set_accelerator (self, accelerator ? accelerator : "");
+}
+
+static void
+capsule_shortcut_row_select_shortcut (GtkWidget  *widget,
+                                      const char *action,
+                                      GVariant   *param)
+{
+  CapsuleShortcutRow *self = (CapsuleShortcutRow *)widget;
+  CapsuleShortcutAccelDialog *dialog;
+  const char *title;
+
+  g_assert (CAPSULE_IS_SHORTCUT_ROW (self));
+
+  title = adw_preferences_row_get_title (ADW_PREFERENCES_ROW (self));
+  dialog = g_object_new (CAPSULE_TYPE_SHORTCUT_ACCEL_DIALOG,
+                         "accelerator", self->accelerator,
+                         "shortcut-title", title,
+                         "title", _("Set Shortcut"),
+                         "transient-for", gtk_widget_get_root (widget),
+                         NULL);
+  g_signal_connect_object (dialog,
+                           "shortcut-set",
+                           G_CALLBACK (capsule_shortcut_row_dialog_shortcut_set_cb),
+                           self,
+                           G_CONNECT_SWAPPED);
+  gtk_window_present (GTK_WINDOW (dialog));
+}
 
 static void
 capsule_shortcut_row_dispose (GObject *object)
@@ -114,8 +152,8 @@ capsule_shortcut_row_class_init (CapsuleShortcutRowClass *klass)
   g_object_class_install_properties (object_class, N_PROPS, properties);
 
   gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/Capsule/capsule-shortcut-row.ui");
-
   gtk_widget_class_bind_template_child (widget_class, CapsuleShortcutRow, label);
+  gtk_widget_class_install_action (widget_class, "shortcut.select", NULL, capsule_shortcut_row_select_shortcut);
 }
 
 static void

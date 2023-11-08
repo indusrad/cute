@@ -647,6 +647,18 @@ capsule_window_realize (GtkWidget *widget)
 }
 
 static void
+capsule_window_shortcuts_notify_cb (CapsuleWindow    *self,
+                                    GParamSpec       *pspec,
+                                    CapsuleShortcuts *shortcuts)
+{
+  g_assert (CAPSULE_IS_WINDOW (self));
+  g_assert (CAPSULE_IS_SHORTCUTS (shortcuts));
+
+  capsule_shortcuts_update_menu (shortcuts, self->primary_menu);
+  capsule_shortcuts_update_menu (shortcuts, self->tab_menu);
+}
+
+static void
 capsule_window_constructed (GObject *object)
 {
   CapsuleWindow *self = (CapsuleWindow *)object;
@@ -812,16 +824,10 @@ capsule_window_init (CapsuleWindow *self)
 
   g_signal_connect_object (self->shortcuts,
                            "notify",
-                           G_CALLBACK (capsule_shortcuts_update_menu),
-                           self->primary_menu,
-                           0);
-  g_signal_connect_object (self->shortcuts,
-                           "notify",
-                           G_CALLBACK (capsule_shortcuts_update_menu),
-                           self->tab_menu,
-                           0);
-  capsule_shortcuts_update_menu (self->shortcuts, self->primary_menu);
-  capsule_shortcuts_update_menu (self->shortcuts, self->tab_menu);
+                           G_CALLBACK (capsule_window_shortcuts_notify_cb),
+                           self,
+                           G_CONNECT_SWAPPED);
+  capsule_window_shortcuts_notify_cb (self, NULL, self->shortcuts);
 
   adw_tab_view_set_shortcuts (self->tab_view, 0);
 }

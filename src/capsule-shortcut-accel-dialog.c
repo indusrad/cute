@@ -32,6 +32,7 @@ struct _CapsuleShortcutAccelDialog
 {
   AdwWindow             parent_instance;
 
+  GtkButton            *accept_button;
   GtkStack             *stack;
   GtkLabel             *display_label;
   GtkShortcutLabel     *display_shortcut;
@@ -100,10 +101,10 @@ sanitize_modifier_mask (GdkModifierType mods)
 
 static gboolean
 capsule_shortcut_accel_dialog_key_pressed (GtkWidget             *widget,
-                                       guint                  keyval,
-                                       guint                  keycode,
-                                       GdkModifierType        state,
-                                       GtkEventControllerKey *controller)
+                                           guint                  keyval,
+                                           guint                  keycode,
+                                           GdkModifierType        state,
+                                           GtkEventControllerKey *controller)
 {
   CapsuleShortcutAccelDialog *self = (CapsuleShortcutAccelDialog *)widget;
 
@@ -174,6 +175,8 @@ capsule_shortcut_accel_dialog_key_pressed (GtkWidget             *widget,
 
       g_object_notify_by_pspec (G_OBJECT (self), properties [PROP_ACCELERATOR]);
 
+      gtk_widget_grab_focus (GTK_WIDGET (self->accept_button));
+
       return GDK_EVENT_STOP;
     }
 
@@ -182,10 +185,10 @@ capsule_shortcut_accel_dialog_key_pressed (GtkWidget             *widget,
 
 static void
 capsule_shortcut_accel_dialog_key_released (GtkWidget             *widget,
-                                        guint                  keyval,
-                                        guint                  keycode,
-                                        GdkModifierType        state,
-                                        GtkEventControllerKey *controller)
+                                            guint                  keyval,
+                                            guint                  keycode,
+                                            GdkModifierType        state,
+                                            GtkEventControllerKey *controller)
 {
   CapsuleShortcutAccelDialog *self = (CapsuleShortcutAccelDialog *)widget;
 
@@ -255,9 +258,9 @@ capsule_shortcut_accel_dialog_finalize (GObject *object)
 
 static void
 capsule_shortcut_accel_dialog_get_property (GObject    *object,
-                                        guint       prop_id,
-                                        GValue     *value,
-                                        GParamSpec *pspec)
+                                            guint       prop_id,
+                                            GValue     *value,
+                                            GParamSpec *pspec)
 {
   CapsuleShortcutAccelDialog *self = CAPSULE_SHORTCUT_ACCEL_DIALOG (object);
 
@@ -278,9 +281,9 @@ capsule_shortcut_accel_dialog_get_property (GObject    *object,
 
 static void
 capsule_shortcut_accel_dialog_set_property (GObject      *object,
-                                        guint         prop_id,
-                                        const GValue *value,
-                                        GParamSpec   *pspec)
+                                            guint         prop_id,
+                                            const GValue *value,
+                                            GParamSpec   *pspec)
 {
   CapsuleShortcutAccelDialog *self = CAPSULE_SHORTCUT_ACCEL_DIALOG (object);
 
@@ -336,12 +339,13 @@ capsule_shortcut_accel_dialog_class_init (CapsuleShortcutAccelDialogClass *klass
 
   g_object_class_install_properties (object_class, N_PROPS, properties);
 
-  gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/libide-gtk/capsule-shortcut-accel-dialog.ui");
+  gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/Capsule/capsule-shortcut-accel-dialog.ui");
 
-  gtk_widget_class_bind_template_child (widget_class, CapsuleShortcutAccelDialog, stack);
-  gtk_widget_class_bind_template_child (widget_class, CapsuleShortcutAccelDialog, selection_label);
+  gtk_widget_class_bind_template_child (widget_class, CapsuleShortcutAccelDialog, accept_button);
   gtk_widget_class_bind_template_child (widget_class, CapsuleShortcutAccelDialog, display_label);
   gtk_widget_class_bind_template_child (widget_class, CapsuleShortcutAccelDialog, display_shortcut);
+  gtk_widget_class_bind_template_child (widget_class, CapsuleShortcutAccelDialog, selection_label);
+  gtk_widget_class_bind_template_child (widget_class, CapsuleShortcutAccelDialog, stack);
   gtk_widget_class_bind_template_callback (widget_class, capsule_shortcut_accel_dialog_key_pressed);
   gtk_widget_class_bind_template_callback (widget_class, capsule_shortcut_accel_dialog_key_released);
 
