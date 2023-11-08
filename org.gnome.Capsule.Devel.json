@@ -29,22 +29,6 @@
     ],
     "modules" : [
         {
-            "name" : "libpeas",
-            "buildsystem" : "meson",
-            "config-opts" : [
-                "-Dlua51=false",
-                "-Dpython3=false",
-                "-Dgjs=false"
-            ],
-            "sources" : [
-                {
-                    "type" : "git",
-                    "url" : "https://gitlab.gnome.org/GNOME/libpeas.git",
-                    "branch" : "main"
-                }
-            ]
-        },
-        {
             "name" : "vte",
             "buildsystem" : "meson",
             "config-opts" : [
