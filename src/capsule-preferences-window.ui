@@ -516,18 +516,13 @@
         <child>
           <object class="AdwPreferencesGroup">
             <child>
-              <object class="CapsuleShortcutRow" id="shortcut_zoom_in">
-                <property name="title" translatable="yes">Zoom In</property>
+              <object class="CapsuleShortcutRow" id="shortcut_reset">
+                <property name="title" translatable="yes">Reset</property>
               </object>
             </child>
             <child>
-              <object class="CapsuleShortcutRow" id="shortcut_zoom_out">
-                <property name="title" translatable="yes">Zoom Out</property>
-              </object>
-            </child>
-            <child>
-              <object class="CapsuleShortcutRow" id="shortcut_zoom_one">
-                <property name="title" translatable="yes">Reset Zoom</property>
+              <object class="CapsuleShortcutRow" id="shortcut_reset_and_clear">
+                <property name="title" translatable="yes">Reset and Clear</property>
               </object>
             </child>
           </object>
@@ -546,20 +541,6 @@
             <child>
               <object class="CapsuleShortcutRow" id="shortcut_popup_menu">
                 <property name="title" translatable="yes">Show Context Menu</property>
-              </object>
-            </child>
-          </object>
-        </child>
-        <child>
-          <object class="AdwPreferencesGroup">
-            <child>
-              <object class="CapsuleShortcutRow" id="shortcut_reset">
-                <property name="title" translatable="yes">Reset</property>
-              </object>
-            </child>
-            <child>
-              <object class="CapsuleShortcutRow" id="shortcut_reset_and_clear">
-                <property name="title" translatable="yes">Reset and Clear</property>
               </object>
             </child>
           </object>
@@ -647,52 +628,72 @@
           <object class="AdwPreferencesGroup">
             <child>
               <object class="CapsuleShortcutRow" id="shortcut_focus_tab_1">
-                <property name="title" translatable="yes">Focus Tab 1</property>
+                <property name="title" translatable="yes">Switch to Tab 1</property>
               </object>
             </child>
             <child>
               <object class="CapsuleShortcutRow" id="shortcut_focus_tab_2">
-                <property name="title" translatable="yes">Focus Tab 2</property>
+                <property name="title" translatable="yes">Switch to Tab 2</property>
               </object>
             </child>
             <child>
               <object class="CapsuleShortcutRow" id="shortcut_focus_tab_3">
-                <property name="title" translatable="yes">Focus Tab 3</property>
+                <property name="title" translatable="yes">Switch to Tab 3</property>
               </object>
             </child>
             <child>
               <object class="CapsuleShortcutRow" id="shortcut_focus_tab_4">
-                <property name="title" translatable="yes">Focus Tab 4</property>
+                <property name="title" translatable="yes">Switch to Tab 4</property>
               </object>
             </child>
             <child>
               <object class="CapsuleShortcutRow" id="shortcut_focus_tab_5">
-                <property name="title" translatable="yes">Focus Tab 5</property>
+                <property name="title" translatable="yes">Switch to Tab 5</property>
               </object>
             </child>
             <child>
               <object class="CapsuleShortcutRow" id="shortcut_focus_tab_6">
-                <property name="title" translatable="yes">Focus Tab 6</property>
+                <property name="title" translatable="yes">Switch to Tab 6</property>
               </object>
             </child>
             <child>
               <object class="CapsuleShortcutRow" id="shortcut_focus_tab_7">
-                <property name="title" translatable="yes">Focus Tab 7</property>
+                <property name="title" translatable="yes">Switch to Tab 7</property>
               </object>
             </child>
             <child>
               <object class="CapsuleShortcutRow" id="shortcut_focus_tab_8">
-                <property name="title" translatable="yes">Focus Tab 8</property>
+                <property name="title" translatable="yes">Switch to Tab 8</property>
               </object>
             </child>
             <child>
               <object class="CapsuleShortcutRow" id="shortcut_focus_tab_9">
-                <property name="title" translatable="yes">Focus Tab 9</property>
+                <property name="title" translatable="yes">Switch to Tab 9</property>
               </object>
             </child>
             <child>
               <object class="CapsuleShortcutRow" id="shortcut_focus_tab_10">
-                <property name="title" translatable="yes">Focus Tab 10</property>
+                <property name="title" translatable="yes">Switch to Tab 10</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title" translatable="yes">Zoom</property>
+            <child>
+              <object class="CapsuleShortcutRow" id="shortcut_zoom_in">
+                <property name="title" translatable="yes">Zoom In</property>
+              </object>
+            </child>
+            <child>
+              <object class="CapsuleShortcutRow" id="shortcut_zoom_out">
+                <property name="title" translatable="yes">Zoom Out</property>
+              </object>
+            </child>
+            <child>
+              <object class="CapsuleShortcutRow" id="shortcut_zoom_one">
+                <property name="title" translatable="yes">Reset Zoom</property>
               </object>
             </child>
           </object>
@@ -703,6 +704,7 @@
             <child>
               <object class="CapsuleShortcutRow" id="shortcut_toggle_fullscreen">
                 <property name="title" translatable="yes">Toggle Fullscreen</property>
+                <property name="subtitle" translatable="yes">Toggle in and out of fullscreen</property>
               </object>
             </child>
           </object>
@@ -712,6 +714,7 @@
             <child>
               <object class="CapsuleShortcutRow" id="shortcut_preferences">
                 <property name="title" translatable="yes">Preferences</property>
+                <property name="subtitle" translatable="yes">Show this preferences window</property>
               </object>
             </child>
           </object>
