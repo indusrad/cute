@@ -67,20 +67,18 @@ capsule_close_dialog_response (GtkMessageDialog *dialog,
                                const char       *response,
                                GArray           *requests)
 {
+  GTask *task;
   g_assert (ADW_IS_MESSAGE_DIALOG (dialog));
+
+  task = g_object_get_data (G_OBJECT (dialog), "G_TASK");
 
   if (!g_strcmp0 (response, "discard"))
     {
-      CapsuleWindow *window = CAPSULE_WINDOW (gtk_window_get_transient_for (GTK_WINDOW (dialog)));
-
       capsule_close_dialog_confirm (dialog, requests, TRUE);
-      gtk_window_destroy (GTK_WINDOW (window));
+      g_task_return_boolean (task, TRUE);
     }
   else
     {
-      GTask *task;
-
-      task = g_object_get_data (G_OBJECT (dialog), "G_TASK");
       g_task_return_new_error (task,
                                G_IO_ERROR,
                                G_IO_ERROR_CANCELLED,
@@ -103,6 +101,9 @@ _capsule_close_dialog_new (GtkWindow *parent,
   g_return_val_if_fail (tabs != NULL, NULL);
   g_return_val_if_fail (tabs->len > 0, NULL);
   g_return_val_if_fail (CAPSULE_IS_TAB (g_ptr_array_index (tabs, 0)), NULL);
+
+  if (tabs->len == 1)
+    capsule_tab_raise (g_ptr_array_index (tabs, 0));
 
   requests = g_array_new (FALSE, FALSE, sizeof (SaveRequest));
   g_array_set_clear_func (requests, save_request_clear);

@@ -82,11 +82,34 @@ capsule_window_save_size (CapsuleWindow *self)
     }
 }
 
+static void
+capsule_window_close_page_dialog_cb (GObject      *object,
+                                     GAsyncResult *result,
+                                     gpointer      user_data)
+{
+  g_autoptr(CapsuleTab) tab = user_data;
+  g_autoptr(GError) error = NULL;
+  CapsuleWindow *self;
+  AdwTabPage *page;
+
+  g_assert (G_IS_ASYNC_RESULT (result));
+  g_assert (CAPSULE_IS_TAB (tab));
+
+  self = CAPSULE_WINDOW (gtk_widget_get_ancestor (GTK_WIDGET (tab), CAPSULE_TYPE_WINDOW));
+  page = adw_tab_view_get_page (self->tab_view, GTK_WIDGET (tab));
+
+  if (!_capsule_close_dialog_run_finish (result, &error))
+    adw_tab_view_close_page_finish (self->tab_view, page, FALSE);
+  else
+    adw_tab_view_close_page_finish (self->tab_view, page, TRUE);
+}
+
 static gboolean
 capsule_window_close_page_cb (CapsuleWindow *self,
                               AdwTabPage    *tab_page,
                               AdwTabView    *tab_view)
 {
+  g_autoptr(GPtrArray) tabs = NULL;
   CapsuleTab *tab;
 
   g_assert (CAPSULE_IS_WINDOW (self));
@@ -99,7 +122,14 @@ capsule_window_close_page_cb (CapsuleWindow *self,
   if (!capsule_tab_is_running (tab))
     return GDK_EVENT_PROPAGATE;
 
-  /* TODO: Setup dialog to confirm close */
+  tabs = g_ptr_array_new_with_free_func (g_object_unref);
+  g_ptr_array_add (tabs, g_object_ref (tab));
+
+  _capsule_close_dialog_run_async (GTK_WINDOW (self),
+                                   tabs,
+                                   NULL,
+                                   capsule_window_close_page_dialog_cb,
+                                   g_object_ref (tab));
 
   return GDK_EVENT_STOP;
 }
@@ -1153,18 +1183,4 @@ capsule_window_get_active_profile (CapsuleWindow *self)
     return capsule_tab_get_profile (active_tab);
 
   return NULL;
-}
-
-void
-capsule_window_confirm_close (CapsuleWindow *self,
-                              CapsuleTab    *tab,
-                              gboolean       confirm)
-{
-  AdwTabPage *page;
-
-  g_return_if_fail (CAPSULE_IS_WINDOW (self));
-  g_return_if_fail (CAPSULE_IS_TAB (tab));
-
-  page = adw_tab_view_get_page (self->tab_view, GTK_WIDGET (tab));
-  adw_tab_view_close_page_finish (self->tab_view, page, confirm);
 }
