@@ -115,6 +115,9 @@ capsule_window_dressing_update (CapsuleWindowDressing *self)
       g_string_append_printf (string,
                               "window.%s toolbarview.overview { background: alpha(currentColor, .05); }\n",
                               self->css_class);
+      g_string_append_printf (string,
+                              "window.%s revealer.raised.top-bar { background: transparent; }\n",
+                              self->css_class);
 
       if (rgba_is_dark (bg_rgba))
         g_string_append_printf (string,
