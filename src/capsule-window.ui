@@ -386,6 +386,8 @@
             <child type="bottom">
               <object class="GtkRevealer" id="find_bar_revealer">
                 <property name="reveal-child">false</property>
+                <!-- Disable for now because VteTerminal wont gracefully resize -->
+                <property name="transition-duration">0</property>
                 <child>
                   <object class="CapsuleFindBar" id="find_bar">
                   </object>
