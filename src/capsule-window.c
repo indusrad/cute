@@ -20,9 +20,12 @@
 
 #include "config.h"
 
+#include <glib/gi18n.h>
+
 #include "capsule-application.h"
 #include "capsule-close-dialog.h"
 #include "capsule-settings.h"
+#include "capsule-title-dialog.h"
 #include "capsule-window.h"
 #include "capsule-window-dressing.h"
 
@@ -659,6 +662,31 @@ capsule_window_shortcuts_notify_cb (CapsuleWindow    *self,
 }
 
 static void
+capsule_window_set_title_action (GtkWidget  *widget,
+                                 const char *action_name,
+                                 GVariant   *param)
+{
+  CapsuleWindow *self = (CapsuleWindow *)widget;
+  AdwMessageDialog *dialog;
+  CapsuleTab *active_tab;
+
+  g_assert (CAPSULE_IS_WINDOW (self));
+
+  if (!(active_tab = capsule_window_get_active_tab (self)))
+    return;
+
+  dialog = g_object_new (CAPSULE_TYPE_TITLE_DIALOG,
+                         "modal", TRUE,
+                         "resizable", FALSE,
+                         "tab", active_tab,
+                         "title", _("Set Title"),
+                         "transient-for", self,
+                         NULL);
+
+  gtk_window_present (GTK_WINDOW (dialog));
+}
+
+static void
 capsule_window_constructed (GObject *object)
 {
   CapsuleWindow *self = (CapsuleWindow *)object;
@@ -801,6 +829,7 @@ capsule_window_class_init (CapsuleWindowClass *klass)
   gtk_widget_class_install_action (widget_class, "tab.focus", "i", capsule_window_tab_focus_action);
   gtk_widget_class_install_action (widget_class, "page.next", NULL, capsule_window_page_next_action);
   gtk_widget_class_install_action (widget_class, "page.previous", NULL, capsule_window_page_previous_action);
+  gtk_widget_class_install_action (widget_class, "win.set-title", NULL, capsule_window_set_title_action);
 }
 
 static void

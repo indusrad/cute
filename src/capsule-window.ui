@@ -468,6 +468,12 @@
     </section>
     <section>
       <item>
+        <attribute name="label" translatable="yes">Set Title</attribute>
+        <attribute name="action">win.set-title</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
         <attribute name="id">reset</attribute>
         <attribute name="label" translatable="yes">Reset</attribute>
         <attribute name="action">tab.reset</attribute>
