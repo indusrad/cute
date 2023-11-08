@@ -66,6 +66,16 @@ capsule_profile_row_edit (GtkWidget  *widget,
 }
 
 static void
+capsule_profile_row_undo_clicked_cb (AdwToast       *toast,
+                                     CapsuleProfile *profile)
+{
+  g_assert (ADW_IS_TOAST (toast));
+  g_assert (CAPSULE_IS_PROFILE (profile));
+
+  capsule_application_add_profile (CAPSULE_APPLICATION_DEFAULT, profile);
+}
+
+static void
 capsule_profile_row_remove (GtkWidget  *widget,
                             const char *action_name,
                             GVariant   *param)
@@ -79,6 +89,13 @@ capsule_profile_row_remove (GtkWidget  *widget,
   window = ADW_PREFERENCES_WINDOW (gtk_widget_get_ancestor (widget, ADW_TYPE_PREFERENCES_WINDOW));
   toast = adw_toast_new_format (_("Removed profile “%s”"),
                                 capsule_profile_dup_label (self->profile));
+  adw_toast_set_button_label (toast, _("Undo"));
+  g_signal_connect_data (toast,
+                         "button-clicked",
+                         G_CALLBACK (capsule_profile_row_undo_clicked_cb),
+                         g_object_ref (self->profile),
+                         (GClosureNotify)g_object_unref,
+                         0);
 
   capsule_application_remove_profile (CAPSULE_APPLICATION_DEFAULT, self->profile);
 
