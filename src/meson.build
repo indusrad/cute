@@ -62,6 +62,7 @@ capsule_deps = [
   dependency('libpeas-2', version: '>= 2.0'),
   dependency('json-glib-1.0', version: '>= 1.6'),
   dependency('vte-2.91-gtk4'),
+  cc.find_library('m', required: false),
 ]
 
 capsule_c_args = [
