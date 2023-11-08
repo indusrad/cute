@@ -100,7 +100,6 @@
                   <object class="GtkCheckButton" id="whole_words">
                     <property name="label" translatable="yes">Whole _Words</property>
                     <property name="use-underline">true</property>
-                    <property name="sensitive" bind-source="use_regex" bind-property="active" bind-flags="sync-create|invert-boolean"/>
                   </object>
                 </child>
                 <child>

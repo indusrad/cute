@@ -73,6 +73,8 @@ static char *
 capsule_find_bar_get_search (CapsuleFindBar *self,
                              guint          *flags)
 {
+  g_autofree char *escaped = NULL;
+  g_autofree char *boundaries = NULL;
   const char *text;
 
   g_assert (CAPSULE_IS_FIND_BAR (self));
@@ -86,7 +88,10 @@ capsule_find_bar_get_search (CapsuleFindBar *self,
     *flags |= VTE_PCRE2_CASELESS;
 
   if (!gtk_check_button_get_active (GTK_CHECK_BUTTON (self->use_regex)))
-    return g_regex_escape_string (text, -1);
+    text = escaped = g_regex_escape_string (text, -1);
+
+  if (gtk_check_button_get_active (GTK_CHECK_BUTTON (self->whole_words)))
+    text = boundaries = g_strdup_printf ("\\b%s\\b", text);
 
   return g_strdup (text);
 }
