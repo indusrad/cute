@@ -105,6 +105,19 @@ static double zoom_font_scales[] = {
   1.0 * 1.2 * 1.2 * 1.2 * 1.2 * 1.2 * 1.2 * 1,2,
 };
 
+static gboolean
+capsule_tab_is_active (CapsuleTab *self)
+{
+  GtkWidget *window;
+
+  g_assert (CAPSULE_IS_TAB (self));
+
+  if ((window = gtk_widget_get_ancestor (GTK_WIDGET (self), CAPSULE_TYPE_WINDOW)))
+    return capsule_window_get_active_tab (CAPSULE_WINDOW (window)) == self;
+
+  return FALSE;
+}
+
 static void
 capsule_tab_update_scrollback_lines (CapsuleTab *self)
 {
@@ -479,11 +492,27 @@ capsule_tab_notify_process_leader_kind_cb (CapsuleTab        *self,
                                            GParamSpec        *pspec,
                                            CapsuleTabMonitor *monitor)
 {
+  CapsuleProcessLeaderKind kind;
+
   g_assert (CAPSULE_IS_TAB (self));
   g_assert (CAPSULE_IS_TAB_MONITOR (monitor));
 
   g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_ICON]);
   g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_PROCESS_LEADER_KIND]);
+
+  /* If the process leader is superuser and our tab is not currently
+   * the active tab, then let the user know by setting the attention
+   * bit on the AdwTabPage.
+   */
+  kind = capsule_tab_monitor_get_process_leader_kind (monitor);
+  if (kind == CAPSULE_PROCESS_LEADER_KIND_SUPERUSER &&
+      !capsule_tab_is_active (self))
+    {
+      GtkWidget *tab_view = gtk_widget_get_ancestor (GTK_WIDGET (self), ADW_TYPE_TAB_VIEW);
+      AdwTabPage *page = adw_tab_view_get_page (ADW_TAB_VIEW (tab_view), GTK_WIDGET (self));
+
+      adw_tab_page_set_needs_attention (page, TRUE);
+    }
 }
 
 static GIcon *

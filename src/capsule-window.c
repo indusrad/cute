@@ -283,6 +283,8 @@ capsule_window_notify_selected_page_cb (CapsuleWindow *self,
 
       read_only = g_property_action_new ("tab.read-only", tab, "read-only");
 
+      adw_tab_page_set_needs_attention (page, FALSE);
+
       gtk_widget_grab_focus (GTK_WIDGET (tab));
     }
 
