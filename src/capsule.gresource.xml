@@ -12,6 +12,8 @@
     <file preprocess="xml-stripblanks">capsule-title-dialog.ui</file>
     <file preprocess="xml-stripblanks">capsule-window.ui</file>
     <file preprocess="xml-stripblanks">icons/enter-keyboard-shortcut.svg</file>
+    <file preprocess="xml-stripblanks">icons/scalable/actions/process-container-symbolic.svg</file>
+    <file preprocess="xml-stripblanks">icons/scalable/actions/process-remote-symbolic.svg</file>
     <file preprocess="xml-stripblanks">icons/scalable/actions/process-superuser-symbolic.svg</file>
     <file>style.css</file>
   </gresource>

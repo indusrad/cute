@@ -21,6 +21,7 @@
 #include "config.h"
 
 #include <errno.h>
+#include <fcntl.h>
 #include <sys/stat.h>
 #include <unistd.h>
 
@@ -43,6 +44,7 @@ enum {
 G_DEFINE_TYPE_WITH_PRIVATE (CapsuleProcess, capsule_process, G_TYPE_OBJECT)
 
 static GParamSpec *properties [N_PROPS];
+static GHashTable *exec_to_kind;
 
 static CapsuleProcessLeaderKind
 capsule_process_real_get_leader_kind (CapsuleProcess *self)
@@ -57,12 +59,27 @@ capsule_process_real_get_leader_kind (CapsuleProcess *self)
       if (pid > 0)
         {
           g_autofree char *path = g_strdup_printf ("/proc/%d/", pid);
+          g_autofree char *exe = g_strdup_printf ("/proc/%d/exe", pid);
+          char execpath[512];
+          gssize len;
           struct stat st;
 
           if (stat (path, &st) == 0)
             {
               if (st.st_uid == 0)
                 return CAPSULE_PROCESS_LEADER_KIND_SUPERUSER;
+            }
+
+          len = readlink (exe, execpath, sizeof execpath-1);
+
+          if (len > 0)
+            {
+              const char *end;
+
+              execpath[len] = 0;
+
+              if ((end = strrchr (execpath, '/')))
+                return GPOINTER_TO_UINT (g_hash_table_lookup (exec_to_kind, end+1));
             }
         }
     }
@@ -339,6 +356,19 @@ capsule_process_class_init (CapsuleProcessClass *klass)
                           G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_properties (object_class, N_PROPS, properties);
+
+  exec_to_kind = g_hash_table_new (g_str_hash, g_str_equal);
+#define ADD_MAPPING(name, kind) \
+    g_hash_table_insert (exec_to_kind, (char *)name, GUINT_TO_POINTER(kind))
+  ADD_MAPPING ("ssh", CAPSULE_PROCESS_LEADER_KIND_REMOTE);
+  ADD_MAPPING ("scp", CAPSULE_PROCESS_LEADER_KIND_REMOTE);
+  ADD_MAPPING ("sftp", CAPSULE_PROCESS_LEADER_KIND_REMOTE);
+  ADD_MAPPING ("telnet", CAPSULE_PROCESS_LEADER_KIND_REMOTE);
+  ADD_MAPPING ("toolbox", CAPSULE_PROCESS_LEADER_KIND_CONTAINER);
+  ADD_MAPPING ("flatpak", CAPSULE_PROCESS_LEADER_KIND_CONTAINER);
+  ADD_MAPPING ("podman", CAPSULE_PROCESS_LEADER_KIND_CONTAINER);
+  ADD_MAPPING ("docker", CAPSULE_PROCESS_LEADER_KIND_CONTAINER);
+#undef ADD_MAPPING
 }
 
 static void

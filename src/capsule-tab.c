@@ -528,8 +528,13 @@ capsule_tab_dup_icon (CapsuleTab *self)
     {
     default:
     case CAPSULE_PROCESS_LEADER_KIND_REMOTE:
+      return g_themed_icon_new ("process-remote-symbolic");
+
     case CAPSULE_PROCESS_LEADER_KIND_UNKNOWN:
       return NULL;
+
+    case CAPSULE_PROCESS_LEADER_KIND_CONTAINER:
+      return g_themed_icon_new ("process-container-symbolic");
 
     case CAPSULE_PROCESS_LEADER_KIND_SUPERUSER:
       return g_themed_icon_new ("process-superuser-symbolic");
