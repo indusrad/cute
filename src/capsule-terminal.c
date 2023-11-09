@@ -870,6 +870,7 @@ capsule_terminal_rewrite_snapshot (GtkWidget   *widget,
   g_autoptr(GtkSnapshot) alternate = NULL;
   g_autoptr(GskRenderNode) root = NULL;
   g_autoptr(GPtrArray) children = NULL;
+  gboolean dropped_bg = FALSE;
 
   g_assert (GTK_IS_SNAPSHOT (snapshot));
 
@@ -894,8 +895,11 @@ capsule_terminal_rewrite_snapshot (GtkWidget   *widget,
            * background recoloring. This avoids an extra large overdraw
            * as a bonus optimization while we fix clipping.
            */
-          if (node_type == GSK_COLOR_NODE)
-            continue;
+          if (!dropped_bg && node_type == GSK_COLOR_NODE)
+            {
+              dropped_bg = TRUE;
+              continue;
+            }
 
           /* If we get a clip node here, it's because we're in some
            * sort of window size that has partial line offset in the
