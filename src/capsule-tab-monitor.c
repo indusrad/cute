@@ -25,8 +25,9 @@
 #include "capsule-process.h"
 #include "capsule-tab-monitor.h"
 
-#define DELAY_MIN_SECONDS 1
-#define DELAY_MAX_SECONDS 10
+#define DELAY_INTERACTIVE_MSEC 100
+#define DELAY_MIN_MSEC         500
+#define DELAY_MAX_MSEC         10000
 
 struct _CapsuleTabMonitor
 {
@@ -34,7 +35,7 @@ struct _CapsuleTabMonitor
   GWeakRef                  tab_wr;
   GSource                  *update_source;
   CapsuleProcessLeaderKind  process_leader_kind;
-  int                       current_delay_seconds;
+  int                       current_delay_msec;
 };
 
 enum {
@@ -53,12 +54,14 @@ capsule_tab_monitor_get_ready_time (CapsuleTabMonitor *self)
 {
   g_assert (CAPSULE_IS_TAB_MONITOR (self));
 
-  /* We want to make sure all the processes somewhat align
-   * to the same wakeup time so that we only wake up once a
-   * second instead of N times a second spread-out just to
-   * poll the underlying process state.
+  /* Less than a second, we just be precise to keep this easy. */
+  if (self->current_delay_msec < 1000)
+    return g_get_monotonic_time () + (self->current_delay_msec * 1000);
+
+  /* A second or more, we want to try to align things with
+   * other tabs so we just wake up once and poll them all.
    */
-  return ((g_get_monotonic_time () / G_USEC_PER_SEC) + self->current_delay_seconds) * G_USEC_PER_SEC;
+  return ((g_get_monotonic_time () / G_USEC_PER_SEC) + (self->current_delay_msec * 1000)) * G_USEC_PER_SEC;
 }
 
 static void
@@ -67,7 +70,7 @@ capsule_tab_monitor_reset_delay (CapsuleTabMonitor *self)
   g_assert (CAPSULE_IS_TAB_MONITOR (self));
   g_assert (self->update_source != NULL);
 
-  self->current_delay_seconds = DELAY_MIN_SECONDS;
+  self->current_delay_msec = DELAY_MIN_MSEC;
   g_source_set_ready_time (self->update_source,
                            capsule_tab_monitor_get_ready_time (self));
 }
@@ -78,7 +81,7 @@ capsule_tab_monitor_backoff_delay (CapsuleTabMonitor *self)
   g_assert (CAPSULE_IS_TAB_MONITOR (self));
   g_assert (self->update_source != NULL);
 
-  self->current_delay_seconds = MIN (DELAY_MAX_SECONDS, self->current_delay_seconds * 2);
+  self->current_delay_msec = CLAMP (self->current_delay_msec * 2, DELAY_MIN_MSEC, DELAY_MAX_MSEC);
   g_source_set_ready_time (self->update_source,
                            capsule_tab_monitor_get_ready_time (self));
 }
@@ -147,7 +150,7 @@ capsule_tab_monitor_queue_update (CapsuleTabMonitor *self)
       return;
     }
 
-  if G_UNLIKELY (self->current_delay_seconds != DELAY_MIN_SECONDS)
+  if G_UNLIKELY (self->current_delay_msec > DELAY_MIN_MSEC)
     {
       capsule_tab_monitor_reset_delay (self);
       return;
@@ -164,11 +167,52 @@ capsule_tab_monitor_terminal_contents_changed_cb (CapsuleTabMonitor *self,
   capsule_tab_monitor_queue_update (self);
 }
 
+static gboolean
+capsule_tab_monitor_key_pressed_cb (CapsuleTabMonitor     *self,
+                                    guint                  keyval,
+                                    guint                  keycode,
+                                    GdkModifierType        state,
+                                    GtkEventControllerKey *key)
+{
+  gboolean low_delay = FALSE;
+
+  g_assert (CAPSULE_IS_TAB_MONITOR (self));
+  g_assert (GTK_IS_EVENT_CONTROLLER_KEY (key));
+
+  state &= gtk_accelerator_get_default_mod_mask ();
+
+  switch (keyval)
+    {
+    case GDK_KEY_Return:
+    case GDK_KEY_ISO_Enter:
+    case GDK_KEY_KP_Enter:
+      low_delay = TRUE;
+      break;
+
+    case GDK_KEY_d:
+      low_delay = !!(state & GDK_CONTROL_MASK);
+      break;
+
+    default:
+      break;
+    }
+
+  if (low_delay)
+    {
+      self->current_delay_msec = DELAY_INTERACTIVE_MSEC;
+      g_source_set_ready_time (self->update_source,
+                               capsule_tab_monitor_get_ready_time (self));
+    }
+
+  return GDK_EVENT_PROPAGATE;
+}
+
 static void
 capsule_tab_monitor_set_tab (CapsuleTabMonitor *self,
                              CapsuleTab        *tab)
 {
   CapsuleTerminal *terminal;
+  GtkEventController *controller;
 
   g_assert (CAPSULE_IS_TAB_MONITOR (self));
   g_assert (CAPSULE_IS_TAB (tab));
@@ -182,6 +226,20 @@ capsule_tab_monitor_set_tab (CapsuleTabMonitor *self,
                            G_CALLBACK (capsule_tab_monitor_terminal_contents_changed_cb),
                            self,
                            G_CONNECT_SWAPPED);
+
+  /* We use an input controller to sniff for certain keys which will make us
+   * want to poll at a lower frequency than the delay. For example, something
+   * like ctrl+d, enter, etc as *input* indicates that we could be making a
+   * transition sooner.
+   */
+  controller = gtk_event_controller_key_new ();
+  g_signal_connect_object (controller,
+                           "key-pressed",
+                           G_CALLBACK (capsule_tab_monitor_key_pressed_cb),
+                           self,
+                           G_CONNECT_SWAPPED);
+  gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_CAPTURE);
+  gtk_widget_add_controller (GTK_WIDGET (tab), controller);
 }
 
 static void
@@ -271,7 +329,7 @@ capsule_tab_monitor_class_init (CapsuleTabMonitorClass *klass)
 static void
 capsule_tab_monitor_init (CapsuleTabMonitor *self)
 {
-  self->current_delay_seconds = DELAY_MIN_SECONDS;
+  self->current_delay_msec = DELAY_MIN_MSEC;
 
   g_weak_ref_init (&self->tab_wr, NULL);
 }
