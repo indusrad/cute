@@ -84,12 +84,18 @@ capsule_window_dressing_update (CapsuleWindowDressing *self)
       double popover_alpha;
       const GdkRGBA *bg_rgba;
       const GdkRGBA *fg_rgba;
+      const GdkRGBA *colors;
       gboolean dark;
+      guint n_colors;
 
       dark = adw_style_manager_get_dark (style_manager);
 
       bg_rgba = capsule_palette_get_background (self->palette, dark);
       fg_rgba = capsule_palette_get_foreground (self->palette, dark);
+
+      colors = capsule_palette_get_indexed_colors (self->palette, &n_colors);
+
+      g_assert (n_colors >= 16);
 
       bg = gdk_rgba_to_string (bg_rgba);
       fg = gdk_rgba_to_string (fg_rgba);
@@ -120,13 +126,35 @@ capsule_window_dressing_update (CapsuleWindowDressing *self)
                               self->css_class);
 
       if (rgba_is_dark (bg_rgba))
-        g_string_append_printf (string,
-                                "window.%s toolbarview > revealer > windowhandle { color: %s; background: alpha(shade(%s,1.25),.5); }\n",
-                                self->css_class, fg, bg);
+        {
+          g_autofree char *purple = gdk_rgba_to_string (&colors[5]);
+          g_autofree char *red = gdk_rgba_to_string (&colors[1]);
+
+          g_string_append_printf (string,
+                                  "window.%s toolbarview > revealer > windowhandle { color: %s; background: alpha(shade(%s,1.25),.5); }\n",
+                                  self->css_class, fg, bg);
+          g_string_append_printf (string,
+                                  "window.%s.remote toolbarview > revealer > windowhandle { background: alpha(%s,.25); }\n",
+                                  self->css_class, purple);
+          g_string_append_printf (string,
+                                  "window.%s.superuser toolbarview > revealer > windowhandle { background: alpha(%s,.25); }\n",
+                                  self->css_class, red);
+        }
       else
-        g_string_append_printf (string,
-                                "window.%s toolbarview > revealer > windowhandle { color: %s; background: alpha(shade(%s, .95),.5); }\n",
-                                self->css_class, fg, bg);
+        {
+          g_autofree char *purple = gdk_rgba_to_string (&colors[5]);
+          g_autofree char *red = gdk_rgba_to_string (&colors[1]);
+
+          g_string_append_printf (string,
+                                  "window.%s toolbarview > revealer > windowhandle { color: %s; background: alpha(shade(%s, .95),.5); }\n",
+                                  self->css_class, fg, bg);
+          g_string_append_printf (string,
+                                  "window.%s.remote toolbarview > revealer > windowhandle { background: alpha(%s,.25); }\n",
+                                  self->css_class, purple);
+          g_string_append_printf (string,
+                                  "window.%s.superuser toolbarview > revealer > windowhandle { background: alpha(%s,.5); }\n",
+                                  self->css_class, red);
+        }
     }
 
   gtk_css_provider_load_from_string (self->css_provider, string->str);
