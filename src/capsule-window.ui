@@ -332,6 +332,7 @@
                       <object class="GtkCenterBox">
                         <child type="start">
                           <object class="GtkImage">
+                            <property name="visible">false</property>
                             <binding name="gicon">
                               <lookup name="icon" type="CapsuleTab">
                                 <lookup name="active-tab">CapsuleWindow</lookup>
