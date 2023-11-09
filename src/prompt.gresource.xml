@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/org/gnome/Prompt">
+    <file preprocess="xml-stripblanks">prompt-shortcut-accel-dialog.ui</file>
+    <file preprocess="xml-stripblanks">prompt-shortcut-row.ui</file>
+    <file preprocess="xml-stripblanks">prompt-find-bar.ui</file>
+    <file preprocess="xml-stripblanks">prompt-preferences-window.ui</file>
+    <file preprocess="xml-stripblanks">prompt-profile-editor.ui</file>
+    <file preprocess="xml-stripblanks">prompt-profile-row.ui</file>
+    <file preprocess="xml-stripblanks">prompt-tab.ui</file>
+    <file preprocess="xml-stripblanks">prompt-terminal.ui</file>
+    <file preprocess="xml-stripblanks">prompt-title-dialog.ui</file>
+    <file preprocess="xml-stripblanks">prompt-window.ui</file>
+    <file preprocess="xml-stripblanks">icons/enter-keyboard-shortcut.svg</file>
+    <file preprocess="xml-stripblanks">icons/scalable/actions/process-container-symbolic.svg</file>
+    <file preprocess="xml-stripblanks">icons/scalable/actions/process-remote-symbolic.svg</file>
+    <file preprocess="xml-stripblanks">icons/scalable/actions/process-superuser-symbolic.svg</file>
+    <file>style.css</file>
+  </gresource>
+</gresources>

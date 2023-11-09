@@ -1,4 +1,4 @@
-application_id = 'org.gnome.Capsule'
+application_id = 'org.gnome.Prompt'
 
 scalable_dir = 'hicolor' / 'scalable' / 'apps'
 install_data(

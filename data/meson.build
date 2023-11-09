@@ -1,6 +1,6 @@
 desktop_file = i18n.merge_file(
-        input: 'org.gnome.Capsule.desktop.in',
-       output: 'org.gnome.Capsule.desktop',
+        input: 'org.gnome.Prompt.desktop.in',
+       output: 'org.gnome.Prompt.desktop',
          type: 'desktop',
        po_dir: '../po',
       install: true,
@@ -13,8 +13,8 @@ if desktop_utils.found()
 endif
 
 appstream_file = i18n.merge_file(
-        input: 'org.gnome.Capsule.metainfo.xml.in',
-       output: 'org.gnome.Capsule.metainfo.xml',
+        input: 'org.gnome.Prompt.metainfo.xml.in',
+       output: 'org.gnome.Prompt.metainfo.xml',
        po_dir: '../po',
       install: true,
   install_dir: get_option('datadir') / 'metainfo'

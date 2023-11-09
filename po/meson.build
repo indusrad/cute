@@ -1,1 +1,1 @@
-i18n.gettext('capsule', preset: 'glib')
+i18n.gettext('prompt', preset: 'glib')

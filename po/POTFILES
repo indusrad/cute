@@ -1,6 +1,6 @@
-data/org.gnome.Capsule.desktop.in
-data/org.gnome.Capsule.metainfo.xml.in
-data/org.gnome.Capsule.gschema.xml
+data/org.gnome.Prompt.desktop.in
+data/org.gnome.Prompt.metainfo.xml.in
+data/org.gnome.Prompt.gschema.xml
 src/main.c
-src/capsule-window.c
-src/capsule-window.ui
+src/prompt-window.c
+src/prompt-window.ui

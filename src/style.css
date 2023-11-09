@@ -14,7 +14,7 @@ vte-terminal
   }
 }
 
-window.capsule-window box.visual-bell
+window.prompt-window box.visual-bell
 {
   animation: visual-bell 0.5s ease-out;
 }

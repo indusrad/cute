@@ -1,4 +1,4 @@
-project('capsule', 'c',
+project('prompt', 'c',
           version: '0.1.0',
     meson_version: '>= 0.62.0',
   default_options: [ 'warning_level=2', 'werror=false', 'c_std=gnu11', ],
@@ -10,11 +10,11 @@ i18n = import('i18n')
 gnome = import('gnome')
 
 if get_option('development')
-  app_id = 'org.gnome.Capsule.Devel'
-  app_schema_path = '/org/gnome/Capsule/Devel/'
+  app_id = 'org.gnome.Prompt.Devel'
+  app_schema_path = '/org/gnome/Prompt/Devel/'
 else
-  app_id = 'org.gnome.Capsule'
-  app_schema_path = '/org/gnome/Capsule/'
+  app_id = 'org.gnome.Prompt'
+  app_schema_path = '/org/gnome/Prompt/'
 endif
 # Various optimizations for non-debug builds including disabling of
 # cast checks, asserts, and additional link options.
@@ -40,11 +40,11 @@ config_h.set_quoted('APP_SCHEMA_PROFILE_ID', '@0@.Profile'.format(app_id))
 config_h.set_quoted('APP_SCHEMA_SHORTCUTS_ID', '@0@.Shortcuts'.format(app_id))
 config_h.set_quoted('APP_SCHEMA_SHORTCUTS_PATH', '@0@Shortcuts/'.format(app_schema_path))
 config_h.set_quoted('PACKAGE_VERSION', meson.project_version())
-config_h.set_quoted('GETTEXT_PACKAGE', 'capsule')
+config_h.set_quoted('GETTEXT_PACKAGE', 'prompt')
 config_h.set_quoted('LOCALEDIR', get_option('prefix') / get_option('localedir'))
-config_h.set_quoted('PACKAGE_WEBSITE', 'https://gitlab.gnome.org/chergert/capsule')
+config_h.set_quoted('PACKAGE_WEBSITE', 'https://gitlab.gnome.org/chergert/prompt')
 config_h.set_quoted('PACKAGE_ICON_NAME', app_id)
-config_h.set_quoted('PACKAGE_NAME', 'Capsule')
+config_h.set_quoted('PACKAGE_NAME', 'Prompt')
 config_h.set10('DEVELOPMENT_BUILD', get_option('development'))
 
 project_c_args = []

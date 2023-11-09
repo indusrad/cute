@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright 2023 Christian Hergert
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+  SPDX-License-Identifier: GPL-3.0-or-later
+-->
+<interface>
+  <template class="PromptTab" parent="GtkWidget">
+    <child>
+      <object class="GtkBox">
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="AdwBanner" id="banner">
+          </object>
+        </child>
+        <child>
+          <object class="GtkScrolledWindow" id="scrolled_window">
+            <property name="propagate-natural-width">true</property>
+            <property name="propagate-natural-height">true</property>
+            <property name="hscrollbar-policy">never</property>
+            <property name="vexpand">true</property>
+            <child>
+              <object class="PromptTerminal" id="terminal">
+                <property name="enable-fallback-scrolling">false</property>
+                <property name="scroll-unit-is-pixels">true</property>
+                <signal name="notify::window-title" handler="prompt_tab_notify_window_title_cb" swapped="1"/>
+                <signal name="current-file-uri-changed" handler="prompt_tab_notify_window_subtitle_cb" swapped="1"/>
+                <signal name="current-directory-uri-changed" handler="prompt_tab_notify_window_subtitle_cb" swapped="1"/>
+                <signal name="decrease-font-size" handler="prompt_tab_decrease_font_size_cb" swapped="1"/>
+                <signal name="increase-font-size" handler="prompt_tab_increase_font_size_cb" swapped="1"/>
+                <signal name="bell" handler="prompt_tab_bell_cb" swapped="1"/>
+                <binding name="palette">
+                  <lookup name="palette" type="PromptProfile">
+                    <lookup name="profile">PromptTab</lookup>
+                  </lookup>
+                </binding>
+                <binding name="scroll-on-keystroke">
+                  <lookup name="scroll-on-keystroke" type="PromptProfile">
+                    <lookup name="profile">PromptTab</lookup>
+                  </lookup>
+                </binding>
+                <binding name="scroll-on-output">
+                  <lookup name="scroll-on-output" type="PromptProfile">
+                    <lookup name="profile">PromptTab</lookup>
+                  </lookup>
+                </binding>
+                <binding name="backspace-binding">
+                  <lookup name="backspace-binding" type="PromptProfile">
+                    <lookup name="profile">PromptTab</lookup>
+                  </lookup>
+                </binding>
+                <binding name="delete-binding">
+                  <lookup name="delete-binding" type="PromptProfile">
+                    <lookup name="profile">PromptTab</lookup>
+                  </lookup>
+                </binding>
+                <binding name="cjk-ambiguous-width">
+                  <lookup name="cjk-ambiguous-width" type="PromptProfile">
+                    <lookup name="profile">PromptTab</lookup>
+                  </lookup>
+                </binding>
+                <binding name="bold-is-bright">
+                  <lookup name="bold-is-bright" type="PromptProfile">
+                    <lookup name="profile">PromptTab</lookup>
+                  </lookup>
+                </binding>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
+</interface>
