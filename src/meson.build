@@ -22,6 +22,7 @@ capsule_sources = [
   'capsule-shortcut-row.c',
   'capsule-shortcuts.c',
   'capsule-tab.c',
+  'capsule-tab-monitor.c',
   'capsule-terminal.c',
   'capsule-title-dialog.c',
   'capsule-unix-fd-map.c',
@@ -33,6 +34,7 @@ capsule_sources = [
 ]
 
 capsule_enum_headers = [
+  'capsule-process.h',
   'capsule-profile.h',
   'capsule-settings.h',
   'capsule-tab.h',

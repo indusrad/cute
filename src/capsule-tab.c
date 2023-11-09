@@ -28,6 +28,7 @@
 #include "capsule-enums.h"
 #include "capsule-process.h"
 #include "capsule-tab.h"
+#include "capsule-tab-monitor.h"
 #include "capsule-terminal.h"
 #include "capsule-util.h"
 #include "capsule-window.h"
@@ -49,6 +50,7 @@ struct _CapsuleTab
   CapsuleProfile    *profile;
   CapsuleProcess    *process;
   char              *title_prefix;
+  CapsuleTabMonitor *monitor;
 
   AdwBanner         *banner;
   GtkScrolledWindow *scrolled_window;
@@ -471,6 +473,16 @@ scrollbar_policy_to_vscroll_policy (GBinding     *binding,
 }
 
 static void
+capsule_tab_notify_process_leader_kind_cb (CapsuleTab        *self,
+                                           GParamSpec        *pspec,
+                                           CapsuleTabMonitor *monitor)
+{
+  g_assert (CAPSULE_IS_TAB (self));
+  g_assert (CAPSULE_IS_TAB_MONITOR (monitor));
+
+}
+
+static void
 capsule_tab_constructed (GObject *object)
 {
   CapsuleTab *self = (CapsuleTab *)object;
@@ -524,6 +536,14 @@ capsule_tab_constructed (GObject *object)
                            self,
                            G_CONNECT_SWAPPED);
   capsule_tab_update_scrollback_lines (self);
+
+  self->monitor = capsule_tab_monitor_new (self);
+
+  g_signal_connect_object (self->monitor,
+                           "notify::process-leader-kind",
+                           G_CALLBACK (capsule_tab_notify_process_leader_kind_cb),
+                           self,
+                           G_CONNECT_SWAPPED);
 }
 
 static void
@@ -539,6 +559,7 @@ capsule_tab_dispose (GObject *object)
 
   g_clear_object (&self->profile);
   g_clear_object (&self->process);
+  g_clear_object (&self->monitor);
 
   g_clear_pointer (&self->previous_working_directory_uri, g_free);
   g_clear_pointer (&self->title_prefix, g_free);
@@ -926,4 +947,12 @@ capsule_tab_force_quit (CapsuleTab *self)
 
   if (self->process != NULL)
     capsule_process_force_exit (self->process);
+}
+
+CapsuleProcess *
+capsule_tab_get_process (CapsuleTab *self)
+{
+  g_return_val_if_fail (CAPSULE_IS_TAB (self), NULL);
+
+  return self->process;
 }
