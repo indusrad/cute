@@ -214,6 +214,31 @@ capsule_window_create_window_cb (CapsuleWindow *self,
   return other->tab_view;
 }
 
+static gboolean
+process_leader_kind_to_gicon (GBinding     *binding,
+                              const GValue *from_value,
+                              GValue       *to_value,
+                              gpointer      user_data)
+{
+  CapsuleProcessLeaderKind kind = g_value_get_enum (from_value);
+
+  switch (kind)
+    {
+    default:
+    case CAPSULE_PROCESS_LEADER_KIND_UNKNOWN:
+      break;
+
+    case CAPSULE_PROCESS_LEADER_KIND_SUPERUSER:
+      g_value_take_object (to_value, g_themed_icon_new ("process-superuser-symbolic"));
+      break;
+
+    case CAPSULE_PROCESS_LEADER_KIND_REMOTE:
+      break;
+    }
+
+  return TRUE;
+}
+
 static void
 capsule_window_page_attached_cb (CapsuleWindow *self,
                                  AdwTabPage    *page,
@@ -229,6 +254,11 @@ capsule_window_page_attached_cb (CapsuleWindow *self,
   child = adw_tab_page_get_child (page);
 
   g_object_bind_property (child, "title", page, "title", G_BINDING_SYNC_CREATE);
+  g_object_bind_property_full (child, "process-leader-kind",
+                               page, "icon",
+                               G_BINDING_SYNC_CREATE,
+                               process_leader_kind_to_gicon,
+                               NULL, NULL, NULL);
 }
 
 static void
