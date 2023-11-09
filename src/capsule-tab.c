@@ -417,21 +417,6 @@ capsule_tab_bell_cb (CapsuleTab      *self,
   g_signal_emit (self, signals[BELL], 0);
 }
 
-static void
-capsule_tab_profile_notify_opacity_cb (CapsuleTab     *self,
-                                       GParamSpec     *pspec,
-                                       CapsuleProfile *profile)
-{
-  gboolean clear_background;
-
-  g_assert (CAPSULE_IS_TAB (self));
-  g_assert (CAPSULE_IS_PROFILE (profile));
-
-  clear_background = capsule_profile_get_opacity (profile) >= 1.0;
-
-  vte_terminal_set_clear_background (VTE_TERMINAL (self->terminal), clear_background);
-}
-
 static gboolean
 scrollbar_policy_to_overlay_scrolling (GBinding     *binding,
                                        const GValue *from_value,
@@ -548,13 +533,6 @@ capsule_tab_constructed (GObject *object)
   CapsuleSettings *settings;
 
   G_OBJECT_CLASS (capsule_tab_parent_class)->constructed (object);
-
-  g_signal_connect_object (self->profile,
-                           "notify::opacity",
-                           G_CALLBACK (capsule_tab_profile_notify_opacity_cb),
-                           self,
-                           G_CONNECT_SWAPPED);
-  capsule_tab_profile_notify_opacity_cb (self, NULL, self->profile);
 
   settings = capsule_application_get_settings (CAPSULE_APPLICATION_DEFAULT);
   g_object_bind_property (settings, "audible-bell",

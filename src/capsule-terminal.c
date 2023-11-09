@@ -850,13 +850,89 @@ capsule_terminal_size_allocate (GtkWidget *widget,
     gtk_popover_present (self->popover);
 }
 
+/*
+ * capsule_terminal_rewrite_snapshot:
+ *
+ * This function will chain up to the parent VteTerminal to snapshot
+ * the terminal. However, afterwards, it rewrites the snapshot to
+ * both optimize a large window draw (by removing the color node
+ * similar to what vte_terminal_set_clear_background() would do) as
+ * well as removing the toplevel clip node.
+ *
+ * By doing so, we allow our CapsuleTerminal widget to have padding
+ * in the normal case (so that it fits rounded corners well) but also
+ * allow the content to reach the top and bottom when scrolling.
+ */
+static void
+capsule_terminal_rewrite_snapshot (GtkWidget   *widget,
+                                   GtkSnapshot *snapshot)
+{
+  g_autoptr(GtkSnapshot) alternate = NULL;
+  g_autoptr(GskRenderNode) root = NULL;
+  g_autoptr(GPtrArray) children = NULL;
+
+  g_assert (GTK_IS_SNAPSHOT (snapshot));
+
+  alternate = gtk_snapshot_new ();
+  children = g_ptr_array_new ();
+
+  GTK_WIDGET_CLASS (capsule_terminal_parent_class)->snapshot (widget, alternate);
+
+  if (!(root = gtk_snapshot_free_to_node (g_steal_pointer (&alternate))))
+    return;
+
+  if (gsk_render_node_get_node_type (root) == GSK_CONTAINER_NODE)
+    {
+      guint n_children = gsk_container_node_get_n_children (root);
+
+      for (guint i = 0; i < n_children; i++)
+        {
+          GskRenderNode *node = gsk_container_node_get_child (root, i);
+          GskRenderNodeType node_type = gsk_render_node_get_node_type (node);
+
+          /* Drop the color node because we get that for free from our
+           * background recoloring. This avoids an extra large overdraw
+           * as a bonus optimization while we fix clipping.
+           */
+          if (node_type == GSK_COLOR_NODE)
+            continue;
+
+          /* If we get a clip node here, it's because we're in some
+           * sort of window size that has partial line offset in the
+           * drag resize, or we're scrolled up a bit so the line doesn't
+           * exactly match our actual sizing. In that case we'll replace
+           * the clip with our own so that we get nice padding normally
+           * but appropriate draws up to the border elsewise.
+           */
+          if (node_type == GSK_CLIP_NODE)
+            node = gsk_clip_node_get_child (node);
+
+          g_ptr_array_add (children, node);
+        }
+    }
+
+  if (children->len > 0)
+    {
+      GskRenderNode *new_root;
+
+      new_root = gsk_container_node_new ((GskRenderNode **)children->pdata, children->len);
+      gsk_render_node_unref (root);
+      root = new_root;
+    }
+
+  gtk_snapshot_append_node (snapshot, root);
+}
+
 static void
 capsule_terminal_snapshot (GtkWidget   *widget,
                            GtkSnapshot *snapshot)
 {
   CapsuleTerminal *self = CAPSULE_TERMINAL (widget);
 
-  GTK_WIDGET_CLASS (capsule_terminal_parent_class)->snapshot (widget, snapshot);
+  g_assert (CAPSULE_IS_TERMINAL (self));
+  g_assert (GTK_IS_SNAPSHOT (snapshot));
+
+  capsule_terminal_rewrite_snapshot (widget, snapshot);
 
   gtk_widget_snapshot_child (widget, GTK_WIDGET (self->size_revealer), snapshot);
   gtk_widget_snapshot_child (widget, GTK_WIDGET (self->drop_highlight), snapshot);
