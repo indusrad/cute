@@ -932,11 +932,17 @@ capsule_terminal_snapshot (GtkWidget   *widget,
                            GtkSnapshot *snapshot)
 {
   CapsuleTerminal *self = CAPSULE_TERMINAL (widget);
+  AdwTabOverview *tab_overview;
 
   g_assert (CAPSULE_IS_TERMINAL (self));
   g_assert (GTK_IS_SNAPSHOT (snapshot));
 
-  capsule_terminal_rewrite_snapshot (widget, snapshot);
+  tab_overview = ADW_TAB_OVERVIEW (gtk_widget_get_ancestor (widget, ADW_TYPE_TAB_OVERVIEW));
+
+  if (adw_tab_overview_get_open (tab_overview))
+    GTK_WIDGET_CLASS (capsule_terminal_parent_class)->snapshot (widget, snapshot);
+  else
+    capsule_terminal_rewrite_snapshot (widget, snapshot);
 
   gtk_widget_snapshot_child (widget, GTK_WIDGET (self->size_revealer), snapshot);
   gtk_widget_snapshot_child (widget, GTK_WIDGET (self->drop_highlight), snapshot);
