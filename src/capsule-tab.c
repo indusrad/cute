@@ -64,6 +64,7 @@ struct _CapsuleTab
 
 enum {
   PROP_0,
+  PROP_ICON,
   PROP_PROCESS_LEADER_KIND,
   PROP_PROFILE,
   PROP_READ_ONLY,
@@ -481,7 +482,29 @@ capsule_tab_notify_process_leader_kind_cb (CapsuleTab        *self,
   g_assert (CAPSULE_IS_TAB (self));
   g_assert (CAPSULE_IS_TAB_MONITOR (monitor));
 
+  g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_ICON]);
   g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_PROCESS_LEADER_KIND]);
+}
+
+static GIcon *
+capsule_tab_dup_icon (CapsuleTab *self)
+{
+  CapsuleProcessLeaderKind kind;
+
+  g_assert (CAPSULE_IS_TAB (self));
+
+  kind = capsule_tab_monitor_get_process_leader_kind (self->monitor);
+
+  switch (kind)
+    {
+    default:
+    case CAPSULE_PROCESS_LEADER_KIND_REMOTE:
+    case CAPSULE_PROCESS_LEADER_KIND_UNKNOWN:
+      return NULL;
+
+    case CAPSULE_PROCESS_LEADER_KIND_SUPERUSER:
+      return g_themed_icon_new ("process-superuser-symbolic");
+    }
 }
 
 static void
@@ -579,6 +602,10 @@ capsule_tab_get_property (GObject    *object,
 
   switch (prop_id)
     {
+    case PROP_ICON:
+      g_value_take_object (value, capsule_tab_dup_icon (self));
+      break;
+
     case PROP_PROCESS_LEADER_KIND:
       g_value_set_enum (value,
                         capsule_tab_monitor_get_process_leader_kind (self->monitor));
@@ -657,6 +684,12 @@ capsule_tab_class_init (CapsuleTabClass *klass)
 
   widget_class->grab_focus = capsule_tab_grab_focus;
   widget_class->map = capsule_tab_map;
+
+  properties[PROP_ICON] =
+    g_param_spec_object ("icon", NULL, NULL,
+                         G_TYPE_ICON,
+                         (G_PARAM_READABLE |
+                          G_PARAM_STATIC_STRINGS));
 
   properties[PROP_PROCESS_LEADER_KIND] =
     g_param_spec_enum ("process-leader-kind", NULL, NULL,

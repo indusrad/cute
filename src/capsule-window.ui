@@ -329,17 +329,30 @@
                       </object>
                     </child>
                     <child type="title">
-                      <object class="AdwWindowTitle">
-                        <binding name="subtitle">
-                          <lookup name="subtitle" type="CapsuleTab">
-                            <lookup name="active-tab">CapsuleWindow</lookup>
-                          </lookup>
-                        </binding>
-                        <binding name="title">
-                          <lookup name="title" type="CapsuleTab">
-                            <lookup name="active-tab">CapsuleWindow</lookup>
-                          </lookup>
-                        </binding>
+                      <object class="GtkCenterBox">
+                        <child type="start">
+                          <object class="GtkImage">
+                            <binding name="gicon">
+                              <lookup name="icon" type="CapsuleTab">
+                                <lookup name="active-tab">CapsuleWindow</lookup>
+                              </lookup>
+                            </binding>
+                          </object>
+                        </child>
+                        <child type="center">
+                          <object class="AdwWindowTitle">
+                            <binding name="subtitle">
+                              <lookup name="subtitle" type="CapsuleTab">
+                                <lookup name="active-tab">CapsuleWindow</lookup>
+                              </lookup>
+                            </binding>
+                            <binding name="title">
+                              <lookup name="title" type="CapsuleTab">
+                                <lookup name="active-tab">CapsuleWindow</lookup>
+                              </lookup>
+                            </binding>
+                          </object>
+                        </child>
                       </object>
                     </child>
                     <child type="end">
