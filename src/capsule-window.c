@@ -815,6 +815,44 @@ capsule_window_close_request (GtkWindow *window)
 }
 
 static void
+capsule_window_notify_process_leader_kind_cb (CapsuleWindow *self,
+                                              GParamSpec    *pspec,
+                                              CapsuleTab    *tab)
+{
+  CapsuleProcessLeaderKind kind;
+
+  g_assert (CAPSULE_IS_WINDOW (self));
+  g_assert (CAPSULE_IS_TAB (tab));
+
+  g_object_get (tab,
+                "process-leader-kind", &kind,
+                NULL);
+
+  gtk_widget_remove_css_class (GTK_WIDGET (self), "container");
+  gtk_widget_remove_css_class (GTK_WIDGET (self), "remote");
+  gtk_widget_remove_css_class (GTK_WIDGET (self), "superuser");
+
+  if (kind == CAPSULE_PROCESS_LEADER_KIND_SUPERUSER)
+    gtk_widget_add_css_class (GTK_WIDGET (self), "superuser");
+  else if (kind == CAPSULE_PROCESS_LEADER_KIND_REMOTE)
+    gtk_widget_add_css_class (GTK_WIDGET (self), "remote");
+  else if (kind == CAPSULE_PROCESS_LEADER_KIND_CONTAINER)
+    gtk_widget_add_css_class (GTK_WIDGET (self), "container");
+}
+
+static void
+capsule_window_active_tab_bind_cb (CapsuleWindow *self,
+                                   CapsuleTab    *tab,
+                                   GSignalGroup  *signals)
+{
+  g_assert (CAPSULE_IS_WINDOW (self));
+  g_assert (CAPSULE_IS_TAB (tab));
+  g_assert (G_IS_SIGNAL_GROUP (signals));
+
+  capsule_window_notify_process_leader_kind_cb (self, NULL, tab);
+}
+
+static void
 capsule_window_constructed (GObject *object)
 {
   CapsuleWindow *self = (CapsuleWindow *)object;
@@ -972,10 +1010,19 @@ static void
 capsule_window_init (CapsuleWindow *self)
 {
   self->active_tab_signals = g_signal_group_new (CAPSULE_TYPE_TAB);
-
+  g_signal_connect_object (self->active_tab_signals,
+                           "bind",
+                           G_CALLBACK (capsule_window_active_tab_bind_cb),
+                           self,
+                           G_CONNECT_SWAPPED);
   g_signal_group_connect_object (self->active_tab_signals,
                                  "bell",
                                  G_CALLBACK (capsule_window_active_tab_bell_cb),
+                                 self,
+                                 G_CONNECT_SWAPPED);
+  g_signal_group_connect_object (self->active_tab_signals,
+                                 "notify::process-leader-kind",
+                                 G_CALLBACK (capsule_window_notify_process_leader_kind_cb),
                                  self,
                                  G_CONNECT_SWAPPED);
 
