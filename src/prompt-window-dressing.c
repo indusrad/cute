@@ -29,7 +29,7 @@ struct _PromptWindowDressing
 {
   GObject         parent_instance;
   GWeakRef        window_wr;
-  PromptPalette *palette;
+  PromptPalette  *palette;
   GtkCssProvider *css_provider;
   char           *css_class;
   double          opacity;
@@ -75,30 +75,30 @@ prompt_window_dressing_update (PromptWindowDressing *self)
   if (self->palette != NULL)
     {
       AdwStyleManager *style_manager = adw_style_manager_get_default ();
+      gboolean dark = adw_style_manager_get_dark (style_manager);
+      const PromptPaletteFace *face = prompt_palette_get_face (self->palette, dark);
       g_autoptr(GString) gstring = g_string_new (NULL);
       g_autofree char *bg = NULL;
       g_autofree char *fg = NULL;
+      g_autofree char *su_fg = NULL;
+      g_autofree char *su_bg = NULL;
+      g_autofree char *rm_fg = NULL;
+      g_autofree char *rm_bg = NULL;
+      g_autofree char *bell_fg = NULL;
+      g_autofree char *bell_bg = NULL;
       char window_alpha_str[G_ASCII_DTOSTR_BUF_SIZE];
       char popover_alpha_str[G_ASCII_DTOSTR_BUF_SIZE];
       double window_alpha;
       double popover_alpha;
-      const GdkRGBA *bg_rgba;
-      const GdkRGBA *fg_rgba;
-      const GdkRGBA *colors;
-      gboolean dark;
-      guint n_colors;
 
-      dark = adw_style_manager_get_dark (style_manager);
-
-      bg_rgba = prompt_palette_get_background (self->palette, dark);
-      fg_rgba = prompt_palette_get_foreground (self->palette, dark);
-
-      colors = prompt_palette_get_indexed_colors (self->palette, &n_colors);
-
-      g_assert (n_colors >= 16);
-
-      bg = gdk_rgba_to_string (bg_rgba);
-      fg = gdk_rgba_to_string (fg_rgba);
+      bg = gdk_rgba_to_string (&face->background);
+      fg = gdk_rgba_to_string (&face->foreground);
+      rm_fg = gdk_rgba_to_string (&face->scarves[PROMPT_PALETTE_SCARF_REMOTE].foreground);
+      rm_bg = gdk_rgba_to_string (&face->scarves[PROMPT_PALETTE_SCARF_REMOTE].background);
+      su_fg = gdk_rgba_to_string (&face->scarves[PROMPT_PALETTE_SCARF_SUPERUSER].foreground);
+      su_bg = gdk_rgba_to_string (&face->scarves[PROMPT_PALETTE_SCARF_SUPERUSER].background);
+      bell_fg = gdk_rgba_to_string (&face->scarves[PROMPT_PALETTE_SCARF_VISUAL_BELL].foreground);
+      bell_bg = gdk_rgba_to_string (&face->scarves[PROMPT_PALETTE_SCARF_VISUAL_BELL].background);
 
       window_alpha = self->opacity;
       popover_alpha = MAX (window_alpha, 0.85);
@@ -124,36 +124,35 @@ prompt_window_dressing_update (PromptWindowDressing *self)
       g_string_append_printf (string,
                               "window.%s revealer.raised.top-bar { background: transparent; }\n",
                               self->css_class);
+      g_string_append_printf (string,
+                              "window.%s box.visual-bell { animation: visual-bell-%s-%s 0.5s ease-out; }\n"
+                              "@keyframes visual-bell-%s-%s { 50%% { background: %s; color: %s; } }\n",
+                              self->css_class, self->css_class, dark ? "dark" : "light",
+                              self->css_class, dark ? "dark" : "light", bell_bg, bell_fg);
 
-      if (rgba_is_dark (bg_rgba))
+      if (rgba_is_dark (&face->background))
         {
-          g_autofree char *purple = gdk_rgba_to_string (&colors[5]);
-          g_autofree char *red = gdk_rgba_to_string (&colors[1]);
-
           g_string_append_printf (string,
                                   "window.%s toolbarview > revealer > windowhandle { color: %s; background: alpha(shade(%s,1.25),.5); }\n",
                                   self->css_class, fg, bg);
           g_string_append_printf (string,
-                                  "window.%s.remote toolbarview > revealer > windowhandle { background: alpha(%s,.25); }\n",
-                                  self->css_class, purple);
+                                  "window.%s.remote toolbarview > revealer > windowhandle { background: %s; color: %s; }\n",
+                                  self->css_class, rm_bg, rm_fg);
           g_string_append_printf (string,
-                                  "window.%s.superuser toolbarview > revealer > windowhandle { background: alpha(%s,.25); }\n",
-                                  self->css_class, red);
+                                  "window.%s.superuser toolbarview > revealer > windowhandle { background: %s; color: %s; }\n",
+                                  self->css_class, su_bg, su_fg);
         }
       else
         {
-          g_autofree char *purple = gdk_rgba_to_string (&colors[5]);
-          g_autofree char *red = gdk_rgba_to_string (&colors[1]);
-
           g_string_append_printf (string,
                                   "window.%s toolbarview > revealer > windowhandle { color: %s; background: alpha(shade(%s, .95),.5); }\n",
                                   self->css_class, fg, bg);
           g_string_append_printf (string,
-                                  "window.%s.remote toolbarview > revealer > windowhandle { background: alpha(%s,.25); }\n",
-                                  self->css_class, purple);
+                                  "window.%s.remote toolbarview > revealer > windowhandle { background: %s; color: %s; }\n",
+                                  self->css_class, rm_bg, rm_fg);
           g_string_append_printf (string,
-                                  "window.%s.superuser toolbarview > revealer > windowhandle { background: alpha(%s,.5); }\n",
-                                  self->css_class, red);
+                                  "window.%s.superuser toolbarview > revealer > windowhandle { background: %s; color: %s; }\n",
+                                  self->css_class, su_bg, su_fg);
         }
     }
 

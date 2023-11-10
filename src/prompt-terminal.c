@@ -1162,31 +1162,20 @@ prompt_terminal_set_palette (PromptTerminal *self,
   if (g_set_object (&self->palette, palette))
     {
       AdwStyleManager *style_manager = adw_style_manager_get_default ();
+      gboolean dark = adw_style_manager_get_dark (style_manager);
       g_autoptr(PromptPalette) fallback = NULL;
-      const GdkRGBA *background;
-      const GdkRGBA *foreground;
-      const GdkRGBA *colors;
-      gboolean dark;
-      guint n_colors;
+      const PromptPaletteFace *face;
 
       if (palette == NULL)
         palette = fallback = prompt_palette_new_from_name ("gnome");
 
-      dark = adw_style_manager_get_dark (style_manager);
-      colors = prompt_palette_get_indexed_colors (palette, &n_colors);
-      background = prompt_palette_get_background (palette, dark);
-      foreground = prompt_palette_get_foreground (palette, dark);
-
-      g_assert (foreground != NULL);
-      g_assert (background != NULL);
-      g_assert (colors != NULL);
-      g_assert (n_colors == 16);
+      face = prompt_palette_get_face (palette, dark);
 
       vte_terminal_set_colors (VTE_TERMINAL (self),
-                               foreground,
-                               background,
-                               colors,
-                               n_colors);
+                               &face->foreground,
+                               &face->background,
+                               &face->indexed[0],
+                               G_N_ELEMENTS (face->indexed));
 
       g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_PALETTE]);
     }

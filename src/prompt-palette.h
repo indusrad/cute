@@ -27,18 +27,39 @@ G_BEGIN_DECLS
 
 #define PROMPT_TYPE_PALETTE (prompt_palette_get_type())
 
+typedef struct _PromptPaletteScarf
+{
+  GdkRGBA foreground;
+  GdkRGBA background;
+} PromptPaletteScarf;
+
+#define PROMPT_PALETTE_SCARF_VISUAL_BELL 0
+#define PROMPT_PALETTE_SCARF_SUPERUSER   1
+#define PROMPT_PALETTE_SCARF_REMOTE      2
+#define PROMPT_PALETTE_N_SCARVES         3
+
+typedef struct _PromptPaletteFace
+{
+  GdkRGBA background;
+  GdkRGBA foreground;
+  GdkRGBA indexed[16];
+  union {
+    PromptPaletteScarf scarves[PROMPT_PALETTE_N_SCARVES];
+    struct {
+      PromptPaletteScarf visual_bell;
+      PromptPaletteScarf superuser;
+      PromptPaletteScarf remote;
+    };
+  };
+} PromptPaletteFace;
+
 G_DECLARE_FINAL_TYPE (PromptPalette, prompt_palette, PROMPT, PALETTE, GObject)
 
-GListModel     *prompt_palette_list_model_get_default (void);
-
-PromptPalette *prompt_palette_new_from_name      (const char    *name);
-const char    *prompt_palette_get_id             (PromptPalette *self);
-const char    *prompt_palette_get_name           (PromptPalette *self);
-const GdkRGBA *prompt_palette_get_background     (PromptPalette *self,
-                                                  gboolean       dark);
-const GdkRGBA *prompt_palette_get_foreground     (PromptPalette *self,
-                                                  gboolean       dark);
-const GdkRGBA *prompt_palette_get_indexed_colors (PromptPalette *self,
-                                                  guint         *n_colors);
+GListModel              *prompt_palette_list_model_get_default (void);
+PromptPalette           *prompt_palette_new_from_name          (const char    *name);
+const char              *prompt_palette_get_id                 (PromptPalette *self);
+const char              *prompt_palette_get_name               (PromptPalette *self);
+const PromptPaletteFace *prompt_palette_get_face               (PromptPalette *self,
+                                                                gboolean       dark);
 
 G_END_DECLS

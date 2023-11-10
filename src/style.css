@@ -6,19 +6,6 @@ vte-terminal
   padding-right: 6px;
 }
 
-@keyframes visual-bell
-{
-  50% {
-    color: #000;
-    background-color: alpha(shade(@orange_2, 1.1), .66);
-  }
-}
-
-window.prompt-window box.visual-bell
-{
-  animation: visual-bell 0.5s ease-out;
-}
-
 vte-terminal:drop(active) .drop-highlight
 {
   box-shadow: 0 0 1px 1px @accent_bg_color;
