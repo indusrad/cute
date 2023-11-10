@@ -34,14 +34,14 @@
 
 struct _PromptApplication
 {
-  AdwApplication      parent_instance;
-  GListStore         *profiles;
-  GListStore         *containers;
+  AdwApplication     parent_instance;
+  GListStore        *profiles;
+  GListStore        *containers;
   PromptSettings    *settings;
   PromptShortcuts   *shortcuts;
   PromptProfileMenu *profile_menu;
-  char               *system_font_name;
-  GDBusProxy         *portal;
+  char              *system_font_name;
+  GDBusProxy        *portal;
 };
 
 static void prompt_application_about        (PromptApplication *self,
@@ -530,7 +530,7 @@ prompt_application_set_default_profile (PromptApplication *self,
   g_return_if_fail (PROMPT_IS_PROFILE (profile));
 
   prompt_settings_set_default_profile_uuid (self->settings,
-                                             prompt_profile_get_uuid (profile));
+                                            prompt_profile_get_uuid (profile));
 }
 
 void
@@ -540,7 +540,7 @@ prompt_application_add_profile (PromptApplication *self,
   g_return_if_fail (PROMPT_IS_APPLICATION (self));
 
   prompt_settings_add_profile_uuid (self->settings,
-                                     prompt_profile_get_uuid (profile));
+                                    prompt_profile_get_uuid (profile));
 }
 
 void
@@ -551,7 +551,7 @@ prompt_application_remove_profile (PromptApplication *self,
   g_return_if_fail (PROMPT_IS_PROFILE (profile));
 
   prompt_settings_remove_profile_uuid (self->settings,
-                                        prompt_profile_get_uuid (profile));
+                                       prompt_profile_get_uuid (profile));
 }
 
 PromptProfile *
