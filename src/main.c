@@ -69,7 +69,7 @@ main (int   argc,
       char *argv[])
 {
 	g_autoptr(PromptApplication) app = NULL;
-  GApplicationFlags flags = G_APPLICATION_DEFAULT_FLAGS;
+  GApplicationFlags flags = G_APPLICATION_HANDLES_COMMAND_LINE;
   gboolean standalone = FALSE;
 	int ret;
 

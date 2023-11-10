@@ -20,6 +20,8 @@
 
 #include "config.h"
 
+#include <glib/gi18n.h>
+
 #include "prompt-action-group.h"
 #include "prompt-application.h"
 #include "prompt-container-provider.h"
@@ -108,6 +110,24 @@ prompt_application_activate (GApplication *app)
   window = prompt_window_new ();
 
   gtk_window_present (GTK_WINDOW (window));
+}
+
+static int
+prompt_application_command_line (GApplication            *app,
+                                 GApplicationCommandLine *cmdline)
+{
+  PromptApplication *self = (PromptApplication *)app;
+  GVariantDict *dict;
+
+  g_assert (PROMPT_IS_APPLICATION (self));
+  g_assert (G_IS_APPLICATION_COMMAND_LINE (cmdline));
+
+  dict = g_application_command_line_get_options_dict (cmdline);
+
+  if (g_variant_dict_contains (dict, "preferences"))
+    g_action_group_activate_action (G_ACTION_GROUP (self), "preferences", NULL);
+
+  return G_APPLICATION_CLASS (prompt_application_parent_class)->command_line (app, cmdline);
 }
 
 static void
@@ -381,6 +401,7 @@ prompt_application_class_init (PromptApplicationClass *klass)
   app_class->activate = prompt_application_activate;
   app_class->startup = prompt_application_startup;
   app_class->shutdown = prompt_application_shutdown;
+  app_class->command_line = prompt_application_command_line;
 
   properties[PROP_DEFAULT_PROFILE] =
     g_param_spec_object ("default-profile", NULL, NULL,
@@ -407,6 +428,13 @@ prompt_application_class_init (PromptApplicationClass *klass)
 static void
 prompt_application_init (PromptApplication *self)
 {
+  static const GOptionEntry main_entries[] = {
+    { "preferences", 0, 0, G_OPTION_ARG_NONE, NULL, N_("Show the application preferences") },
+    { NULL }
+  };
+
+  g_application_add_main_option_entries (G_APPLICATION (self), main_entries);
+
   self->system_font_name = g_strdup ("Monospace 11");
 }
 
@@ -462,6 +490,7 @@ prompt_application_preferences (PromptApplication *self,
   g_assert (PROMPT_IS_APPLICATION (self));
 
   window = prompt_preferences_window_get_default ();
+  gtk_application_add_window (GTK_APPLICATION (self), GTK_WINDOW (window));
   gtk_window_present (GTK_WINDOW (window));
 }
 
