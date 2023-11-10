@@ -68,14 +68,14 @@ int
 main (int   argc,
       char *argv[])
 {
-	g_autoptr(PromptApplication) app = NULL;
+  g_autoptr(PromptApplication) app = NULL;
   GApplicationFlags flags = G_APPLICATION_HANDLES_COMMAND_LINE;
   gboolean standalone = FALSE;
-	int ret;
+  int ret;
 
-	bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
-	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
-	textdomain (GETTEXT_PACKAGE);
+  bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
+  bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
+  textdomain (GETTEXT_PACKAGE);
 
   g_set_prgname ("prompt");
   g_set_application_name (_("Prompt"));
@@ -85,8 +85,8 @@ main (int   argc,
   if (standalone)
     flags |= G_APPLICATION_NON_UNIQUE;
 
-	app = prompt_application_new (APP_ID, flags);
-	ret = g_application_run (G_APPLICATION (app), argc, argv);
+  app = prompt_application_new (APP_ID, flags);
+  ret = g_application_run (G_APPLICATION (app), argc, argv);
 
-	return ret;
+  return ret;
 }
