@@ -46,7 +46,9 @@ struct _PromptWindow
   GMenu                 *tab_menu;
   AdwTabOverview        *tab_overview;
   AdwTabView            *tab_view;
+  GtkWidget             *zoom_label;
 
+  GBindingGroup         *active_tab_bindings;
   GSignalGroup          *active_tab_signals;
   PromptWindowDressing  *dressing;
   GtkBox                *visual_bell;
@@ -260,6 +262,7 @@ prompt_window_notify_selected_page_cb (PromptWindow *self,
   g_autoptr(GPropertyAction) read_only = NULL;
   PromptTerminal *terminal = NULL;
   AdwTabPage *page;
+  PromptTab *tab = NULL;
   gboolean has_page = FALSE;
 
   g_assert (PROMPT_IS_WINDOW (self));
@@ -267,8 +270,10 @@ prompt_window_notify_selected_page_cb (PromptWindow *self,
 
   if ((page = adw_tab_view_get_selected_page (self->tab_view)))
     {
-      PromptTab *tab = PROMPT_TAB (adw_tab_page_get_child (page));
-      PromptProfile *profile = prompt_tab_get_profile (tab);
+      PromptProfile *profile;
+
+      tab = PROMPT_TAB (adw_tab_page_get_child (page));
+      profile = prompt_tab_get_profile (tab);
 
       has_page = TRUE;
 
@@ -303,6 +308,8 @@ prompt_window_notify_selected_page_cb (PromptWindow *self,
   g_action_map_remove_action (G_ACTION_MAP (self), "tab.read-only");
   if (read_only != NULL)
     g_action_map_add_action (G_ACTION_MAP (self), G_ACTION (read_only));
+
+  g_binding_group_set_source (self->active_tab_bindings, tab);
 
   g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_ACTIVE_TAB]);
 }
@@ -855,19 +862,74 @@ prompt_window_active_tab_bind_cb (PromptWindow *self,
 }
 
 static void
-prompt_window_constructed (GObject *object)
+prompt_window_add_zoom_controls (PromptWindow *self)
 {
-  PromptWindow *self = (PromptWindow *)object;
+  GtkPopover *popover;
+  GtkWidget *zoom_box;
+  GtkWidget *zoom_out;
+  GtkWidget *zoom_in;
+
+  g_assert (PROMPT_IS_WINDOW (self));
+
+  popover = gtk_menu_button_get_popover (self->primary_menu_button);
+
+  /* Add zoom controls */
+  zoom_box = g_object_new (GTK_TYPE_BOX,
+                           "spacing", 12,
+                           "margin-start", 18,
+                           "margin-end", 18,
+                           NULL);
+  zoom_in = g_object_new (GTK_TYPE_BUTTON,
+                          "action-name", "win.zoom-in",
+                          "tooltip-text", _("Zoom In"),
+                          "child", g_object_new (GTK_TYPE_IMAGE,
+                                                 "icon-name", "zoom-in-symbolic",
+                                                 "pixel-size", 16,
+                                                 NULL),
+                          NULL);
+  gtk_widget_add_css_class (zoom_in, "circular");
+  gtk_widget_add_css_class (zoom_in, "flat");
+  gtk_widget_set_tooltip_text (zoom_in, _("Zoom In"));
+  gtk_accessible_update_property (GTK_ACCESSIBLE (zoom_in),
+                                  GTK_ACCESSIBLE_PROPERTY_LABEL,
+                                  _("Zoom in"), -1);
+  zoom_out = g_object_new (GTK_TYPE_BUTTON,
+                           "action-name", "win.zoom-out",
+                           "tooltip-text", _("Zoom Out"),
+                           "child", g_object_new (GTK_TYPE_IMAGE,
+                                                  "icon-name", "zoom-out-symbolic",
+                                                  "pixel-size", 16,
+                                                  NULL),
+                           NULL);
+  gtk_widget_add_css_class (zoom_out, "circular");
+  gtk_widget_add_css_class (zoom_out, "flat");
+  gtk_widget_set_tooltip_text (zoom_out, _("Zoom Out"));
+  gtk_accessible_update_property (GTK_ACCESSIBLE (zoom_out),
+                                  GTK_ACCESSIBLE_PROPERTY_LABEL,
+                                  _("Zoom out"), -1);
+  self->zoom_label = g_object_new (GTK_TYPE_BUTTON,
+                                   "css-classes", (const char * const[]) {"flat", NULL},
+                                   "action-name", "win.zoom-one",
+                                   "hexpand", TRUE,
+                                   "tooltip-text", _("Reset Zoom"),
+                                   "label", "100%",
+                                   NULL);
+  g_binding_group_bind (self->active_tab_bindings, "zoom-label", self->zoom_label, "label", 0);
+  gtk_box_append (GTK_BOX (zoom_box), zoom_out);
+  gtk_box_append (GTK_BOX (zoom_box), self->zoom_label);
+  gtk_box_append (GTK_BOX (zoom_box), zoom_in);
+  gtk_popover_menu_add_child (GTK_POPOVER_MENU (popover), zoom_box, "zoom");
+}
+
+static void
+prompt_window_add_theme_controls (PromptWindow *self)
+{
   g_autoptr(GPropertyAction) interface_style = NULL;
   PromptSettings *settings;
   GtkPopover *popover;
   GtkWidget *selector;
 
-  G_OBJECT_CLASS (prompt_window_parent_class)->constructed (object);
-
-  self->dressing = prompt_window_dressing_new (self);
-
-  gtk_widget_action_set_enabled (GTK_WIDGET (self), "win.unfullscreen", FALSE);
+  g_assert (PROMPT_IS_WINDOW (self));
 
   settings = prompt_application_get_settings (PROMPT_APPLICATION_DEFAULT);
   interface_style = g_property_action_new ("interface-style", settings, "interface-style");
@@ -881,6 +943,21 @@ prompt_window_constructed (GObject *object)
 }
 
 static void
+prompt_window_constructed (GObject *object)
+{
+  PromptWindow *self = (PromptWindow *)object;
+
+  G_OBJECT_CLASS (prompt_window_parent_class)->constructed (object);
+
+  self->dressing = prompt_window_dressing_new (self);
+
+  gtk_widget_action_set_enabled (GTK_WIDGET (self), "win.unfullscreen", FALSE);
+
+  prompt_window_add_theme_controls (self);
+  prompt_window_add_zoom_controls (self);
+}
+
+static void
 prompt_window_dispose (GObject *object)
 {
   PromptWindow *self = (PromptWindow *)object;
@@ -888,6 +965,7 @@ prompt_window_dispose (GObject *object)
   gtk_widget_dispose_template (GTK_WIDGET (self), PROMPT_TYPE_WINDOW);
 
   g_signal_group_set_target (self->active_tab_signals, NULL);
+  g_binding_group_set_source (self->active_tab_bindings, NULL);
   g_clear_handle_id (&self->focus_active_tab_source, g_source_remove);
 
   G_OBJECT_CLASS (prompt_window_parent_class)->dispose (object);
@@ -898,6 +976,7 @@ prompt_window_finalize (GObject *object)
 {
   PromptWindow *self = (PromptWindow *)object;
 
+  g_clear_object (&self->active_tab_bindings);
   g_clear_object (&self->active_tab_signals);
 
   G_OBJECT_CLASS (prompt_window_parent_class)->finalize (object);
@@ -1026,6 +1105,8 @@ prompt_window_class_init (PromptWindowClass *klass)
 static void
 prompt_window_init (PromptWindow *self)
 {
+  self->active_tab_bindings = g_binding_group_new ();
+
   self->active_tab_signals = g_signal_group_new (PROMPT_TYPE_TAB);
   g_signal_connect_object (self->active_tab_signals,
                            "bind",

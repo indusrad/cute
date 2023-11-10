@@ -420,21 +420,8 @@
       </item>
     </section>
     <section>
-      <attribute name="display-hint">horizontal-buttons</attribute>
       <item>
-        <attribute name="id">zoom-out</attribute>
-        <attribute name="action">win.zoom-out</attribute>
-        <attribute name="verb-icon">zoom-out-symbolic</attribute>
-      </item>
-      <item>
-        <attribute name="id">zoom-one</attribute>
-        <attribute name="action">win.zoom-one</attribute>
-        <attribute name="verb-icon">zoom-original-symbolic</attribute>
-      </item>
-      <item>
-        <attribute name="id">zoom-in</attribute>
-        <attribute name="action">win.zoom-in</attribute>
-        <attribute name="verb-icon">zoom-in-symbolic</attribute>
+        <attribute name="custom">zoom</attribute>
       </item>
     </section>
     <section>

@@ -72,6 +72,7 @@ enum {
   PROP_TITLE_PREFIX,
   PROP_SUBTITLE,
   PROP_ZOOM,
+  PROP_ZOOM_LABEL,
   N_PROPS
 };
 
@@ -647,6 +648,10 @@ prompt_tab_get_property (GObject    *object,
       g_value_set_enum (value, prompt_tab_get_zoom (self));
       break;
 
+    case PROP_ZOOM_LABEL:
+      g_value_take_string (value, prompt_tab_dup_zoom_label (self));
+      break;
+
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
     }
@@ -749,6 +754,13 @@ prompt_tab_class_init (PromptTabClass *klass)
                        (G_PARAM_READWRITE |
                         G_PARAM_EXPLICIT_NOTIFY |
                         G_PARAM_STATIC_STRINGS));
+
+  properties[PROP_ZOOM_LABEL] =
+    g_param_spec_string ("zoom-label", NULL, NULL,
+                         NULL,
+                         (G_PARAM_READABLE |
+                          G_PARAM_EXPLICIT_NOTIFY |
+                          G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_properties (object_class, N_PROPS, properties);
 
@@ -944,6 +956,7 @@ prompt_tab_set_zoom (PromptTab       *self,
       self->zoom = zoom;
       prompt_tab_apply_zoom (self);
       g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_ZOOM]);
+      g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_ZOOM_LABEL]);
     }
 }
 
@@ -1014,4 +1027,15 @@ prompt_tab_get_process (PromptTab *self)
   g_return_val_if_fail (PROMPT_IS_TAB (self), NULL);
 
   return self->process;
+}
+
+char *
+prompt_tab_dup_zoom_label (PromptTab *self)
+{
+  g_return_val_if_fail (PROMPT_IS_TAB (self), 0);
+
+  if (self->zoom == PROMPT_ZOOM_LEVEL_DEFAULT)
+    return g_strdup ("100%");
+
+  return g_strdup_printf ("%.0lf%%", zoom_font_scales[self->zoom] * 100.0);
 }

@@ -69,6 +69,7 @@ void             prompt_tab_set_zoom                           (PromptTab       
                                                                 PromptZoomLevel  zoom);
 void             prompt_tab_zoom_in                            (PromptTab       *self);
 void             prompt_tab_zoom_out                           (PromptTab       *self);
+char            *prompt_tab_dup_zoom_label                     (PromptTab       *self);
 void             prompt_tab_raise                              (PromptTab       *self);
 gboolean         prompt_tab_is_running                         (PromptTab       *self);
 void             prompt_tab_force_quit                         (PromptTab       *self);
