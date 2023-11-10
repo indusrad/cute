@@ -169,7 +169,7 @@ static const PromptPaletteData prompt_palettes_inline[] = {
         },
         .visual_bell = {
           .foreground = GDK_RGBA ("fdf6e3"),
-          .background = GDK_RGBA ("b58900")
+          .background = GDK_RGBA ("335459")
         },
         .superuser = {
           .foreground = GDK_RGBA ("fdf6e3"),
