@@ -357,7 +357,7 @@
                       </object>
                     </child>
                     <child type="end">
-                      <object class="GtkMenuButton">
+                      <object class="GtkMenuButton" id="primary_menu_button">
                         <property name="primary">true</property>
                         <property name="icon-name">open-menu-symbolic</property>
                         <property name="tooltip-text" translatable="yes">Menu</property>
@@ -414,6 +414,11 @@
     </property>
   </template>
   <menu id="primary_menu">
+    <section>
+      <item>
+        <attribute name="custom">interface-style</attribute>
+      </item>
+    </section>
     <section>
       <attribute name="display-hint">horizontal-buttons</attribute>
       <item>

@@ -26,6 +26,7 @@
 #include "prompt-close-dialog.h"
 #include "prompt-find-bar.h"
 #include "prompt-settings.h"
+#include "prompt-theme-selector.h"
 #include "prompt-title-dialog.h"
 #include "prompt-window.h"
 #include "prompt-window-dressing.h"
@@ -34,19 +35,20 @@ struct _PromptWindow
 {
   AdwApplicationWindow   parent_instance;
 
-  PromptShortcuts      *shortcuts;
+  PromptShortcuts       *shortcuts;
 
-  PromptFindBar        *find_bar;
+  PromptFindBar         *find_bar;
   GtkRevealer           *find_bar_revealer;
   AdwHeaderBar          *header_bar;
   GMenu                 *primary_menu;
+  GtkMenuButton         *primary_menu_button;
   AdwTabBar             *tab_bar;
   GMenu                 *tab_menu;
   AdwTabOverview        *tab_overview;
   AdwTabView            *tab_view;
 
   GSignalGroup          *active_tab_signals;
-  PromptWindowDressing *dressing;
+  PromptWindowDressing  *dressing;
   GtkBox                *visual_bell;
 
   guint                  visual_bell_source;
@@ -856,12 +858,26 @@ static void
 prompt_window_constructed (GObject *object)
 {
   PromptWindow *self = (PromptWindow *)object;
+  g_autoptr(GPropertyAction) interface_style = NULL;
+  PromptSettings *settings;
+  GtkPopover *popover;
+  GtkWidget *selector;
 
   G_OBJECT_CLASS (prompt_window_parent_class)->constructed (object);
 
   self->dressing = prompt_window_dressing_new (self);
 
   gtk_widget_action_set_enabled (GTK_WIDGET (self), "win.unfullscreen", FALSE);
+
+  settings = prompt_application_get_settings (PROMPT_APPLICATION_DEFAULT);
+  interface_style = g_property_action_new ("interface-style", settings, "interface-style");
+  g_action_map_add_action (G_ACTION_MAP (self), G_ACTION (interface_style));
+
+  popover = gtk_menu_button_get_popover (self->primary_menu_button);
+  selector = g_object_new (PROMPT_TYPE_THEME_SELECTOR,
+                           "action-name", "win.interface-style",
+                           NULL);
+  gtk_popover_menu_add_child (GTK_POPOVER_MENU (popover), selector, "interface-style");
 }
 
 static void
@@ -967,6 +983,7 @@ prompt_window_class_init (PromptWindowClass *klass)
   gtk_widget_class_bind_template_child (widget_class, PromptWindow, find_bar_revealer);
   gtk_widget_class_bind_template_child (widget_class, PromptWindow, header_bar);
   gtk_widget_class_bind_template_child (widget_class, PromptWindow, primary_menu);
+  gtk_widget_class_bind_template_child (widget_class, PromptWindow, primary_menu_button);
   gtk_widget_class_bind_template_child (widget_class, PromptWindow, tab_bar);
   gtk_widget_class_bind_template_child (widget_class, PromptWindow, tab_menu);
   gtk_widget_class_bind_template_child (widget_class, PromptWindow, tab_overview);

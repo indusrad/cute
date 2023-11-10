@@ -307,7 +307,7 @@ prompt_application_startup (GApplication *application)
 
   g_object_bind_property (self->settings, "interface-style",
                           style_manager, "color-scheme",
-                          G_BINDING_SYNC_CREATE);
+                          G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
 }
 
 static void
