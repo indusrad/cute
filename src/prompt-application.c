@@ -400,6 +400,7 @@ static void
 prompt_application_edit_profile (PromptApplication *self,
                                  GVariant          *param)
 {
+  g_autoptr(PromptProfile) profile = NULL;
   const char *profile_uuid;
 
   g_assert (PROMPT_IS_APPLICATION (self));
@@ -408,7 +409,12 @@ prompt_application_edit_profile (PromptApplication *self,
 
   profile_uuid = g_variant_get_string (param, NULL);
 
-  g_printerr ("TODO: show preferences for %s\n", profile_uuid);
+  if ((prompt_application_dup_profile (self, profile_uuid)))
+    {
+      PromptPreferencesWindow *window = prompt_preferences_window_get_default ();
+
+      prompt_preferences_window_edit_profile (window, profile);
+    }
 }
 
 static void

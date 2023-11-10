@@ -694,6 +694,7 @@ prompt_preferences_window_edit_profile (PromptPreferencesWindow *self,
 
   editor = prompt_profile_editor_new (profile);
 
+  adw_preferences_window_pop_subpage (ADW_PREFERENCES_WINDOW (self));
   adw_preferences_window_push_subpage (ADW_PREFERENCES_WINDOW (self),
                                        ADW_NAVIGATION_PAGE (editor));
 }
