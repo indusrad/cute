@@ -89,7 +89,7 @@ prompt_host_container_init (PromptHostContainer *self)
 {
 }
 
-PromptContainer *
+PromptHostContainer *
 prompt_host_container_new (void)
 {
   return g_object_new (PROMPT_TYPE_HOST_CONTAINER, NULL);

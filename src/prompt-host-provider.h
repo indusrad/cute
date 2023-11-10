@@ -1,5 +1,4 @@
-/*
- * prompt-host-container.h
+/* prompt-host-provider.h
  *
  * Copyright 2023 Christian Hergert <chergert@redhat.com>
  *
@@ -21,14 +20,14 @@
 
 #pragma once
 
-#include "prompt-container.h"
+#include "prompt-container-provider.h"
 
 G_BEGIN_DECLS
 
-#define PROMPT_TYPE_HOST_CONTAINER (prompt_host_container_get_type())
+#define PROMPT_TYPE_HOST_PROVIDER (prompt_host_provider_get_type())
 
-G_DECLARE_FINAL_TYPE (PromptHostContainer, prompt_host_container, PROMPT, HOST_CONTAINER, PromptContainer)
+G_DECLARE_FINAL_TYPE (PromptHostProvider, prompt_host_provider, PROMPT, HOST_PROVIDER, PromptContainerProvider)
 
-PromptHostContainer *prompt_host_container_new (void);
+PromptContainerProvider *prompt_host_provider_new (void);
 
 G_END_DECLS

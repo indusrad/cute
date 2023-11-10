@@ -22,7 +22,8 @@
 
 #include "prompt-action-group.h"
 #include "prompt-application.h"
-#include "prompt-host-container.h"
+#include "prompt-container-provider.h"
+#include "prompt-host-provider.h"
 #include "prompt-preferences-window.h"
 #include "prompt-profile-menu.h"
 #include "prompt-settings.h"
@@ -34,14 +35,15 @@
 
 struct _PromptApplication
 {
-  AdwApplication     parent_instance;
-  GListStore        *profiles;
-  GListStore        *containers;
-  PromptSettings    *settings;
-  PromptShortcuts   *shortcuts;
-  PromptProfileMenu *profile_menu;
-  char              *system_font_name;
-  GDBusProxy        *portal;
+  AdwApplication       parent_instance;
+  GListStore          *profiles;
+  GtkFlattenListModel *containers;
+  GListStore          *providers;
+  PromptSettings      *settings;
+  PromptShortcuts     *shortcuts;
+  PromptProfileMenu   *profile_menu;
+  char                *system_font_name;
+  GDBusProxy          *portal;
 };
 
 static void prompt_application_about        (PromptApplication *self,
@@ -106,6 +108,17 @@ prompt_application_activate (GApplication *app)
   window = prompt_window_new ();
 
   gtk_window_present (GTK_WINDOW (window));
+}
+
+static void
+prompt_application_add_providers (PromptApplication *self)
+{
+  g_autoptr(PromptContainerProvider) host = NULL;
+
+  g_assert (PROMPT_IS_APPLICATION (self));
+
+  host = prompt_host_provider_new ();
+  g_list_store_append (self->providers, host);
 }
 
 static void
@@ -240,14 +253,12 @@ prompt_application_startup (GApplication *application)
   g_application_set_default (application);
   g_application_set_resource_base_path (G_APPLICATION (self), "/org/gnome/Prompt");
 
-  self->containers = g_list_store_new (PROMPT_TYPE_CONTAINER);
   self->profiles = g_list_store_new (PROMPT_TYPE_PROFILE);
   self->settings = prompt_settings_new ();
   self->shortcuts = prompt_shortcuts_new (NULL);
   self->profile_menu = prompt_profile_menu_new (self->settings);
-
-  host = prompt_host_container_new ();
-  g_list_store_append (self->containers, host);
+  self->providers = g_list_store_new (PROMPT_TYPE_CONTAINER_PROVIDER);
+  self->containers = gtk_flatten_list_model_new (g_object_ref (G_LIST_MODEL (self->providers)));
 
   G_APPLICATION_CLASS (prompt_application_parent_class)->startup (application);
 
@@ -308,6 +319,8 @@ prompt_application_startup (GApplication *application)
   g_object_bind_property (self->settings, "interface-style",
                           style_manager, "color-scheme",
                           G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
+
+  prompt_application_add_providers (self);
 }
 
 static void
@@ -322,6 +335,7 @@ prompt_application_shutdown (GApplication *application)
   g_clear_object (&self->profile_menu);
   g_clear_object (&self->profiles);
   g_clear_object (&self->containers);
+  g_clear_object (&self->providers);
   g_clear_object (&self->portal);
   g_clear_object (&self->shortcuts);
   g_clear_object (&self->settings);
