@@ -50,6 +50,15 @@
     <value nick="close" value="2"/>
   </enum>
 
+  <enum id="org.gnome.Prompt.InterfaceStyle">
+    <!-- ADW_COLOR_SCHEME_DFEAULT -->
+    <value nick="system" value="0"/>
+    <!-- ADW_COLOR_SCHEME_FORCE_LIGHT -->
+    <value nick="light" value="1"/>
+    <!-- ADW_COLOR_SCHEME_FORCE_DARK -->
+    <value nick="dark" value="4"/>
+  </enum>
+
   <enum id="org.gnome.Prompt.PreserveDirectory">
     <value nick="never" value="0"/>
     <value nick="safe" value="1"/>
@@ -140,6 +149,12 @@
       <default>'always'</default>
       <summary>Text Blink Mode</summary>
       <description>When text blinking is allowed</description>
+    </key>
+
+    <key name="interface-style" enum="org.gnome.Prompt.InterfaceStyle">
+      <default>'system'</default>
+      <summary>Interface Style</summary>
+      <summary>If light or dark interface style should be used</summary>
     </key>
 
     <key name="window-size" type="(uu)">

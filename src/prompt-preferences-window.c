@@ -93,6 +93,8 @@ struct _PromptPreferencesWindow
   PromptShortcutRow    *shortcut_zoom_in;
   PromptShortcutRow    *shortcut_zoom_one;
   PromptShortcutRow    *shortcut_zoom_out;
+  AdwComboRow          *style;
+  GListModel           *styles;
   AdwComboRow          *tab_position;
   GListModel           *tab_positions;
   AdwComboRow          *text_blink_mode;
@@ -420,6 +422,16 @@ prompt_preferences_window_constructed (GObject *object)
                                 g_object_ref (self->text_blink_modes),
                                 g_object_unref);
 
+  g_settings_bind_with_mapping (gsettings,
+                                PROMPT_SETTING_KEY_INTERFACE_STYLE,
+                                self->style,
+                                "selected",
+                                G_SETTINGS_BIND_DEFAULT,
+                                string_to_index,
+                                index_to_string,
+                                g_object_ref (self->styles),
+                                g_object_unref);
+
   profiles = prompt_application_list_profiles (app);
 
   gtk_list_box_bind_model (self->profiles_list_box,
@@ -632,6 +644,8 @@ prompt_preferences_window_class_init (PromptPreferencesWindowClass *klass)
   gtk_widget_class_bind_template_child (widget_class, PromptPreferencesWindow, shortcut_zoom_in);
   gtk_widget_class_bind_template_child (widget_class, PromptPreferencesWindow, shortcut_zoom_one);
   gtk_widget_class_bind_template_child (widget_class, PromptPreferencesWindow, shortcut_zoom_out);
+  gtk_widget_class_bind_template_child (widget_class, PromptPreferencesWindow, style);
+  gtk_widget_class_bind_template_child (widget_class, PromptPreferencesWindow, styles);
   gtk_widget_class_bind_template_child (widget_class, PromptPreferencesWindow, tab_position);
   gtk_widget_class_bind_template_child (widget_class, PromptPreferencesWindow, tab_positions);
   gtk_widget_class_bind_template_child (widget_class, PromptPreferencesWindow, text_blink_mode);

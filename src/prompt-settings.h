@@ -21,6 +21,7 @@
 
 #pragma once
 
+#include <adwaita.h>
 #include <vte/vte.h>
 
 G_BEGIN_DECLS
@@ -30,6 +31,7 @@ G_BEGIN_DECLS
 #define PROMPT_SETTING_KEY_CURSOR_SHAPE         "cursor-shape"
 #define PROMPT_SETTING_KEY_DEFAULT_PROFILE_UUID "default-profile-uuid"
 #define PROMPT_SETTING_KEY_FONT_NAME            "font-name"
+#define PROMPT_SETTING_KEY_INTERFACE_STYLE      "interface-style"
 #define PROMPT_SETTING_KEY_NEW_TAB_POSITION     "new-tab-position"
 #define PROMPT_SETTING_KEY_PROFILE_UUIDS        "profile-uuids"
 #define PROMPT_SETTING_KEY_SCROLLBAR_POLICY     "scrollbar-policy"
@@ -100,5 +102,8 @@ void                    prompt_settings_get_window_size          (PromptSettings
 void                    prompt_settings_set_window_size          (PromptSettings             *self,
                                                                   guint                       columns,
                                                                   guint                       rows);
+AdwColorScheme          prompt_settings_get_interface_style      (PromptSettings             *self);
+void                    prompt_settings_set_interface_style      (PromptSettings             *self,
+                                                                  AdwColorScheme              color_scheme);
 
 G_END_DECLS

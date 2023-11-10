@@ -41,6 +41,7 @@ enum {
   PROP_DEFAULT_PROFILE_UUID,
   PROP_FONT_DESC,
   PROP_FONT_NAME,
+  PROP_INTERFACE_STYLE,
   PROP_NEW_TAB_POSITION,
   PROP_PROFILE_UUIDS,
   PROP_SCROLLBAR_POLICY,
@@ -81,6 +82,8 @@ prompt_settings_changed_cb (PromptSettings *self,
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_SCROLLBAR_POLICY]);
   else if (g_str_equal (key, PROMPT_SETTING_KEY_TEXT_BLINK_MODE))
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_TEXT_BLINK_MODE]);
+  else if (g_str_equal (key, PROMPT_SETTING_KEY_INTERFACE_STYLE))
+    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_INTERFACE_STYLE]);
   else if (g_str_equal (key, PROMPT_SETTING_KEY_FONT_NAME))
     {
       g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_FONT_NAME]);
@@ -131,6 +134,10 @@ prompt_settings_get_property (GObject    *object,
 
     case PROP_FONT_DESC:
       g_value_take_boxed (value, prompt_settings_dup_font_desc (self));
+      break;
+
+    case PROP_INTERFACE_STYLE:
+      g_value_set_enum (value, prompt_settings_get_interface_style (self));
       break;
 
     case PROP_FONT_NAME:
@@ -194,6 +201,10 @@ prompt_settings_set_property (GObject      *object,
 
     case PROP_FONT_NAME:
       prompt_settings_set_font_name (self, g_value_get_string (value));
+      break;
+
+    case PROP_INTERFACE_STYLE:
+      prompt_settings_set_interface_style (self, g_value_get_enum (value));
       break;
 
     case PROP_NEW_TAB_POSITION:
@@ -270,6 +281,14 @@ prompt_settings_class_init (PromptSettingsClass *klass)
                          (G_PARAM_READWRITE |
                           G_PARAM_EXPLICIT_NOTIFY |
                           G_PARAM_STATIC_STRINGS));
+
+  properties[PROP_INTERFACE_STYLE] =
+    g_param_spec_enum ("interface-style", NULL, NULL,
+                       ADW_TYPE_COLOR_SCHEME,
+                       ADW_COLOR_SCHEME_DEFAULT,
+                       (G_PARAM_READWRITE |
+                        G_PARAM_EXPLICIT_NOTIFY |
+                        G_PARAM_STATIC_STRINGS));
 
   properties[PROP_NEW_TAB_POSITION] =
     g_param_spec_enum ("new-tab-position", NULL, NULL,
@@ -675,4 +694,24 @@ prompt_settings_set_window_size (PromptSettings *self,
   g_return_if_fail (PROMPT_IS_SETTINGS (self));
 
   g_settings_set (self->settings, "window-size", "(uu)", columns, rows);
+}
+
+AdwColorScheme
+prompt_settings_get_interface_style (PromptSettings *self)
+{
+  g_return_val_if_fail (PROMPT_IS_SETTINGS (self), 0);
+
+  return g_settings_get_enum (self->settings, PROMPT_SETTING_KEY_INTERFACE_STYLE);
+}
+
+void
+prompt_settings_set_interface_style (PromptSettings *self,
+                                     AdwColorScheme  color_scheme)
+{
+  g_return_if_fail (PROMPT_IS_SETTINGS (self));
+  g_return_if_fail (color_scheme == ADW_COLOR_SCHEME_DEFAULT ||
+                    color_scheme == ADW_COLOR_SCHEME_FORCE_LIGHT ||
+                    color_scheme == ADW_COLOR_SCHEME_FORCE_DARK);
+
+  g_settings_set_enum (self->settings, PROMPT_SETTING_KEY_INTERFACE_STYLE, color_scheme);
 }

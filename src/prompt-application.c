@@ -304,6 +304,10 @@ prompt_application_startup (GApplication *application)
                            G_CALLBACK (prompt_application_style_notify_dark_cb),
                            self,
                            G_CONNECT_SWAPPED);
+
+  g_object_bind_property (self->settings, "interface-style",
+                          style_manager, "color-scheme",
+                          G_BINDING_SYNC_CREATE);
 }
 
 static void

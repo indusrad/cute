@@ -37,6 +37,37 @@
           <object class="AdwPreferencesGroup">
             <property name="title" translatable="yes">Color</property>
             <child>
+              <object class="AdwComboRow" id="style">
+                <property name="title" translatable="yes">Interface</property>
+                <property name="expression">
+                  <lookup name="title" type="PromptPreferencesListItem"/>
+                </property>
+                <property name="model">
+                  <object class="GListStore" id="styles">
+                    <property name="item-type">PromptPreferencesListItem</property>
+                    <child>
+                      <object class="PromptPreferencesListItem">
+                        <property name="title" translatable="yes">Follow System</property>
+                        <property name="value">'system'</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="PromptPreferencesListItem">
+                        <property name="title" translatable="yes">Light</property>
+                        <property name="value">'light'</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="PromptPreferencesListItem">
+                        <property name="title" translatable="yes">Dark</property>
+                        <property name="value">'dark'</property>
+                      </object>
+                    </child>
+                  </object>
+                </property>
+              </object>
+            </child>
+            <child>
               <object class="AdwComboRow" id="palette">
                 <property name="title" translatable="yes">Palette</property>
                 <property name="expression">
