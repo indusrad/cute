@@ -105,5 +105,6 @@ void                    prompt_settings_set_window_size          (PromptSettings
 AdwColorScheme          prompt_settings_get_interface_style      (PromptSettings             *self);
 void                    prompt_settings_set_interface_style      (PromptSettings             *self,
                                                                   AdwColorScheme              color_scheme);
+char                  **prompt_settings_get_proxy_environment    (PromptSettings             *self);
 
 G_END_DECLS

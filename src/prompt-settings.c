@@ -55,6 +55,12 @@ G_DEFINE_FINAL_TYPE (PromptSettings, prompt_settings, G_TYPE_OBJECT)
 
 static GParamSpec *properties [N_PROPS];
 
+static inline gboolean
+strempty (const char *s)
+{
+  return !s || !s[0];
+}
+
 static void
 prompt_settings_changed_cb (PromptSettings *self,
                             const char     *key,
@@ -714,4 +720,95 @@ prompt_settings_set_interface_style (PromptSettings *self,
                     color_scheme == ADW_COLOR_SCHEME_FORCE_DARK);
 
   g_settings_set_enum (self->settings, PROMPT_SETTING_KEY_INTERFACE_STYLE, color_scheme);
+}
+
+static void
+prompt_settings_add_proxy_environment (PromptSettings *self,
+                                       const char     *protocol,
+                                       const char     *envvar,
+                                       GStrvBuilder   *builder)
+{
+  g_autofree char *schema_id = NULL;
+  g_autofree char *authentication_user = NULL;
+  g_autofree char *authentication_password = NULL;
+  g_autofree char *host = NULL;
+  g_autoptr(GSettings) settings = NULL;
+  g_autoptr(GUri) uri = NULL;
+  int port = 0;
+
+  g_assert (PROMPT_IS_SETTINGS (self));
+  g_assert (protocol != NULL);
+  g_assert (envvar != NULL);
+  g_assert (builder != NULL);
+
+  schema_id = g_strdup_printf ("org.gnome.system.proxy.%s", protocol);
+  settings = g_settings_new (schema_id);
+
+  host = g_settings_get_string (settings, "host");
+  port = g_settings_get_int (settings, "port");
+  if (strempty (host) || port <= 0)
+    return;
+
+  if (g_str_equal (protocol, "http") &&
+      g_settings_get_boolean (settings, "use-authentication"))
+    {
+      authentication_user = g_settings_get_string (settings, "authentication-user");
+      authentication_password = g_settings_get_string (settings, "authentication-password");
+    }
+
+  uri = g_uri_build_with_user (G_URI_FLAGS_NONE,
+                               protocol,
+                               strempty (authentication_user) ? NULL : authentication_user,
+                               strempty (authentication_password) ? NULL : authentication_password,
+                               NULL,
+                               host,
+                               port,
+                               "",
+                               NULL,
+                               NULL);
+
+  if (uri != NULL)
+    {
+      g_autofree char *uristr = g_uri_to_string (uri);
+      g_autofree char *lower = g_strdup_printf ("%s=%s", envvar, uristr);
+      g_autofree char *upper_key = g_ascii_strup (envvar, -1);
+      g_autofree char *upper = g_strdup_printf ("%s=%s", upper_key, uristr);
+
+      g_strv_builder_add (builder, lower);
+      g_strv_builder_add (builder, upper);
+    }
+}
+
+char **
+prompt_settings_get_proxy_environment (PromptSettings *self)
+{
+  g_autoptr(GStrvBuilder) builder = NULL;
+  g_autoptr(GSettings) settings = NULL;
+  g_auto(GStrv) ignore_hosts = NULL;
+
+  g_return_val_if_fail (PROMPT_IS_SETTINGS (self), NULL);
+
+  settings = g_settings_new ("org.gnome.system.proxy");
+
+  if (!g_str_equal (g_settings_get_string (settings, "mode"), "manual"))
+    return NULL;
+
+  builder = g_strv_builder_new ();
+
+  prompt_settings_add_proxy_environment (self, "http", "http_proxy", builder);
+  prompt_settings_add_proxy_environment (self, "https", "https_proxy", builder);
+  prompt_settings_add_proxy_environment (self, "ftp", "ftp_proxy", builder);
+  prompt_settings_add_proxy_environment (self, "socks", "all_proxy", builder);
+
+  if ((ignore_hosts = g_settings_get_strv (settings, "ignore-hosts")) && ignore_hosts[0])
+    {
+      g_autofree char *value = g_strjoinv (",", ignore_hosts);
+      g_autofree char *lower = g_strdup_printf ("no_proxy=%s", value);
+      g_autofree char *upper = g_strdup_printf ("no_proxy=%s", value);
+
+      g_strv_builder_add (builder, lower);
+      g_strv_builder_add (builder, upper);
+    }
+
+  return g_strv_builder_end (builder);
 }

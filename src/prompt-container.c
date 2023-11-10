@@ -21,7 +21,9 @@
 
 #include "config.h"
 
+#include "prompt-application.h"
 #include "prompt-container.h"
+#include "prompt-settings.h"
 #include "prompt-user.h"
 #include "prompt-util.h"
 
@@ -129,7 +131,9 @@ prompt_container_spawn_discover_cb (GObject      *object,
   g_autoptr(GTask) task = user_data;
   g_autoptr(GError) error = NULL;
   PromptContainerSpawn *state;
+  PromptSettings *settings;
   g_autofree char *default_shell = NULL;
+  g_auto(GStrv) proxyenv = NULL;
 
   g_assert (PROMPT_IS_USER (user));
   g_assert (G_IS_ASYNC_RESULT (result));
@@ -145,12 +149,18 @@ prompt_container_spawn_discover_cb (GObject      *object,
 
   default_shell = prompt_user_discover_shell_finish (user, result, NULL);
 
+  settings = prompt_application_get_settings (PROMPT_APPLICATION_DEFAULT);
+  proxyenv = prompt_settings_get_proxy_environment (settings);
+  if (proxyenv != NULL)
+    prompt_run_context_add_environ (state->run_context,
+                                    (const char * const *)proxyenv);
+
   if (!prompt_profile_apply (state->profile,
-                              state->run_context,
-                              state->pty,
-                              state->current_directory_uri,
-                              default_shell,
-                              &error) ||
+                             state->run_context,
+                             state->pty,
+                             state->current_directory_uri,
+                             default_shell,
+                             &error) ||
       !(subprocess = prompt_run_context_spawn (state->run_context, &error)))
     g_task_return_error (task, g_steal_pointer (&error));
   else
