@@ -126,6 +126,8 @@ prompt_application_command_line (GApplication            *app,
 
   if (g_variant_dict_contains (dict, "preferences"))
     g_action_group_activate_action (G_ACTION_GROUP (self), "preferences", NULL);
+  else
+    g_application_activate (G_APPLICATION (self));
 
   return G_APPLICATION_CLASS (prompt_application_parent_class)->command_line (app, cmdline);
 }
