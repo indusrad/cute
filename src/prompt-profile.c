@@ -51,6 +51,7 @@ enum {
   PROP_LOGIN_SHELL,
   PROP_OPACITY,
   PROP_PALETTE,
+  PROP_PALETTE_ID,
   PROP_PRESERVE_DIRECTORY,
   PROP_SCROLL_ON_KEYSTROKE,
   PROP_SCROLL_ON_OUTPUT,
@@ -81,7 +82,10 @@ prompt_profile_changed_cb (PromptProfile *self,
   else if (g_str_equal (key, PROMPT_PROFILE_KEY_EXIT_ACTION))
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_EXIT_ACTION]);
   else if (g_str_equal (key, PROMPT_PROFILE_KEY_PALETTE))
-    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_PALETTE]);
+    {
+      g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_PALETTE]);
+      g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_PALETTE_ID]);
+    }
   else if (g_str_equal (key, PROMPT_PROFILE_KEY_OPACITY))
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_OPACITY]);
   else if (g_str_equal (key, PROMPT_PROFILE_KEY_LIMIT_SCROLLBACK))
@@ -194,6 +198,14 @@ prompt_profile_get_property (GObject    *object,
       g_value_take_object (value, prompt_profile_dup_palette (self));
       break;
 
+    case PROP_PALETTE_ID:
+      {
+        g_autoptr(PromptPalette) palette = prompt_profile_dup_palette (self);
+        if (palette != NULL)
+          g_value_set_string (value, prompt_palette_get_id (palette));
+      }
+      break;
+
     case PROP_PRESERVE_DIRECTORY:
       g_value_set_enum (value, prompt_profile_get_preserve_directory (self));
       break;
@@ -279,6 +291,14 @@ prompt_profile_set_property (GObject      *object,
 
     case PROP_PALETTE:
       prompt_profile_set_palette (self, g_value_get_object (value));
+      break;
+
+    case PROP_PALETTE_ID:
+      {
+        const char *id = g_value_get_string (value);
+        g_autoptr(PromptPalette) palette = prompt_palette_new_from_name (id);
+        prompt_profile_set_palette (self, palette);
+      }
       break;
 
     case PROP_PRESERVE_DIRECTORY:
@@ -404,6 +424,13 @@ prompt_profile_class_init (PromptProfileClass *klass)
   properties[PROP_PALETTE] =
     g_param_spec_object ("palette", NULL, NULL,
                          PROMPT_TYPE_PALETTE,
+                         (G_PARAM_READWRITE |
+                          G_PARAM_EXPLICIT_NOTIFY |
+                          G_PARAM_STATIC_STRINGS));
+
+  properties[PROP_PALETTE_ID] =
+    g_param_spec_string ("palette-id", NULL, NULL,
+                         NULL,
                          (G_PARAM_READWRITE |
                           G_PARAM_EXPLICIT_NOTIFY |
                           G_PARAM_STATIC_STRINGS));
