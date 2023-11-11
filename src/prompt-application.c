@@ -26,9 +26,11 @@
 #include "prompt-application.h"
 #include "prompt-container-provider.h"
 #include "prompt-host-provider.h"
+#include "prompt-podman-provider.h"
 #include "prompt-preferences-window.h"
 #include "prompt-profile-menu.h"
 #include "prompt-settings.h"
+#include "prompt-toolbox-container.h"
 #include "prompt-window.h"
 
 #define PORTAL_BUS_NAME "org.freedesktop.portal.Desktop"
@@ -136,11 +138,19 @@ static void
 prompt_application_add_providers (PromptApplication *self)
 {
   g_autoptr(PromptContainerProvider) host = NULL;
+  g_autoptr(PromptContainerProvider) podman = NULL;
 
   g_assert (PROMPT_IS_APPLICATION (self));
 
   host = prompt_host_provider_new ();
   g_list_store_append (self->providers, host);
+
+  podman = prompt_podman_provider_new ();
+  prompt_podman_provider_set_type_for_label (PROMPT_PODMAN_PROVIDER (podman),
+                                             "com.github.containers.toolbox",
+                                             NULL,
+                                             PROMPT_TYPE_TOOLBOX_CONTAINER);
+  g_list_store_append (self->providers, podman);
 }
 
 static void

@@ -1,4 +1,4 @@
-/* prompt-podman-provider.h
+/* prompt-podman-container.h
  *
  * Copyright 2023 Christian Hergert <chergert@redhat.com>
  *
@@ -20,18 +20,27 @@
 
 #pragma once
 
-#include "prompt-container-provider.h"
+#include <json-glib/json-glib.h>
+
+#include "prompt-container.h"
 
 G_BEGIN_DECLS
 
-#define PROMPT_TYPE_PODMAN_PROVIDER (prompt_podman_provider_get_type())
+#define PROMPT_TYPE_PODMAN_CONTAINER (prompt_podman_container_get_type())
 
-G_DECLARE_FINAL_TYPE (PromptPodmanProvider, prompt_podman_provider, PROMPT, PODMAN_PROVIDER, PromptContainerProvider)
+G_DECLARE_DERIVABLE_TYPE (PromptPodmanContainer, prompt_podman_container, PROMPT, PODMAN_CONTAINER, PromptContainer)
 
-PromptContainerProvider *prompt_podman_provider_new                (void);
-void                     prompt_podman_provider_set_type_for_label (PromptPodmanProvider *self,
-                                                                    const char           *key,
-                                                                    const char           *value,
-                                                                    GType                 container_type);
+struct _PromptPodmanContainerClass
+{
+  PromptContainerClass parent_class;
+
+  gboolean (*deserialize) (PromptPodmanContainer  *self,
+                           JsonObject             *object,
+                           GError                **error);
+};
+
+gboolean prompt_podman_container_deserialize (PromptPodmanContainer  *self,
+                                              JsonObject             *object,
+                                              GError                **error);
 
 G_END_DECLS

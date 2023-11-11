@@ -1,4 +1,4 @@
-/* prompt-podman-provider.h
+/* prompt-toolbox-container.h
  *
  * Copyright 2023 Christian Hergert <chergert@redhat.com>
  *
@@ -20,18 +20,12 @@
 
 #pragma once
 
-#include "prompt-container-provider.h"
+#include "prompt-podman-container.h"
 
 G_BEGIN_DECLS
 
-#define PROMPT_TYPE_PODMAN_PROVIDER (prompt_podman_provider_get_type())
+#define PROMPT_TYPE_TOOLBOX_CONTAINER (prompt_toolbox_container_get_type())
 
-G_DECLARE_FINAL_TYPE (PromptPodmanProvider, prompt_podman_provider, PROMPT, PODMAN_PROVIDER, PromptContainerProvider)
-
-PromptContainerProvider *prompt_podman_provider_new                (void);
-void                     prompt_podman_provider_set_type_for_label (PromptPodmanProvider *self,
-                                                                    const char           *key,
-                                                                    const char           *value,
-                                                                    GType                 container_type);
+G_DECLARE_FINAL_TYPE (PromptToolboxContainer, prompt_toolbox_container, PROMPT, TOOLBOX_CONTAINER, PromptPodmanContainer)
 
 G_END_DECLS
