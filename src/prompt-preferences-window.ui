@@ -35,46 +35,20 @@
         <property name="icon-name">font-select-symbolic</property>
         <child>
           <object class="AdwPreferencesGroup">
-            <property name="title" translatable="yes">Color</property>
+            <property name="title" translatable="yes">Palette</property>
             <child>
-              <object class="AdwComboRow" id="style">
-                <property name="title" translatable="yes">Interface</property>
-                <property name="expression">
-                  <lookup name="title" type="PromptPreferencesListItem"/>
-                </property>
-                <property name="model">
-                  <object class="GListStore" id="styles">
-                    <property name="item-type">PromptPreferencesListItem</property>
-                    <child>
-                      <object class="PromptPreferencesListItem">
-                        <property name="title" translatable="yes">Follow System</property>
-                        <property name="value">'system'</property>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="PromptPreferencesListItem">
-                        <property name="title" translatable="yes">Light</property>
-                        <property name="value">'light'</property>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="PromptPreferencesListItem">
-                        <property name="title" translatable="yes">Dark</property>
-                        <property name="value">'dark'</property>
-                      </object>
-                    </child>
-                  </object>
-                </property>
+              <object class="GtkFlowBox" id="palette_previews">
+                <property name="hexpand">true</property>
+                <property name="column-spacing">6</property>
+                <property name="row-spacing">6</property>
+                <property name="max-children-per-line">3</property>
+                <property name="selection-mode">none</property>
               </object>
             </child>
-            <child>
-              <object class="AdwComboRow" id="palette">
-                <property name="title" translatable="yes">Palette</property>
-                <property name="expression">
-                  <lookup name="title" type="PromptPreferencesListItem"/>
-                </property>
-              </object>
-            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
             <child>
               <object class="AdwActionRow">
                 <property name="title" translatable="yes">Transparency</property>

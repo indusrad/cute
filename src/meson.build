@@ -9,6 +9,7 @@ prompt_sources = [
   'prompt-host-container.c',
   'prompt-host-provider.c',
   'prompt-palette.c',
+  'prompt-palette-preview.c',
   'prompt-podman-provider.c',
   'prompt-preferences-list-item.c',
   'prompt-preferences-window.c',

@@ -24,6 +24,7 @@
 #include <glib/gi18n.h>
 
 #include "prompt-application.h"
+#include "prompt-palette-preview.h"
 #include "prompt-preferences-list-item.h"
 #include "prompt-preferences-window.h"
 #include "prompt-profile-editor.h"
@@ -51,7 +52,7 @@ struct _PromptPreferencesWindow
   GtkLabel             *font_name;
   AdwSwitchRow         *limit_scrollback;
   GtkAdjustment        *opacity_adjustment;
-  AdwComboRow          *palette;
+  GtkFlowBox           *palette_previews;
   AdwComboRow          *preserve_directory;
   GListModel           *preserve_directories;
   GtkListBox           *profiles_list_box;
@@ -93,8 +94,6 @@ struct _PromptPreferencesWindow
   PromptShortcutRow    *shortcut_zoom_in;
   PromptShortcutRow    *shortcut_zoom_one;
   PromptShortcutRow    *shortcut_zoom_out;
-  AdwComboRow          *style;
-  GListModel           *styles;
   AdwComboRow          *tab_position;
   GListModel           *tab_positions;
   AdwComboRow          *text_blink_mode;
@@ -262,13 +261,22 @@ prompt_preferences_window_notify_default_profile_cb (PromptPreferencesWindow *se
                                                      PromptApplication       *app)
 {
   g_autoptr(PromptProfile) profile = NULL;
+  g_autoptr(GPropertyAction) palette_action = NULL;
   g_autoptr(GSettings) gsettings = NULL;
+  g_autoptr(GSimpleActionGroup) group = NULL;
 
   g_assert (PROMPT_IS_PREFERENCES_WINDOW (self));
   g_assert (PROMPT_IS_APPLICATION (app));
 
   profile = prompt_application_dup_default_profile (app);
   gsettings = prompt_profile_dup_settings (profile);
+
+  group = g_simple_action_group_new ();
+  palette_action = g_property_action_new ("palette", profile, "palette-id");
+  g_action_map_add_action (G_ACTION_MAP (group), G_ACTION (palette_action));
+  gtk_widget_insert_action_group (GTK_WIDGET (self),
+                                  "default-profile",
+                                  G_ACTION_GROUP (group));
 
   g_object_bind_property (profile, "opacity",
                           self->opacity_adjustment, "value",
@@ -288,16 +296,6 @@ prompt_preferences_window_notify_default_profile_cb (PromptPreferencesWindow *se
   g_object_bind_property (profile, "bold-is-bright",
                           self->bold_is_bright, "active",
                           G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
-
-  g_settings_bind_with_mapping (gsettings,
-                                PROMPT_PROFILE_KEY_PALETTE,
-                                self->palette,
-                                "selected",
-                                G_SETTINGS_BIND_DEFAULT,
-                                string_to_index,
-                                index_to_string,
-                                g_object_ref (prompt_palette_list_model_get_default ()),
-                                g_object_unref);
 
   g_settings_bind_with_mapping (gsettings,
                                 PROMPT_PROFILE_KEY_BACKSPACE_BINDING,
@@ -350,6 +348,43 @@ prompt_preferences_window_notify_default_profile_cb (PromptPreferencesWindow *se
                                 g_object_unref);
 }
 
+static GtkWidget *
+create_palette_preview (gpointer item,
+                        gpointer user_data)
+{
+  AdwStyleManager *style_manager = user_data;
+  PromptPreferencesListItem *list_item = item;
+  g_autoptr(PromptPalette) palette = NULL;
+  GVariant *action_target;
+  GtkButton *button;
+  const char *key;
+  GtkWidget *preview;
+  GtkWidget *child;
+
+  g_assert (PROMPT_IS_PREFERENCES_LIST_ITEM (list_item));
+  g_assert (ADW_IS_STYLE_MANAGER (style_manager));
+
+  action_target = prompt_preferences_list_item_get_value (list_item);
+  key = g_variant_get_string (action_target, NULL);
+  palette = prompt_palette_new_from_name (key);
+  preview = prompt_palette_preview_new (palette);
+  g_object_bind_property (style_manager, "dark", preview, "dark", G_BINDING_SYNC_CREATE);
+  button = g_object_new (GTK_TYPE_BUTTON,
+                         "halign", GTK_ALIGN_CENTER,
+                         "css-classes", (const char * const[]) { "palette", NULL },
+                         "action-name", "default-profile.palette",
+                         "action-target", action_target,
+                         "child", preview,
+                         "overflow", GTK_OVERFLOW_HIDDEN,
+                         NULL);
+  child = g_object_new (GTK_TYPE_FLOW_BOX_CHILD,
+                        "halign", GTK_ALIGN_CENTER,
+                        "child", button,
+                        NULL);
+
+  return child;
+}
+
 static void
 prompt_preferences_window_constructed (GObject *object)
 {
@@ -358,12 +393,18 @@ prompt_preferences_window_constructed (GObject *object)
   PromptSettings *settings = prompt_application_get_settings (app);
   PromptShortcuts *shortcuts = prompt_application_get_shortcuts (app);
   GSettings *gsettings = prompt_settings_get_settings (settings);
+  AdwStyleManager *style_manager = adw_style_manager_get_default ();
   g_autoptr(GListModel) profiles = NULL;
+  GListModel *palettes;
 
   G_OBJECT_CLASS (prompt_preferences_window_parent_class)->constructed (object);
 
-  adw_combo_row_set_model (self->palette,
-                           prompt_palette_list_model_get_default ());
+  palettes = prompt_palette_list_model_get_default ();
+  gtk_flow_box_bind_model (self->palette_previews,
+                           palettes,
+                           create_palette_preview,
+                           g_object_ref (style_manager),
+                           g_object_unref);
 
   g_signal_connect_object (app,
                            "notify::default-profile",
@@ -420,16 +461,6 @@ prompt_preferences_window_constructed (GObject *object)
                                 string_to_index,
                                 index_to_string,
                                 g_object_ref (self->text_blink_modes),
-                                g_object_unref);
-
-  g_settings_bind_with_mapping (gsettings,
-                                PROMPT_SETTING_KEY_INTERFACE_STYLE,
-                                self->style,
-                                "selected",
-                                G_SETTINGS_BIND_DEFAULT,
-                                string_to_index,
-                                index_to_string,
-                                g_object_ref (self->styles),
                                 g_object_unref);
 
   profiles = prompt_application_list_profiles (app);
@@ -602,7 +633,7 @@ prompt_preferences_window_class_init (PromptPreferencesWindowClass *klass)
   gtk_widget_class_bind_template_child (widget_class, PromptPreferencesWindow, font_name);
   gtk_widget_class_bind_template_child (widget_class, PromptPreferencesWindow, limit_scrollback);
   gtk_widget_class_bind_template_child (widget_class, PromptPreferencesWindow, opacity_adjustment);
-  gtk_widget_class_bind_template_child (widget_class, PromptPreferencesWindow, palette);
+  gtk_widget_class_bind_template_child (widget_class, PromptPreferencesWindow, palette_previews);
   gtk_widget_class_bind_template_child (widget_class, PromptPreferencesWindow, preserve_directories);
   gtk_widget_class_bind_template_child (widget_class, PromptPreferencesWindow, preserve_directory);
   gtk_widget_class_bind_template_child (widget_class, PromptPreferencesWindow, profiles_list_box);
@@ -644,8 +675,6 @@ prompt_preferences_window_class_init (PromptPreferencesWindowClass *klass)
   gtk_widget_class_bind_template_child (widget_class, PromptPreferencesWindow, shortcut_zoom_in);
   gtk_widget_class_bind_template_child (widget_class, PromptPreferencesWindow, shortcut_zoom_one);
   gtk_widget_class_bind_template_child (widget_class, PromptPreferencesWindow, shortcut_zoom_out);
-  gtk_widget_class_bind_template_child (widget_class, PromptPreferencesWindow, style);
-  gtk_widget_class_bind_template_child (widget_class, PromptPreferencesWindow, styles);
   gtk_widget_class_bind_template_child (widget_class, PromptPreferencesWindow, tab_position);
   gtk_widget_class_bind_template_child (widget_class, PromptPreferencesWindow, tab_positions);
   gtk_widget_class_bind_template_child (widget_class, PromptPreferencesWindow, text_blink_mode);

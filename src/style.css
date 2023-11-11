@@ -79,3 +79,8 @@ window.org-gnome-TextEditor checkbutton.theme-selector radio:checked {
   background-color: @theme_selected_bg_color;
   color: @theme_selected_fg_color;
 }
+
+button.palette {
+  padding: 0;
+  border-radius: 9px;
+}
