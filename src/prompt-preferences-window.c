@@ -255,6 +255,28 @@ index_to_string (const GValue       *value,
   return NULL;
 }
 
+static gboolean
+map_palette_to_selected (GBinding     *binding,
+                         const GValue *from_value,
+                         GValue       *to_value,
+                         gpointer      user_data)
+{
+  PromptPalette *current;
+  PromptPalette *palette;
+
+  g_assert (G_IS_BINDING (binding));
+  g_assert (from_value != NULL);
+  g_assert (to_value != NULL);
+
+  palette = g_value_get_object (from_value);
+  current = prompt_palette_preview_get_palette (user_data);
+
+  g_value_set_boolean (to_value,
+                       0 == g_strcmp0 (prompt_palette_get_id (palette),
+                                       prompt_palette_get_id (current)));
+  return TRUE;
+}
+
 static void
 prompt_preferences_window_notify_default_profile_cb (PromptPreferencesWindow *self,
                                                      GParamSpec              *pspec,
@@ -270,6 +292,19 @@ prompt_preferences_window_notify_default_profile_cb (PromptPreferencesWindow *se
 
   profile = prompt_application_dup_default_profile (app);
   gsettings = prompt_profile_dup_settings (profile);
+
+  for (GtkWidget *child = gtk_widget_get_first_child (GTK_WIDGET (self->palette_previews));
+       child;
+       child = gtk_widget_get_next_sibling (child))
+    {
+      GtkWidget *button = gtk_flow_box_child_get_child (GTK_FLOW_BOX_CHILD (child));
+      GtkWidget *preview = gtk_button_get_child (GTK_BUTTON (button));
+
+      g_object_bind_property_full (profile, "palette", preview, "selected",
+                                   G_BINDING_SYNC_CREATE,
+                                   map_palette_to_selected, NULL,
+                                   preview, NULL);
+    }
 
   group = g_simple_action_group_new ();
   palette_action = g_property_action_new ("palette", profile, "palette-id");
@@ -369,7 +404,7 @@ create_palette_preview (gpointer item,
   palette = prompt_palette_new_from_name (key);
   preview = prompt_palette_preview_new (palette);
   g_object_bind_property (style_manager, "dark", preview, "dark", G_BINDING_SYNC_CREATE);
-  button = g_object_new (GTK_TYPE_BUTTON,
+  button = g_object_new (GTK_TYPE_TOGGLE_BUTTON,
                          "halign", GTK_ALIGN_CENTER,
                          "css-classes", (const char * const[]) { "palette", NULL },
                          "action-name", "default-profile.palette",

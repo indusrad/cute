@@ -24,22 +24,25 @@
 
 #define CELL_WIDTH 12
 #define CELL_HEIGHT 12
-#define ROW_SPACING 3
+#define ROW_SPACING 6
 #define COLUMN_SPACING 3
-#define VPADDING 9
-#define HPADDING 9
+#define VPADDING 18
+#define HPADDING 18
 
 struct _PromptPalettePreview
 {
   GtkWidget parent_instance;
   PromptPalette *palette;
+  GtkWidget *image;
   guint dark : 1;
+  guint selected : 1;
 };
 
 enum {
   PROP_0,
   PROP_DARK,
   PROP_PALETTE,
+  PROP_SELECTED,
   N_PROPS
 };
 
@@ -78,6 +81,29 @@ prompt_palette_preview_snapshot (GtkWidget   *widget,
                                                       CELL_WIDTH,
                                                       CELL_HEIGHT));
     }
+
+  GTK_WIDGET_CLASS (prompt_palette_preview_parent_class)->snapshot (widget, snapshot);
+}
+
+static void
+prompt_palette_preview_size_allocate (GtkWidget *widget,
+                                      int        width,
+                                      int        height,
+                                      int        baseline)
+{
+  PromptPalettePreview *self = PROMPT_PALETTE_PREVIEW (widget);
+  GtkRequisition min;
+
+  GTK_WIDGET_CLASS (prompt_palette_preview_parent_class)->size_allocate (widget, width, height, baseline);
+
+  gtk_widget_get_preferred_size (GTK_WIDGET (self->image), &min, NULL);
+  gtk_widget_size_allocate (self->image,
+                            &(GtkAllocation) {
+                              width - min.width,
+                              height - min.height,
+                              min.width,
+                              min.height
+                            }, -1);
 }
 
 static gboolean
@@ -97,6 +123,16 @@ prompt_palette_preview_query_tooltip (GtkWidget  *widget,
   gtk_tooltip_set_text (tooltip, prompt_palette_get_name (self->palette));
 
   return TRUE;
+}
+
+static void
+prompt_palette_preview_dispose (GObject *object)
+{
+  PromptPalettePreview *self = (PromptPalettePreview *)object;
+
+  g_clear_pointer (&self->image, gtk_widget_unparent);
+
+  G_OBJECT_CLASS (prompt_palette_preview_parent_class)->dispose (object);
 }
 
 static void
@@ -127,6 +163,10 @@ prompt_palette_preview_get_property (GObject    *object,
       g_value_set_boolean (value, prompt_palette_preview_get_dark (self));
       break;
 
+    case PROP_SELECTED:
+      g_value_set_boolean (value, self->selected);
+      break;
+
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
     }
@@ -150,6 +190,20 @@ prompt_palette_preview_set_property (GObject      *object,
       prompt_palette_preview_set_dark (self, g_value_get_boolean (value));
       break;
 
+    case PROP_SELECTED:
+      if (self->selected != g_value_get_boolean (value))
+        {
+          self->selected = g_value_get_boolean (value);
+          gtk_widget_set_visible (self->image, self->selected);
+          g_object_notify_by_pspec (G_OBJECT (self), pspec);
+
+          if (self->selected)
+            gtk_widget_add_css_class (gtk_widget_get_parent (GTK_WIDGET (self)), "selected");
+          else
+            gtk_widget_remove_css_class (gtk_widget_get_parent (GTK_WIDGET (self)), "selected");
+        }
+      break;
+
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
     }
@@ -161,12 +215,14 @@ prompt_palette_preview_class_init (PromptPalettePreviewClass *klass)
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
   GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 
+  object_class->dispose = prompt_palette_preview_dispose;
   object_class->finalize = prompt_palette_preview_finalize;
   object_class->get_property = prompt_palette_preview_get_property;
   object_class->set_property = prompt_palette_preview_set_property;
 
   widget_class->snapshot = prompt_palette_preview_snapshot;
   widget_class->query_tooltip = prompt_palette_preview_query_tooltip;
+  widget_class->size_allocate = prompt_palette_preview_size_allocate;
 
   properties[PROP_PALETTE] =
     g_param_spec_object ("palette", NULL, NULL,
@@ -182,7 +238,16 @@ prompt_palette_preview_class_init (PromptPalettePreviewClass *klass)
                            G_PARAM_EXPLICIT_NOTIFY |
                            G_PARAM_STATIC_STRINGS));
 
+  properties[PROP_SELECTED] =
+    g_param_spec_boolean ("selected", NULL, NULL,
+                          FALSE,
+                          (G_PARAM_READWRITE |
+                           G_PARAM_EXPLICIT_NOTIFY |
+                           G_PARAM_STATIC_STRINGS));
+
   g_object_class_install_properties (object_class, N_PROPS, properties);
+
+  gtk_widget_class_set_css_name (widget_class, "palettepreview");
 }
 
 static void
@@ -194,6 +259,12 @@ prompt_palette_preview_init (PromptPalettePreview *self)
                                (HPADDING * 2) + (8 * CELL_WIDTH) + (7 * COLUMN_SPACING),
                                (VPADDING * 2) + (2 * CELL_HEIGHT) + (ROW_SPACING));
 
+
+  self->image = g_object_new (GTK_TYPE_IMAGE,
+                              "icon-name", "object-select-symbolic",
+                              "visible", FALSE,
+                              NULL);
+  gtk_widget_set_parent (self->image, GTK_WIDGET (self));
 }
 
 GtkWidget *
@@ -228,4 +299,12 @@ prompt_palette_preview_set_dark (PromptPalettePreview *self,
       g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_DARK]);
       gtk_widget_queue_draw (GTK_WIDGET (self));
     }
+}
+
+PromptPalette *
+prompt_palette_preview_get_palette (PromptPalettePreview *self)
+{
+  g_return_val_if_fail (PROMPT_IS_PALETTE_PREVIEW (self), NULL);
+
+  return self->palette;
 }

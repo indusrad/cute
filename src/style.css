@@ -81,6 +81,20 @@ window.org-gnome-TextEditor checkbutton.theme-selector radio:checked {
 }
 
 button.palette {
+  border-radius: 12px;
+  box-shadow: 0 0 0 1px @borders;
+  margin: 2px;
   padding: 0;
-  border-radius: 9px;
+}
+
+button.palette.selected {
+  box-shadow: 0 0 0 2px @theme_selected_bg_color;
+}
+
+button.palette.selected image {
+  border-radius: 99px;
+  background-color: @theme_selected_bg_color;
+  color: @theme_selected_fg_color;
+  padding: 2px;
+  margin: 6px;
 }

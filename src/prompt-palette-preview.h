@@ -30,9 +30,10 @@ G_BEGIN_DECLS
 
 G_DECLARE_FINAL_TYPE (PromptPalettePreview, prompt_palette_preview, PROMPT, PALETTE_PREVIEW, GtkWidget)
 
-GtkWidget *prompt_palette_preview_new      (PromptPalette        *palette);
-gboolean   prompt_palette_preview_get_dark (PromptPalettePreview *self);
-void       prompt_palette_preview_set_dark (PromptPalettePreview *self,
-                                            gboolean              dark);
+GtkWidget     *prompt_palette_preview_new         (PromptPalette        *palette);
+PromptPalette *prompt_palette_preview_get_palette (PromptPalettePreview *self);
+gboolean       prompt_palette_preview_get_dark    (PromptPalettePreview *self);
+void           prompt_palette_preview_set_dark    (PromptPalettePreview *self,
+                                                   gboolean              dark);
 
 G_END_DECLS
