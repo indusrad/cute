@@ -660,6 +660,8 @@ prompt_profile_apply (PromptProfile     *self,
   prompt_run_context_set_pty (run_context, pty);
   prompt_run_context_setenv (run_context, "PROMPT_PROFILE", self->uuid);
   prompt_run_context_setenv (run_context, "PROMPT_VERSION", PACKAGE_VERSION);
+  prompt_run_context_setenv (run_context, "COLORTERM", "truecolor");
+  prompt_run_context_setenv (run_context, "TERM", "xterm-256color");
 
   if (default_shell == NULL)
     default_shell = "/bin/sh";
