@@ -410,6 +410,8 @@ create_palette_preview (gpointer item,
                          "action-name", "default-profile.palette",
                          "action-target", action_target,
                          "child", preview,
+                         "focus-on-click", FALSE,
+                         "can-focus", FALSE,
                          "overflow", GTK_OVERFLOW_HIDDEN,
                          NULL);
   child = g_object_new (GTK_TYPE_FLOW_BOX_CHILD,

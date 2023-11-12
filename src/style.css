@@ -86,15 +86,23 @@ button.palette {
   margin: 2px;
   padding: 0;
 }
-
 button.palette.selected {
   box-shadow: 0 0 0 2px @theme_selected_bg_color;
 }
-
 button.palette.selected image {
   border-radius: 99px;
   background-color: @theme_selected_bg_color;
   color: @theme_selected_fg_color;
   padding: 2px;
   margin: 6px;
+}
+preferencesgroup flowboxchild {
+  outline-offset: 2px;
+  border-radius: 12px;
+  padding: 0;
+}
+preferencesgroup flowboxchild button.palette:not(.selected) {
+  box-shadow: 0 0 0 1px alpha(black, 0.03),
+              0 1px 3px 1px alpha(black, .07),
+              0 2px 6px 2px alpha(black, .03);
 }
