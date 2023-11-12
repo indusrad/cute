@@ -590,6 +590,9 @@ prompt_tab_dispose (GObject *object)
   PromptTab *self = (PromptTab *)object;
   GtkWidget *child;
 
+  if (self->process != NULL)
+    prompt_process_force_exit (self->process);
+
   gtk_widget_dispose_template (GTK_WIDGET (self), PROMPT_TYPE_TAB);
 
   while ((child = gtk_widget_get_first_child (GTK_WIDGET (self))))
