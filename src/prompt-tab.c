@@ -47,17 +47,17 @@ struct _PromptTab
   GtkWidget          parent_instance;
 
   char              *previous_working_directory_uri;
-  PromptProfile    *profile;
-  PromptProcess    *process;
+  PromptProfile     *profile;
+  PromptProcess     *process;
   char              *title_prefix;
-  PromptTabMonitor *monitor;
+  PromptTabMonitor  *monitor;
 
   AdwBanner         *banner;
   GtkScrolledWindow *scrolled_window;
-  PromptTerminal   *terminal;
+  PromptTerminal    *terminal;
 
-  PromptZoomLevel   zoom;
-  PromptTabState    state;
+  PromptZoomLevel    zoom;
+  PromptTabState     state;
 
   guint              forced_exit : 1;
 };
