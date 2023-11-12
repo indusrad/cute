@@ -1,8 +1,10 @@
 [Desktop Entry]
-Name=prompt
-Exec=prompt
-Icon=org.gnome.Prompt
-Terminal=false
 Type=Application
-Categories=GTK;
+Name=Prompt
+Comment=A terminal for container desktops
+Exec=prompt
+Categories=GNOME;GTK;System;TerminalEmulator;
+Icon=org.gnome.Prompt
 StartupNotify=true
+SingleMainWindow=false
+Keywords=shell;prompt;command;commandline;cmd;
