@@ -37,35 +37,49 @@ struct _PromptContainerClass
 {
   GObjectClass parent_class;
 
-  const char  *(*get_id)         (PromptContainer     *self);
-  void         (*prepare_async)  (PromptContainer     *self,
-                                  PromptRunContext    *run_context,
-                                  GCancellable         *cancellable,
-                                  GAsyncReadyCallback   callback,
-                                  gpointer              user_data);
-  gboolean     (*prepare_finish) (PromptContainer     *self,
-                                  GAsyncResult         *result,
-                                  GError              **error);
+  const char  *(*get_id)             (PromptContainer      *self);
+  void         (*prepare_async)      (PromptContainer      *self,
+                                      PromptRunContext     *run_context,
+                                      GCancellable         *cancellable,
+                                      GAsyncReadyCallback   callback,
+                                      gpointer              user_data);
+  gboolean     (*prepare_finish)     (PromptContainer      *self,
+                                      GAsyncResult         *result,
+                                      GError              **error);
+  void         (*list_shells_async)  (PromptContainer      *self,
+                                      GCancellable         *cancellable,
+                                      GAsyncReadyCallback   callback,
+                                      gpointer              user_data);
+  GListModel  *(*list_shells_finish) (PromptContainer      *self,
+                                      GAsyncResult         *result,
+                                      GError              **error);
 };
 
-const char  *prompt_container_get_id         (PromptContainer      *self);
-void         prompt_container_prepare_async  (PromptContainer      *self,
-                                              PromptRunContext     *run_context,
-                                              GCancellable         *cancellable,
-                                              GAsyncReadyCallback   callback,
-                                              gpointer              user_data);
-gboolean     prompt_container_prepare_finish (PromptContainer      *self,
-                                              GAsyncResult         *result,
-                                              GError              **error);
-void         prompt_container_spawn_async    (PromptContainer      *self,
-                                              VtePty               *pty,
-                                              PromptProfile        *profile,
-                                              const char           *current_directory_uri,
-                                              GCancellable         *cancellable,
-                                              GAsyncReadyCallback   callback,
-                                              gpointer              user_data);
-GSubprocess *prompt_container_spawn_finish   (PromptContainer      *self,
-                                              GAsyncResult         *result,
-                                              GError              **error);
+const char  *prompt_container_get_id             (PromptContainer      *self);
+void         prompt_container_list_shells_async  (PromptContainer      *self,
+                                                  GCancellable         *cancellable,
+                                                  GAsyncReadyCallback   callback,
+                                                  gpointer              user_data);
+GListModel  *prompt_container_list_shells_finish (PromptContainer      *self,
+                                                  GAsyncResult         *result,
+                                                  GError              **error);
+void         prompt_container_prepare_async      (PromptContainer      *self,
+                                                  PromptRunContext     *run_context,
+                                                  GCancellable         *cancellable,
+                                                  GAsyncReadyCallback   callback,
+                                                  gpointer              user_data);
+gboolean     prompt_container_prepare_finish     (PromptContainer      *self,
+                                                  GAsyncResult         *result,
+                                                  GError              **error);
+void         prompt_container_spawn_async        (PromptContainer      *self,
+                                                  VtePty               *pty,
+                                                  PromptProfile        *profile,
+                                                  const char           *current_directory_uri,
+                                                  GCancellable         *cancellable,
+                                                  GAsyncReadyCallback   callback,
+                                                  gpointer              user_data);
+GSubprocess *prompt_container_spawn_finish       (PromptContainer      *self,
+                                                  GAsyncResult         *result,
+                                                  GError              **error);
 
 G_END_DECLS

@@ -249,3 +249,26 @@ prompt_container_spawn_finish (PromptContainer  *self,
 
   return g_task_propagate_pointer (G_TASK (result), error);
 }
+
+void
+prompt_container_list_shells_async (PromptContainer     *self,
+                                    GCancellable        *cancellable,
+                                    GAsyncReadyCallback  callback,
+                                    gpointer             user_data)
+{
+  g_return_if_fail (PROMPT_IS_CONTAINER (self));
+  g_return_if_fail (!cancellable || G_IS_CANCELLABLE (cancellable));
+
+  PROMPT_CONTAINER_GET_CLASS (self)->list_shells_async (self, cancellable, callback, user_data);
+}
+
+GListModel *
+prompt_container_list_shells_finish (PromptContainer  *self,
+                                     GAsyncResult     *result,
+                                     GError          **error)
+{
+  g_return_val_if_fail (PROMPT_IS_CONTAINER (self), NULL);
+  g_return_val_if_fail (G_IS_TASK (result), NULL);
+
+  return PROMPT_CONTAINER_GET_CLASS (self)->list_shells_finish (self, result, error);
+}
