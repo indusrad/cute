@@ -652,16 +652,20 @@ prompt_profile_apply (PromptProfile     *self,
   g_auto(GStrv) argv = NULL;
   const char *cwd = NULL;
   const char *arg0 = NULL;
+  char vte_version[32];
 
   g_assert (PROMPT_IS_PROFILE (self));
   g_assert (PROMPT_IS_RUN_CONTEXT (run_context));
   g_assert (VTE_IS_PTY (pty));
+
+  g_snprintf (vte_version, sizeof vte_version, "%u", VTE_VERSION_NUMERIC);
 
   prompt_run_context_set_pty (run_context, pty);
   prompt_run_context_setenv (run_context, "PROMPT_PROFILE", self->uuid);
   prompt_run_context_setenv (run_context, "PROMPT_VERSION", PACKAGE_VERSION);
   prompt_run_context_setenv (run_context, "COLORTERM", "truecolor");
   prompt_run_context_setenv (run_context, "TERM", "xterm-256color");
+  prompt_run_context_setenv (run_context, "VTE_VERSION", vte_version);
 
   if (default_shell == NULL)
     default_shell = "/bin/sh";
