@@ -251,28 +251,6 @@ prompt_application_notify_profile_uuids_cb (PromptApplication *self,
 }
 
 static void
-prompt_application_style_notify_dark_cb (PromptApplication *self,
-                                         GParamSpec        *pspec,
-                                         AdwStyleManager   *style_manager)
-{
-  g_autoptr(GListModel) profiles = NULL;
-  guint n_items;
-
-  g_assert (PROMPT_IS_APPLICATION (self));
-  g_assert (ADW_IS_STYLE_MANAGER (style_manager));
-
-  profiles = prompt_application_list_profiles (self);
-  n_items = g_list_model_get_n_items (profiles);
-
-  for (guint i = 0; i < n_items; i++)
-    {
-      g_autoptr(PromptProfile) profile = g_list_model_get_item (profiles, i);
-
-      g_object_notify (G_OBJECT (profile), "palette");
-    }
-}
-
-static void
 prompt_application_startup (GApplication *application)
 {
   static const char *patterns[] = { "org.gnome.*", NULL };
@@ -341,12 +319,6 @@ prompt_application_startup (GApplication *application)
   prompt_application_notify_profile_uuids_cb (self, NULL, self->settings);
 
   style_manager = adw_style_manager_get_default ();
-
-  g_signal_connect_object (style_manager,
-                           "notify::dark",
-                           G_CALLBACK (prompt_application_style_notify_dark_cb),
-                           self,
-                           G_CONNECT_SWAPPED);
 
   g_object_bind_property (self->settings, "interface-style",
                           style_manager, "color-scheme",

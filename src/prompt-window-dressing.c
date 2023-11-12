@@ -198,12 +198,24 @@ static void
 prompt_window_dressing_constructed (GObject *object)
 {
   PromptWindowDressing *self = (PromptWindowDressing *)object;
+  AdwStyleManager *style_manager = adw_style_manager_get_default ();
 
   G_OBJECT_CLASS (prompt_window_dressing_parent_class)->constructed (object);
 
   gtk_style_context_add_provider_for_display (gdk_display_get_default (),
                                               GTK_STYLE_PROVIDER (self->css_provider),
                                               GTK_STYLE_PROVIDER_PRIORITY_APPLICATION+1);
+
+  g_signal_connect_object (style_manager,
+                           "notify::dark",
+                           G_CALLBACK (prompt_window_dressing_queue_update),
+                           self,
+                           G_CONNECT_SWAPPED);
+  g_signal_connect_object (style_manager,
+                           "notify::color-scheme",
+                           G_CALLBACK (prompt_window_dressing_queue_update),
+                           self,
+                           G_CONNECT_SWAPPED);
 
   prompt_window_dressing_queue_update (self);
 }

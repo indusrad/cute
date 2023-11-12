@@ -82,6 +82,30 @@ static const char * const builtin_dingus[] = {
 };
 
 static void
+prompt_terminal_update_colors (PromptTerminal *self)
+{
+  const PromptPaletteFace *face;
+  AdwStyleManager *style_manager;
+  gboolean dark;
+
+  g_assert (PROMPT_IS_TERMINAL (self));
+
+  style_manager = adw_style_manager_get_default ();
+  dark = adw_style_manager_get_dark (style_manager);
+
+  if (self->palette == NULL)
+    self->palette = prompt_palette_new_from_name ("gnome");
+
+  face = prompt_palette_get_face (self->palette, dark);
+
+  vte_terminal_set_colors (VTE_TERMINAL (self),
+                           &face->foreground,
+                           &face->background,
+                           &face->indexed[0],
+                           G_N_ELEMENTS (face->indexed));
+}
+
+static void
 prompt_terminal_toast (PromptTerminal *self,
                        int             timeout,
                        const char     *title)
@@ -960,6 +984,28 @@ prompt_terminal_shortcuts_notify_cb (PromptTerminal  *self,
 }
 
 static void
+prompt_terminal_constructed (GObject *object)
+{
+  PromptTerminal *self = (PromptTerminal *)object;
+
+  g_assert (PROMPT_IS_TERMINAL (self));
+
+  G_OBJECT_CLASS (prompt_terminal_parent_class)->constructed (object);
+
+  adw_style_manager_get_dark (adw_style_manager_get_default());
+  g_signal_connect_object (adw_style_manager_get_default (),
+                           "notify::color-scheme",
+                           G_CALLBACK (prompt_terminal_update_colors),
+                           self,
+                           G_CONNECT_SWAPPED);
+  g_signal_connect_object (adw_style_manager_get_default (),
+                           "notify::dark",
+                           G_CALLBACK (prompt_terminal_update_colors),
+                           self,
+                           G_CONNECT_SWAPPED);
+}
+
+static void
 prompt_terminal_dispose (GObject *object)
 {
   PromptTerminal *self = (PromptTerminal *)object;
@@ -1025,6 +1071,7 @@ prompt_terminal_class_init (PromptTerminalClass *klass)
   GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
   VteTerminalClass *terminal_class = VTE_TERMINAL_CLASS (klass);
 
+  object_class->constructed = prompt_terminal_constructed;
   object_class->dispose = prompt_terminal_dispose;
   object_class->get_property = prompt_terminal_get_property;
   object_class->set_property = prompt_terminal_set_property;
@@ -1161,22 +1208,7 @@ prompt_terminal_set_palette (PromptTerminal *self,
 
   if (g_set_object (&self->palette, palette))
     {
-      AdwStyleManager *style_manager = adw_style_manager_get_default ();
-      gboolean dark = adw_style_manager_get_dark (style_manager);
-      g_autoptr(PromptPalette) fallback = NULL;
-      const PromptPaletteFace *face;
-
-      if (palette == NULL)
-        palette = fallback = prompt_palette_new_from_name ("gnome");
-
-      face = prompt_palette_get_face (palette, dark);
-
-      vte_terminal_set_colors (VTE_TERMINAL (self),
-                               &face->foreground,
-                               &face->background,
-                               &face->indexed[0],
-                               G_N_ELEMENTS (face->indexed));
-
+      prompt_terminal_update_colors (self);
       g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_PALETTE]);
     }
 }
