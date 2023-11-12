@@ -56,5 +56,6 @@ gboolean            prompt_pty_create_producer   (int         consumer_fd,
 gboolean            prompt_shell_supports_dash_c (const char *shell);
 gboolean            prompt_shell_supports_dash_l (const char *shell);
 gboolean            prompt_is_shell              (const char *arg0);
+GListModel         *prompt_parse_shells          (const char *etc_shells);
 
 G_END_DECLS

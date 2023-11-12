@@ -380,3 +380,16 @@ prompt_is_shell (const char *arg0)
 
   return FALSE;
 }
+
+GListModel *
+prompt_parse_shells (const char *etc_shells)
+{
+  g_auto(GStrv) split = NULL;
+
+  if (etc_shells == NULL || etc_shells[0] == 0)
+    return G_LIST_MODEL (g_list_store_new (GTK_TYPE_STRING_OBJECT));
+
+  split = g_strsplit (etc_shells, "\n", 0);
+
+  return G_LIST_MODEL (gtk_string_list_new ((const char * const *)split));
+}
