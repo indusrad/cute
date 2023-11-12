@@ -10,6 +10,7 @@ prompt_sources = [
   'prompt-host-provider.c',
   'prompt-palette.c',
   'prompt-palette-preview.c',
+  'prompt-parking-lot.c',
   'prompt-podman-container.c',
   'prompt-podman-provider.c',
   'prompt-preferences-list-item.c',

@@ -25,6 +25,7 @@
 #include "prompt-application.h"
 #include "prompt-close-dialog.h"
 #include "prompt-find-bar.h"
+#include "prompt-parking-lot.h"
 #include "prompt-settings.h"
 #include "prompt-theme-selector.h"
 #include "prompt-title-dialog.h"
@@ -36,6 +37,7 @@ struct _PromptWindow
   AdwApplicationWindow   parent_instance;
 
   PromptShortcuts       *shortcuts;
+  PromptParkingLot      *parking_lot;
 
   PromptFindBar         *find_bar;
   GtkRevealer           *find_bar_revealer;
@@ -103,9 +105,13 @@ prompt_window_close_page_dialog_cb (GObject      *object,
   page = adw_tab_view_get_page (self->tab_view, GTK_WIDGET (tab));
 
   if (!_prompt_close_dialog_run_finish (result, &error))
-    adw_tab_view_close_page_finish (self->tab_view, page, FALSE);
-  else
-    adw_tab_view_close_page_finish (self->tab_view, page, TRUE);
+    {
+      adw_tab_view_close_page_finish (self->tab_view, page, FALSE);
+      return;
+    }
+
+  prompt_parking_lot_push (self->parking_lot, tab);
+  adw_tab_view_close_page_finish (self->tab_view, page, TRUE);
 }
 
 static gboolean
@@ -123,8 +129,12 @@ prompt_window_close_page_cb (PromptWindow *self,
   prompt_window_save_size (self);
 
   tab = PROMPT_TAB (adw_tab_page_get_child (tab_page));
+
   if (!prompt_tab_is_running (tab))
-    return GDK_EVENT_PROPAGATE;
+    {
+      prompt_parking_lot_push (self->parking_lot, tab);
+      return GDK_EVENT_PROPAGATE;
+    }
 
   tabs = g_ptr_array_new_with_free_func (g_object_unref);
   g_ptr_array_add (tabs, g_object_ref (tab));
@@ -967,6 +977,7 @@ prompt_window_dispose (GObject *object)
   g_signal_group_set_target (self->active_tab_signals, NULL);
   g_binding_group_set_source (self->active_tab_bindings, NULL);
   g_clear_handle_id (&self->focus_active_tab_source, g_source_remove);
+  g_clear_object (&self->parking_lot);
 
   G_OBJECT_CLASS (prompt_window_parent_class)->dispose (object);
 }
@@ -1123,6 +1134,8 @@ prompt_window_init (PromptWindow *self)
                                  G_CALLBACK (prompt_window_notify_process_leader_kind_cb),
                                  self,
                                  G_CONNECT_SWAPPED);
+
+  self->parking_lot = prompt_parking_lot_new ();
 
   self->shortcuts = g_object_ref (prompt_application_get_shortcuts (PROMPT_APPLICATION_DEFAULT));
 
