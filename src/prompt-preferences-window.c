@@ -784,8 +784,12 @@ prompt_preferences_window_get_default (void)
 
   if (instance == NULL)
     {
-      instance = g_object_new (PROMPT_TYPE_PREFERENCES_WINDOW, NULL);
-      gtk_window_set_modal (GTK_WINDOW (instance), FALSE);
+      g_autoptr(GtkWindowGroup) sole_group = gtk_window_group_new ();
+
+      instance = g_object_new (PROMPT_TYPE_PREFERENCES_WINDOW,
+                               "modal", FALSE,
+                               NULL);
+      gtk_window_group_add_window (sole_group, GTK_WINDOW (instance));
       g_object_add_weak_pointer (G_OBJECT (instance), (gpointer *)&instance);
     }
 
