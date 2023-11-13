@@ -50,6 +50,7 @@ struct _PromptPreferencesWindow
   AdwComboRow          *exit_action;
   GListModel           *exit_actions;
   GtkLabel             *font_name;
+  AdwActionRow         *font_name_row;
   AdwSwitchRow         *limit_scrollback;
   GtkAdjustment        *opacity_adjustment;
   GtkFlowBox           *palette_previews;
@@ -161,10 +162,7 @@ prompt_preferences_window_select_custom_font (GtkWidget  *widget,
   settings = prompt_application_get_settings (app);
 
   if (!(font_name = prompt_settings_dup_font_name (settings)) || font_name[0] == 0)
-    {
-      g_free (font_name);
-      font_name = g_strdup (prompt_application_get_system_font_name (app));
-    }
+    g_set_str (&font_name, prompt_application_get_system_font_name (app));
 
   font_desc = pango_font_description_from_string (font_name);
 
@@ -521,6 +519,12 @@ prompt_preferences_window_constructed (GObject *object)
   g_object_bind_property (settings, "font-name",
                           self->font_name, "label",
                           G_BINDING_SYNC_CREATE);
+  g_object_bind_property (settings, "use-system-font",
+                          self->font_name, "sensitive",
+                          G_BINDING_SYNC_CREATE | G_BINDING_INVERT_BOOLEAN);
+  g_object_bind_property (settings, "use-system-font",
+                          self->font_name_row, "activatable",
+                          G_BINDING_SYNC_CREATE | G_BINDING_INVERT_BOOLEAN);
 
   g_object_bind_property (shortcuts, "new-tab",
                           self->shortcut_new_tab, "accelerator",
@@ -673,6 +677,7 @@ prompt_preferences_window_class_init (PromptPreferencesWindowClass *klass)
   gtk_widget_class_bind_template_child (widget_class, PromptPreferencesWindow, exit_action);
   gtk_widget_class_bind_template_child (widget_class, PromptPreferencesWindow, exit_actions);
   gtk_widget_class_bind_template_child (widget_class, PromptPreferencesWindow, font_name);
+  gtk_widget_class_bind_template_child (widget_class, PromptPreferencesWindow, font_name_row);
   gtk_widget_class_bind_template_child (widget_class, PromptPreferencesWindow, limit_scrollback);
   gtk_widget_class_bind_template_child (widget_class, PromptPreferencesWindow, opacity_adjustment);
   gtk_widget_class_bind_template_child (widget_class, PromptPreferencesWindow, palette_previews);

@@ -83,9 +83,7 @@
             <child>
               <object class="AdwActionRow" id="font_name_row">
                 <property name="action-name">settings.select-custom-font</property>
-                <property name="activatable">true</property>
                 <property name="title" translatable="yes">Custom Font</property>
-                <property name="sensitive" bind-source="use_system_font" bind-property="active" bind-flags="sync-create|invert-boolean"/>
                 <child type="suffix">
                   <object class="GtkBox">
                     <property name="hexpand">true</property>
