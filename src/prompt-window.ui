@@ -62,6 +62,16 @@
         <child>
           <object class="GtkShortcut">
             <binding name="trigger">
+              <lookup name="undo-close-tab" type="PromptShortcuts">
+                <lookup name="shortcuts">PromptWindow</lookup>
+              </lookup>
+            </binding>
+            <property name="action">action(win.undo-close-tab)</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkShortcut">
+            <binding name="trigger">
               <lookup name="tab-overview" type="PromptShortcuts">
                 <lookup name="shortcuts">PromptWindow</lookup>
               </lookup>

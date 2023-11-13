@@ -592,6 +592,12 @@
                 <property name="subtitle" translatable="yes">Close all tabs except the active tab</property>
               </object>
             </child>
+            <child>
+              <object class="PromptShortcutRow" id="shortcut_undo_close_tab">
+                <property name="title" translatable="yes">Undo Close Tab</property>
+                <property name="subtitle" translatable="yes">Undo closing the last tab</property>
+              </object>
+            </child>
           </object>
         </child>
         <child>

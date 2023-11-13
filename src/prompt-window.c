@@ -782,6 +782,24 @@ prompt_window_search_action (GtkWidget  *widget,
 }
 
 static void
+prompt_window_undo_close_tab_action (GtkWidget  *widget,
+                                     const char *action_name,
+                                     GVariant   *param)
+{
+  PromptWindow *self = (PromptWindow *)widget;
+  g_autoptr(PromptTab) tab = NULL;
+
+  g_assert (PROMPT_IS_WINDOW (self));
+
+  if ((tab = prompt_parking_lot_pop (self->parking_lot)))
+    {
+      prompt_window_add_tab (self, tab);
+      prompt_window_set_active_tab (self, tab);
+      gtk_widget_grab_focus (GTK_WIDGET (tab));
+    }
+}
+
+static void
 prompt_window_close_request_cb (GObject      *object,
                                 GAsyncResult *result,
                                 gpointer      user_data)
@@ -1109,6 +1127,7 @@ prompt_window_class_init (PromptWindowClass *klass)
   gtk_widget_class_install_action (widget_class, "page.previous", NULL, prompt_window_page_previous_action);
   gtk_widget_class_install_action (widget_class, "win.set-title", NULL, prompt_window_set_title_action);
   gtk_widget_class_install_action (widget_class, "win.search", NULL, prompt_window_search_action);
+  gtk_widget_class_install_action (widget_class, "win.undo-close-tab", NULL, prompt_window_undo_close_tab_action);
 
   g_type_ensure (PROMPT_TYPE_FIND_BAR);
 }

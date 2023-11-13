@@ -91,6 +91,7 @@ struct _PromptPreferencesWindow
   PromptShortcutRow    *shortcut_select_none;
   PromptShortcutRow    *shortcut_tab_overview;
   PromptShortcutRow    *shortcut_toggle_fullscreen;
+  PromptShortcutRow    *shortcut_undo_close_tab;
   PromptShortcutRow    *shortcut_zoom_in;
   PromptShortcutRow    *shortcut_zoom_one;
   PromptShortcutRow    *shortcut_zoom_out;
@@ -613,6 +614,9 @@ prompt_preferences_window_constructed (GObject *object)
   g_object_bind_property (shortcuts, "close-other-tabs",
                           self->shortcut_close_other_tabs, "accelerator",
                           G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
+  g_object_bind_property (shortcuts, "undo-close-tab",
+                          self->shortcut_undo_close_tab, "accelerator",
+                          G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
 
   g_object_bind_property (shortcuts, "move-next-tab",
                           self->shortcut_move_next_tab, "accelerator",
@@ -709,6 +713,7 @@ prompt_preferences_window_class_init (PromptPreferencesWindowClass *klass)
   gtk_widget_class_bind_template_child (widget_class, PromptPreferencesWindow, shortcut_select_none);
   gtk_widget_class_bind_template_child (widget_class, PromptPreferencesWindow, shortcut_tab_overview);
   gtk_widget_class_bind_template_child (widget_class, PromptPreferencesWindow, shortcut_toggle_fullscreen);
+  gtk_widget_class_bind_template_child (widget_class, PromptPreferencesWindow, shortcut_undo_close_tab);
   gtk_widget_class_bind_template_child (widget_class, PromptPreferencesWindow, shortcut_zoom_in);
   gtk_widget_class_bind_template_child (widget_class, PromptPreferencesWindow, shortcut_zoom_one);
   gtk_widget_class_bind_template_child (widget_class, PromptPreferencesWindow, shortcut_zoom_out);

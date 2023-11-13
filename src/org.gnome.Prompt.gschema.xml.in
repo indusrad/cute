@@ -471,6 +471,12 @@
       <description>Shortcut to focus tab 10</description>
     </key>
 
+    <key name="undo-close-tab" type="s">
+      <default>'&lt;ctrl&gt;&lt;shift&gt;&lt;alt&gt;t'</default>
+      <summary>Undo Close Tab</summary>
+      <description>Undo closing of last tab</description>
+    </key>
+
   </schema>
 
 </schemalist>
