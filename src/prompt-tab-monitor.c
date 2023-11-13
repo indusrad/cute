@@ -179,6 +179,9 @@ prompt_tab_monitor_key_pressed_cb (PromptTabMonitor      *self,
   g_assert (PROMPT_IS_TAB_MONITOR (self));
   g_assert (GTK_IS_EVENT_CONTROLLER_KEY (key));
 
+  if (self->update_source == NULL)
+    return GDK_EVENT_PROPAGATE;
+
   state &= gtk_accelerator_get_default_mod_mask ();
 
   switch (keyval)
