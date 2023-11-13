@@ -39,10 +39,11 @@
             <child>
               <object class="GtkFlowBox" id="palette_previews">
                 <property name="hexpand">true</property>
-                <property name="column-spacing">6</property>
-                <property name="row-spacing">6</property>
+                <property name="column-spacing">9</property>
+                <property name="row-spacing">9</property>
                 <property name="max-children-per-line">3</property>
                 <property name="selection-mode">none</property>
+                <property name="homogeneous">true</property>
               </object>
             </child>
           </object>

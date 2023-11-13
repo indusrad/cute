@@ -391,6 +391,7 @@ create_palette_preview (gpointer item,
   AdwStyleManager *style_manager = user_data;
   PromptPreferencesListItem *list_item = item;
   g_autoptr(PromptPalette) palette = NULL;
+  PromptSettings *settings;
   GVariant *action_target;
   GtkButton *button;
   const char *key;
@@ -400,13 +401,14 @@ create_palette_preview (gpointer item,
   g_assert (PROMPT_IS_PREFERENCES_LIST_ITEM (list_item));
   g_assert (ADW_IS_STYLE_MANAGER (style_manager));
 
+  settings = prompt_application_get_settings (PROMPT_APPLICATION_DEFAULT);
   action_target = prompt_preferences_list_item_get_value (list_item);
   key = g_variant_get_string (action_target, NULL);
   palette = prompt_palette_new_from_name (key);
   preview = prompt_palette_preview_new (palette);
   g_object_bind_property (style_manager, "dark", preview, "dark", G_BINDING_SYNC_CREATE);
+  g_object_bind_property (settings, "font-desc", preview, "font-desc", G_BINDING_SYNC_CREATE);
   button = g_object_new (GTK_TYPE_TOGGLE_BUTTON,
-                         "halign", GTK_ALIGN_CENTER,
                          "css-classes", (const char * const[]) { "palette", NULL },
                          "action-name", "default-profile.palette",
                          "action-target", action_target,
@@ -416,7 +418,6 @@ create_palette_preview (gpointer item,
                          "overflow", GTK_OVERFLOW_HIDDEN,
                          NULL);
   child = g_object_new (GTK_TYPE_FLOW_BOX_CHILD,
-                        "halign", GTK_ALIGN_CENTER,
                         "child", button,
                         NULL);
 

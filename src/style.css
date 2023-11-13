@@ -89,12 +89,24 @@ button.palette {
 button.palette.selected {
   box-shadow: 0 0 0 2px @theme_selected_bg_color;
 }
-button.palette.selected image {
+button.palette image {
   border-radius: 99px;
+  background-color: transparent;
+  color: transparent;
+  padding: 2px;
+  margin: -3px -3px 0 0;
+}
+button.palette.selected image {
   background-color: @theme_selected_bg_color;
   color: @theme_selected_fg_color;
-  padding: 2px;
-  margin: 6px;
+}
+palettepreview > box {
+  padding: 12px 12px;
+}
+palettepreviewcolor {
+  border-radius: 5px;
+  min-width: 20px;
+  min-height: 16px;
 }
 preferencesgroup flowboxchild {
   outline-offset: 2px;
