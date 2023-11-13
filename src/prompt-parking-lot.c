@@ -194,6 +194,8 @@ prompt_parking_lot_push (PromptParkingLot *self,
                                                   self->timeout,
                                                   prompt_parking_lot_source_func,
                                                   parked, NULL);
+
+  g_queue_push_tail_link (&self->tabs, &parked->link);
 }
 
 /**
@@ -210,7 +212,7 @@ prompt_parking_lot_pop (PromptParkingLot *self)
 
   g_return_val_if_fail (PROMPT_IS_PARKING_LOT (self), NULL);
 
-  if ((parked = g_queue_pop_head (&self->tabs)))
+  if ((parked = g_queue_peek_head (&self->tabs)))
     {
       ret = g_steal_pointer (&parked->tab);
       prompt_parking_lot_remove (self, parked);
