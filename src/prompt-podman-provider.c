@@ -20,11 +20,20 @@
 
 #include "config.h"
 
+#include "prompt-podman-container.h"
 #include "prompt-podman-provider.h"
+
+typedef struct _LabelToType
+{
+  const char *label;
+  const char *value;
+  GType type;
+} LabelToType;
 
 struct _PromptPodmanProvider
 {
   PromptContainerProvider parent_instance;
+  GArray *label_to_type;
 };
 
 enum {
@@ -39,6 +48,10 @@ static GParamSpec *properties [N_PROPS];
 static void
 prompt_podman_provider_finalize (GObject *object)
 {
+  PromptPodmanProvider *self = (PromptPodmanProvider *)object;
+
+  g_clear_pointer (&self->label_to_type, g_array_unref);
+
   G_OBJECT_CLASS (prompt_podman_provider_parent_class)->finalize (object);
 }
 
@@ -81,6 +94,7 @@ prompt_podman_provider_class_init (PromptPodmanProviderClass *klass)
 static void
 prompt_podman_provider_init (PromptPodmanProvider *self)
 {
+  self->label_to_type = g_array_new (FALSE, FALSE, sizeof (LabelToType));
 }
 
 PromptContainerProvider *
@@ -95,5 +109,15 @@ prompt_podman_provider_set_type_for_label (PromptPodmanProvider *self,
                                            const char           *value,
                                            GType                 container_type)
 {
-  /* TODO: */
+  LabelToType map;
+
+  g_return_if_fail (PROMPT_IS_PODMAN_PROVIDER (self));
+  g_return_if_fail (key != NULL);
+  g_return_if_fail (g_type_is_a (container_type, PROMPT_TYPE_PODMAN_CONTAINER));
+
+  map.label = g_intern_string (key);
+  map.value = g_intern_string (value);
+  map.type = container_type;
+
+  g_array_append_val (self->label_to_type, map);
 }
