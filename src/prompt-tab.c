@@ -192,6 +192,14 @@ prompt_tab_wait_check_cb (GObject      *object,
   if (ADW_IS_TAB_VIEW (tab_view))
     page = adw_tab_view_get_page (ADW_TAB_VIEW (tab_view), GTK_WIDGET (self));
 
+  /* Always prepare the banner even if we don't show it because we may
+   * display it again if the tab is removed from the parking lot and
+   * restored into the window.
+   */
+  adw_banner_set_title (self->banner, _("Process Exited"));
+  adw_banner_set_button_label (self->banner, _("_Restart"));
+  gtk_actionable_set_action_name (GTK_ACTIONABLE (self->banner), "tab.respawn");
+
   switch (exit_action)
     {
     case PROMPT_EXIT_ACTION_RESTART:
@@ -204,10 +212,7 @@ prompt_tab_wait_check_cb (GObject      *object,
       break;
 
     case PROMPT_EXIT_ACTION_NONE:
-      adw_banner_set_title (self->banner, _("Process Exited"));
       adw_banner_set_revealed (self->banner, TRUE);
-      adw_banner_set_button_label (self->banner, _("_Restart"));
-      gtk_actionable_set_action_name (GTK_ACTIONABLE (self->banner), "tab.respawn");
       break;
 
     default:
@@ -1045,4 +1050,12 @@ prompt_tab_dup_zoom_label (PromptTab *self)
     return g_strdup ("100%");
 
   return g_strdup_printf ("%.0lf%%", zoom_font_scales[self->zoom] * 100.0);
+}
+
+void
+prompt_tab_show_banner (PromptTab *self)
+{
+  g_return_if_fail (PROMPT_IS_TAB (self));
+
+  adw_banner_set_revealed (self->banner, TRUE);
 }

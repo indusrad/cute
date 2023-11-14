@@ -73,5 +73,6 @@ char            *prompt_tab_dup_zoom_label                     (PromptTab       
 void             prompt_tab_raise                              (PromptTab       *self);
 gboolean         prompt_tab_is_running                         (PromptTab       *self);
 void             prompt_tab_force_quit                         (PromptTab       *self);
+void             prompt_tab_show_banner                        (PromptTab       *self);
 
 G_END_DECLS

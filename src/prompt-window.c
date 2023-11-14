@@ -793,6 +793,8 @@ prompt_window_undo_close_tab_action (GtkWidget  *widget,
 
   if ((tab = prompt_parking_lot_pop (self->parking_lot)))
     {
+      if (!prompt_tab_is_running (tab))
+        prompt_tab_show_banner (tab);
       prompt_window_add_tab (self, tab);
       prompt_window_set_active_tab (self, tab);
       gtk_widget_grab_focus (GTK_WIDGET (tab));
