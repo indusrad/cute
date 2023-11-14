@@ -44,5 +44,7 @@ void prompt_container_provider_emit_added   (PromptContainerProvider *self,
                                              PromptContainer         *container);
 void prompt_container_provider_emit_removed (PromptContainerProvider *self,
                                              PromptContainer         *container);
+void prompt_container_provider_merge        (PromptContainerProvider *self,
+                                             GPtrArray               *containers);
 
 G_END_DECLS

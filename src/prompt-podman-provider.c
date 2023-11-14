@@ -152,15 +152,6 @@ prompt_podman_provider_set_type_for_label (PromptPodmanProvider *self,
   g_array_append_val (self->label_to_type, map);
 }
 
-static void
-prompt_podman_provider_merge (PromptPodmanProvider *self,
-                              GPtrArray            *containers)
-{
-  g_assert (PROMPT_IS_PODMAN_PROVIDER (self));
-  g_assert (containers != NULL);
-
-}
-
 static gboolean
 label_matches (JsonNode          *node,
                const LabelToType *l_to_t)
@@ -268,7 +259,7 @@ prompt_podman_provider_parse_cb (GObject      *object,
         }
     }
 
-  prompt_podman_provider_merge (self, containers);
+  prompt_container_provider_merge (PROMPT_CONTAINER_PROVIDER (self), containers);
 
   g_task_return_boolean (task, TRUE);
 }

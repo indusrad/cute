@@ -51,6 +51,9 @@ prompt_container_provider_real_added (PromptContainerProvider *self,
   g_assert (PROMPT_IS_CONTAINER_PROVIDER (self));
   g_assert (PROMPT_IS_CONTAINER (container));
 
+  g_debug ("Added container \"%s\"",
+           prompt_container_get_id (container));
+
   position = priv->containers->len;
 
   g_ptr_array_add (priv->containers, g_object_ref (container));
@@ -66,6 +69,9 @@ prompt_container_provider_real_removed (PromptContainerProvider *self,
 
   g_assert (PROMPT_IS_CONTAINER_PROVIDER (self));
   g_assert (PROMPT_IS_CONTAINER (container));
+
+  g_debug ("Removed container \"%s\"",
+           prompt_container_get_id (container));
 
   if (g_ptr_array_find (priv->containers, container, &position))
     {
@@ -153,6 +159,18 @@ prompt_container_provider_emit_removed (PromptContainerProvider *self,
   g_return_if_fail (PROMPT_IS_CONTAINER (container));
 
   g_signal_emit (self, signals[REMOVED], 0, container);
+}
+
+void
+prompt_container_provider_merge (PromptContainerProvider *self,
+                                 GPtrArray               *containers)
+{
+  g_return_if_fail (PROMPT_IS_CONTAINER_PROVIDER (self));
+
+  g_printerr ("TODO: merge containers\n");
+
+  for (guint i = 0; i < containers->len; i++)
+    prompt_container_provider_emit_added (self, g_ptr_array_index (containers, i));
 }
 
 static GType

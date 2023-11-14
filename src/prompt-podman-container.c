@@ -20,10 +20,13 @@
 
 #include "config.h"
 
+#include <glib/gi18n.h>
+
 #include "prompt-podman-container.h"
 
 typedef struct
 {
+  char *id;
   GHashTable *labels;
 } PromptPodmanContainerPrivate;
 
@@ -35,6 +38,17 @@ enum {
 G_DEFINE_TYPE_WITH_PRIVATE (PromptPodmanContainer, prompt_podman_container, PROMPT_TYPE_CONTAINER)
 
 static GParamSpec *properties [N_PROPS];
+
+static const char *
+prompt_podman_container_get_id (PromptContainer *container)
+{
+  PromptPodmanContainer *self = (PromptPodmanContainer *)container;
+  PromptPodmanContainerPrivate *priv = prompt_podman_container_get_instance_private (self);
+
+  g_assert (PROMPT_IS_PODMAN_CONTAINER (self));
+
+  return priv->id;
+}
 
 static void
 prompt_podman_container_deserialize_labels (PromptPodmanContainer *self,
@@ -67,11 +81,27 @@ prompt_podman_container_real_deserialize (PromptPodmanContainer  *self,
                                           JsonObject             *object,
                                           GError                **error)
 {
+  PromptPodmanContainerPrivate *priv = prompt_podman_container_get_instance_private (self);
   JsonObject *labels_object;
   JsonNode *labels;
+  JsonNode *id;
 
   g_assert (PROMPT_IS_PODMAN_CONTAINER (self));
   g_assert (object != NULL);
+
+  if (!(json_object_has_member (object, "Id") &&
+        (id = json_object_get_member (object, "Id")) &&
+        JSON_NODE_HOLDS_VALUE (id) &&
+        json_node_get_value_type (id) == G_TYPE_STRING))
+    {
+      g_set_error (error,
+                   G_IO_ERROR,
+                   G_IO_ERROR_INVALID_DATA,
+                   _("Failed to locate Id in podman container description"));
+      return FALSE;
+    }
+
+  g_set_str (&priv->id, json_node_get_string (id));
 
   if (json_object_has_member (object, "Labels") &&
       (labels = json_object_get_member (object, "Labels")) &&
@@ -100,6 +130,7 @@ prompt_podman_container_finalize (GObject *object)
   PromptPodmanContainerPrivate *priv = prompt_podman_container_get_instance_private (self);
 
   g_clear_pointer (&priv->labels, g_hash_table_unref);
+  g_clear_pointer (&priv->id, g_free);
 
   G_OBJECT_CLASS (prompt_podman_container_parent_class)->finalize (object);
 }
@@ -134,11 +165,14 @@ static void
 prompt_podman_container_class_init (PromptPodmanContainerClass *klass)
 {
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
+  PromptContainerClass *container_class = PROMPT_CONTAINER_CLASS (klass);
 
   object_class->dispose = prompt_podman_container_dispose;
   object_class->finalize = prompt_podman_container_finalize;
   object_class->get_property = prompt_podman_container_get_property;
   object_class->set_property = prompt_podman_container_set_property;
+
+  container_class->get_id = prompt_podman_container_get_id;
 
   klass->deserialize = prompt_podman_container_real_deserialize;
 }
