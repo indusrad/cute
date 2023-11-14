@@ -1350,9 +1350,7 @@ prompt_run_context_create_stdio_stream (PromptRunContext  *self,
   layer = prompt_run_context_current_layer (self);
 
   return prompt_unix_fd_map_create_stream (layer->unix_fd_map,
-                                            STDIN_FILENO,
-                                            STDOUT_FILENO,
-                                            error);
+                                           STDIN_FILENO,
+                                           STDOUT_FILENO,
+                                           error);
 }
-
-

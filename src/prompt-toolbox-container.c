@@ -41,8 +41,7 @@ prompt_toolbox_container_deserialize (PromptPodmanContainer  *container,
                                       JsonObject             *object,
                                       GError                **error)
 {
-  /* TODO */
-  return TRUE;
+  return PROMPT_PODMAN_CONTAINER_CLASS (prompt_toolbox_container_parent_class)->deserialize (container, object, error);
 }
 
 static void

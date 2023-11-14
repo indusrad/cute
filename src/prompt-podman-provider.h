@@ -29,6 +29,7 @@ G_BEGIN_DECLS
 G_DECLARE_FINAL_TYPE (PromptPodmanProvider, prompt_podman_provider, PROMPT, PODMAN_PROVIDER, PromptContainerProvider)
 
 PromptContainerProvider *prompt_podman_provider_new                (void);
+void                     prompt_podman_provider_queue_update       (PromptPodmanProvider *self);
 void                     prompt_podman_provider_set_type_for_label (PromptPodmanProvider *self,
                                                                     const char           *key,
                                                                     const char           *value,

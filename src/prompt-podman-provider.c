@@ -20,8 +20,12 @@
 
 #include "config.h"
 
+#include <json-glib/json-glib.h>
+
+#include "prompt-application.h"
 #include "prompt-podman-container.h"
 #include "prompt-podman-provider.h"
+#include "prompt-run-context.h"
 
 typedef struct _LabelToType
 {
@@ -34,6 +38,7 @@ struct _PromptPodmanProvider
 {
   PromptContainerProvider parent_instance;
   GArray *label_to_type;
+  guint queued_update;
 };
 
 enum {
@@ -44,6 +49,29 @@ enum {
 G_DEFINE_FINAL_TYPE (PromptPodmanProvider, prompt_podman_provider, PROMPT_TYPE_CONTAINER_PROVIDER)
 
 static GParamSpec *properties [N_PROPS];
+
+static void
+prompt_podman_provider_constructed (GObject *object)
+{
+  PromptPodmanProvider *self = (PromptPodmanProvider *)object;
+
+  G_OBJECT_CLASS (prompt_podman_provider_parent_class)->constructed (object);
+
+  prompt_podman_provider_queue_update (self);
+}
+
+static void
+prompt_podman_provider_dispose (GObject *object)
+{
+  PromptPodmanProvider *self = (PromptPodmanProvider *)object;
+
+  if (self->label_to_type->len > 0)
+    g_array_remove_range (self->label_to_type, 0, self->label_to_type->len);
+
+  g_clear_handle_id (&self->queued_update, g_source_remove);
+
+  G_OBJECT_CLASS (prompt_podman_provider_parent_class)->dispose (object);
+}
 
 static void
 prompt_podman_provider_finalize (GObject *object)
@@ -86,6 +114,8 @@ prompt_podman_provider_class_init (PromptPodmanProviderClass *klass)
 {
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
+  object_class->constructed = prompt_podman_provider_constructed;
+  object_class->dispose = prompt_podman_provider_dispose;
   object_class->finalize = prompt_podman_provider_finalize;
   object_class->get_property = prompt_podman_provider_get_property;
   object_class->set_property = prompt_podman_provider_set_property;
@@ -120,4 +150,191 @@ prompt_podman_provider_set_type_for_label (PromptPodmanProvider *self,
   map.type = container_type;
 
   g_array_append_val (self->label_to_type, map);
+}
+
+static void
+prompt_podman_provider_merge (PromptPodmanProvider *self,
+                              GPtrArray            *containers)
+{
+  g_assert (PROMPT_IS_PODMAN_PROVIDER (self));
+  g_assert (containers != NULL);
+
+}
+
+static gboolean
+label_matches (JsonNode          *node,
+               const LabelToType *l_to_t)
+{
+  /* TODO: We might want to add support for value checking here,
+   *       depending if we actually end up needing it.
+   */
+  return TRUE;
+}
+
+static PromptPodmanContainer *
+prompt_podman_provider_deserialize (PromptPodmanProvider *self,
+                                    JsonObject           *object)
+{
+  g_autoptr(PromptPodmanContainer) container = NULL;
+  g_autoptr(GError) error = NULL;
+  JsonObject *labels_object;
+  JsonNode *labels;
+  GType gtype;
+
+  g_assert (PROMPT_IS_PODMAN_PROVIDER (self));
+  g_assert (object != NULL);
+
+  gtype = PROMPT_TYPE_PODMAN_CONTAINER;
+
+  if (json_object_has_member (object, "Labels") &&
+      (labels = json_object_get_member (object, "Labels")) &&
+      JSON_NODE_HOLDS_OBJECT (labels) &&
+      (labels_object = json_node_get_object (labels)))
+    {
+      for (guint i = 0; i < self->label_to_type->len; i++)
+        {
+          const LabelToType *l_to_t = &g_array_index (self->label_to_type, LabelToType, i);
+
+          if (json_object_has_member (labels_object, l_to_t->label))
+            {
+              JsonNode *match = json_object_get_member (labels_object, l_to_t->label);
+
+              if (label_matches (match, l_to_t))
+                {
+                  gtype = l_to_t->type;
+                  break;
+                }
+            }
+        }
+    }
+
+  container = g_object_new (gtype, NULL);
+
+  if (!prompt_podman_container_deserialize (container, object, &error))
+    {
+      prompt_application_report_error (PROMPT_APPLICATION_DEFAULT, gtype, error);
+      return NULL;
+    }
+
+  return g_steal_pointer (&container);
+}
+
+static void
+prompt_podman_provider_parse_cb (GObject      *object,
+                                 GAsyncResult *result,
+                                 gpointer      user_data)
+{
+  JsonParser *parser = (JsonParser *)object;
+  PromptPodmanProvider *self;
+  g_autoptr(GTask) task = user_data;
+  g_autoptr(GPtrArray) containers = NULL;
+  g_autoptr(GError) error = NULL;
+  JsonArray *root_array;
+  JsonNode *root;
+
+  g_assert (JSON_IS_PARSER (parser));
+  g_assert (G_IS_ASYNC_RESULT (result));
+  g_assert (G_IS_TASK (task));
+
+  self = g_task_get_source_object (task);
+
+  if (!json_parser_load_from_stream_finish (parser, result, &error))
+    {
+      prompt_application_report_error (PROMPT_APPLICATION_DEFAULT,
+                                       PROMPT_TYPE_PODMAN_PROVIDER,
+                                       error);
+      g_task_return_boolean (task, FALSE);
+      return;
+    }
+
+  containers = g_ptr_array_new_with_free_func (g_object_unref);
+
+  if ((root = json_parser_get_root (parser)) &&
+      JSON_NODE_HOLDS_ARRAY (root) &&
+      (root_array = json_node_get_array (root)))
+    {
+      guint n_elements = json_array_get_length (root_array);
+
+      for (guint i = 0; i < n_elements; i++)
+        {
+          g_autoptr(PromptPodmanContainer) container = NULL;
+          JsonNode *element = json_array_get_element (root_array, i);
+          JsonObject *element_object;
+
+          if (JSON_NODE_HOLDS_OBJECT (element) &&
+              (element_object = json_node_get_object (element)) &&
+              (container = prompt_podman_provider_deserialize (self, element_object)))
+            g_ptr_array_add (containers, g_steal_pointer (&container));
+        }
+    }
+
+  prompt_podman_provider_merge (self, containers);
+
+  g_task_return_boolean (task, TRUE);
+}
+
+static gboolean
+prompt_podman_provider_update_source_func (gpointer user_data)
+{
+  PromptPodmanProvider *self = user_data;
+  g_autoptr(PromptRunContext) run_context = NULL;
+  g_autoptr(GSubprocess) subprocess = NULL;
+  g_autoptr(GIOStream) stream = NULL;
+  g_autoptr(GError) error = NULL;
+  g_autoptr(JsonParser) parser = NULL;
+  g_autoptr(GTask) task = NULL;
+  GOutputStream *stdin_stream;
+  GInputStream *stdout_stream;
+
+  g_assert (PROMPT_IS_PODMAN_PROVIDER (self));
+
+  self->queued_update = 0;
+
+  run_context = prompt_run_context_new ();
+  prompt_run_context_push_host (run_context);
+  prompt_run_context_append_argv (run_context, "podman");
+  prompt_run_context_append_argv (run_context, "ps");
+  prompt_run_context_append_argv (run_context, "--all");
+  prompt_run_context_append_argv (run_context, "--format=json");
+
+  if (!(stream = prompt_run_context_create_stdio_stream (run_context, &error)) ||
+      !(subprocess = prompt_run_context_spawn (run_context, &error)))
+    {
+      prompt_application_report_error (PROMPT_APPLICATION_DEFAULT,
+                                       PROMPT_TYPE_PODMAN_PROVIDER,
+                                       error);
+      return G_SOURCE_REMOVE;
+    }
+
+  stdout_stream = g_io_stream_get_input_stream (stream);
+  stdin_stream = g_io_stream_get_output_stream (stream);
+
+  g_assert (!g_io_stream_is_closed (stream));
+  g_assert (!g_input_stream_is_closed (stdout_stream));
+  g_assert (!g_output_stream_is_closed (stdin_stream));
+
+  task = g_task_new (self, NULL, NULL, NULL);
+  g_task_set_source_tag (task, prompt_podman_provider_update_source_func);
+  g_task_set_task_data (task, g_object_ref (stream), g_object_unref);
+
+  parser = json_parser_new ();
+
+  json_parser_load_from_stream_async (parser,
+                                      stdout_stream,
+                                      NULL,
+                                      prompt_podman_provider_parse_cb,
+                                      g_steal_pointer (&task));
+
+  return G_SOURCE_REMOVE;
+}
+
+void
+prompt_podman_provider_queue_update (PromptPodmanProvider *self)
+{
+  g_return_if_fail (PROMPT_IS_PODMAN_PROVIDER (self));
+
+  if (self->queued_update == 0)
+    self->queued_update = g_idle_add_full (G_PRIORITY_LOW,
+                                           prompt_podman_provider_update_source_func,
+                                           self, NULL);
 }
