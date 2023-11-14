@@ -101,6 +101,12 @@
       </object>
     </child>
     <child>
+      <object class="GtkEventControllerKey" id="key_controller">
+        <signal name="key-pressed" handler="prompt_terminal_capture_key_pressed_cb" swapped="1" object="PromptTerminal"/>
+        <property name="propagation-phase">capture</property>
+      </object>
+    </child>
+    <child>
       <object class="GtkDropTargetAsync" id="drop_target">
         <signal name="drop" handler="prompt_terminal_drop_target_drop" swapped="1" object="PromptTerminal"/>
         <signal name="drag-enter" handler="prompt_terminal_drop_target_drag_enter" swapped="1" object="PromptTerminal"/>

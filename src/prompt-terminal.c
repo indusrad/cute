@@ -324,6 +324,67 @@ prompt_terminal_capture_click_pressed_cb (PromptTerminal  *self,
     gtk_gesture_set_state (GTK_GESTURE (click), GTK_EVENT_SEQUENCE_DENIED);
 }
 
+static gboolean
+prompt_terminal_capture_key_pressed_cb (PromptTerminal     *self,
+                                        guint               keyval,
+                                        guint               keycode,
+                                        GdkModifierType     state,
+                                        GtkEventController *controller)
+{
+  GtkScrolledWindow *scroller;
+  GtkAdjustment *adjustment;
+  double upper;
+  double value;
+  double page_size;
+  GdkEvent *event;
+
+  g_assert (PROMPT_IS_TERMINAL (self));
+  g_assert (GTK_IS_EVENT_CONTROLLER_KEY (controller));
+
+
+  /* HACK:
+   *
+   * This hack works around the fact that GtkScrolledWindow will
+   * attempt to continue a kinetic scroll even though VteTerminal will
+   * adjust the GtkAdjustment:value to the bottom of the view when
+   * scroll-on-keystroke is enabled.
+   *
+   * This is managed by clearing and resetting the kinetic scrolling
+   * property as that will clear any pending kinetic scrolling attempt.
+   */
+
+  /* Make sure the property is even enabled first */
+  if (!vte_terminal_get_scroll_on_keystroke (VTE_TERMINAL (self)))
+    return FALSE;
+
+  /* Check all of the input keyvals which are just modifiers and
+   * leave those alone until an input key is pressed.
+   */
+  event = gtk_event_controller_get_current_event (controller);
+  if (gdk_key_event_is_modifier (event))
+    return FALSE;
+
+  /* Find our scrolled window and see if kinetic strolling is even enabled */
+  scroller = GTK_SCROLLED_WINDOW (gtk_widget_get_ancestor (GTK_WIDGET (self), GTK_TYPE_SCROLLED_WINDOW));
+  if (!gtk_scrolled_window_get_kinetic_scrolling (scroller))
+    return FALSE;
+
+  /* Tweaking the property is somewhat expensive, so make sure we're not
+   * already at the bottom of the visible area before tweaking.
+   */
+  adjustment = gtk_scrolled_window_get_vadjustment (scroller);
+  upper = gtk_adjustment_get_upper (adjustment);
+  value = gtk_adjustment_get_value (adjustment);
+  page_size = gtk_adjustment_get_page_size (adjustment);
+  if (upper - page_size > value)
+    {
+      gtk_scrolled_window_set_kinetic_scrolling (scroller, FALSE);
+      gtk_scrolled_window_set_kinetic_scrolling (scroller, TRUE);
+    }
+
+  return FALSE;
+}
+
 static void
 select_all_action (GtkWidget  *widget,
                    const char *action_name,
@@ -1122,6 +1183,7 @@ prompt_terminal_class_init (PromptTerminalClass *klass)
 
   gtk_widget_class_bind_template_callback (widget_class, prompt_terminal_bubble_click_pressed_cb);
   gtk_widget_class_bind_template_callback (widget_class, prompt_terminal_capture_click_pressed_cb);
+  gtk_widget_class_bind_template_callback (widget_class, prompt_terminal_capture_key_pressed_cb);
   gtk_widget_class_bind_template_callback (widget_class, prompt_terminal_drop_target_drag_enter);
   gtk_widget_class_bind_template_callback (widget_class, prompt_terminal_drop_target_drag_leave);
   gtk_widget_class_bind_template_callback (widget_class, prompt_terminal_drop_target_drop);
