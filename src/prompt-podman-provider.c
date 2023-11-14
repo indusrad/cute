@@ -26,6 +26,7 @@
 #include "prompt-podman-container.h"
 #include "prompt-podman-provider.h"
 #include "prompt-run-context.h"
+#include "prompt-util.h"
 
 typedef struct _LabelToType
 {
@@ -37,6 +38,7 @@ typedef struct _LabelToType
 struct _PromptPodmanProvider
 {
   PromptContainerProvider parent_instance;
+  GFileMonitor *monitor;
   GArray *label_to_type;
   guint queued_update;
 };
@@ -54,8 +56,31 @@ static void
 prompt_podman_provider_constructed (GObject *object)
 {
   PromptPodmanProvider *self = (PromptPodmanProvider *)object;
+  g_autoptr(GFile) file = NULL;
+  g_autofree char *data_dir = NULL;
 
   G_OBJECT_CLASS (prompt_podman_provider_parent_class)->constructed (object);
+
+  g_set_str (&data_dir, g_get_user_data_dir ());
+  if (data_dir == NULL || prompt_get_process_kind () == PROMPT_PROCESS_KIND_FLATPAK)
+    prompt_take_str (&data_dir, g_build_filename (g_get_home_dir (), ".local", "share", NULL));
+
+  g_assert (data_dir != NULL);
+
+  file = g_file_new_build_filename (data_dir,
+                                    "containers", "storage", "overlay-containers",
+                                    "containers.json",
+                                    NULL);
+
+  if ((self->monitor = g_file_monitor (file, G_FILE_MONITOR_NONE, NULL, NULL)))
+    {
+      g_file_monitor_set_rate_limit (self->monitor, 5000);
+      g_signal_connect_object (self->monitor,
+                               "changed",
+                               G_CALLBACK (prompt_podman_provider_queue_update),
+                               self,
+                               G_CONNECT_SWAPPED);
+    }
 
   prompt_podman_provider_queue_update (self);
 }
@@ -68,6 +93,7 @@ prompt_podman_provider_dispose (GObject *object)
   if (self->label_to_type->len > 0)
     g_array_remove_range (self->label_to_type, 0, self->label_to_type->len);
 
+  g_clear_object (&self->monitor);
   g_clear_handle_id (&self->queued_update, g_source_remove);
 
   G_OBJECT_CLASS (prompt_podman_provider_parent_class)->dispose (object);
