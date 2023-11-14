@@ -58,4 +58,12 @@ gboolean            prompt_shell_supports_dash_l (const char *shell);
 gboolean            prompt_is_shell              (const char *arg0);
 GListModel         *prompt_parse_shells          (const char *etc_shells);
 
+static inline void
+prompt_take_str (char **out_str,
+                 char  *new_str)
+{
+  g_free (*out_str);
+  *out_str = new_str;
+}
+
 G_END_DECLS
