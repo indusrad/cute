@@ -213,6 +213,8 @@ prompt_tab_wait_check_cb (GObject      *object,
     default:
       g_assert_not_reached ();
     }
+
+  g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_TITLE]);
 }
 
 static void
@@ -338,6 +340,8 @@ prompt_tab_respawn (PromptTab *self)
                                  NULL,
                                  prompt_tab_spawn_cb,
                                  g_object_ref (self));
+
+  g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_TITLE]);
 }
 
 static void
@@ -857,23 +861,23 @@ char *
 prompt_tab_dup_title (PromptTab *self)
 {
   const char *window_title;
+  GString *gstr;
 
   g_return_val_if_fail (PROMPT_IS_TAB (self), NULL);
 
-  window_title = vte_terminal_get_window_title (VTE_TERMINAL (self->terminal));
-  if (window_title != NULL && window_title[0] == 0)
-    window_title = NULL;
+  gstr = g_string_new (self->title_prefix);
 
-  if (window_title && self->title_prefix)
-    return g_strconcat (self->title_prefix, window_title, NULL);
+  if ((window_title = vte_terminal_get_window_title (VTE_TERMINAL (self->terminal))) && window_title[0])
+    g_string_append (gstr, window_title);
+  else
+    g_string_append (gstr, _("Terminal"));
 
-  if (window_title)
-    return g_strdup (window_title);
+  if (self->state == PROMPT_TAB_STATE_EXITED)
+    g_string_append_printf (gstr, " (%s)", _("Exited"));
+  else if (self->state == PROMPT_TAB_STATE_FAILED)
+    g_string_append_printf (gstr, " (%s)", _("Failed"));
 
-  if (self->title_prefix)
-    return g_strdup (self->title_prefix);
-
-  return g_strdup (_("Terminal"));
+  return g_string_free (gstr, FALSE);
 }
 
 static char *
