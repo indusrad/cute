@@ -706,3 +706,23 @@ prompt_application_get_shortcuts (PromptApplication *self)
 
   return self->shortcuts;
 }
+
+void
+prompt_application_report_error (PromptApplication *self,
+                                 GType              subsystem,
+                                 const GError      *error)
+{
+  g_return_if_fail (PROMPT_IS_APPLICATION (self));
+
+  /* TODO: We probably want to provide some feedback if we fail to
+   *       run in a number of scenarios. And this will also let us
+   *       do some deduplication of repeated error messages once
+   *       we start showing errors to users.
+   */
+
+  g_debug ("%s: %s[%u]: %s",
+           g_type_name (subsystem),
+           g_quark_to_string (error->domain),
+           error->code,
+           error->message);
+}

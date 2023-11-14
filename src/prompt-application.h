@@ -54,5 +54,8 @@ GListModel        *prompt_application_list_profiles        (PromptApplication *s
 GListModel        *prompt_application_list_containers      (PromptApplication *self);
 PromptContainer   *prompt_application_lookup_container     (PromptApplication *self,
                                                             const char        *container_id);
+void               prompt_application_report_error         (PromptApplication *self,
+                                                            GType              subsystem,
+                                                            const GError      *error);
 
 G_END_DECLS
