@@ -56,14 +56,50 @@
                 <property name="subtitle" translatable="yes">Reduces the opacity of the background window</property>
                 <property name="activatable-widget">opacity</property>
                 <child type="suffix">
-                  <object class="GtkScale" id="opacity">
-                    <property name="width-request">150</property>
-                    <property name="adjustment">
-                      <object class="GtkAdjustment" id="opacity_adjustment">
-                        <property name="lower">0</property>
-                        <property name="upper">1</property>
-                        <property name="step-increment">.05</property>
-                        <property name="page-increment">.25</property>
+                  <object class="GtkMenuButton">
+                    <style>
+                      <class name="flat"/>
+                    </style>
+                    <property name="valign">center</property>
+                    <child>
+                      <object class="GtkBox">
+                        <property name="spacing">6</property>
+                        <child>
+                          <object class="GtkLabel" id="opacity_label">
+                            <property name="width-chars">6</property>
+                            <property name="max-width-chars">6</property>
+                            <attributes>
+                              <attribute name="font-features" value="'tnum'"/>
+                            </attributes>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkImage">
+                            <property name="icon-name">pan-down-symbolic</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <property name="popover">
+                      <object class="GtkPopover">
+                        <child>
+                          <object class="GtkScale" id="opacity">
+                            <property name="width-request">200</property>
+                            <property name="adjustment">
+                              <object class="GtkAdjustment" id="opacity_adjustment">
+                                <property name="lower">0</property>
+                                <property name="upper">1</property>
+                                <property name="step-increment">.05</property>
+                                <property name="page-increment">.25</property>
+                              </object>
+                            </property>
+                            <marks>
+                              <mark value="0.25"/>
+                              <mark value="0.5"/>
+                              <mark value="0.75"/>
+                            </marks>
+                          </object>
+                        </child>
                       </object>
                     </property>
                   </object>
