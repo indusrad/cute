@@ -145,8 +145,22 @@ void
 prompt_container_provider_emit_added (PromptContainerProvider *self,
                                       PromptContainer         *container)
 {
+  PromptContainerProviderPrivate *priv = prompt_container_provider_get_instance_private (self);
+  const char *id;
+
   g_return_if_fail (PROMPT_IS_CONTAINER_PROVIDER (self));
   g_return_if_fail (PROMPT_IS_CONTAINER (container));
+
+  id = prompt_container_get_id (container);
+
+  for (guint i = 0; i < priv->containers->len; i++)
+    {
+      if (g_strcmp0 (id, prompt_container_get_id (g_ptr_array_index (priv->containers, i))) == 0)
+        {
+          g_warning ("Container \"%s\" already added", id);
+          return;
+        }
+    }
 
   g_signal_emit (self, signals[ADDED], 0, container);
 }
@@ -161,16 +175,50 @@ prompt_container_provider_emit_removed (PromptContainerProvider *self,
   g_signal_emit (self, signals[REMOVED], 0, container);
 }
 
+static gboolean
+compare_by_id (gconstpointer a,
+               gconstpointer b)
+{
+  return 0 == g_strcmp0 (prompt_container_get_id ((PromptContainer *)a),
+                         prompt_container_get_id ((PromptContainer *)b));
+}
+
 void
 prompt_container_provider_merge (PromptContainerProvider *self,
                                  GPtrArray               *containers)
 {
-  g_return_if_fail (PROMPT_IS_CONTAINER_PROVIDER (self));
+  PromptContainerProviderPrivate *priv = prompt_container_provider_get_instance_private (self);
 
-  g_printerr ("TODO: merge containers\n");
+  g_return_if_fail (PROMPT_IS_CONTAINER_PROVIDER (self));
+  g_return_if_fail (containers != NULL);
+
+  /* First remove any containers not in the set, or replace them with
+   * the new version of the object. Scan in reverse so that we can
+   * have stable indexes.
+   */
+  for (guint i = priv->containers->len; i > 0; i--)
+    {
+      PromptContainer *container = g_ptr_array_index (priv->containers, i-1);
+      guint position;
+
+      if (g_ptr_array_find_with_equal_func (containers, container, compare_by_id, &position))
+        {
+          g_ptr_array_index (priv->containers, i-1) = g_object_ref (g_ptr_array_index (containers, position));
+          g_list_model_items_changed (G_LIST_MODEL (self), i-1, 1, 1);
+          continue;
+        }
+
+      prompt_container_provider_emit_removed (self, container);
+    }
 
   for (guint i = 0; i < containers->len; i++)
-    prompt_container_provider_emit_added (self, g_ptr_array_index (containers, i));
+    {
+      PromptContainer *container = g_ptr_array_index (containers, i);
+      guint position;
+
+      if (!g_ptr_array_find_with_equal_func (priv->containers, container, compare_by_id, &position))
+        prompt_container_provider_emit_added (self, container);
+    }
 }
 
 static GType
