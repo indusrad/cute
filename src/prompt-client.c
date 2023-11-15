@@ -21,6 +21,12 @@
 
 #include "config.h"
 
+#include <errno.h>
+#include <fcntl.h>
+#include <sys/ioctl.h>
+#ifdef __linux__
+# include <sys/prctl.h>
+#endif
 #include <sys/socket.h>
 
 #include <glib/gstdio.h>
@@ -238,6 +244,17 @@ prompt_client_wait_cb (GObject      *object,
     g_error ("prompt-agent exited, cannot continue");
 }
 
+static void
+prompt_client_child_setup_func (gpointer data)
+{
+  setsid ();
+  setpgid (0, 0);
+
+#ifdef __linux__
+  prctl (PR_SET_PDEATHSIG, SIGKILL);
+#endif
+}
+
 PromptClient *
 prompt_client_new (GError **error)
 {
@@ -309,6 +326,10 @@ prompt_client_new (GError **error)
                            G_CALLBACK (prompt_client_containers_changed_cb),
                            self,
                            G_CONNECT_SWAPPED);
+
+  g_subprocess_launcher_set_child_setup (launcher,
+                                         prompt_client_child_setup_func,
+                                         NULL, NULL);
 
   if (!(subprocess = g_subprocess_launcher_spawnv (launcher, (const char * const *)argv->pdata, error)))
     return NULL;
