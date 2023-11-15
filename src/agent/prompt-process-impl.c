@@ -33,6 +33,7 @@ struct _PromptProcessImpl
 {
   PromptIpcProcessSkeleton parent_instance;
   GSubprocess *subprocess;
+  GPid pid;
   int pty_fd;
 };
 
@@ -117,13 +118,17 @@ prompt_process_impl_new (GDBusConnection  *connection,
                          GError          **error)
 {
   g_autoptr(PromptProcessImpl) self = NULL;
+  const char *ident;
 
   g_return_val_if_fail (G_IS_DBUS_CONNECTION (connection), NULL);
   g_return_val_if_fail (G_IS_SUBPROCESS (subprocess), NULL);
   g_return_val_if_fail (object_path != NULL, NULL);
 
+  ident = g_subprocess_get_identifier (subprocess);
+
   self = g_object_new (PROMPT_TYPE_PROCESS_IMPL, NULL);
   self->pty_fd = pty_fd;
+  self->pid = atoi (ident);
   g_set_object (&self->subprocess, subprocess);
 
   g_subprocess_wait_async (subprocess,
