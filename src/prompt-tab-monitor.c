@@ -90,9 +90,10 @@ static gboolean
 prompt_tab_monitor_update_source_func (gpointer user_data)
 {
   PromptTabMonitor *self = user_data;
+  g_autofree char *process_leader_kind_str = NULL;
   PromptProcessLeaderKind process_leader_kind;
   g_autoptr(PromptTab) tab = NULL;
-  PromptProcess *process;
+  PromptIpcProcess *process;
 
   g_assert (PROMPT_IS_TAB_MONITOR (self));
 
@@ -102,7 +103,18 @@ prompt_tab_monitor_update_source_func (gpointer user_data)
   if (!(process = prompt_tab_get_process (tab)))
     goto remove_source;
 
-  process_leader_kind = prompt_process_get_leader_kind (process);
+  prompt_ipc_process_call_get_leader_kind_sync (process, &process_leader_kind_str, NULL, NULL);
+
+  if (process_leader_kind_str == NULL || strcmp (process_leader_kind_str, "unknown") == 0)
+    process_leader_kind = PROMPT_PROCESS_LEADER_KIND_UNKNOWN;
+  else if (strcmp (process_leader_kind_str, "remote") == 0)
+    process_leader_kind = PROMPT_PROCESS_LEADER_KIND_REMOTE;
+  else if (strcmp (process_leader_kind_str, "superuser") == 0)
+    process_leader_kind = PROMPT_PROCESS_LEADER_KIND_SUPERUSER;
+  else if (strcmp (process_leader_kind_str, "container") == 0)
+    process_leader_kind = PROMPT_PROCESS_LEADER_KIND_CONTAINER;
+  else
+    process_leader_kind = PROMPT_PROCESS_LEADER_KIND_UNKNOWN;
 
   if (process_leader_kind != self->process_leader_kind)
     {

@@ -23,10 +23,9 @@
 
 #include <glib/gi18n.h>
 
+#include "prompt-agent-ipc.h"
 #include "prompt-application.h"
-#include "prompt-container.h"
 #include "prompt-enums.h"
-#include "prompt-process.h"
 #include "prompt-tab.h"
 #include "prompt-tab-monitor.h"
 #include "prompt-terminal.h"
@@ -48,7 +47,7 @@ struct _PromptTab
 
   char              *previous_working_directory_uri;
   PromptProfile     *profile;
-  PromptProcess     *process;
+  PromptIpcProcess  *process;
   char              *title_prefix;
   PromptTabMonitor  *monitor;
 
@@ -143,28 +142,28 @@ prompt_tab_grab_focus (GtkWidget *widget)
 }
 
 static void
-prompt_tab_wait_check_cb (GObject      *object,
-                          GAsyncResult *result,
-                          gpointer      user_data)
+prompt_tab_wait_cb (GObject      *object,
+                    GAsyncResult *result,
+                    gpointer      user_data)
 {
-  PromptProcess *process = (PromptProcess *)object;
+  PromptApplication *app = (PromptApplication *)object;
   g_autoptr(PromptTab) self = user_data;
   g_autoptr(GError) error = NULL;
   PromptExitAction exit_action;
   AdwTabPage *page = NULL;
   GtkWidget *tab_view;
-  gboolean success;
+  int exit_code;
 
-  g_assert (PROMPT_IS_PROCESS (process));
+  g_assert (PROMPT_IS_APPLICATION (app));
   g_assert (G_IS_ASYNC_RESULT (result));
   g_assert (PROMPT_IS_TAB (self));
   g_assert (self->state == PROMPT_TAB_STATE_RUNNING);
 
   g_clear_object (&self->process);
 
-  success = prompt_process_wait_check_finish (process, result, &error);
+  exit_code = prompt_application_wait_finish (app, result, &error);
 
-  if (success)
+  if (error == NULL && WIFEXITED (exit_code) && WEXITSTATUS (exit_code) == 0)
     self->state = PROMPT_TAB_STATE_EXITED;
   else
     self->state = PROMPT_TAB_STATE_FAILED;
@@ -172,12 +171,11 @@ prompt_tab_wait_check_cb (GObject      *object,
   if (self->forced_exit)
     return;
 
-  if (prompt_process_get_if_signaled (process))
+  if (WIFSIGNALED (exit_code))
     {
       g_autofree char *title = NULL;
 
-      title = g_strdup_printf (_("Process Exited from Signal %d"),
-                               prompt_process_get_term_sig (process));
+      title = g_strdup_printf (_("Process Exited from Signal %d"), WTERMSIG (exit_code));
 
       adw_banner_set_title (self->banner, title);
       adw_banner_set_revealed (self->banner, TRUE);
@@ -227,19 +225,17 @@ prompt_tab_spawn_cb (GObject      *object,
                      GAsyncResult *result,
                      gpointer      user_data)
 {
-  PromptContainer *container = (PromptContainer *)object;
-  g_autoptr(PromptProcess) process = NULL;
+  PromptApplication *app = (PromptApplication *)object;
+  g_autoptr(PromptIpcProcess) process = NULL;
   g_autoptr(PromptTab) self = user_data;
-  g_autoptr(GSubprocess) subprocess = NULL;
   g_autoptr(GError) error = NULL;
-  VtePty *pty;
 
-  g_assert (PROMPT_IS_CONTAINER (container));
+  g_assert (PROMPT_IS_TAB (self));
   g_assert (G_IS_ASYNC_RESULT (result));
   g_assert (PROMPT_IS_TAB (self));
   g_assert (self->state == PROMPT_TAB_STATE_SPAWNING);
 
-  if (!(subprocess = prompt_container_spawn_finish (container, result, &error)))
+  if (!(process = prompt_application_spawn_finish (app, result, &error)))
     {
       const char *profile_uuid = prompt_profile_get_uuid (self->profile);
 
@@ -259,22 +255,20 @@ prompt_tab_spawn_cb (GObject      *object,
 
   self->state = PROMPT_TAB_STATE_RUNNING;
 
-  pty = vte_terminal_get_pty (VTE_TERMINAL (self->terminal));
-  process = prompt_process_new (subprocess, pty);
-
   g_set_object (&self->process, process);
 
-  prompt_process_wait_check_async (process,
-                                    NULL,
-                                    prompt_tab_wait_check_cb,
-                                    g_object_ref (self));
+  prompt_application_wait_async (app,
+                                 process,
+                                 NULL,
+                                 prompt_tab_wait_cb,
+                                 g_object_ref (self));
 }
 
 static void
 prompt_tab_respawn (PromptTab *self)
 {
   g_autofree char *default_container = NULL;
-  g_autoptr(PromptContainer) container = NULL;
+  g_autoptr(PromptIpcContainer) container = NULL;
   g_autoptr(VtePty) new_pty = NULL;
   PromptApplication *app;
   const char *profile_uuid;
@@ -316,7 +310,7 @@ prompt_tab_respawn (PromptTab *self)
     {
       g_autoptr(GError) error = NULL;
 
-      new_pty = vte_pty_new_sync (0, NULL, &error);
+      new_pty = prompt_application_create_pty (PROMPT_APPLICATION_DEFAULT, &error);
 
       if (new_pty == NULL)
         {
@@ -330,21 +324,19 @@ prompt_tab_respawn (PromptTab *self)
           return;
         }
 
-      if (!vte_pty_set_utf8 (new_pty, TRUE, &error))
-        g_debug ("Failed to set UTF-8 mode for PTY: %s", error->message);
-
       vte_terminal_set_pty (VTE_TERMINAL (self->terminal), new_pty);
 
       pty = new_pty;
     }
 
-  prompt_container_spawn_async (container,
-                                 pty,
-                                 self->profile,
-                                 self->previous_working_directory_uri,
-                                 NULL,
-                                 prompt_tab_spawn_cb,
-                                 g_object_ref (self));
+  prompt_application_spawn_async (PROMPT_APPLICATION_DEFAULT,
+                                  container,
+                                  self->profile,
+                                  self->previous_working_directory_uri,
+                                  pty,
+                                  NULL,
+                                  prompt_tab_spawn_cb,
+                                  g_object_ref (self));
 
   g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_TITLE]);
 }
@@ -540,6 +532,8 @@ static void
 prompt_tab_constructed (GObject *object)
 {
   PromptTab *self = (PromptTab *)object;
+  g_autoptr(GError) error = NULL;
+  g_autoptr(VtePty) pty = NULL;
   PromptSettings *settings;
 
   G_OBJECT_CLASS (prompt_tab_parent_class)->constructed (object);
@@ -600,7 +594,7 @@ prompt_tab_dispose (GObject *object)
   GtkWidget *child;
 
   if (self->process != NULL)
-    prompt_process_force_exit (self->process);
+    prompt_ipc_process_call_send_signal (self->process, SIGKILL, NULL, NULL, NULL);
 
   gtk_widget_dispose_template (GTK_WIDGET (self), PROMPT_TYPE_TAB);
 
@@ -1014,12 +1008,17 @@ prompt_tab_raise (PromptTab *self)
 gboolean
 prompt_tab_is_running (PromptTab *self)
 {
+  gboolean has_foreground_process;
+
   g_return_val_if_fail (PROMPT_IS_TAB (self), 0);
 
   if (self->process == NULL)
     return FALSE;
 
-  return prompt_process_has_leader (self->process);
+  if (!prompt_ipc_process_call_has_foreground_process_sync (self->process, &has_foreground_process, NULL, NULL))
+    has_foreground_process = FALSE;
+
+  return has_foreground_process;
 }
 
 void
@@ -1030,10 +1029,10 @@ prompt_tab_force_quit (PromptTab *self)
   self->forced_exit = TRUE;
 
   if (self->process != NULL)
-    prompt_process_force_exit (self->process);
+    prompt_ipc_process_call_send_signal (self->process, SIGKILL, NULL, NULL, NULL);
 }
 
-PromptProcess *
+PromptIpcProcess *
 prompt_tab_get_process (PromptTab *self)
 {
   g_return_val_if_fail (PROMPT_IS_TAB (self), NULL);

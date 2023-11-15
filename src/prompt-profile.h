@@ -25,7 +25,6 @@
 #include <vte/vte.h>
 
 #include "prompt-palette.h"
-#include "prompt-run-context.h"
 
 G_BEGIN_DECLS
 
@@ -74,12 +73,6 @@ G_DECLARE_FINAL_TYPE (PromptProfile, prompt_profile, PROMPT, PROFILE, GObject)
 PromptProfile           *prompt_profile_new                     (const char               *uuid);
 PromptProfile           *prompt_profile_duplicate               (PromptProfile            *self);
 GSettings               *prompt_profile_dup_settings            (PromptProfile            *self);
-gboolean                 prompt_profile_apply                   (PromptProfile            *self,
-                                                                 PromptRunContext         *run_context,
-                                                                 VtePty                   *pty,
-                                                                 const char               *current_directory_uri,
-                                                                 const char               *default_shell,
-                                                                 GError                  **error);
 const char              *prompt_profile_get_uuid                (PromptProfile            *self);
 char                    *prompt_profile_dup_default_container   (PromptProfile            *self);
 void                     prompt_profile_set_default_container   (PromptProfile            *self,

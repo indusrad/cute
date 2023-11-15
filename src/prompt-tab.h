@@ -23,6 +23,7 @@
 
 #include <gtk/gtk.h>
 
+#include "prompt-agent-ipc.h"
 #include "prompt-process.h"
 #include "prompt-profile.h"
 #include "prompt-terminal.h"
@@ -52,27 +53,27 @@ typedef enum _PromptZoomLevel
 
 G_DECLARE_FINAL_TYPE (PromptTab, prompt_tab, PROMPT, TAB, GtkWidget)
 
-PromptTab       *prompt_tab_new                                (PromptProfile   *profile);
-PromptTerminal  *prompt_tab_get_terminal                       (PromptTab       *self);
-PromptProfile   *prompt_tab_get_profile                        (PromptTab       *self);
-PromptProcess   *prompt_tab_get_process                        (PromptTab       *self);
-char            *prompt_tab_dup_subtitle                       (PromptTab       *self);
-char            *prompt_tab_dup_title                          (PromptTab       *self);
-const char      *prompt_tab_get_title_prefix                   (PromptTab       *self);
-void             prompt_tab_set_title_prefix                   (PromptTab       *self,
-                                                                const char      *title_prefix);
-const char      *prompt_tab_get_current_directory_uri          (PromptTab       *self);
-void             prompt_tab_set_previous_working_directory_uri (PromptTab       *self,
-                                                                const char      *previous_working_directory_uri);
-PromptZoomLevel  prompt_tab_get_zoom                           (PromptTab       *self);
-void             prompt_tab_set_zoom                           (PromptTab       *self,
-                                                                PromptZoomLevel  zoom);
-void             prompt_tab_zoom_in                            (PromptTab       *self);
-void             prompt_tab_zoom_out                           (PromptTab       *self);
-char            *prompt_tab_dup_zoom_label                     (PromptTab       *self);
-void             prompt_tab_raise                              (PromptTab       *self);
-gboolean         prompt_tab_is_running                         (PromptTab       *self);
-void             prompt_tab_force_quit                         (PromptTab       *self);
-void             prompt_tab_show_banner                        (PromptTab       *self);
+PromptTab        *prompt_tab_new                                (PromptProfile   *profile);
+PromptTerminal   *prompt_tab_get_terminal                       (PromptTab       *self);
+PromptProfile    *prompt_tab_get_profile                        (PromptTab       *self);
+PromptIpcProcess *prompt_tab_get_process                        (PromptTab       *self);
+char             *prompt_tab_dup_subtitle                       (PromptTab       *self);
+char             *prompt_tab_dup_title                          (PromptTab       *self);
+const char       *prompt_tab_get_title_prefix                   (PromptTab       *self);
+void              prompt_tab_set_title_prefix                   (PromptTab       *self,
+                                                                 const char      *title_prefix);
+const char       *prompt_tab_get_current_directory_uri          (PromptTab       *self);
+void              prompt_tab_set_previous_working_directory_uri (PromptTab       *self,
+                                                                 const char      *previous_working_directory_uri);
+PromptZoomLevel   prompt_tab_get_zoom                           (PromptTab       *self);
+void              prompt_tab_set_zoom                           (PromptTab       *self,
+                                                                 PromptZoomLevel  zoom);
+void              prompt_tab_zoom_in                            (PromptTab       *self);
+void              prompt_tab_zoom_out                           (PromptTab       *self);
+char             *prompt_tab_dup_zoom_label                     (PromptTab       *self);
+void              prompt_tab_raise                              (PromptTab       *self);
+gboolean          prompt_tab_is_running                         (PromptTab       *self);
+void              prompt_tab_force_quit                         (PromptTab       *self);
+void              prompt_tab_show_banner                        (PromptTab       *self);
 
 G_END_DECLS

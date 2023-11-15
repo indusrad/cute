@@ -215,9 +215,9 @@
     </key>
 
     <key name="default-container" type="s">
-      <default>'host'</default>
+      <default>'session'</default>
       <summary>Default Container</summary>
-      <description>The container to run the command in by default</description>
+      <description>The default container to run the command in</description>
     </key>
 
     <key name="exit-action" enum="org.gnome.Prompt.ExitAction">

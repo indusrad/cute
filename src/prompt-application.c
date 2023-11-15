@@ -22,11 +22,11 @@
 
 #include <glib/gi18n.h>
 
+#include <sys/wait.h>
+
 #include "prompt-action-group.h"
 #include "prompt-application.h"
 #include "prompt-client.h"
-#include "prompt-container-provider.h"
-#include "prompt-host-provider.h"
 #include "prompt-preferences-window.h"
 #include "prompt-profile-menu.h"
 #include "prompt-settings.h"
@@ -40,8 +40,6 @@ struct _PromptApplication
 {
   AdwApplication       parent_instance;
   GListStore          *profiles;
-  GtkFlattenListModel *containers;
-  GListStore          *providers;
   PromptSettings      *settings;
   PromptShortcuts     *shortcuts;
   PromptProfileMenu   *profile_menu;
@@ -132,17 +130,6 @@ prompt_application_command_line (GApplication            *app,
     g_application_activate (G_APPLICATION (self));
 
   return G_APPLICATION_CLASS (prompt_application_parent_class)->command_line (app, cmdline);
-}
-
-static void
-prompt_application_add_providers (PromptApplication *self)
-{
-  g_autoptr(PromptContainerProvider) host = NULL;
-
-  g_assert (PROMPT_IS_APPLICATION (self));
-
-  host = prompt_host_provider_new ();
-  g_list_store_append (self->providers, host);
 }
 
 static void
@@ -247,7 +234,7 @@ prompt_application_startup (GApplication *application)
 {
   static const char *patterns[] = { "org.gnome.*", NULL };
   PromptApplication *self = (PromptApplication *)application;
-  g_autoptr(PromptContainer) host = NULL;
+  g_autoptr(PromptIpcContainer) host = NULL;
   g_autoptr(GError) error = NULL;
   AdwStyleManager *style_manager;
 
@@ -260,8 +247,6 @@ prompt_application_startup (GApplication *application)
   self->settings = prompt_settings_new ();
   self->shortcuts = prompt_shortcuts_new (NULL);
   self->profile_menu = prompt_profile_menu_new (self->settings);
-  self->providers = g_list_store_new (PROMPT_TYPE_CONTAINER_PROVIDER);
-  self->containers = gtk_flatten_list_model_new (g_object_ref (G_LIST_MODEL (self->providers)));
 
   G_APPLICATION_CLASS (prompt_application_parent_class)->startup (application);
 
@@ -319,8 +304,6 @@ prompt_application_startup (GApplication *application)
   g_object_bind_property (self->settings, "interface-style",
                           style_manager, "color-scheme",
                           G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
-
-  prompt_application_add_providers (self);
 }
 
 static void
@@ -334,11 +317,10 @@ prompt_application_shutdown (GApplication *application)
 
   g_clear_object (&self->profile_menu);
   g_clear_object (&self->profiles);
-  g_clear_object (&self->containers);
-  g_clear_object (&self->providers);
   g_clear_object (&self->portal);
   g_clear_object (&self->shortcuts);
   g_clear_object (&self->settings);
+  g_clear_object (&self->client);
 
   g_clear_pointer (&self->system_font_name, g_free);
 }
@@ -640,7 +622,7 @@ prompt_application_dup_profile_menu (PromptApplication *self)
  * prompt_application_list_containers:
  * @self: a #PromptApplication
  *
- * Gets a #GListModel of #PromptContainer.
+ * Gets a #GListModel of #PromptIpcContainer.
  *
  * Returns: (transfer full) (not nullable): a #GListModel
  */
@@ -649,10 +631,10 @@ prompt_application_list_containers (PromptApplication *self)
 {
   g_return_val_if_fail (PROMPT_IS_APPLICATION (self), NULL);
 
-  return g_object_ref (G_LIST_MODEL (self->containers));
+  return g_object_ref (G_LIST_MODEL (self->client));
 }
 
-PromptContainer *
+PromptIpcContainer *
 prompt_application_lookup_container (PromptApplication *self,
                                      const char        *container_id)
 {
@@ -669,8 +651,8 @@ prompt_application_lookup_container (PromptApplication *self,
 
   for (guint i = 0; i < n_items; i++)
     {
-      g_autoptr(PromptContainer) container = g_list_model_get_item (model, i);
-      const char *id = prompt_container_get_id (container);
+      g_autoptr(PromptIpcContainer) container = g_list_model_get_item (model, i);
+      const char *id = prompt_ipc_container_get_id (container);
 
       if (g_strcmp0 (id, container_id) == 0)
         return g_steal_pointer (&container);
@@ -721,4 +703,253 @@ prompt_application_report_error (PromptApplication *self,
            g_quark_to_string (error->domain),
            error->code,
            error->message);
+}
+
+VtePty *
+prompt_application_create_pty (PromptApplication  *self,
+                               GError            **error)
+{
+  g_return_val_if_fail (PROMPT_IS_APPLICATION (self), NULL);
+
+  return prompt_client_create_pty (self->client, error);
+}
+
+typedef struct _Spawn
+{
+  PromptIpcContainer *container;
+  PromptProfile *profile;
+  char *last_working_directory_uri;
+  VtePty *pty;
+} Spawn;
+
+static void
+spawn_free (gpointer data)
+{
+  Spawn *spawn = data;
+
+  g_clear_object (&spawn->container);
+  g_clear_object (&spawn->profile);
+  g_clear_object (&spawn->pty);
+  g_clear_pointer (&spawn->last_working_directory_uri, g_free);
+  g_free (spawn);
+}
+
+static void
+prompt_application_spawn_cb (GObject      *object,
+                             GAsyncResult *result,
+                             gpointer      user_data)
+{
+  PromptClient *client = (PromptClient *)object;
+  g_autoptr(PromptIpcProcess) process = NULL;
+  g_autoptr(GTask) task = user_data;
+  g_autoptr(GError) error = NULL;
+
+  g_assert (PROMPT_IS_CLIENT (client));
+  g_assert (G_IS_ASYNC_RESULT (result));
+  g_assert (G_IS_TASK (task));
+
+  if (!(process = prompt_client_spawn_finish (client, result, &error)))
+    g_task_return_error (task, g_steal_pointer (&error));
+  else
+    g_task_return_pointer (task, g_steal_pointer (&process), g_object_unref);
+}
+
+static void
+prompt_application_get_preferred_shell_cb (GObject      *object,
+                                           GAsyncResult *result,
+                                           gpointer      user_data)
+{
+  PromptClient *client = (PromptClient *)object;
+  g_autofree char *default_shell = NULL;
+  g_autoptr(GError) error = NULL;
+  g_autoptr(GTask) task = user_data;
+  PromptApplication *self;
+  Spawn *spawn;
+
+  g_assert (PROMPT_IS_CLIENT (client));
+  g_assert (G_IS_ASYNC_RESULT (result));
+  g_assert (G_IS_TASK (task));
+
+  self = g_task_get_source_object (task);
+  spawn = g_task_get_task_data (task);
+
+  g_assert (PROMPT_IS_APPLICATION (self));
+  g_assert (spawn != NULL);
+  g_assert (VTE_IS_PTY (spawn->pty));
+  g_assert (PROMPT_IPC_IS_CONTAINER (spawn->container));
+  g_assert (PROMPT_IS_PROFILE (spawn->profile));
+
+  default_shell = prompt_client_discover_shell_finish (client, result, NULL);
+
+  if (default_shell && !default_shell[0])
+    g_clear_pointer (&default_shell, g_free);
+
+  prompt_client_spawn_async (self->client,
+                             spawn->container,
+                             spawn->profile,
+                             default_shell,
+                             spawn->last_working_directory_uri,
+                             spawn->pty,
+                             g_task_get_cancellable (task),
+                             prompt_application_spawn_cb,
+                             g_object_ref (task));
+}
+
+void
+prompt_application_spawn_async (PromptApplication   *self,
+                                PromptIpcContainer  *container,
+                                PromptProfile       *profile,
+                                const char          *last_working_directory_uri,
+                                VtePty              *pty,
+                                GCancellable        *cancellable,
+                                GAsyncReadyCallback  callback,
+                                gpointer             user_data)
+{
+  g_autoptr(GTask) task = NULL;
+  Spawn *spawn;
+
+  g_return_if_fail (PROMPT_IS_APPLICATION (self));
+  g_return_if_fail (PROMPT_IPC_IS_CONTAINER (container));
+  g_return_if_fail (PROMPT_IS_PROFILE (profile));
+  g_return_if_fail (VTE_IS_PTY (pty));
+  g_return_if_fail (!cancellable || G_IS_CANCELLABLE (cancellable));
+
+  task = g_task_new (self, cancellable, callback, user_data);
+  g_task_set_source_tag (task, prompt_application_spawn_async);
+
+  spawn = g_new0 (Spawn, 1);
+  g_set_object (&spawn->container, container);
+  g_set_object (&spawn->profile, profile);
+  g_set_object (&spawn->pty, pty);
+  g_set_str (&spawn->last_working_directory_uri, last_working_directory_uri);
+  g_task_set_task_data (task, spawn, spawn_free);
+
+  prompt_client_discover_shell_async (self->client,
+                                      NULL,
+                                      prompt_application_get_preferred_shell_cb,
+                                      g_steal_pointer (&task));
+}
+
+PromptIpcProcess *
+prompt_application_spawn_finish (PromptApplication  *self,
+                                 GAsyncResult       *result,
+                                 GError            **error)
+{
+  g_return_val_if_fail (PROMPT_IS_APPLICATION (self), NULL);
+  g_return_val_if_fail (G_IS_TASK (result), NULL);
+
+  return g_task_propagate_pointer (G_TASK (result), error);
+}
+
+static void
+wait_complete (GTask  *task,
+                     int     exit_status,
+                     int     term_sig,
+                     GError *error)
+{
+  if (!g_object_get_data (G_OBJECT (task), "DID_COMPLETE"))
+    {
+      g_object_set_data (G_OBJECT (task), "DID_COMPLETE", GINT_TO_POINTER (1));
+
+      if (error)
+        g_task_return_error (task, error);
+      else
+        g_task_return_int (task, W_EXITCODE (exit_status, term_sig));
+
+      g_object_unref (task);
+    }
+}
+
+static void
+prompt_application_process_exited_cb (PromptIpcProcess *process,
+                                      int               exit_status,
+                                      GTask            *task)
+{
+  g_assert (PROMPT_IPC_IS_PROCESS (process));
+  g_assert (G_IS_TASK (task));
+
+  wait_complete (task, exit_status, 0, NULL);
+}
+
+static void
+prompt_application_process_signaled_cb (PromptIpcProcess *process,
+                                        int               term_sig,
+                                        GTask            *task)
+{
+  g_assert (PROMPT_IPC_IS_PROCESS (process));
+  g_assert (G_IS_TASK (task));
+
+  wait_complete (task, 0, term_sig, NULL);
+}
+
+static void
+prompt_application_get_leader_kind_cb (GObject      *object,
+                                       GAsyncResult *result,
+                                       gpointer      user_data)
+{
+  PromptIpcProcess *process = (PromptIpcProcess *)object;
+  g_autoptr(GError) error = NULL;
+  g_autoptr(GTask) task = user_data;
+  g_autofree char *leader_kind = NULL;
+
+  g_assert (PROMPT_IPC_IS_PROCESS (process));
+  g_assert (G_IS_ASYNC_RESULT (result));
+  g_assert (G_IS_TASK (task));
+
+  if (!prompt_ipc_process_call_get_leader_kind_finish (process, &leader_kind, result, &error))
+    wait_complete (task, 0, 0, g_steal_pointer (&error));
+}
+
+void
+prompt_application_wait_async (PromptApplication   *self,
+                               PromptIpcProcess    *process,
+                               GCancellable        *cancellable,
+                               GAsyncReadyCallback  callback,
+                               gpointer             user_data)
+{
+  g_autoptr(GTask) task = NULL;
+
+  g_return_if_fail (PROMPT_IS_APPLICATION (self));
+  g_return_if_fail (PROMPT_IPC_IS_PROCESS (process));
+  g_return_if_fail (!cancellable || G_IS_CANCELLABLE (cancellable));
+
+  /* Because we only get signals/exit-status via signals (to avoid
+   * various race conditions in IPC), we use the RPC to get the leader
+   * kind as a sort of ping to determine if the process is still alive
+   * initially. It will be removed from the D-Bus connection once it
+   * exits or signals.
+   */
+
+  task = g_task_new (self, cancellable, callback, user_data);
+  g_task_set_source_tag (task, prompt_application_wait_async);
+
+  /* Keep alive until signal is received */
+  g_object_ref (task);
+  g_signal_connect_object (process,
+                           "exited",
+                           G_CALLBACK (prompt_application_process_exited_cb),
+                           task,
+                           0);
+  g_signal_connect_object (process,
+                           "signaled",
+                           G_CALLBACK (prompt_application_process_signaled_cb),
+                           task,
+                           0);
+
+  /* Now query to ensure the process is still there */
+  prompt_ipc_process_call_get_leader_kind (process,
+                                           cancellable,
+                                           prompt_application_get_leader_kind_cb,
+                                           g_steal_pointer (&task));
+}
+
+int
+prompt_application_wait_finish (PromptApplication  *self,
+                                GAsyncResult       *result,
+                                GError            **error)
+{
+  g_return_val_if_fail (PROMPT_IS_APPLICATION (self), FALSE);
+  g_return_val_if_fail (G_IS_TASK (result), FALSE);
+
+  return g_task_propagate_int (G_TASK (result), error);
 }
