@@ -38,7 +38,7 @@ struct _PromptProcessImpl
 
 static void process_iface_init (PromptIpcProcessIface *iface);
 
-G_DEFINE_TYPE_WITH_CODE (PromptProcessImpl, prompt_process_impl, PROMPT_IPC_TYPE_PROCESS,
+G_DEFINE_TYPE_WITH_CODE (PromptProcessImpl, prompt_process_impl, PROMPT_IPC_TYPE_PROCESS_SKELETON,
                          G_IMPLEMENT_INTERFACE (PROMPT_IPC_TYPE_PROCESS, process_iface_init))
 
 static GHashTable *exec_to_kind;
