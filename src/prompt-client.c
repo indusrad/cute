@@ -261,7 +261,7 @@ prompt_client_new (GError **error)
   g_autofree char *prompt_agent_path = find_prompt_agent_path ();
   PromptClient *self = g_object_new (PROMPT_TYPE_CLIENT, NULL);
   g_autoptr(GSubprocessLauncher) launcher = g_subprocess_launcher_new (0);
-  g_autoptr(GPtrArray) argv = g_ptr_array_new_with_free_func (g_object_unref);
+  g_autoptr(GPtrArray) argv = g_ptr_array_new_with_free_func (g_free);
   g_autoptr(GDBusConnection) bus = NULL;
   g_autoptr(GSocketConnection) stream = NULL;
   g_autoptr(GSubprocess) subprocess = NULL;
