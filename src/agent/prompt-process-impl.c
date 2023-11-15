@@ -219,9 +219,34 @@ complete:
   return TRUE;
 }
 
+static gboolean
+prompt_process_impl_handle_has_foreground_process (PromptIpcProcess      *process,
+                                                   GDBusMethodInvocation *invocation)
+{
+  PromptProcessImpl *self = (PromptProcessImpl *)process;
+  gboolean has_foreground_process = FALSE;
+
+  g_assert (PROMPT_IS_PROCESS_IMPL (self));
+  g_assert (G_IS_DBUS_METHOD_INVOCATION (invocation));
+
+  if (self->pty_fd != -1)
+    {
+      GPid pid = tcgetpgrp (self->pty_fd);
+
+      has_foreground_process = pid != self->pid;
+    }
+
+  prompt_ipc_process_complete_has_foreground_process (process,
+                                                      g_steal_pointer (&invocation),
+                                                      has_foreground_process);
+
+  return TRUE;
+}
+
 static void
 process_iface_init (PromptIpcProcessIface *iface)
 {
   iface->handle_send_signal = prompt_process_impl_handle_send_signal;
   iface->handle_get_leader_kind = prompt_process_impl_handle_get_leader_kind;
+  iface->handle_has_foreground_process = prompt_process_impl_handle_has_foreground_process;
 }
