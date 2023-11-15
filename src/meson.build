@@ -1,3 +1,5 @@
+subdir('agent')
+
 prompt_sources = [
   'main.c',
   'prompt-application.c',

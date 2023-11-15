@@ -1,0 +1,102 @@
+<!DOCTYPE node PUBLIC
+        "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN"
+        "http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd" >
+<!--
+  Copyright 2023 Christian Hergert <chergert@redhat.com>
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+  SPDX-License-Identifier: GPL-3.0-or-later
+-->
+<node xmlns:doc="http://www.freedesktop.org/dbus/1.0/doc.dtd">
+  <interface name="org.gnome.Prompt.Agent">
+    <!--
+      ContainersChanged:
+
+      This signal is emitted when the list of containers has changed.
+      This can happen when a new podman container is registered as well
+      as any other backend.
+
+      The format is somewhat analagous to GListModel::items-changed
+      except the list of object paths are provided.
+
+      After the agent starts, it will emit this signal to update the
+      client on the initial list of containers.
+    -->
+    <signal name="ContainersChanged">
+      <arg name="position" direction="in" type="u"/>
+      <arg name="removed" direction="in" type="u"/>
+      <arg name="added" direction="in" type="ao"/>
+    </signal>
+  </interface>
+
+  <interface name="org.gnome.Prompt.Container">
+    <!--
+      Provider:
+
+      The provider property contains the name of the backend that
+      is used for the container. Such as "host" or "podman".
+    -->
+    <property name="Provider" access="read" type="s"/>
+
+    <!--
+      CreatePty:
+
+      This method is used to create a new PTY in the appropriate
+      PTY namespace of the container, when possible.
+    -->
+    <method name="CreatePty">
+      <annotation name="org.gtk.GDBus.C.UnixFD" value="true"/>
+      <arg name="fd" direction="out" type="h"/>
+    </method>
+
+    <!--
+      Spawn:
+
+      Spawns the process wihtin the container and returns an object
+      path that can be used to monitor the process lifetime.
+    -->
+    <method name="Spawn">
+      <annotation name="org.gtk.GDBus.C.UnixFD" value="true"/>
+      <arg name="cwd" direction="in" type="ay"/>
+      <arg name="argv" direction="in" type="aay"/>
+      <arg name="fds" direction="in" type="a{uh}"/>
+      <arg name="env" direction="in" type="a{ss}"/>
+      <arg name="process" direction="out" type="o"/>
+    </method>
+  </interface>
+
+  <interface name="org.gnome.Prompt.Process">
+    <!--
+      Exited:
+
+      The Exited signal is emitted when the process exits. It includes
+      the exit status which can be parsed into exit code or termination
+      signal number.
+    -->
+    <signal name="Exited">
+      <arg name="exit_status" direction="in" type="i"/>
+    </signal>
+
+    <!--
+      SendSignal:
+
+      The SendSignal method is used to deliver a signal to the target
+      process.
+    -->
+    <method name="SendSignal">
+      <arg name="signum" direction="in" type="i"/>
+    </method>
+  </interface>
+</node>
