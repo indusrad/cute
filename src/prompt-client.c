@@ -316,7 +316,7 @@ prompt_client_new (GError **error)
   if (!(self->proxy = prompt_ipc_agent_proxy_new_sync (bus,
                                                        G_DBUS_PROXY_FLAGS_DO_NOT_LOAD_PROPERTIES,
                                                        NULL,
-                                                       "/org/gnome/Prompt/Agent/",
+                                                       "/org/gnome/Prompt/Agent",
                                                        NULL,
                                                        error)))
     return NULL;
