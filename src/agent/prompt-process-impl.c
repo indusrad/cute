@@ -29,7 +29,10 @@ struct _PromptProcessImpl
   GSubprocess *subprocess;
 };
 
-G_DEFINE_TYPE (PromptProcessImpl, prompt_process_impl, PROMPT_IPC_TYPE_PROCESS)
+static void process_iface_init (PromptIpcProcessIface *iface);
+
+G_DEFINE_TYPE_WITH_CODE (PromptProcessImpl, prompt_process_impl, PROMPT_IPC_TYPE_PROCESS,
+                         G_IMPLEMENT_INTERFACE (PROMPT_IPC_TYPE_PROCESS, process_iface_init))
 
 static void
 prompt_process_impl_finalize (GObject *object)
@@ -74,6 +77,8 @@ prompt_process_impl_wait_cb (GObject      *object,
   else
     prompt_ipc_process_emit_exited (PROMPT_IPC_PROCESS (self),
                                     g_subprocess_get_exit_status (subprocess));
+
+  g_clear_object (&self->subprocess);
 }
 
 PromptIpcProcess *
@@ -103,4 +108,28 @@ prompt_process_impl_new (GDBusConnection  *connection,
     return NULL;
 
   return g_steal_pointer (&self);
+}
+
+static gboolean
+prompt_process_impl_handle_send_signal (PromptIpcProcess      *process,
+                                        GDBusMethodInvocation *invocation,
+                                        int                    signum)
+{
+  PromptProcessImpl *self = (PromptProcessImpl *)process;
+
+  g_assert (PROMPT_IS_PROCESS_IMPL (process));
+  g_assert (G_IS_DBUS_METHOD_INVOCATION (invocation));
+
+  if (self->subprocess != NULL)
+    g_subprocess_send_signal (self->subprocess, signum);
+
+  prompt_ipc_process_complete_send_signal (process, g_steal_pointer (&invocation));
+
+  return TRUE;
+}
+
+static void
+process_iface_init (PromptIpcProcessIface *iface)
+{
+  iface->handle_send_signal = prompt_process_impl_handle_send_signal;
 }
