@@ -244,6 +244,9 @@ prompt_window_page_attached_cb (PromptWindow *self,
 
   g_object_bind_property (child, "title", page, "title", G_BINDING_SYNC_CREATE);
   g_object_bind_property (child, "icon", page, "icon", G_BINDING_SYNC_CREATE);
+
+  gtk_widget_set_visible (GTK_WIDGET (self->tab_bar),
+                          adw_tab_view_get_n_pages (tab_view) > 1);
 }
 
 static void
@@ -262,6 +265,8 @@ prompt_window_page_detached_cb (PromptWindow *self,
 
   if (n_pages == 0)
     gtk_window_destroy (GTK_WINDOW (self));
+  else
+    gtk_widget_set_visible (GTK_WIDGET (self->tab_bar), n_pages > 1);
 }
 
 static void
