@@ -1,5 +1,5 @@
 /*
- * prompt-agent-util.h
+ * prompt-process-impl.h
  *
  * Copyright 2023 Christian Hergert <chergert@redhat.com>
  *
@@ -23,16 +23,17 @@
 
 #include <gio/gio.h>
 
-#include "prompt-run-context.h"
+#include "prompt-agent-ipc.h"
 
 G_BEGIN_DECLS
 
-int  prompt_agent_pty_new    (GError             **error);
-void prompt_agent_push_spawn (PromptRunContext    *run_context,
-                              GUnixFDList         *fd_list,
-                              const char          *cwd,
-                              const char * const  *argv,
-                              GVariant            *fds,
-                              GVariant            *env);
+#define PROMPT_TYPE_PROCESS_IMPL (prompt_process_impl_get_type())
+
+G_DECLARE_FINAL_TYPE (PromptProcessImpl, prompt_process_impl, PROMPT, PROCESS_IMPL, PromptIpcProcessSkeleton)
+
+PromptIpcProcess *prompt_process_impl_new (GDBusConnection  *connection,
+                                           GSubprocess      *subprocess,
+                                           const char       *object_path,
+                                           GError          **error);
 
 G_END_DECLS

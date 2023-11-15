@@ -90,6 +90,16 @@
     </signal>
 
     <!--
+      Signaled:
+
+      The Signaled signal is emitted when the process exits due to a
+      termination signal such as SIGKILL.
+    -->
+    <signal name="Signaled">
+      <arg name="term_sig" direction="in" type="i"/>
+    </signal>
+
+    <!--
       SendSignal:
 
       The SendSignal method is used to deliver a signal to the target

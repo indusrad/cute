@@ -12,7 +12,10 @@ prompt_agent_sources = [
   'prompt-agent.c',
   'prompt-agent-impl.c',
   'prompt-agent-util.c',
+  'prompt-process-impl.c',
+  'prompt-run-context.c',
   'prompt-session-container.c',
+  'prompt-unix-fd-map.c',
 ]
 
 prompt_agent_ipc = gnome.gdbus_codegen('prompt-agent-ipc',

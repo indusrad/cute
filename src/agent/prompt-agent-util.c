@@ -58,3 +58,17 @@ prompt_agent_pty_new (GError **error)
 
   return pty_fd;
 }
+
+void
+prompt_agent_push_spawn (PromptRunContext   *run_context,
+                         GUnixFDList        *fd_list,
+                         const char         *cwd,
+                         const char * const *argv,
+                         GVariant           *fds,
+                         GVariant           *env)
+{
+  g_return_if_fail (PROMPT_IS_RUN_CONTEXT (run_context));
+  g_return_if_fail (G_IS_UNIX_FD_LIST (fd_list));
+
+  g_printerr ("TODO: finish spawn helper\n");
+}
