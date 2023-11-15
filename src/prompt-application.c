@@ -24,6 +24,7 @@
 
 #include "prompt-action-group.h"
 #include "prompt-application.h"
+#include "prompt-client.h"
 #include "prompt-container-provider.h"
 #include "prompt-host-provider.h"
 #include "prompt-preferences-window.h"
@@ -46,6 +47,7 @@ struct _PromptApplication
   PromptProfileMenu   *profile_menu;
   char                *system_font_name;
   GDBusProxy          *portal;
+  PromptClient        *client;
 };
 
 static void prompt_application_about        (PromptApplication *self,
@@ -246,6 +248,7 @@ prompt_application_startup (GApplication *application)
   static const char *patterns[] = { "org.gnome.*", NULL };
   PromptApplication *self = (PromptApplication *)application;
   g_autoptr(PromptContainer) host = NULL;
+  g_autoptr(GError) error = NULL;
   AdwStyleManager *style_manager;
 
   g_assert (PROMPT_IS_APPLICATION (self));
@@ -261,6 +264,9 @@ prompt_application_startup (GApplication *application)
   self->containers = gtk_flatten_list_model_new (g_object_ref (G_LIST_MODEL (self->providers)));
 
   G_APPLICATION_CLASS (prompt_application_parent_class)->startup (application);
+
+  if (!(self->client = prompt_client_new (&error)))
+    g_error ("Failed to launch prompt-agent: %s", error->message);
 
   gtk_application_set_accels_for_action (GTK_APPLICATION (self),
                                          "app.help-overlay",
