@@ -56,7 +56,7 @@ prompt_agent_impl_init (PromptAgentImpl *self)
 }
 
 PromptAgentImpl *
-prompt_agent_impl_new (void)
+prompt_agent_impl_new (GError **error)
 {
   return g_object_new (PROMPT_TYPE_AGENT_IMPL, NULL);
 }

@@ -84,12 +84,9 @@ prompt_agent_init (PromptAgent  *agent,
                                                  G_DBUS_CONNECTION_FLAGS_DELAY_MESSAGE_PROCESSING,
                                                  NULL,
                                                  NULL,
-                                                 error)))
-    return FALSE;
-
-  agent->impl = prompt_agent_impl_new ();
-
-  if (!g_dbus_interface_skeleton_export (G_DBUS_INTERFACE_SKELETON (agent->impl),
+                                                 error)) ||
+      !(agent->impl = prompt_agent_impl_new (error)) ||
+      !g_dbus_interface_skeleton_export (G_DBUS_INTERFACE_SKELETON (agent->impl),
                                          agent->bus,
                                          "/org/gnome/Prompt/Agent",
                                          error))
