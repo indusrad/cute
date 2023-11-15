@@ -23,6 +23,9 @@
 #include <errno.h>
 #include <string.h>
 #include <sys/ioctl.h>
+#ifdef __linux__
+# include <sys/prctl.h>
+#endif
 #include <unistd.h>
 
 #include "prompt-agent-compat.h"
@@ -31,23 +34,22 @@
 
 typedef struct
 {
-  GList                     qlink;
-  char                     *cwd;
-  GArray                   *argv;
-  GArray                   *env;
+  GList                    qlink;
+  char                    *cwd;
+  GArray                  *argv;
+  GArray                  *env;
   PromptUnixFDMap         *unix_fd_map;
   PromptRunContextHandler  handler;
-  gpointer                  handler_data;
-  GDestroyNotify            handler_data_destroy;
+  gpointer                 handler_data;
+  GDestroyNotify           handler_data_destroy;
 } PromptRunContextLayer;
 
 struct _PromptRunContext
 {
-  GObject                parent_instance;
-  GQueue                 layers;
+  GObject               parent_instance;
+  GQueue                layers;
   PromptRunContextLayer root;
-  guint                  ended : 1;
-  guint                  setup_tty : 1;
+  guint                 ended : 1;
 };
 
 G_DEFINE_TYPE (PromptRunContext, prompt_run_context, G_TYPE_OBJECT)
@@ -210,8 +212,6 @@ prompt_run_context_init (PromptRunContext *self)
   prompt_run_context_layer_init (&self->root);
 
   g_queue_push_head_link (&self->layers, &self->root.qlink);
-
-  self->setup_tty = TRUE;
 }
 
 void
@@ -880,16 +880,12 @@ prompt_run_context_callback_layer (PromptRunContext       *self,
 static void
 prompt_run_context_child_setup_cb (gpointer data)
 {
-#ifdef G_OS_UNIX
   setsid ();
   setpgid (0, 0);
-#endif
-}
 
-static void
-prompt_run_context_child_setup_with_tty_cb (gpointer data)
-{
-  prompt_run_context_child_setup_cb (data);
+#ifdef __linux__
+  prctl (PR_SET_PDEATHSIG, SIGKILL);
+#endif
 
   if (isatty (STDIN_FILENO))
     ioctl (STDIN_FILENO, TIOCSCTTY, 0);
@@ -962,15 +958,9 @@ prompt_run_context_spawn (PromptRunContext  *self,
     }
 
   g_subprocess_launcher_set_flags (launcher, flags);
-
-  if (self->setup_tty)
-    g_subprocess_launcher_set_child_setup (launcher,
-                                           prompt_run_context_child_setup_with_tty_cb,
-                                           NULL, NULL);
-  else
-    g_subprocess_launcher_set_child_setup (launcher,
-                                           prompt_run_context_child_setup_cb,
-                                           NULL, NULL);
+  g_subprocess_launcher_set_child_setup (launcher,
+                                         prompt_run_context_child_setup_cb,
+                                         NULL, NULL);
 
   return g_subprocess_launcher_spawnv (launcher, argv, error);
 }
