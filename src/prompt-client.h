@@ -25,7 +25,6 @@
 #include <vte/vte.h>
 
 #include "prompt-agent-ipc.h"
-
 #include "prompt-profile.h"
 
 G_BEGIN_DECLS
@@ -37,6 +36,9 @@ G_DECLARE_FINAL_TYPE (PromptClient, prompt_client, PROMPT, CLIENT, GObject)
 PromptClient     *prompt_client_new                   (GError              **error);
 void              prompt_client_force_exit            (PromptClient         *self);
 VtePty           *prompt_client_create_pty            (PromptClient         *self,
+                                                       GError              **error);
+int               prompt_client_create_pty_producer   (PromptClient         *self,
+                                                       VtePty               *pty,
                                                        GError              **error);
 void              prompt_client_discover_shell_async  (PromptClient         *self,
                                                        GCancellable         *cancellable,

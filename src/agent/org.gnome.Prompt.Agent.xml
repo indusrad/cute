@@ -60,11 +60,22 @@
     <!--
       CreatePty:
 
-      This method is used to create a new PTY in the appropriate
-      PTY namespace of the container, when possible.
+      This method is used to create a new PTY.
     -->
     <method name="CreatePty">
       <annotation name="org.gtk.GDBus.C.UnixFD" value="true"/>
+      <arg name="fd" direction="out" type="h"/>
+    </method>
+
+    <!--
+      CreatePtyProducer:
+
+      This method is used to create producing side of a PTY, which is
+      generally mapped to stdin/out/err of the child process.
+    -->
+    <method name="CreatePtyProducer">
+      <annotation name="org.gtk.GDBus.C.UnixFD" value="true"/>
+      <arg name="pty_fd" direction="in" type="h"/>
       <arg name="fd" direction="out" type="h"/>
     </method>
 

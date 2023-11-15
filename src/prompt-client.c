@@ -501,9 +501,9 @@ prompt_client_spawn_async (PromptClient        *self,
   g_autoptr(GTask) task = NULL;
   g_auto(GStrv) env = NULL;
   g_auto(GStrv) full_argv = NULL;
+  g_autofd int pty_fd = -1;
   const char *cwd = NULL;
   char vte_version[32];
-  g_autofd int pty_fd = -1;
   int handle;
 
   g_return_if_fail (PROMPT_IS_CLIENT (self));
@@ -521,6 +521,12 @@ prompt_client_spawn_async (PromptClient        *self,
                                G_IO_ERROR,
                                G_IO_ERROR_CLOSED,
                                "The connection to the agent has closed");
+      return;
+    }
+
+  if (-1 == (pty_fd = prompt_client_create_pty_producer (self, pty, &error)))
+    {
+      g_task_return_error (task, g_steal_pointer (&error));
       return;
     }
 
@@ -591,16 +597,6 @@ prompt_client_spawn_async (PromptClient        *self,
     cwd = "";
 
   full_argv = g_strv_builder_end (argv_builder);
-
-  if (-1 == (pty_fd = prompt_pty_create_producer (vte_pty_get_fd (pty), FALSE)))
-    {
-      int errsv = errno;
-      g_task_return_new_error (task,
-                               G_IO_ERROR,
-                               g_io_error_from_errno (errsv),
-                               "%s", g_strerror (errsv));
-      return;
-    }
 
   fd_list = g_unix_fd_list_new ();
 
@@ -706,4 +702,51 @@ prompt_client_discover_shell_finish (PromptClient  *client,
   g_return_val_if_fail (G_IS_TASK (result), NULL);
 
   return g_task_propagate_pointer (G_TASK (result), error);
+}
+
+int
+prompt_client_create_pty_producer (PromptClient  *self,
+                                   VtePty        *pty,
+                                   GError       **error)
+{
+  g_autoptr(GUnixFDList) in_fd_list = NULL;
+  g_autoptr(GUnixFDList) out_fd_list = NULL;
+  g_autoptr(GVariant) out_fd = NULL;
+  g_autofd int fd = -1;
+  int in_handle;
+  int out_handle;
+  int pty_fd;
+
+  g_return_val_if_fail (PROMPT_IS_CLIENT (self), -1);
+  g_return_val_if_fail (VTE_IS_PTY (pty), -1);
+
+  if (self->subprocess == NULL || self->proxy == NULL)
+    {
+      g_set_error_literal (error,
+                           G_IO_ERROR,
+                           G_IO_ERROR_CLOSED,
+                           "The connection to the agent has closed");
+      return -1;
+    }
+
+  pty_fd = vte_pty_get_fd (pty);
+
+  in_fd_list = g_unix_fd_list_new ();
+  if (-1 == (in_handle = g_unix_fd_list_append (in_fd_list, pty_fd, error)))
+    return -1;
+
+  if (!prompt_ipc_agent_call_create_pty_producer_sync (self->proxy,
+                                                       g_variant_new_handle (in_handle),
+                                                       in_fd_list,
+                                                       &out_fd,
+                                                       &out_fd_list,
+                                                       NULL,
+                                                       error))
+    return -1;
+
+  out_handle = g_variant_get_handle (out_fd);
+  if (-1 == (fd = g_unix_fd_list_get (out_fd_list, out_handle, error)))
+    return -1;
+
+  return g_steal_fd (&fd);
 }

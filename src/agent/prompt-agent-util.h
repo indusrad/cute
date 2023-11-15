@@ -27,13 +27,15 @@
 
 G_BEGIN_DECLS
 
-int  prompt_agent_pty_new    (GError             **error);
-void prompt_agent_push_spawn (PromptRunContext    *run_context,
-                              GUnixFDList         *fd_list,
-                              const char          *cwd,
-                              const char * const  *argv,
-                              GVariant            *fds,
-                              GVariant            *env,
-                              int                 *pty_fd);
+int  prompt_agent_pty_new          (GError             **error);
+int  prompt_agent_pty_new_producer (int                  consumer_fd,
+                                    GError             **error);
+void prompt_agent_push_spawn       (PromptRunContext    *run_context,
+                                    GUnixFDList         *fd_list,
+                                    const char          *cwd,
+                                    const char * const  *argv,
+                                    GVariant            *fds,
+                                    GVariant            *env,
+                                    int                 *pty_fd);
 
 G_END_DECLS

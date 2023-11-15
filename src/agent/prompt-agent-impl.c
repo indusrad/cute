@@ -161,6 +161,47 @@ prompt_agent_impl_handle_create_pty (PromptIpcAgent        *agent,
 }
 
 static gboolean
+prompt_agent_impl_handle_create_pty_producer (PromptIpcAgent        *agent,
+                                              GDBusMethodInvocation *invocation,
+                                              GUnixFDList           *in_fd_list,
+                                              GVariant              *in_pty_fd)
+{
+  g_autoptr(GUnixFDList) out_fd_list = NULL;
+  g_autoptr(GError) error = NULL;
+  _g_autofd int consumer_fd = -1;
+  _g_autofd int producer_fd = -1;
+  int out_handle;
+  int in_handle;
+
+  g_assert (PROMPT_IS_AGENT_IMPL (agent));
+  g_assert (G_IS_DBUS_METHOD_INVOCATION (invocation));
+  g_assert (!in_fd_list || G_IS_UNIX_FD_LIST (in_fd_list));
+
+  in_handle = g_variant_get_handle (in_pty_fd);
+  if (-1 == (consumer_fd = g_unix_fd_list_get (in_fd_list, in_handle, &error)))
+    goto return_gerror;
+
+  if (-1 == (producer_fd = prompt_agent_pty_new_producer (consumer_fd, &error)))
+    goto return_gerror;
+
+  out_fd_list = g_unix_fd_list_new ();
+  if (-1 == (out_handle = g_unix_fd_list_append (out_fd_list, producer_fd, &error)))
+    goto return_gerror;
+
+  prompt_ipc_agent_complete_create_pty (agent,
+                                        g_steal_pointer (&invocation),
+                                        out_fd_list,
+                                        g_variant_new_handle (out_handle));
+
+  return TRUE;
+
+return_gerror:
+  g_dbus_method_invocation_return_gerror (g_steal_pointer (&invocation), error);
+
+  return TRUE;
+}
+
+static gboolean
 prompt_agent_impl_handle_get_preferred_shell (PromptIpcAgent        *agent,
                                               GDBusMethodInvocation *invocation)
 {
@@ -188,6 +229,7 @@ static void
 agent_iface_init (PromptIpcAgentIface *iface)
 {
   iface->handle_create_pty = prompt_agent_impl_handle_create_pty;
+  iface->handle_create_pty_producer = prompt_agent_impl_handle_create_pty_producer;
   iface->handle_get_preferred_shell = prompt_agent_impl_handle_get_preferred_shell;
   iface->handle_list_containers = prompt_agent_impl_handle_list_containers;
 }

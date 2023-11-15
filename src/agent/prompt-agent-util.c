@@ -31,7 +31,91 @@
 
 #include <glib-unix.h>
 
+#include "prompt-agent-compat.h"
 #include "prompt-agent-util.h"
+
+static int
+prompt_pty_create_producer (int      consumer_fd,
+                            gboolean blocking)
+{
+  _g_autofd int ret = -1;
+  gint extra = blocking ? 0 : O_NONBLOCK;
+#if defined(HAVE_PTSNAME_R) || defined(__FreeBSD__)
+  char name[256];
+#else
+  const char *name;
+#endif
+
+  g_return_val_if_fail (consumer_fd != -1, -1);
+
+  if (grantpt (consumer_fd) != 0)
+    return -1;
+
+  if (unlockpt (consumer_fd) != 0)
+    return -1;
+
+#ifdef HAVE_PTSNAME_R
+  if (ptsname_r (consumer_fd, name, sizeof name - 1) != 0)
+    return -1;
+  name[sizeof name - 1] = '\0';
+#elif defined(__FreeBSD__)
+  if (fdevname_r (consumer_fd, name + 5, sizeof name - 6) == NULL)
+    return -1;
+  memcpy (name, "/dev/", 5);
+  name[sizeof name - 1] = '\0';
+#else
+  if (NULL == (name = ptsname (consumer_fd)))
+    return -1;
+#endif
+
+  ret = open (name, O_NOCTTY | O_RDWR | O_CLOEXEC | extra);
+
+  if (ret == -1 && errno == EINVAL)
+    {
+      gint flags;
+
+      ret = open (name, O_NOCTTY | O_RDWR | O_CLOEXEC);
+      if (ret == -1 && errno == EINVAL)
+        ret = open (name, O_NOCTTY | O_RDWR);
+
+      if (ret == -1)
+        return -1;
+
+      /* Add FD_CLOEXEC if O_CLOEXEC failed */
+      flags = fcntl (ret, F_GETFD, 0);
+      if ((flags & FD_CLOEXEC) == 0)
+        {
+          if (fcntl (ret, F_SETFD, flags | FD_CLOEXEC) < 0)
+            return -1;
+        }
+
+      if (!blocking)
+        {
+          if (!g_unix_set_fd_nonblocking (ret, TRUE, NULL))
+            return -1;
+        }
+    }
+
+  return _g_steal_fd (&ret);
+}
+
+int
+prompt_agent_pty_new_producer (int      consumer_fd,
+                               GError **error)
+{
+  int fd;
+
+  if (-1 == (fd = prompt_pty_create_producer (consumer_fd, FALSE)))
+    {
+      int errsv = errno;
+      g_set_error_literal (error,
+                           G_IO_ERROR,
+                           g_io_error_from_errno (errsv),
+                           g_strerror (errsv));
+    }
+
+  return fd;
+}
 
 int
 prompt_agent_pty_new (GError **error)

@@ -51,8 +51,6 @@ PromptProcessKind   prompt_get_process_kind      (void) G_GNUC_CONST;
 const char * const *prompt_host_environ          (void) G_GNUC_CONST;
 char               *prompt_path_expand           (const char *path);
 char               *prompt_path_collapse         (const char *path);
-gboolean            prompt_pty_create_producer   (int         consumer_fd,
-                                                  gboolean    nonblock);
 gboolean            prompt_shell_supports_dash_c (const char *shell);
 gboolean            prompt_shell_supports_dash_l (const char *shell);
 gboolean            prompt_is_shell              (const char *arg0);
