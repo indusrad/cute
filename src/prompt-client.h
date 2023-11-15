@@ -22,6 +22,11 @@
 #pragma once
 
 #include <gio/gio.h>
+#include <vte/vte.h>
+
+#include "prompt-agent-ipc.h"
+
+#include "prompt-profile.h"
 
 G_BEGIN_DECLS
 
@@ -29,7 +34,28 @@ G_BEGIN_DECLS
 
 G_DECLARE_FINAL_TYPE (PromptClient, prompt_client, PROMPT, CLIENT, GObject)
 
-PromptClient *prompt_client_new        (GError       **error);
-void          prompt_client_force_exit (PromptClient  *self);
+PromptClient     *prompt_client_new                   (GError              **error);
+void              prompt_client_force_exit            (PromptClient         *self);
+VtePty           *prompt_client_create_pty            (PromptClient         *self,
+                                                       GError              **error);
+void              prompt_client_discover_shell_async  (PromptClient         *self,
+                                                       GCancellable         *cancellable,
+                                                       GAsyncReadyCallback   callback,
+                                                       gpointer              user_data);
+char             *prompt_client_discover_shell_finish (PromptClient         *client,
+                                                       GAsyncResult         *result,
+                                                       GError              **error);
+void              prompt_client_spawn_async           (PromptClient         *self,
+                                                       PromptIpcContainer   *container,
+                                                       PromptProfile        *profile,
+                                                       const char           *default_shell,
+                                                       const char           *last_working_directory_uri,
+                                                       VtePty               *pty,
+                                                       GCancellable         *cancellable,
+                                                       GAsyncReadyCallback   callback,
+                                                       gpointer              user_data);
+PromptIpcProcess *prompt_client_spawn_finish          (PromptClient         *self,
+                                                       GAsyncResult         *result,
+                                                       GError              **error);
 
 G_END_DECLS

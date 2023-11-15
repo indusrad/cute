@@ -32,7 +32,6 @@
 #include <glib/gstdio.h>
 #include <glib-unix.h>
 
-#include "prompt-agent-ipc.h"
 #include "prompt-client.h"
 #include "prompt-util.h"
 
@@ -157,48 +156,6 @@ prompt_client_init (PromptClient *self)
 }
 
 static void
-prompt_client_list_containers_cb (GObject      *object,
-                                  GAsyncResult *result,
-                                  gpointer      user_data)
-{
-  PromptIpcAgent *agent = (PromptIpcAgent *)object;
-  g_autoptr(PromptClient) self = user_data;
-  g_autoptr(GError) error = NULL;
-  g_auto(GStrv) object_paths = NULL;
-
-  g_assert (PROMPT_IPC_IS_AGENT (agent));
-  g_assert (G_IS_ASYNC_RESULT (result));
-  g_assert (PROMPT_IS_CLIENT (self));
-
-  if (!prompt_ipc_agent_call_list_containers_finish (agent, &object_paths, result, &error))
-    g_error ("Failed to list containers: %s", error->message);
-
-  for (guint i = 0; object_paths[i]; i++)
-    {
-      g_autoptr(PromptIpcContainer) container = NULL;
-      const char *provider;
-      const char *id;
-
-      container = prompt_ipc_container_proxy_new_sync (self->bus,
-                                                       G_DBUS_PROXY_FLAGS_NONE,
-                                                       NULL,
-                                                       object_paths[i],
-                                                       NULL,
-                                                       &error);
-
-      provider = prompt_ipc_container_get_provider (container);
-      id = prompt_ipc_container_get_id (container);
-
-      g_debug ("Container %s:%s added at position %u",
-               provider, id, i);
-
-      g_ptr_array_add (self->containers, g_steal_pointer (&container));
-
-      g_clear_error (&error);
-    }
-}
-
-static void
 prompt_client_containers_changed_cb (PromptClient       *self,
                                      guint               position,
                                      guint               removed,
@@ -317,6 +274,8 @@ prompt_client_new (GError **error)
   g_autoptr(GSocketConnection) stream = NULL;
   g_autoptr(GSubprocess) subprocess = NULL;
   g_autoptr(GSocket) socket = NULL;
+  g_auto(GStrv) object_paths = NULL;
+  g_autofree char *guid = NULL;
   int pair[2];
   int res;
 
@@ -356,6 +315,15 @@ prompt_client_new (GError **error)
   pair[0] = -1;
   pair[1] = -1;
 
+  g_subprocess_launcher_set_child_setup (launcher,
+                                         prompt_client_child_setup_func,
+                                         NULL, NULL);
+  if (!(subprocess = g_subprocess_launcher_spawnv (launcher, (const char * const *)argv->pdata, error)))
+    return NULL;
+
+  g_set_object (&self->subprocess, subprocess);
+
+  guid = g_dbus_generate_guid ();
   stream = g_socket_connection_factory_create_connection (socket);
 
   if (!(bus = g_dbus_connection_new_sync (G_IO_STREAM (stream), guid,
@@ -380,26 +348,40 @@ prompt_client_new (GError **error)
                            self,
                            G_CONNECT_SWAPPED);
 
-  g_subprocess_launcher_set_child_setup (launcher,
-                                         prompt_client_child_setup_func,
-                                         NULL, NULL);
-
-  if (!(subprocess = g_subprocess_launcher_spawnv (launcher, (const char * const *)argv->pdata, error)))
-    return NULL;
-
-  g_set_object (&self->subprocess, subprocess);
-
   g_subprocess_wait_check_async (subprocess,
                                  NULL,
                                  prompt_client_wait_cb,
                                  g_object_ref (self));
 
-  g_dbus_connection_start_message_processing (bus);
+  if (!prompt_ipc_agent_call_list_containers_sync (self->proxy, &object_paths, NULL, error))
+    return NULL;
 
-  prompt_ipc_agent_call_list_containers (self->proxy,
-                                         NULL,
-                                         prompt_client_list_containers_cb,
-                                         g_object_ref (self));
+  for (guint i = 0; object_paths[i]; i++)
+    {
+      g_autoptr(PromptIpcContainer) container = NULL;
+      const char *provider = NULL;
+      const char *id = NULL;
+
+      container = prompt_ipc_container_proxy_new_sync (self->bus,
+                                                       G_DBUS_PROXY_FLAGS_NONE,
+                                                       NULL,
+                                                       object_paths[i],
+                                                       NULL,
+                                                       error);
+
+      if (container != NULL)
+        {
+          provider = prompt_ipc_container_get_provider (container);
+          id = prompt_ipc_container_get_id (container);
+
+          g_debug ("Container %s:%s added at position %u",
+                   provider, id, i);
+
+          g_ptr_array_add (self->containers, g_steal_pointer (&container));
+        }
+
+      g_clear_error (error);
+    }
 
   return g_steal_pointer (&self);
 }
@@ -410,4 +392,318 @@ prompt_client_force_exit (PromptClient *self)
   g_return_if_fail (PROMPT_IS_CLIENT (self));
 
   g_subprocess_force_exit (self->subprocess);
+}
+
+VtePty *
+prompt_client_create_pty (PromptClient  *self,
+                          GError       **error)
+{
+  g_autoptr(GVariant) out_fd = NULL;
+  g_autoptr(GUnixFDList) out_fd_list = NULL;
+  g_autoptr(VtePty) pty = NULL;
+  int fd;
+  int handle;
+
+  g_return_val_if_fail (PROMPT_IS_CLIENT (self), NULL);
+
+  if (self->subprocess == NULL || self->proxy == NULL)
+    {
+      g_set_error_literal (error,
+                           G_IO_ERROR,
+                           G_IO_ERROR_CLOSED,
+                           "The connection to the agent has closed");
+      return NULL;
+    }
+
+  if (!prompt_ipc_agent_call_create_pty_sync (self->proxy, NULL, &out_fd, &out_fd_list,
+                                              NULL, error))
+    return NULL;
+
+  handle = g_variant_get_handle (out_fd);
+  fd = g_unix_fd_list_get (out_fd_list, handle, error);
+  if (fd == -1)
+    return NULL;
+
+  if ((pty = vte_pty_new_foreign_sync (fd, NULL, error)))
+    vte_pty_set_utf8 (pty, TRUE, NULL);
+
+  return g_steal_pointer (&pty);
+}
+
+static void
+prompt_client_new_process_cb (GObject      *object,
+                              GAsyncResult *result,
+                              gpointer      user_data)
+{
+  g_autoptr(PromptIpcProcess) process = NULL;
+  g_autoptr(GError) error = NULL;
+  g_autoptr(GTask) task = user_data;
+
+  g_assert (G_IS_ASYNC_RESULT (result));
+  g_assert (G_IS_TASK (task));
+
+  if (!(process = prompt_ipc_process_proxy_new_finish (result, &error)))
+    g_task_return_error (task, g_steal_pointer (&error));
+  else
+    g_task_return_pointer (task, g_steal_pointer (&process), g_object_unref);
+}
+
+static void
+prompt_client_spawn_cb (GObject      *object,
+                        GAsyncResult *result,
+                        gpointer      user_data)
+{
+  PromptIpcContainer *container = (PromptIpcContainer *)object;
+  g_autoptr(GError) error = NULL;
+  g_autoptr(GTask) task = user_data;
+  g_autofree char *object_path = NULL;
+  PromptClient *self;
+
+  g_assert (PROMPT_IPC_IS_CONTAINER (container));
+  g_assert (G_IS_ASYNC_RESULT (result));
+  g_assert (G_IS_TASK (task));
+
+  self = g_task_get_source_object (task);
+
+  g_assert (PROMPT_IS_CLIENT (self));
+
+  if (!prompt_ipc_container_call_spawn_finish (container, &object_path, NULL, result, &error))
+    g_task_return_error (task, g_steal_pointer (&error));
+  else
+    prompt_ipc_process_proxy_new (self->bus,
+                                  G_DBUS_PROXY_FLAGS_NONE,
+                                  NULL,
+                                  object_path,
+                                  g_task_get_cancellable (task),
+                                  prompt_client_new_process_cb,
+                                  g_object_ref (task));
+}
+
+void
+prompt_client_spawn_async (PromptClient        *self,
+                           PromptIpcContainer  *container,
+                           PromptProfile       *profile,
+                           const char          *default_shell,
+                           const char          *last_working_directory_uri,
+                           VtePty              *pty,
+                           GCancellable        *cancellable,
+                           GAsyncReadyCallback  callback,
+                           gpointer             user_data)
+{
+  g_autofree char *custom_command = NULL;
+  g_autofree char *arg0 = NULL;
+  g_autoptr(GVariantBuilder) fd_builder = NULL;
+  g_autoptr(GVariantBuilder) env_builder = NULL;
+  g_autoptr(GStrvBuilder) argv_builder = NULL;
+  g_autoptr(GError) error = NULL;
+  g_autoptr(GFile) last_directory = NULL;
+  g_autoptr(GUnixFDList) fd_list = NULL;
+  g_autoptr(GTask) task = NULL;
+  g_auto(GStrv) env = NULL;
+  g_auto(GStrv) full_argv = NULL;
+  const char *cwd = NULL;
+  char vte_version[32];
+  g_autofd int pty_fd = -1;
+  int handle;
+
+  g_return_if_fail (PROMPT_IS_CLIENT (self));
+  g_return_if_fail (PROMPT_IPC_IS_CONTAINER (container));
+  g_return_if_fail (PROMPT_IS_PROFILE (profile));
+  g_return_if_fail (VTE_IS_PTY (pty));
+  g_return_if_fail (!cancellable || G_IS_CANCELLABLE (cancellable));
+
+  task = g_task_new (self, cancellable, callback, user_data);
+  g_task_set_source_tag (task, prompt_client_spawn_async);
+
+  if (self->subprocess == NULL || self->proxy == NULL)
+    {
+      g_task_return_new_error (task,
+                               G_IO_ERROR,
+                               G_IO_ERROR_CLOSED,
+                               "The connection to the agent has closed");
+      return;
+    }
+
+  g_snprintf (vte_version, sizeof vte_version, "%u", VTE_VERSION_NUMERIC);
+
+  env = g_environ_setenv (env, "PROMPT_PROFILE", prompt_profile_get_uuid (profile), TRUE);
+  env = g_environ_setenv (env, "PROMPT_VERSION", PACKAGE_VERSION, TRUE);
+  env = g_environ_setenv (env, "COLORTERM", "truecolor", TRUE);
+  env = g_environ_setenv (env, "TERM", "xterm-256color", TRUE);
+  env = g_environ_setenv (env, "VTE_VERSION", vte_version, TRUE);
+
+  if (default_shell == NULL)
+    default_shell = "/bin/sh";
+
+  argv_builder = g_strv_builder_new ();
+
+  if (prompt_profile_get_use_custom_command (profile))
+    {
+      g_auto(GStrv) argv = NULL;
+
+      custom_command = prompt_profile_dup_custom_command (profile);
+
+      if (!g_shell_parse_argv (custom_command, NULL, &argv, &error))
+        {
+          g_task_return_error (task, g_steal_pointer (&error));
+          return;
+        }
+
+      g_strv_builder_addv (argv_builder, (const char **)argv);
+      arg0 = g_strdup (argv[0]);
+    }
+  else
+    {
+      arg0 = g_strdup (default_shell);
+      g_strv_builder_add (argv_builder, arg0);
+    }
+
+  if (prompt_profile_get_login_shell (profile) &&
+      prompt_shell_supports_dash_l (arg0))
+    g_strv_builder_add (argv_builder, "-l");
+
+  if (last_working_directory_uri != NULL)
+    last_directory = g_file_new_for_uri (last_working_directory_uri);
+
+  switch (prompt_profile_get_preserve_directory (profile))
+    {
+    case PROMPT_PRESERVE_DIRECTORY_NEVER:
+      break;
+
+    case PROMPT_PRESERVE_DIRECTORY_SAFE:
+      /* TODO: We might want to check with the container that this
+       * is a shell (as opposed to one available on the host).
+       */
+      if (!prompt_is_shell (arg0))
+        break;
+      G_GNUC_FALLTHROUGH;
+
+    case PROMPT_PRESERVE_DIRECTORY_ALWAYS:
+      if (last_directory != NULL && g_file_is_native (last_directory))
+        cwd = g_file_peek_path (last_directory);
+      break;
+
+    default:
+      g_assert_not_reached ();
+    }
+
+  if (cwd == NULL)
+    cwd = "";
+
+  full_argv = g_strv_builder_end (argv_builder);
+
+  if (-1 == (pty_fd = prompt_pty_create_producer (vte_pty_get_fd (pty), FALSE)))
+    {
+      int errsv = errno;
+      g_task_return_new_error (task,
+                               G_IO_ERROR,
+                               g_io_error_from_errno (errsv),
+                               "%s", g_strerror (errsv));
+      return;
+    }
+
+  fd_list = g_unix_fd_list_new ();
+
+  if (-1 == (handle = g_unix_fd_list_append (fd_list, pty_fd, &error)))
+    {
+      g_task_return_error (task, g_steal_pointer (&error));
+      return;
+    }
+
+  fd_builder = g_variant_builder_new (G_VARIANT_TYPE ("a{uh}"));
+  g_variant_builder_add (fd_builder, "{uh}", 0, handle);
+  g_variant_builder_add (fd_builder, "{uh}", 1, handle);
+  g_variant_builder_add (fd_builder, "{uh}", 2, handle);
+
+  env_builder = g_variant_builder_new (G_VARIANT_TYPE ("a{ss}"));
+  for (guint i = 0; env[i]; i++)
+    {
+      const char *pair = env[i];
+      const char *eq = strchr (pair, '=');
+      const char *val = eq ? eq + 1 : "";
+      g_autofree char *key = eq ? g_strndup (pair, eq - pair) : g_strdup (pair);
+
+      g_variant_builder_add (env_builder, "{ss}", key, val);
+    }
+
+  prompt_ipc_container_call_spawn (container,
+                                   cwd,
+                                   (const char * const *)full_argv,
+                                   g_variant_builder_end (g_steal_pointer (&fd_builder)),
+                                   g_variant_builder_end (g_steal_pointer (&env_builder)),
+                                   fd_list,
+                                   cancellable,
+                                   prompt_client_spawn_cb,
+                                   g_steal_pointer (&task));
+}
+
+PromptIpcProcess *
+prompt_client_spawn_finish (PromptClient  *client,
+                            GAsyncResult  *result,
+                            GError       **error)
+{
+  g_return_val_if_fail (PROMPT_IS_CLIENT (client), NULL);
+  g_return_val_if_fail (G_IS_TASK (result), NULL);
+
+  return g_task_propagate_pointer (G_TASK (result), error);
+}
+
+static void
+prompt_client_discover_shell_cb (GObject      *object,
+                                 GAsyncResult *result,
+                                 gpointer      user_data)
+{
+  PromptIpcAgent *agent = (PromptIpcAgent *)object;
+  g_autoptr(GError) error = NULL;
+  g_autoptr(GTask) task = user_data;
+  g_autofree char *default_shell = NULL;
+
+  g_assert (PROMPT_IPC_IS_AGENT (agent));
+  g_assert (G_IS_ASYNC_RESULT (result));
+  g_assert (G_IS_TASK (task));
+
+  if (!prompt_ipc_agent_call_get_preferred_shell_finish (agent, &default_shell, result, &error))
+    g_task_return_error (task, g_steal_pointer (&error));
+  else
+    g_task_return_pointer (task, g_steal_pointer (&default_shell), g_free);
+}
+
+void
+prompt_client_discover_shell_async (PromptClient        *self,
+                                    GCancellable        *cancellable,
+                                    GAsyncReadyCallback  callback,
+                                    gpointer             user_data)
+{
+  g_autoptr(GTask) task = NULL;
+
+  g_return_if_fail (PROMPT_IS_CLIENT (self));
+  g_return_if_fail (!cancellable || G_IS_CANCELLABLE (cancellable));
+
+  task = g_task_new (self, cancellable, callback, user_data);
+  g_task_set_source_tag (task, prompt_client_discover_shell_async);
+
+  if (self->subprocess == NULL || self->proxy == NULL)
+    {
+      g_task_return_new_error (task,
+                               G_IO_ERROR,
+                               G_IO_ERROR_CLOSED,
+                               "The connection to the agent has closed");
+      return;
+    }
+
+  prompt_ipc_agent_call_get_preferred_shell (self->proxy,
+                                             cancellable,
+                                             prompt_client_discover_shell_cb,
+                                             g_steal_pointer (&task));
+}
+
+char *
+prompt_client_discover_shell_finish (PromptClient  *client,
+                                     GAsyncResult  *result,
+                                     GError       **error)
+{
+  g_return_val_if_fail (PROMPT_IS_CLIENT (client), NULL);
+  g_return_val_if_fail (G_IS_TASK (result), NULL);
+
+  return g_task_propagate_pointer (G_TASK (result), error);
 }
