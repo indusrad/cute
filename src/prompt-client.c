@@ -153,6 +153,49 @@ prompt_client_class_init (PromptClientClass *klass)
 static void
 prompt_client_init (PromptClient *self)
 {
+  self->containers = g_ptr_array_new_with_free_func (g_object_unref);
+}
+
+static void
+prompt_client_list_containers_cb (GObject      *object,
+                                  GAsyncResult *result,
+                                  gpointer      user_data)
+{
+  PromptIpcAgent *agent = (PromptIpcAgent *)object;
+  g_autoptr(PromptClient) self = user_data;
+  g_autoptr(GError) error = NULL;
+  g_auto(GStrv) object_paths = NULL;
+
+  g_assert (PROMPT_IPC_IS_AGENT (agent));
+  g_assert (G_IS_ASYNC_RESULT (result));
+  g_assert (PROMPT_IS_CLIENT (self));
+
+  if (!prompt_ipc_agent_call_list_containers_finish (agent, &object_paths, result, &error))
+    g_error ("Failed to list containers: %s", error->message);
+
+  for (guint i = 0; object_paths[i]; i++)
+    {
+      g_autoptr(PromptIpcContainer) container = NULL;
+      const char *provider;
+      const char *id;
+
+      container = prompt_ipc_container_proxy_new_sync (self->bus,
+                                                       G_DBUS_PROXY_FLAGS_NONE,
+                                                       NULL,
+                                                       object_paths[i],
+                                                       NULL,
+                                                       &error);
+
+      provider = prompt_ipc_container_get_provider (container);
+      id = prompt_ipc_container_get_id (container);
+
+      g_debug ("Container %s:%s added at position %u",
+               provider, id, i);
+
+      g_ptr_array_add (self->containers, g_steal_pointer (&container));
+
+      g_clear_error (&error);
+    }
 }
 
 static void
@@ -176,6 +219,8 @@ prompt_client_containers_changed_cb (PromptClient       *self,
     {
       g_autoptr(PromptIpcContainer) container = NULL;
       g_autoptr(GError) error = NULL;
+      const char *provider;
+      const char *id;
 
       container = prompt_ipc_container_proxy_new_sync (self->bus,
                                                        G_DBUS_PROXY_FLAGS_NONE,
@@ -183,6 +228,12 @@ prompt_client_containers_changed_cb (PromptClient       *self,
                                                        added[i],
                                                        NULL,
                                                        &error);
+
+      provider = prompt_ipc_container_get_provider (container);
+      id = prompt_ipc_container_get_id (container);
+
+      g_debug ("Container %s:%s added at position %u",
+               provider, id, position + i);
 
       g_ptr_array_insert (self->containers, position + i, g_steal_pointer (&container));
     }
@@ -342,6 +393,11 @@ prompt_client_new (GError **error)
                                  g_object_ref (self));
 
   g_dbus_connection_start_message_processing (bus);
+
+  prompt_ipc_agent_call_list_containers (self->proxy,
+                                         NULL,
+                                         prompt_client_list_containers_cb,
+                                         g_object_ref (self));
 
   return g_steal_pointer (&self);
 }
