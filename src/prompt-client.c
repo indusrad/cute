@@ -357,8 +357,10 @@ prompt_client_new (GError **error)
   pair[1] = -1;
 
   stream = g_socket_connection_factory_create_connection (socket);
-  if (!(bus = g_dbus_connection_new_sync (G_IO_STREAM (stream), NULL,
-                                          G_DBUS_CONNECTION_FLAGS_DELAY_MESSAGE_PROCESSING,
+
+  if (!(bus = g_dbus_connection_new_sync (G_IO_STREAM (stream), guid,
+                                          (G_DBUS_CONNECTION_FLAGS_AUTHENTICATION_ALLOW_ANONYMOUS |
+                                           G_DBUS_CONNECTION_FLAGS_AUTHENTICATION_SERVER),
                                           NULL, NULL, error)))
     return NULL;
 

@@ -84,7 +84,8 @@ prompt_agent_init (PromptAgent  *agent,
 
   if (!(agent->bus = g_dbus_connection_new_sync (G_IO_STREAM (agent->stream),
                                                  NULL,
-                                                 G_DBUS_CONNECTION_FLAGS_DELAY_MESSAGE_PROCESSING,
+                                                 (G_DBUS_CONNECTION_FLAGS_DELAY_MESSAGE_PROCESSING |
+                                                  G_DBUS_CONNECTION_FLAGS_AUTHENTICATION_CLIENT),
                                                  NULL,
                                                  NULL,
                                                  error)) ||
