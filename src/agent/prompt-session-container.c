@@ -82,6 +82,7 @@ prompt_session_container_handle_spawn (PromptIpcContainer    *container,
   g_assert (env != NULL);
 
   run_context = prompt_run_context_new ();
+  prompt_run_context_add_minimal_environment (run_context);
   prompt_agent_push_spawn (run_context, in_fd_list, cwd, argv, fds, env, &pty_fd);
 
   guid = g_dbus_generate_guid ();
