@@ -33,6 +33,7 @@ void prompt_agent_push_spawn (PromptRunContext    *run_context,
                               const char          *cwd,
                               const char * const  *argv,
                               GVariant            *fds,
-                              GVariant            *env);
+                              GVariant            *env,
+                              int                 *pty_fd);
 
 G_END_DECLS

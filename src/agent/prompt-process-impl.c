@@ -21,12 +21,19 @@
 
 #include "config.h"
 
+#include <errno.h>
+#include <fcntl.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
+#include "prompt-agent-compat.h"
 #include "prompt-process-impl.h"
 
 struct _PromptProcessImpl
 {
   PromptIpcProcessSkeleton parent_instance;
   GSubprocess *subprocess;
+  int pty_fd;
 };
 
 static void process_iface_init (PromptIpcProcessIface *iface);
@@ -34,12 +41,15 @@ static void process_iface_init (PromptIpcProcessIface *iface);
 G_DEFINE_TYPE_WITH_CODE (PromptProcessImpl, prompt_process_impl, PROMPT_IPC_TYPE_PROCESS,
                          G_IMPLEMENT_INTERFACE (PROMPT_IPC_TYPE_PROCESS, process_iface_init))
 
+static GHashTable *exec_to_kind;
+
 static void
 prompt_process_impl_finalize (GObject *object)
 {
   PromptProcessImpl *self = (PromptProcessImpl *)object;
 
   g_clear_object (&self->subprocess);
+  _g_clear_fd (&self->pty_fd, NULL);
 
   G_OBJECT_CLASS (prompt_process_impl_parent_class)->finalize (object);
 }
@@ -50,11 +60,27 @@ prompt_process_impl_class_init (PromptProcessImplClass *klass)
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
   object_class->finalize = prompt_process_impl_finalize;
+
+  exec_to_kind = g_hash_table_new (g_str_hash, g_str_equal);
+#define ADD_MAPPING(name, kind) \
+    g_hash_table_insert (exec_to_kind, (char *)name, (char *)kind)
+  ADD_MAPPING ("docker", "container");
+  ADD_MAPPING ("flatpak", "container");
+  ADD_MAPPING ("podman", "container");
+  ADD_MAPPING ("rlogin", "remote");
+  ADD_MAPPING ("scp", "remote");
+  ADD_MAPPING ("sftp", "remote");
+  ADD_MAPPING ("slogin", "remote");
+  ADD_MAPPING ("ssh", "remote");
+  ADD_MAPPING ("telnet", "remote");
+  ADD_MAPPING ("toolbox", "container");
+#undef ADD_MAPPING
 }
 
 static void
 prompt_process_impl_init (PromptProcessImpl *self)
 {
+  self->pty_fd = -1;
 }
 
 static void
@@ -84,6 +110,7 @@ prompt_process_impl_wait_cb (GObject      *object,
 PromptIpcProcess *
 prompt_process_impl_new (GDBusConnection  *connection,
                          GSubprocess      *subprocess,
+                         int               pty_fd,
                          const char       *object_path,
                          GError          **error)
 {
@@ -94,6 +121,7 @@ prompt_process_impl_new (GDBusConnection  *connection,
   g_return_val_if_fail (object_path != NULL, NULL);
 
   self = g_object_new (PROMPT_TYPE_PROCESS_IMPL, NULL);
+  self->pty_fd = pty_fd;
   g_set_object (&self->subprocess, subprocess);
 
   g_subprocess_wait_async (subprocess,
@@ -128,8 +156,65 @@ prompt_process_impl_handle_send_signal (PromptIpcProcess      *process,
   return TRUE;
 }
 
+static gboolean
+prompt_process_impl_handle_get_leader_kind (PromptIpcProcess      *process,
+                                            GDBusMethodInvocation *invocation)
+{
+  PromptProcessImpl *self = (PromptProcessImpl *)process;
+  const char *leader_kind = NULL;
+
+  g_assert (PROMPT_IS_PROCESS_IMPL (self));
+  g_assert (G_IS_DBUS_METHOD_INVOCATION (invocation));
+
+  if (self->pty_fd != -1)
+    {
+      GPid pid = tcgetpgrp (self->pty_fd);
+
+      if (pid > 0)
+        {
+          g_autofree char *path = g_strdup_printf ("/proc/%d/", pid);
+          g_autofree char *exe = g_strdup_printf ("/proc/%d/exe", pid);
+          char execpath[512];
+          gssize len;
+          struct stat st;
+
+          if (stat (path, &st) == 0)
+            {
+              if (st.st_uid == 0)
+                {
+                  leader_kind = "superuser";
+                  goto complete;
+                }
+            }
+
+          len = readlink (exe, execpath, sizeof execpath-1);
+
+          if (len > 0)
+            {
+              const char *end;
+
+              execpath[len] = 0;
+
+              if ((end = strrchr (execpath, '/')))
+                leader_kind = g_hash_table_lookup (exec_to_kind, end+1);
+            }
+        }
+    }
+
+complete:
+  if (leader_kind == NULL)
+    leader_kind = "unknown";
+
+  prompt_ipc_process_complete_get_leader_kind (process,
+                                               g_steal_pointer (&invocation),
+                                               leader_kind);
+
+  return TRUE;
+}
+
 static void
 process_iface_init (PromptIpcProcessIface *iface)
 {
   iface->handle_send_signal = prompt_process_impl_handle_send_signal;
+  iface->handle_get_leader_kind = prompt_process_impl_handle_get_leader_kind;
 }

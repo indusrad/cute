@@ -65,12 +65,15 @@ prompt_agent_push_spawn (PromptRunContext   *run_context,
                          const char         *cwd,
                          const char * const *argv,
                          GVariant           *fds,
-                         GVariant           *env)
+                         GVariant           *env,
+                         int                *pty_fd)
 {
   GVariantIter iter;
 
   g_return_if_fail (PROMPT_IS_RUN_CONTEXT (run_context));
   g_return_if_fail (G_IS_UNIX_FD_LIST (fd_list));
+
+  *pty_fd = -1;
 
   if (cwd && cwd[0])
     prompt_run_context_set_cwd (run_context, cwd);
@@ -101,6 +104,9 @@ prompt_agent_push_spawn (PromptRunContext   *run_context,
               prompt_run_context_push_error (run_context, g_steal_pointer (&error));
               break;
             }
+
+          if (dest_fd_num <= 2 && isatty (fd) && *pty_fd == -1)
+            *pty_fd = dup (fd);
 
           prompt_run_context_take_fd (run_context, dest_fd_num, fd);
         }

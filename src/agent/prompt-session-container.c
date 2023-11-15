@@ -21,6 +21,7 @@
 
 #include "config.h"
 
+#include "prompt-agent-compat.h"
 #include "prompt-agent-util.h"
 #include "prompt-process-impl.h"
 #include "prompt-session-container.h"
@@ -70,6 +71,7 @@ prompt_session_container_handle_spawn (PromptIpcContainer    *container,
   GDBusConnection *connection;
   g_autofree char *object_path = NULL;
   g_autofree char *guid = NULL;
+  _g_autofd int pty_fd = -1;
 
   g_assert (PROMPT_IPC_IS_CONTAINER (container));
   g_assert (G_IS_DBUS_METHOD_INVOCATION (invocation));
@@ -80,7 +82,7 @@ prompt_session_container_handle_spawn (PromptIpcContainer    *container,
   g_assert (env != NULL);
 
   run_context = prompt_run_context_new ();
-  prompt_agent_push_spawn (run_context, in_fd_list, cwd, argv, fds, env);
+  prompt_agent_push_spawn (run_context, in_fd_list, cwd, argv, fds, env, &pty_fd);
 
   guid = g_dbus_generate_guid ();
   object_path = g_strdup_printf ("/org/gnome/Prompt/Process/%s", guid);
@@ -88,7 +90,7 @@ prompt_session_container_handle_spawn (PromptIpcContainer    *container,
   connection = g_dbus_method_invocation_get_connection (invocation);
 
   if (!(subprocess = prompt_run_context_spawn (run_context, &error)) ||
-      !(process = prompt_process_impl_new (connection, subprocess, object_path, &error)))
+      !(process = prompt_process_impl_new (connection, subprocess, pty_fd, object_path, &error)))
     {
       g_dbus_method_invocation_return_gerror (g_steal_pointer (&invocation), error);
       return TRUE;
