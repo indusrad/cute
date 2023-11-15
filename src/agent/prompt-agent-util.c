@@ -67,8 +67,42 @@ prompt_agent_push_spawn (PromptRunContext   *run_context,
                          GVariant           *fds,
                          GVariant           *env)
 {
+  GVariantIter iter;
+
   g_return_if_fail (PROMPT_IS_RUN_CONTEXT (run_context));
   g_return_if_fail (G_IS_UNIX_FD_LIST (fd_list));
 
-  g_printerr ("TODO: finish spawn helper\n");
+  if (cwd && cwd[0])
+    prompt_run_context_set_cwd (run_context, cwd);
+
+  prompt_run_context_append_args (run_context, argv);
+
+  if (env && g_variant_iter_init (&iter, env) > 0)
+    {
+      char *key;
+      char *value;
+
+      while (g_variant_iter_loop (&iter, "{&s&s}", &key, &value))
+        prompt_run_context_setenv (run_context, key, value);
+    }
+
+  if (fds && g_variant_iter_init (&iter, fds) > 0)
+    {
+      guint dest_fd_num;
+      guint handle;
+
+      while (g_variant_iter_loop (&iter, "{uh}", &dest_fd_num, &handle))
+        {
+          g_autoptr(GError) error = NULL;
+          int fd;
+
+          if (-1 == (fd = g_unix_fd_list_get (fd_list, handle, &error)))
+            {
+              prompt_run_context_push_error (run_context, g_steal_pointer (&error));
+              break;
+            }
+
+          prompt_run_context_take_fd (run_context, dest_fd_num, fd);
+        }
+    }
 }
