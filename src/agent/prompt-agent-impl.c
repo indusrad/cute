@@ -22,6 +22,7 @@
 #include "config.h"
 
 #include "prompt-agent-impl.h"
+#include "prompt-session-container.h"
 
 struct _PromptAgentImpl
 {
@@ -53,6 +54,8 @@ static void
 prompt_agent_impl_init (PromptAgentImpl *self)
 {
   self->containers = g_ptr_array_new_with_free_func (g_object_unref);
+
+  g_ptr_array_add (self->containers, prompt_session_container_new ());
 }
 
 PromptAgentImpl *

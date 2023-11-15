@@ -11,6 +11,7 @@ prompt_agent_deps = [
 prompt_agent_sources = [
   'prompt-agent.c',
   'prompt-agent-impl.c',
+  'prompt-session-container.c',
 ]
 
 prompt_agent_ipc = gnome.gdbus_codegen('prompt-agent-ipc',
