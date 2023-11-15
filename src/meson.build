@@ -32,10 +32,10 @@ prompt_sources = [
 ]
 
 prompt_enum_headers = [
-  'prompt-process.h',
   'prompt-profile.h',
   'prompt-settings.h',
   'prompt-tab.h',
+  'prompt-tab-monitor.h',
 ]
 
 prompt_sources += gnome.mkenums_simple('prompt-enums',

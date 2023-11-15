@@ -23,10 +23,17 @@
 
 #include <gio/gio.h>
 
-#include "prompt-process.h"
 #include "prompt-tab.h"
 
 G_BEGIN_DECLS
+
+typedef enum _PromptProcessLeader
+{
+  PROMPT_PROCESS_LEADER_KIND_UNKNOWN,
+  PROMPT_PROCESS_LEADER_KIND_SUPERUSER,
+  PROMPT_PROCESS_LEADER_KIND_REMOTE,
+  PROMPT_PROCESS_LEADER_KIND_CONTAINER,
+} PromptProcessLeaderKind;
 
 #define PROMPT_TYPE_TAB_MONITOR (prompt_tab_monitor_get_type())
 

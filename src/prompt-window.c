@@ -27,6 +27,7 @@
 #include "prompt-find-bar.h"
 #include "prompt-parking-lot.h"
 #include "prompt-settings.h"
+#include "prompt-tab-monitor.h"
 #include "prompt-theme-selector.h"
 #include "prompt-title-dialog.h"
 #include "prompt-window.h"

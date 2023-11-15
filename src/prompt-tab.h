@@ -24,7 +24,6 @@
 #include <gtk/gtk.h>
 
 #include "prompt-agent-ipc.h"
-#include "prompt-process.h"
 #include "prompt-profile.h"
 #include "prompt-terminal.h"
 

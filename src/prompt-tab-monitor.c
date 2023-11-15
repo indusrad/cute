@@ -22,7 +22,6 @@
 #include "config.h"
 
 #include "prompt-enums.h"
-#include "prompt-process.h"
 #include "prompt-tab-monitor.h"
 
 #define DELAY_INTERACTIVE_MSEC 100
@@ -31,11 +30,11 @@
 
 struct _PromptTabMonitor
 {
-  GObject                   parent_instance;
-  GWeakRef                  tab_wr;
-  GSource                  *update_source;
+  GObject                  parent_instance;
+  GWeakRef                 tab_wr;
+  GSource                 *update_source;
   PromptProcessLeaderKind  process_leader_kind;
-  int                       current_delay_msec;
+  int                      current_delay_msec;
 };
 
 enum {
