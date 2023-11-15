@@ -92,15 +92,12 @@ prompt_session_container_handle_spawn (PromptIpcContainer    *container,
 
   if (!(subprocess = prompt_run_context_spawn (run_context, &error)) ||
       !(process = prompt_process_impl_new (connection, subprocess, pty_fd, object_path, &error)))
-    {
-      g_dbus_method_invocation_return_gerror (g_steal_pointer (&invocation), error);
-      return TRUE;
-    }
-
-  prompt_ipc_container_complete_spawn (container,
-                                       g_steal_pointer (&invocation),
-                                       out_fd_list,
-                                       object_path);
+    g_dbus_method_invocation_return_gerror (g_steal_pointer (&invocation), error);
+  else
+    prompt_ipc_container_complete_spawn (container,
+                                         g_steal_pointer (&invocation),
+                                         out_fd_list,
+                                         object_path);
 
   return TRUE;
 }
