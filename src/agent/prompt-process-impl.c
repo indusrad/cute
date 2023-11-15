@@ -34,7 +34,6 @@ struct _PromptProcessImpl
   PromptIpcProcessSkeleton parent_instance;
   GSubprocess *subprocess;
   GPid pid;
-  int pty_fd;
 };
 
 static void process_iface_init (PromptIpcProcessIface *iface);
@@ -50,7 +49,6 @@ prompt_process_impl_finalize (GObject *object)
   PromptProcessImpl *self = (PromptProcessImpl *)object;
 
   g_clear_object (&self->subprocess);
-  _g_clear_fd (&self->pty_fd, NULL);
 
   G_OBJECT_CLASS (prompt_process_impl_parent_class)->finalize (object);
 }
@@ -81,7 +79,6 @@ prompt_process_impl_class_init (PromptProcessImplClass *klass)
 static void
 prompt_process_impl_init (PromptProcessImpl *self)
 {
-  self->pty_fd = -1;
 }
 
 static void
@@ -113,7 +110,6 @@ prompt_process_impl_wait_cb (GObject      *object,
 PromptIpcProcess *
 prompt_process_impl_new (GDBusConnection  *connection,
                          GSubprocess      *subprocess,
-                         int               pty_fd,
                          const char       *object_path,
                          GError          **error)
 {
@@ -127,7 +123,6 @@ prompt_process_impl_new (GDBusConnection  *connection,
   ident = g_subprocess_get_identifier (subprocess);
 
   self = g_object_new (PROMPT_TYPE_PROCESS_IMPL, NULL);
-  self->pty_fd = pty_fd;
   self->pid = atoi (ident);
   g_set_object (&self->subprocess, subprocess);
 
@@ -165,17 +160,27 @@ prompt_process_impl_handle_send_signal (PromptIpcProcess      *process,
 
 static gboolean
 prompt_process_impl_handle_get_leader_kind (PromptIpcProcess      *process,
-                                            GDBusMethodInvocation *invocation)
+                                            GDBusMethodInvocation *invocation,
+                                            GUnixFDList           *in_fd_list,
+                                            GVariant              *in_pty_fd)
 {
   PromptProcessImpl *self = (PromptProcessImpl *)process;
   const char *leader_kind = NULL;
+  _g_autofd int pty_fd = -1;
+  int pty_fd_handle;
 
   g_assert (PROMPT_IS_PROCESS_IMPL (self));
   g_assert (G_IS_DBUS_METHOD_INVOCATION (invocation));
+  g_assert (g_variant_is_of_type (in_pty_fd, G_VARIANT_TYPE_HANDLE));
 
-  if (self->pty_fd != -1)
+  pty_fd_handle = g_variant_get_handle (in_pty_fd);
+
+  if (in_fd_list != NULL)
+    pty_fd = g_unix_fd_list_get (in_fd_list, pty_fd_handle, NULL);
+
+  if (pty_fd != -1)
     {
-      GPid pid = tcgetpgrp (self->pty_fd);
+      GPid pid = tcgetpgrp (pty_fd);
 
       if (pid > 0)
         {
@@ -214,6 +219,7 @@ complete:
 
   prompt_ipc_process_complete_get_leader_kind (process,
                                                g_steal_pointer (&invocation),
+                                               NULL,
                                                leader_kind);
 
   return TRUE;
@@ -221,23 +227,33 @@ complete:
 
 static gboolean
 prompt_process_impl_handle_has_foreground_process (PromptIpcProcess      *process,
-                                                   GDBusMethodInvocation *invocation)
+                                                   GDBusMethodInvocation *invocation,
+                                                   GUnixFDList           *in_fd_list,
+                                                   GVariant              *in_pty_fd)
 {
   PromptProcessImpl *self = (PromptProcessImpl *)process;
   gboolean has_foreground_process = FALSE;
+  _g_autofd int pty_fd = -1;
+  int pty_fd_handle;
 
   g_assert (PROMPT_IS_PROCESS_IMPL (self));
   g_assert (G_IS_DBUS_METHOD_INVOCATION (invocation));
 
-  if (self->pty_fd != -1)
+  pty_fd_handle = g_variant_get_handle (in_pty_fd);
+
+  if (in_fd_list != NULL)
+    pty_fd = g_unix_fd_list_get (in_fd_list, pty_fd_handle, NULL);
+
+  if (pty_fd != -1)
     {
-      GPid pid = tcgetpgrp (self->pty_fd);
+      GPid pid = tcgetpgrp (pty_fd);
 
       has_foreground_process = pid != self->pid;
     }
 
   prompt_ipc_process_complete_has_foreground_process (process,
                                                       g_steal_pointer (&invocation),
+                                                      NULL,
                                                       has_foreground_process);
 
   return TRUE;

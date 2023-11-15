@@ -33,7 +33,6 @@ G_DECLARE_FINAL_TYPE (PromptProcessImpl, prompt_process_impl, PROMPT, PROCESS_IM
 
 PromptIpcProcess *prompt_process_impl_new (GDBusConnection  *connection,
                                            GSubprocess      *subprocess,
-                                           int               pty_fd,
                                            const char       *object_path,
                                            GError          **error);
 

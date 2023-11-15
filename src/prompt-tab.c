@@ -1009,13 +1009,26 @@ gboolean
 prompt_tab_is_running (PromptTab *self)
 {
   gboolean has_foreground_process;
+  g_autoptr(GUnixFDList) fd_list = NULL;
+  VtePty *pty;
+  int handle;
+  int pty_fd;
 
   g_return_val_if_fail (PROMPT_IS_TAB (self), 0);
 
   if (self->process == NULL)
     return FALSE;
 
-  if (!prompt_ipc_process_call_has_foreground_process_sync (self->process, &has_foreground_process, NULL, NULL))
+  pty = vte_terminal_get_pty (VTE_TERMINAL (self->terminal));
+  pty_fd = vte_pty_get_fd (pty);
+  fd_list = g_unix_fd_list_new ();
+  handle = g_unix_fd_list_append (fd_list, pty_fd, NULL);
+
+  if (!prompt_ipc_process_call_has_foreground_process_sync (self->process,
+                                                            g_variant_new_handle (handle),
+                                                            fd_list,
+                                                            &has_foreground_process,
+                                                            NULL, NULL, NULL))
     has_foreground_process = FALSE;
 
   return has_foreground_process;

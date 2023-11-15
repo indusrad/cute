@@ -127,6 +127,8 @@
        - "container"
     -->
     <method name="GetLeaderKind">
+      <annotation name="org.gtk.GDBus.C.UnixFD" value="true"/>
+      <arg name="pty_fd" direction="in" type="h"/>
       <arg name="leader_kind" direction="out" type="s"/>
     </method>
 
@@ -137,6 +139,8 @@
       that is running (such as vim, a long running process, etc).
     -->
     <method name="HasForegroundProcess">
+      <annotation name="org.gtk.GDBus.C.UnixFD" value="true"/>
+      <arg name="pty_fd" direction="in" type="h"/>
       <arg name="has_long_running_process" direction="out" type="b"/>
     </method>
 

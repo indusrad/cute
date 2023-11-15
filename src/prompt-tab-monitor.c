@@ -88,11 +88,16 @@ prompt_tab_monitor_backoff_delay (PromptTabMonitor *self)
 static gboolean
 prompt_tab_monitor_update_source_func (gpointer user_data)
 {
-  PromptTabMonitor *self = user_data;
-  g_autofree char *process_leader_kind_str = NULL;
   PromptProcessLeaderKind process_leader_kind;
+  PromptTabMonitor *self = user_data;
   g_autoptr(PromptTab) tab = NULL;
+  g_autoptr(GUnixFDList) in_fd_list = NULL;
+  g_autofree char *process_leader_kind_str = NULL;
   PromptIpcProcess *process;
+  PromptTerminal *terminal;
+  VtePty *pty;
+  int in_pty_handle;
+  int pty_fd;
 
   g_assert (PROMPT_IS_TAB_MONITOR (self));
 
@@ -102,7 +107,18 @@ prompt_tab_monitor_update_source_func (gpointer user_data)
   if (!(process = prompt_tab_get_process (tab)))
     goto remove_source;
 
-  prompt_ipc_process_call_get_leader_kind_sync (process, &process_leader_kind_str, NULL, NULL);
+  terminal = prompt_tab_get_terminal (tab);
+  pty = vte_terminal_get_pty (VTE_TERMINAL (terminal));
+  pty_fd = vte_pty_get_fd (pty);
+
+  in_fd_list = g_unix_fd_list_new ();
+  in_pty_handle = g_unix_fd_list_append (in_fd_list, pty_fd, NULL);
+
+  prompt_ipc_process_call_get_leader_kind_sync (process,
+                                                g_variant_new_handle (in_pty_handle),
+                                                in_fd_list,
+                                                &process_leader_kind_str,
+                                                NULL, NULL, NULL);
 
   if (process_leader_kind_str == NULL || strcmp (process_leader_kind_str, "unknown") == 0)
     process_leader_kind = PROMPT_PROCESS_LEADER_KIND_UNKNOWN;
