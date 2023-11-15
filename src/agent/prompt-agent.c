@@ -31,6 +31,7 @@
 #include <gio/gio.h>
 
 #include "prompt-agent-impl.h"
+#include "prompt-session-container.h"
 
 typedef struct _PromptAgent
 {
@@ -55,6 +56,8 @@ prompt_agent_init (PromptAgent  *agent,
                    int           socket_fd,
                    GError      **error)
 {
+  g_autoptr(PromptSessionContainer) session = NULL;
+
   memset (agent, 0, sizeof *agent);
 
   if (socket_fd <= 2)
@@ -92,9 +95,10 @@ prompt_agent_init (PromptAgent  *agent,
                                          error))
     return FALSE;
 
-  g_dbus_connection_start_message_processing (agent->bus);
+  session = prompt_session_container_new ();
+  prompt_agent_impl_add_container (agent->impl, PROMPT_IPC_CONTAINER (session));
 
-  prompt_agent_impl_emit_initial_containers (agent->impl);
+  g_dbus_connection_start_message_processing (agent->bus);
 
   return TRUE;
 }

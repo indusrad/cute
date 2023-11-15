@@ -28,9 +28,13 @@ struct _PromptAgentImpl
 {
   PromptIpcAgentSkeleton parent_instance;
   GPtrArray *containers;
+  guint has_listed_containers : 1;
 };
 
-G_DEFINE_TYPE (PromptAgentImpl, prompt_agent_impl, PROMPT_IPC_TYPE_AGENT_SKELETON)
+static void agent_iface_init (PromptIpcAgentIface *iface);
+
+G_DEFINE_TYPE_WITH_CODE (PromptAgentImpl, prompt_agent_impl, PROMPT_IPC_TYPE_AGENT_SKELETON,
+                         G_IMPLEMENT_INTERFACE (PROMPT_IPC_TYPE_AGENT, agent_iface_init))
 
 static void
 prompt_agent_impl_finalize (GObject *object)
@@ -54,8 +58,6 @@ static void
 prompt_agent_impl_init (PromptAgentImpl *self)
 {
   self->containers = g_ptr_array_new_with_free_func (g_object_unref);
-
-  g_ptr_array_add (self->containers, prompt_session_container_new ());
 }
 
 PromptAgentImpl *
@@ -65,11 +67,44 @@ prompt_agent_impl_new (GError **error)
 }
 
 void
-prompt_agent_impl_emit_initial_containers (PromptAgentImpl *self)
+prompt_agent_impl_add_container (PromptAgentImpl    *self,
+                                 PromptIpcContainer *container)
 {
-  g_autoptr(GArray) strv = NULL;
+  g_autofree char *object_path = NULL;
+  g_autofree char *guid = NULL;
 
   g_return_if_fail (PROMPT_IS_AGENT_IMPL (self));
+  g_return_if_fail (PROMPT_IPC_IS_CONTAINER (container));
+
+  guid = g_dbus_generate_guid ();
+  object_path = g_strdup_printf ("/org/gnome/Prompt/Containers/%s", guid);
+
+  g_ptr_array_add (self->containers, g_object_ref (container));
+
+  g_dbus_interface_skeleton_export (G_DBUS_INTERFACE_SKELETON (container),
+                                    g_dbus_interface_skeleton_get_connection (G_DBUS_INTERFACE_SKELETON (self)),
+                                    object_path,
+                                    NULL);
+
+  if (self->has_listed_containers)
+    {
+      const char * const object_paths[2] = {object_path, NULL};
+      prompt_ipc_agent_emit_containers_changed (PROMPT_IPC_AGENT (self),
+                                                self->containers->len-1,
+                                                0,
+                                                object_paths);
+    }
+}
+
+static gboolean
+prompt_agent_impl_handle_list_containers (PromptIpcAgent        *agent,
+                                          GDBusMethodInvocation *invocation)
+{
+  PromptAgentImpl *self = (PromptAgentImpl *)agent;
+  g_autoptr(GArray) strv = NULL;
+
+  g_assert (PROMPT_IS_AGENT_IMPL (self));
+  g_assert (G_IS_DBUS_METHOD_INVOCATION (invocation));
 
   strv = g_array_new (TRUE, FALSE, sizeof (char*));
 
@@ -81,8 +116,17 @@ prompt_agent_impl_emit_initial_containers (PromptAgentImpl *self)
       g_array_append_val (strv, object_path);
     }
 
-  prompt_ipc_agent_emit_containers_changed (PROMPT_IPC_AGENT (self),
-                                            0,
-                                            0,
-                                            (const char * const *)strv->data);
+  prompt_ipc_agent_complete_list_containers (agent,
+                                             g_steal_pointer (&invocation),
+                                             (const char * const *)strv->data);
+
+  self->has_listed_containers = TRUE;
+
+  return TRUE;
+}
+
+static void
+agent_iface_init (PromptIpcAgentIface *iface)
+{
+  iface->handle_list_containers = prompt_agent_impl_handle_list_containers;
 }

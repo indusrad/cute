@@ -30,15 +30,23 @@
 
       The format is somewhat analagous to GListModel::items-changed
       except the list of object paths are provided.
-
-      After the agent starts, it will emit this signal to update the
-      client on the initial list of containers.
     -->
     <signal name="ContainersChanged">
       <arg name="position" direction="in" type="u"/>
       <arg name="removed" direction="in" type="u"/>
       <arg name="added" direction="in" type="ao"/>
     </signal>
+
+    <!--
+      ListContainers:
+
+      Gets a list of object paths for all of the registered containers.
+      This can be combined with ContainersChanged to build a GListModel
+      in the UI process observing the prompt-agent.
+    -->
+    <method name="ListContainers">
+      <arg name="containers" direction="out" type="ao"/>
+    </method>
   </interface>
 
   <interface name="org.gnome.Prompt.Container">
