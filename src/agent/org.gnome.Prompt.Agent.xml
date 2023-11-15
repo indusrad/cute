@@ -51,6 +51,15 @@
     <property name="Provider" access="read" type="s"/>
 
     <!--
+      Id:
+
+      The identifier of the container. This is meant to be stable
+      across runs of prompt-agent and may map to an underlying
+      container identifier by @Provider.
+    -->
+    <property name="Id" access="read" type="s"/>
+
+    <!--
       CreatePty:
 
       This method is used to create a new PTY in the appropriate
