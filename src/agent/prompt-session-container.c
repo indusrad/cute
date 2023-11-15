@@ -111,7 +111,7 @@ prompt_session_container_handle_spawn (PromptIpcContainer    *container,
   prompt_agent_push_spawn (run_context, in_fd_list, cwd, argv, fds, env);
 
   guid = g_dbus_generate_guid ();
-  object_path = g_strdup_printf ("/org/gnome/Prompt/Process/%s/", guid);
+  object_path = g_strdup_printf ("/org/gnome/Prompt/Process/%s", guid);
   out_fd_list = g_unix_fd_list_new ();
   connection = g_dbus_method_invocation_get_connection (invocation);
 
