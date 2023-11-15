@@ -42,6 +42,8 @@ config_h.set_quoted('APP_SCHEMA_SHORTCUTS_PATH', '@0@Shortcuts/'.format(app_sche
 config_h.set_quoted('PACKAGE_VERSION', meson.project_version())
 config_h.set_quoted('GETTEXT_PACKAGE', 'prompt')
 config_h.set_quoted('LOCALEDIR', get_option('prefix') / get_option('localedir'))
+# LIBEXECDIR must be expanded in config.h
+config_h.set_quoted('LIBEXECDIR', get_option('prefix') / get_option('libexecdir'))
 config_h.set_quoted('PACKAGE_WEBSITE', 'https://gitlab.gnome.org/chergert/prompt')
 config_h.set_quoted('PACKAGE_ICON_NAME', app_id)
 config_h.set_quoted('PACKAGE_NAME', 'Prompt')

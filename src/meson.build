@@ -3,6 +3,7 @@ subdir('agent')
 prompt_sources = [
   'main.c',
   'prompt-application.c',
+  'prompt-client.c',
   'prompt-close-dialog.c',
   'prompt-container-provider.c',
   'prompt-container.c',
@@ -80,9 +81,10 @@ prompt_c_args = [
 prompt_include_directories = [
   include_directories('.'),
   include_directories('..'),
+  include_directories('agent'),
 ]
 
-executable('prompt', prompt_sources,
+executable('prompt', prompt_sources + prompt_agent_ipc,
          dependencies: prompt_deps,
               install: true,
                c_args: prompt_c_args,
