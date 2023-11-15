@@ -21,7 +21,7 @@
 
 #include <unistd.h>
 
-#include <glib.h>
+#include <gio/gio.h>
 
 G_BEGIN_DECLS
 
@@ -46,6 +46,29 @@ _g_steal_fd (int *fdptr)
   int fd = *fdptr;
   *fdptr = -1;
   return fd;
+}
+
+static inline void
+_g_clear_fd (int     *fdptr,
+             GError **error)
+{
+  if (*fdptr != -1)
+    {
+      int fd = *fdptr;
+
+      *fdptr = -1;
+
+      if (close (fd) != 0)
+        {
+          int errsv = errno;
+
+          if (error)
+            g_set_error_literal (error,
+                                 G_IO_ERROR,
+                                 g_io_error_from_errno (errsv),
+                                 g_strerror (errsv));
+        }
+    }
 }
 
 static inline GList *
