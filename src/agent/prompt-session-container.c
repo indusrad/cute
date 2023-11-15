@@ -43,6 +43,7 @@ prompt_session_container_class_init (PromptSessionContainerClass *klass)
 static void
 prompt_session_container_init (PromptSessionContainer *self)
 {
+  prompt_ipc_container_set_provider (PROMPT_IPC_CONTAINER (self), "session");
 }
 
 PromptSessionContainer *
