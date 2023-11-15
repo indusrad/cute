@@ -94,6 +94,8 @@ prompt_agent_init (PromptAgent  *agent,
 
   g_dbus_connection_start_message_processing (agent->bus);
 
+  prompt_agent_impl_emit_initial_containers (agent->impl);
+
   return TRUE;
 }
 

@@ -29,6 +29,7 @@ G_BEGIN_DECLS
 
 G_DECLARE_FINAL_TYPE (PromptAgentImpl, prompt_agent_impl, PROMPT, AGENT_IMPL, PromptIpcAgentSkeleton)
 
-PromptAgentImpl *prompt_agent_impl_new (GError **error);
+PromptAgentImpl *prompt_agent_impl_new                     (GError          **error);
+void             prompt_agent_impl_emit_initial_containers (PromptAgentImpl  *self);
 
 G_END_DECLS

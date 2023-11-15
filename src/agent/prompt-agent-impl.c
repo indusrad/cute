@@ -60,3 +60,26 @@ prompt_agent_impl_new (GError **error)
 {
   return g_object_new (PROMPT_TYPE_AGENT_IMPL, NULL);
 }
+
+void
+prompt_agent_impl_emit_initial_containers (PromptAgentImpl *self)
+{
+  g_autoptr(GArray) strv = NULL;
+
+  g_return_if_fail (PROMPT_IS_AGENT_IMPL (self));
+
+  strv = g_array_new (TRUE, FALSE, sizeof (char*));
+
+  for (guint i = 0; i < self->containers->len; i++)
+    {
+      GDBusInterfaceSkeleton *skeleton = g_ptr_array_index (self->containers, i);
+      const char *object_path = g_dbus_interface_skeleton_get_object_path (skeleton);
+
+      g_array_append_val (strv, object_path);
+    }
+
+  prompt_ipc_agent_emit_containers_changed (PROMPT_IPC_AGENT (self),
+                                            0,
+                                            0,
+                                            (const char * const *)strv->data);
+}
