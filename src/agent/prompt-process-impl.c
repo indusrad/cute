@@ -104,6 +104,8 @@ prompt_process_impl_wait_cb (GObject      *object,
     prompt_ipc_process_emit_exited (PROMPT_IPC_PROCESS (self),
                                     g_subprocess_get_exit_status (subprocess));
 
+  g_dbus_interface_skeleton_unexport (G_DBUS_INTERFACE_SKELETON (self));
+
   g_clear_object (&self->subprocess);
 }
 
