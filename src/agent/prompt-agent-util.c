@@ -108,7 +108,7 @@ prompt_agent_push_spawn (PromptRunContext   *run_context,
           if (dest_fd_num <= 2 && isatty (fd) && *pty_fd == -1)
             *pty_fd = dup (fd);
 
-          prompt_run_context_take_fd (run_context, dest_fd_num, fd);
+          prompt_run_context_take_fd (run_context, fd, dest_fd_num);
         }
     }
 }
