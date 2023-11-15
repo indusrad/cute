@@ -30,8 +30,11 @@
 
 #include <gio/gio.h>
 
+#include "prompt-agent-impl.h"
+
 typedef struct _PromptAgent
 {
+  PromptAgentImpl   *impl;
   GSocket           *socket;
   GSocketConnection *stream;
   GDBusConnection   *bus;
@@ -84,6 +87,14 @@ prompt_agent_init (PromptAgent  *agent,
                                                  error)))
     return FALSE;
 
+  agent->impl = prompt_agent_impl_new ();
+
+  if (!g_dbus_interface_skeleton_export (G_DBUS_INTERFACE_SKELETON (agent->impl),
+                                         agent->bus,
+                                         "/org/gnome/Prompt/Agent",
+                                         error))
+    return FALSE;
+
   g_dbus_connection_start_message_processing (agent->bus);
 
   return TRUE;
@@ -99,9 +110,11 @@ prompt_agent_run (PromptAgent *agent)
 static void
 prompt_agent_destroy (PromptAgent *agent)
 {
+  g_clear_object (&agent->impl);
   g_clear_object (&agent->socket);
   g_clear_object (&agent->stream);
   g_clear_object (&agent->bus);
+  g_clear_pointer (&agent->main_loop, g_main_loop_unref);
 }
 
 int
