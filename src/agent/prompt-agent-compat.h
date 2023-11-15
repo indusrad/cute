@@ -40,6 +40,14 @@ _prompt_clear_fd_ignore_error (int *fd_ptr)
 
 #define _g_autofd _GLIB_CLEANUP(_prompt_clear_fd_ignore_error)
 
+static inline int
+_g_steal_fd (int *fdptr)
+{
+  int fd = *fdptr;
+  *fdptr = -1;
+  return fd;
+}
+
 static inline GList *
 _g_list_insert_before_link (GList *list,
                             GList *sibling,

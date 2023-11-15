@@ -32,6 +32,7 @@
 #include <gio/gunixinputstream.h>
 #include <gio/gunixoutputstream.h>
 
+#include "prompt-agent-compat.h"
 #include "prompt-unix-fd-map.h"
 
 typedef struct
@@ -46,7 +47,7 @@ struct _PromptUnixFDMap
   GArray  *map;
 };
 
-G_DEFINE_FINAL_TYPE (PromptUnixFDMap, prompt_unix_fd_map, G_TYPE_OBJECT)
+G_DEFINE_TYPE (PromptUnixFDMap, prompt_unix_fd_map, G_TYPE_OBJECT)
 
 static void
 item_clear (gpointer data)
@@ -156,7 +157,7 @@ prompt_unix_fd_map_steal (PromptUnixFDMap *self,
   if (dest_fd != NULL)
     *dest_fd = steal->dest_fd;
 
-  return g_steal_fd (&steal->source_fd);
+  return _g_steal_fd (&steal->source_fd);
 }
 
 int
@@ -270,7 +271,7 @@ prompt_unix_fd_map_steal_for_dest_fd (PromptUnixFDMap *self,
       PromptUnixFDMapItem *item = &g_array_index (self->map, PromptUnixFDMapItem, i);
 
       if (item->dest_fd == dest_fd)
-        return g_steal_fd (&item->source_fd);
+        return _g_steal_fd (&item->source_fd);
     }
 
   return -1;
@@ -418,7 +419,7 @@ prompt_unix_fd_map_steal_from (PromptUnixFDMap  *self,
             }
         }
 
-      prompt_unix_fd_map_take (self, g_steal_fd (&item->source_fd), item->dest_fd);
+      prompt_unix_fd_map_take (self, _g_steal_fd (&item->source_fd), item->dest_fd);
     }
 
   return TRUE;
@@ -492,15 +493,15 @@ prompt_unix_fd_map_create_stream (PromptUnixFDMap  *self,
   g_assert (stdout_pair[0] != -1);
   g_assert (stdout_pair[1] != -1);
 
-  prompt_unix_fd_map_take (self, g_steal_fd (&stdin_pair[0]), dest_read_fd);
-  prompt_unix_fd_map_take (self, g_steal_fd (&stdout_pair[1]), dest_write_fd);
+  prompt_unix_fd_map_take (self, _g_steal_fd (&stdin_pair[0]), dest_read_fd);
+  prompt_unix_fd_map_take (self, _g_steal_fd (&stdout_pair[1]), dest_write_fd);
 
   if (!g_unix_set_fd_nonblocking (stdin_pair[1], TRUE, error) ||
       !g_unix_set_fd_nonblocking (stdout_pair[0], TRUE, error))
     goto failure;
 
-  output = g_unix_output_stream_new (g_steal_fd (&stdin_pair[1]), TRUE);
-  input = g_unix_input_stream_new (g_steal_fd (&stdout_pair[0]), TRUE);
+  output = g_unix_output_stream_new (_g_steal_fd (&stdin_pair[1]), TRUE);
+  input = g_unix_input_stream_new (_g_steal_fd (&stdout_pair[0]), TRUE);
 
   ret = g_simple_io_stream_new (input, output);
 
@@ -545,7 +546,7 @@ prompt_unix_fd_map_silence_fd (PromptUnixFDMap  *self,
       return FALSE;
     }
 
-  prompt_unix_fd_map_take (self, g_steal_fd (&null_fd), dest_fd);
+  prompt_unix_fd_map_take (self, _g_steal_fd (&null_fd), dest_fd);
 
   return TRUE;
 }
