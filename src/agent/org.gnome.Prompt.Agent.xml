@@ -22,6 +22,15 @@
 <node xmlns:doc="http://www.freedesktop.org/dbus/1.0/doc.dtd">
   <interface name="org.gnome.Prompt.Agent">
     <!--
+      GetPreferredShell:
+
+      Discover the users preferred shell.
+    -->
+    <method name="GetPreferredShell">
+      <arg name="shell" direction="out" type="ay"/>
+    </method>
+
+    <!--
       ContainersChanged:
 
       This signal is emitted when the list of containers has changed.
@@ -96,6 +105,20 @@
   </interface>
 
   <interface name="org.gnome.Prompt.Process">
+    <!--
+      GetLeaderKind:
+
+      Gets the kind of process the TTY leader is.
+
+       - "unknown"
+       - "superuser"
+       - "remote"
+       - "container"
+    -->
+    <method name="GetLeaderKind">
+      <arg name="leader_kind" direction="out" type="s"/>
+    </method>
+
     <!--
       Exited:
 

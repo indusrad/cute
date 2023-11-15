@@ -21,6 +21,10 @@
 
 #include "config.h"
 
+#include <pwd.h>
+#include <sys/types.h>
+#include <unistd.h>
+
 #include "prompt-agent-impl.h"
 #include "prompt-agent-util.h"
 #include "prompt-run-context.h"
@@ -155,9 +159,34 @@ prompt_agent_impl_handle_create_pty (PromptIpcAgent        *agent,
   return TRUE;
 }
 
+static gboolean
+prompt_agent_impl_handle_get_preferred_shell (PromptIpcAgent        *agent,
+                                              GDBusMethodInvocation *invocation)
+{
+  g_autoptr(GError) error = NULL;
+  const char *default_shell = "/bin/sh";
+  struct passwd *pw;
+
+  g_assert (PROMPT_IS_AGENT_IMPL (agent));
+  g_assert (G_IS_DBUS_METHOD_INVOCATION (invocation));
+
+  if ((pw = getpwuid (getuid ())))
+    {
+      if (access (pw->pw_shell, X_OK) == 0)
+        default_shell = pw->pw_shell;
+    }
+
+  prompt_ipc_agent_complete_get_preferred_shell (agent,
+                                                 g_steal_pointer (&invocation),
+                                                 default_shell);
+
+  return TRUE;
+}
+
 static void
 agent_iface_init (PromptIpcAgentIface *iface)
 {
   iface->handle_create_pty = prompt_agent_impl_handle_create_pty;
+  iface->handle_get_preferred_shell = prompt_agent_impl_handle_get_preferred_shell;
   iface->handle_list_containers = prompt_agent_impl_handle_list_containers;
 }
