@@ -47,6 +47,18 @@
     <method name="ListContainers">
       <arg name="containers" direction="out" type="ao"/>
     </method>
+
+    <!--
+      CreatePty:
+
+      This method is used to create a new PTY in the appropriate
+      PTY namespace of the container, when possible.
+    -->
+    <method name="CreatePty">
+      <annotation name="org.gtk.GDBus.C.UnixFD" value="true"/>
+      <arg name="fd" direction="out" type="h"/>
+    </method>
+
   </interface>
 
   <interface name="org.gnome.Prompt.Container">
@@ -66,17 +78,6 @@
       container identifier by @Provider.
     -->
     <property name="Id" access="read" type="s"/>
-
-    <!--
-      CreatePty:
-
-      This method is used to create a new PTY in the appropriate
-      PTY namespace of the container, when possible.
-    -->
-    <method name="CreatePty">
-      <annotation name="org.gtk.GDBus.C.UnixFD" value="true"/>
-      <arg name="fd" direction="out" type="h"/>
-    </method>
 
     <!--
       Spawn:

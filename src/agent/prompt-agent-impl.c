@@ -22,6 +22,8 @@
 #include "config.h"
 
 #include "prompt-agent-impl.h"
+#include "prompt-agent-util.h"
+#include "prompt-run-context.h"
 #include "prompt-session-container.h"
 
 struct _PromptAgentImpl
@@ -125,8 +127,37 @@ prompt_agent_impl_handle_list_containers (PromptIpcAgent        *agent,
   return TRUE;
 }
 
+static gboolean
+prompt_agent_impl_handle_create_pty (PromptIpcAgent        *agent,
+                                     GDBusMethodInvocation *invocation,
+                                     GUnixFDList           *in_fd_list)
+{
+  g_autoptr(GUnixFDList) out_fd_list = NULL;
+  g_autoptr(GError) error = NULL;
+  int pty_fd;
+
+  g_assert (PROMPT_IS_AGENT_IMPL (agent));
+  g_assert (G_IS_DBUS_METHOD_INVOCATION (invocation));
+  g_assert (!in_fd_list || G_IS_UNIX_FD_LIST (in_fd_list));
+
+  if (-1 == (pty_fd = prompt_agent_pty_new (&error)))
+    {
+      g_dbus_method_invocation_return_gerror (g_steal_pointer (&invocation), error);
+      return TRUE;
+    }
+
+  out_fd_list = g_unix_fd_list_new_from_array (&pty_fd, 1);
+  prompt_ipc_agent_complete_create_pty (agent,
+                                        g_steal_pointer (&invocation),
+                                        out_fd_list,
+                                        g_variant_new_handle (0));
+
+  return TRUE;
+}
+
 static void
 agent_iface_init (PromptIpcAgentIface *iface)
 {
+  iface->handle_create_pty = prompt_agent_impl_handle_create_pty;
   iface->handle_list_containers = prompt_agent_impl_handle_list_containers;
 }

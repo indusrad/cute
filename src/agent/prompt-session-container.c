@@ -54,34 +54,6 @@ prompt_session_container_new (void)
 }
 
 static gboolean
-prompt_session_container_handle_create_pty (PromptIpcContainer    *container,
-                                            GDBusMethodInvocation *invocation,
-                                            GUnixFDList           *in_fd_list)
-{
-  g_autoptr(GUnixFDList) out_fd_list = NULL;
-  g_autoptr(GError) error = NULL;
-  int pty_fd;
-
-  g_assert (PROMPT_IPC_IS_CONTAINER (container));
-  g_assert (G_IS_DBUS_METHOD_INVOCATION (invocation));
-  g_assert (!in_fd_list || G_IS_UNIX_FD_LIST (in_fd_list));
-
-  if (-1 == (pty_fd = prompt_agent_pty_new (&error)))
-    {
-      g_dbus_method_invocation_return_gerror (g_steal_pointer (&invocation), error);
-      return TRUE;
-    }
-
-  out_fd_list = g_unix_fd_list_new_from_array (&pty_fd, 1);
-  prompt_ipc_container_complete_create_pty (container,
-                                            g_steal_pointer (&invocation),
-                                            out_fd_list,
-                                            g_variant_new_handle (0));
-
-  return TRUE;
-}
-
-static gboolean
 prompt_session_container_handle_spawn (PromptIpcContainer    *container,
                                        GDBusMethodInvocation *invocation,
                                        GUnixFDList           *in_fd_list,
@@ -133,6 +105,5 @@ prompt_session_container_handle_spawn (PromptIpcContainer    *container,
 static void
 container_iface_init (PromptIpcContainerIface *iface)
 {
-  iface->handle_create_pty = prompt_session_container_handle_create_pty;
   iface->handle_spawn = prompt_session_container_handle_spawn;
 }
