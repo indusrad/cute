@@ -22,17 +22,17 @@
 
 #include <json-glib/json-glib.h>
 
-#include "prompt-container.h"
+#include "prompt-agent-ipc.h"
 
 G_BEGIN_DECLS
 
 #define PROMPT_TYPE_PODMAN_CONTAINER (prompt_podman_container_get_type())
 
-G_DECLARE_DERIVABLE_TYPE (PromptPodmanContainer, prompt_podman_container, PROMPT, PODMAN_CONTAINER, PromptContainer)
+G_DECLARE_DERIVABLE_TYPE (PromptPodmanContainer, prompt_podman_container, PROMPT, PODMAN_CONTAINER, PromptIpcContainerSkeleton)
 
 struct _PromptPodmanContainerClass
 {
-  PromptContainerClass parent_class;
+  PromptIpcContainerSkeletonClass parent_class;
 
   gboolean (*deserialize) (PromptPodmanContainer  *self,
                            JsonObject             *object,

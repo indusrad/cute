@@ -30,25 +30,7 @@ typedef struct
   GHashTable *labels;
 } PromptPodmanContainerPrivate;
 
-enum {
-  PROP_0,
-  N_PROPS
-};
-
-G_DEFINE_TYPE_WITH_PRIVATE (PromptPodmanContainer, prompt_podman_container, PROMPT_TYPE_CONTAINER)
-
-static GParamSpec *properties [N_PROPS];
-
-static const char *
-prompt_podman_container_get_id (PromptContainer *container)
-{
-  PromptPodmanContainer *self = (PromptPodmanContainer *)container;
-  PromptPodmanContainerPrivate *priv = prompt_podman_container_get_instance_private (self);
-
-  g_assert (PROMPT_IS_PODMAN_CONTAINER (self));
-
-  return priv->id;
-}
+G_DEFINE_TYPE_WITH_PRIVATE (PromptPodmanContainer, prompt_podman_container, PROMPT_IPC_TYPE_CONTAINER_SKELETON)
 
 static void
 prompt_podman_container_deserialize_labels (PromptPodmanContainer *self,
@@ -81,7 +63,6 @@ prompt_podman_container_real_deserialize (PromptPodmanContainer  *self,
                                           JsonObject             *object,
                                           GError                **error)
 {
-  PromptPodmanContainerPrivate *priv = prompt_podman_container_get_instance_private (self);
   JsonObject *labels_object;
   JsonNode *labels;
   JsonNode *id;
@@ -101,7 +82,8 @@ prompt_podman_container_real_deserialize (PromptPodmanContainer  *self,
       return FALSE;
     }
 
-  g_set_str (&priv->id, json_node_get_string (id));
+  prompt_ipc_container_set_id (PROMPT_IPC_CONTAINER (self),
+                               json_node_get_string (id));
 
   if (json_object_has_member (object, "Labels") &&
       (labels = json_object_get_member (object, "Labels")) &&
@@ -130,49 +112,17 @@ prompt_podman_container_finalize (GObject *object)
   PromptPodmanContainerPrivate *priv = prompt_podman_container_get_instance_private (self);
 
   g_clear_pointer (&priv->labels, g_hash_table_unref);
-  g_clear_pointer (&priv->id, g_free);
 
   G_OBJECT_CLASS (prompt_podman_container_parent_class)->finalize (object);
-}
-
-static void
-prompt_podman_container_get_property (GObject    *object,
-                                      guint       prop_id,
-                                      GValue     *value,
-                                      GParamSpec *pspec)
-{
-  switch (prop_id)
-    {
-    default:
-      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-    }
-}
-
-static void
-prompt_podman_container_set_property (GObject      *object,
-                                      guint         prop_id,
-                                      const GValue *value,
-                                      GParamSpec   *pspec)
-{
-  switch (prop_id)
-    {
-    default:
-      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-    }
 }
 
 static void
 prompt_podman_container_class_init (PromptPodmanContainerClass *klass)
 {
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
-  PromptContainerClass *container_class = PROMPT_CONTAINER_CLASS (klass);
 
   object_class->dispose = prompt_podman_container_dispose;
   object_class->finalize = prompt_podman_container_finalize;
-  object_class->get_property = prompt_podman_container_get_property;
-  object_class->set_property = prompt_podman_container_set_property;
-
-  container_class->get_id = prompt_podman_container_get_id;
 
   klass->deserialize = prompt_podman_container_real_deserialize;
 }

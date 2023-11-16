@@ -6,6 +6,7 @@ PROMPT_AGENT_MIN_GLIB_VERSION = '@0@.@1@'.format(PROMPT_AGENT_MIN_GLIB_MAJOR, PR
 prompt_agent_deps = [
   dependency('gio-2.0', version: '>= @0@'.format(PROMPT_AGENT_MIN_GLIB_VERSION)),
   dependency('gio-unix-2.0', version: '>= @0@'.format(PROMPT_AGENT_MIN_GLIB_VERSION)),
+  dependency('json-glib-1.0'),
 ]
 
 prompt_agent_sources = [
@@ -13,6 +14,7 @@ prompt_agent_sources = [
   'prompt-agent-impl.c',
   'prompt-agent-util.c',
   'prompt-container-provider.c',
+  'prompt-podman-container.c',
   'prompt-process-impl.c',
   'prompt-run-context.c',
   'prompt-session-container.c',
