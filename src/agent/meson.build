@@ -1,4 +1,8 @@
-# Require API to be GLib 2.56 for various enterprise Linux
+# We build the agent with older versions of GLib required as well
+# as various linker symbols so that we can run the agent, unmodified
+# on older enterprise linux distributions. Currently, prompt-agent
+# can run on CentOS 7.
+
 PROMPT_AGENT_MIN_GLIB_MAJOR = 2
 PROMPT_AGENT_MIN_GLIB_MINOR = 56
 PROMPT_AGENT_MIN_GLIB_VERSION = '@0@.@1@'.format(PROMPT_AGENT_MIN_GLIB_MAJOR, PROMPT_AGENT_MIN_GLIB_MINOR)
@@ -33,10 +37,21 @@ prompt_agent_c_args = [
   '-DGLIB_VERSION_MAX_ALLOWED=GLIB_VERSION_@0@_@1@'.format(PROMPT_AGENT_MIN_GLIB_MAJOR, PROMPT_AGENT_MIN_GLIB_MINOR),
 ]
 
+if target_machine.cpu_family() == 'x86_64'
+  prompt_agent_c_args += ['-include', 'x86_64/force_link_glibc_2.17.h']
+elif target_machine.cpu_family() == 'x86'
+  prompt_agent_c_args += ['-include', 'x86/force_link_glibc_2.17.h']
+endif
+
+prompt_agent_link_args = [
+  '-Wl,--wrap=__libc_start_main',
+]
+
 executable('prompt-agent', prompt_agent_sources + prompt_agent_ipc,
          dependencies: prompt_agent_deps,
               install: true,
           install_dir: get_option('libexecdir'),
                c_args: prompt_agent_c_args,
+            link_args: prompt_agent_link_args,
   include_directories: include_directories('../..'),
 )

@@ -26,8 +26,11 @@
 #endif
 
 #include <errno.h>
-#include <fcntl.h>
 #include <stdlib.h>
+
+#ifndef __linux__
+# include <fcntl.h>
+#endif
 
 #include <glib-unix.h>
 
@@ -70,6 +73,7 @@ prompt_pty_create_producer (int      consumer_fd,
 
   ret = open (name, O_NOCTTY | O_RDWR | O_CLOEXEC | extra);
 
+#ifndef __linux__
   if (ret == -1 && errno == EINVAL)
     {
       gint flags;
@@ -95,6 +99,7 @@ prompt_pty_create_producer (int      consumer_fd,
             return -1;
         }
     }
+#endif
 
   return _g_steal_fd (&ret);
 }

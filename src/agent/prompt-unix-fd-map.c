@@ -24,8 +24,11 @@
 # define _GNU_SOURCE
 #endif
 
+#ifdef __APPLE__
+# include <fcntl.h>
+#endif
+
 #include <errno.h>
-#include <fcntl.h>
 #include <unistd.h>
 
 #include <glib-unix.h>

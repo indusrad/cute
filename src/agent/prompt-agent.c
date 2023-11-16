@@ -21,11 +21,7 @@
 
 #include "config.h"
 
-#if defined(__x86_64__)
-# include "x86_64/force_link_glibc_2.17.h"
-#elif defined(__i386__)
-# include "x86/force_link_glibc_2.17.h"
-#endif
+#include "libc-compat.h"
 
 #include <string.h>
 #include <unistd.h>

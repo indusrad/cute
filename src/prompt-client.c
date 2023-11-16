@@ -22,7 +22,6 @@
 #include "config.h"
 
 #include <errno.h>
-#include <fcntl.h>
 #include <sys/ioctl.h>
 #ifdef __linux__
 # include <sys/prctl.h>

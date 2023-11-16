@@ -22,9 +22,10 @@
 #include "config.h"
 
 #include <errno.h>
-#include <fcntl.h>
 #include <sys/stat.h>
 #include <unistd.h>
+
+#include <glib/gstdio.h>
 
 #include "prompt-agent-compat.h"
 #include "prompt-process-impl.h"
@@ -186,17 +187,20 @@ prompt_process_impl_handle_get_leader_kind (PromptIpcProcess      *process,
         {
           g_autofree char *path = g_strdup_printf ("/proc/%d/", pid);
           g_autofree char *exe = g_strdup_printf ("/proc/%d/exe", pid);
+          g_autoptr(GFile) file = NULL;
+          g_autoptr(GFileInfo) info = NULL;
           char execpath[512];
           gssize len;
-          struct stat st;
 
-          if (stat (path, &st) == 0)
+          /* We use GFile API so that we can avoid linking against
+           * stat64 which is different on older glibc versions.
+           */
+          file = g_file_new_for_path (path);
+          info = g_file_query_info (file, G_FILE_ATTRIBUTE_UNIX_UID, G_FILE_QUERY_INFO_NONE, NULL, NULL);
+          if (info && g_file_info_get_attribute_uint32 (info, G_FILE_ATTRIBUTE_UNIX_UID) == 0)
             {
-              if (st.st_uid == 0)
-                {
-                  leader_kind = "superuser";
-                  goto complete;
-                }
+              leader_kind = "superuser";
+              goto complete;
             }
 
           len = readlink (exe, execpath, sizeof execpath-1);
