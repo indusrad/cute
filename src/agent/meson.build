@@ -12,6 +12,7 @@ prompt_agent_sources = [
   'prompt-agent.c',
   'prompt-agent-impl.c',
   'prompt-agent-util.c',
+  'prompt-container-provider.c',
   'prompt-process-impl.c',
   'prompt-run-context.c',
   'prompt-session-container.c',
