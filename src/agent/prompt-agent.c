@@ -21,7 +21,9 @@
 
 #include "config.h"
 
-#include "libc-compat.h"
+#ifdef LIBC_COMPAT
+# include "libc-compat.h"
+#endif
 
 #include <string.h>
 #include <unistd.h>

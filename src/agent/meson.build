@@ -31,21 +31,27 @@ prompt_agent_ipc = gnome.gdbus_codegen('prompt-agent-ipc',
          namespace: 'PromptIpc',
 )
 
+prompt_agent_link_args = []
+
 prompt_agent_c_args = [
   release_link_args,
   '-DGLIB_VERSION_MIN_REQUIRED=GLIB_VERSION_@0@_@1@'.format(PROMPT_AGENT_MIN_GLIB_MAJOR, PROMPT_AGENT_MIN_GLIB_MINOR),
   '-DGLIB_VERSION_MAX_ALLOWED=GLIB_VERSION_@0@_@1@'.format(PROMPT_AGENT_MIN_GLIB_MAJOR, PROMPT_AGENT_MIN_GLIB_MINOR),
 ]
 
+libc_compat = true
 if target_machine.cpu_family() == 'x86_64'
   prompt_agent_c_args += ['-include', 'x86_64/force_link_glibc_2.17.h']
 elif target_machine.cpu_family() == 'x86'
   prompt_agent_c_args += ['-include', 'x86/force_link_glibc_2.17.h']
+else
+  libc_compat = false
 endif
 
-prompt_agent_link_args = [
-  '-Wl,--wrap=__libc_start_main',
-]
+if libc_compat
+  config_h.set10('LIBC_COMPAT', libc_compat)
+  prompt_agent_link_args += ['-Wl,--wrap=__libc_start_main']
+endif
 
 executable('prompt-agent', prompt_agent_sources + prompt_agent_ipc,
          dependencies: prompt_agent_deps,
