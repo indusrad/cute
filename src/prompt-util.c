@@ -51,26 +51,6 @@ prompt_get_process_kind (void)
   return kind;
 }
 
-gboolean
-prompt_shell_supports_dash_c (const char *shell)
-{
-  if (shell == NULL)
-    return FALSE;
-
-  return strcmp (shell, "bash") == 0 || g_str_has_suffix (shell, "/bash") ||
-#if 0
-         /* Fish does apparently support -l and -c in testing, but it is causing
-          * issues with users, so we will disable it for now so that we fallback
-          * to using `sh -l -c ''` instead.
-          */
-         strcmp (shell, "fish") == 0 || g_str_has_suffix (shell, "/fish") ||
-#endif
-         strcmp (shell, "zsh") == 0 || g_str_has_suffix (shell, "/zsh") ||
-         strcmp (shell, "dash") == 0 || g_str_has_suffix (shell, "/dash") ||
-         strcmp (shell, "tcsh") == 0 || g_str_has_suffix (shell, "/tcsh") ||
-         strcmp (shell, "sh") == 0 || g_str_has_suffix (shell, "/sh");
-}
-
 /**
  * prompt_shell_supports_dash_l:
  * @shell: the name of the shell, such as `sh` or `/bin/sh`
@@ -87,19 +67,24 @@ prompt_shell_supports_dash_l (const char *shell)
   if (shell == NULL)
     return FALSE;
 
+  /* So here is the deal. Typically we would be able to "-bash" as the argv0 to
+   * "/bin/bash" which is what determines a login shell. But since we may be
+   * tunneling through various layers to get environment applied correctly, we
+   * may not have that level of control over argv0.
+   *
+   * Additionally, things like "exec -a -bash bash" don't work unless you first
+   * have a shell to do the exec as most distros don't ship an actual "exec"
+   * binary.
+   *
+   * So there we have it, just sniff for the shell to see if we can fake it
+   * till we make it.
+   */
+
   return strcmp (shell, "bash") == 0 || g_str_has_suffix (shell, "/bash") ||
-#if 0
          strcmp (shell, "fish") == 0 || g_str_has_suffix (shell, "/fish") ||
-#endif
          strcmp (shell, "zsh") == 0 || g_str_has_suffix (shell, "/zsh") ||
          strcmp (shell, "dash") == 0 || g_str_has_suffix (shell, "/dash") ||
-#if 0
-         /* tcsh supports -l and -c but not combined! To do that, you'd have
-          * to instead launch the login shell like `-tcsh -c 'command'`, which
-          * is possible, but we lack the abstractions for that currently.
-          */
          strcmp (shell, "tcsh") == 0 || g_str_has_suffix (shell, "/tcsh") ||
-#endif
          strcmp (shell, "sh") == 0 || g_str_has_suffix (shell, "/sh");
 }
 
