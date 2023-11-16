@@ -43,6 +43,7 @@ typedef struct _PromptAgent
   int                exit_code;
 } PromptAgent;
 
+G_GNUC_UNUSED
 static void
 prompt_agent_quit (PromptAgent *agent,
                    int          exit_code)
