@@ -95,6 +95,7 @@ prompt_run_context_add_minimal_environment (PromptRunContext *self)
     "DISPLAY",
     "LANG",
     "HOME",
+    "PATH",
     "SHELL",
     "SHELLOPTS",
     "SSH_AUTH_SOCK",
