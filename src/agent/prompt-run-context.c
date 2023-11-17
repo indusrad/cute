@@ -97,7 +97,6 @@ prompt_run_context_add_minimal_environment (PromptRunContext *self)
     "HOME",
     "PATH",
     "SHELL",
-    "SHELLOPTS",
     "SSH_AUTH_SOCK",
     "USER",
     "WAYLAND_DISPLAY",
