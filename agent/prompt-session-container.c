@@ -60,14 +60,15 @@ prompt_session_container_handle_spawn (PromptIpcContainer    *container,
                                        GUnixFDList           *in_fd_list,
                                        const char            *cwd,
                                        const char * const    *argv,
-                                       GVariant              *fds,
-                                       GVariant              *env)
+                                       GVariant              *in_fds,
+                                       GVariant              *in_env)
 {
   g_autoptr(PromptRunContext) run_context = NULL;
   g_autoptr(PromptIpcProcess) process = NULL;
   g_autoptr(GSubprocess) subprocess = NULL;
   g_autoptr(GUnixFDList) out_fd_list = NULL;
   g_autoptr(GError) error = NULL;
+  g_auto(GStrv) env = NULL;
   GDBusConnection *connection;
   g_autofree char *object_path = NULL;
   g_autofree char *guid = NULL;
@@ -81,14 +82,29 @@ prompt_session_container_handle_spawn (PromptIpcContainer    *container,
   g_assert (env != NULL);
 
   run_context = prompt_run_context_new ();
-  prompt_run_context_add_minimal_environment (run_context);
-  prompt_agent_push_spawn (run_context, in_fd_list, cwd, argv, fds, env);
 
+  /* For the default session, we'll just inherit whatever the session gave us
+   * as our environment. For other types of containers, that may be different
+   * as you likely want to filter some stateful things out.
+   */
+  env = g_get_environ ();
+  prompt_run_context_set_environ (run_context, (const char * const *)env);
+
+  /* Use the spawn helper to copy everything that matters after marshaling
+   * out of GVariant format. This will be very much the same for other
+   * container providers.
+   */
+  prompt_agent_push_spawn (run_context, in_fd_list, cwd, argv, in_fds, in_env);
+
+  /* Spawn and export our object to the bus. Note that a weak reference is used
+   * for the object on the bus so you must keep the object alive to ensure that
+   * it is not removed fro the bus. The default PromptProcessImpl does that for
+   * us by automatically waiting for the child to exit.
+   */
   guid = g_dbus_generate_guid ();
   object_path = g_strdup_printf ("/org/gnome/Prompt/Process/%s", guid);
   out_fd_list = g_unix_fd_list_new ();
   connection = g_dbus_method_invocation_get_connection (invocation);
-
   if (!(subprocess = prompt_run_context_spawn (run_context, &error)) ||
       !(process = prompt_process_impl_new (connection, subprocess, object_path, &error)))
     g_dbus_method_invocation_return_gerror (g_steal_pointer (&invocation), error);
