@@ -103,6 +103,11 @@ prompt_terminal_update_colors (PromptTerminal *self)
                            &face->background,
                            &face->indexed[0],
                            G_N_ELEMENTS (face->indexed));
+
+  if (face->cursor.alpha > 0)
+    vte_terminal_set_color_cursor (VTE_TERMINAL (self), &face->cursor);
+  else
+    vte_terminal_set_color_cursor (VTE_TERMINAL (self), NULL);
 }
 
 static void

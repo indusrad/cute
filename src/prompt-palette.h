@@ -42,6 +42,7 @@ typedef struct _PromptPaletteFace
 {
   GdkRGBA background;
   GdkRGBA foreground;
+  GdkRGBA cursor;
   GdkRGBA indexed[16];
   union {
     PromptPaletteScarf scarves[PROMPT_PALETTE_N_SCARVES];
