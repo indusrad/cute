@@ -35,6 +35,7 @@
 #include <gio/gio.h>
 
 #include "prompt-agent-impl.h"
+#include "prompt-podman-provider.h"
 #include "prompt-session-container.h"
 
 typedef struct _PromptAgent
@@ -62,6 +63,7 @@ prompt_agent_init (PromptAgent  *agent,
                    GError      **error)
 {
   g_autoptr(PromptSessionContainer) session = NULL;
+  g_autoptr(PromptContainerProvider) podman = NULL;
 
   memset (agent, 0, sizeof *agent);
 
@@ -103,6 +105,9 @@ prompt_agent_init (PromptAgent  *agent,
 
   session = prompt_session_container_new ();
   prompt_agent_impl_add_container (agent->impl, PROMPT_IPC_CONTAINER (session));
+
+  podman = prompt_podman_provider_new ();
+  prompt_agent_impl_add_provider (agent->impl, podman);
 
   g_dbus_connection_start_message_processing (agent->bus);
 

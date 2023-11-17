@@ -22,11 +22,11 @@
 
 #include <json-glib/json-glib.h>
 
-#include "prompt-application.h"
+#include "prompt-agent-compat.h"
+#include "prompt-agent-util.h"
 #include "prompt-podman-container.h"
 #include "prompt-podman-provider.h"
 #include "prompt-run-context.h"
-#include "prompt-util.h"
 
 typedef struct _LabelToType
 {
@@ -43,14 +43,7 @@ struct _PromptPodmanProvider
   guint queued_update;
 };
 
-enum {
-  PROP_0,
-  N_PROPS
-};
-
-G_DEFINE_FINAL_TYPE (PromptPodmanProvider, prompt_podman_provider, PROMPT_TYPE_CONTAINER_PROVIDER)
-
-static GParamSpec *properties [N_PROPS];
+G_DEFINE_TYPE (PromptPodmanProvider, prompt_podman_provider, PROMPT_TYPE_CONTAINER_PROVIDER)
 
 static void
 prompt_podman_provider_constructed (GObject *object)
@@ -61,9 +54,9 @@ prompt_podman_provider_constructed (GObject *object)
 
   G_OBJECT_CLASS (prompt_podman_provider_parent_class)->constructed (object);
 
-  g_set_str (&data_dir, g_get_user_data_dir ());
-  if (data_dir == NULL || prompt_get_process_kind () == PROMPT_PROCESS_KIND_FLATPAK)
-    prompt_take_str (&data_dir, g_build_filename (g_get_home_dir (), ".local", "share", NULL));
+  _g_set_str (&data_dir, g_get_user_data_dir ());
+  if (data_dir == NULL)
+    data_dir = g_build_filename (g_get_home_dir (), ".local", "share", NULL);
 
   g_assert (data_dir != NULL);
 
@@ -110,32 +103,6 @@ prompt_podman_provider_finalize (GObject *object)
 }
 
 static void
-prompt_podman_provider_get_property (GObject    *object,
-                                     guint       prop_id,
-                                     GValue     *value,
-                                     GParamSpec *pspec)
-{
-  switch (prop_id)
-    {
-    default:
-      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-    }
-}
-
-static void
-prompt_podman_provider_set_property (GObject      *object,
-                                     guint         prop_id,
-                                     const GValue *value,
-                                     GParamSpec   *pspec)
-{
-  switch (prop_id)
-    {
-    default:
-      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-    }
-}
-
-static void
 prompt_podman_provider_class_init (PromptPodmanProviderClass *klass)
 {
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
@@ -143,8 +110,6 @@ prompt_podman_provider_class_init (PromptPodmanProviderClass *klass)
   object_class->constructed = prompt_podman_provider_constructed;
   object_class->dispose = prompt_podman_provider_dispose;
   object_class->finalize = prompt_podman_provider_finalize;
-  object_class->get_property = prompt_podman_provider_get_property;
-  object_class->set_property = prompt_podman_provider_set_property;
 }
 
 static void
@@ -229,7 +194,7 @@ prompt_podman_provider_deserialize (PromptPodmanProvider *self,
 
   if (!prompt_podman_container_deserialize (container, object, &error))
     {
-      prompt_application_report_error (PROMPT_APPLICATION_DEFAULT, gtype, error);
+      g_critical ("Failed to deserialize container JSON: %s", error->message);
       return NULL;
     }
 
@@ -257,9 +222,7 @@ prompt_podman_provider_parse_cb (GObject      *object,
 
   if (!json_parser_load_from_stream_finish (parser, result, &error))
     {
-      prompt_application_report_error (PROMPT_APPLICATION_DEFAULT,
-                                       PROMPT_TYPE_PODMAN_PROVIDER,
-                                       error);
+      g_critical ("Failed to load podman JSON: %s", error->message);
       g_task_return_boolean (task, FALSE);
       return;
     }
@@ -308,7 +271,6 @@ prompt_podman_provider_update_source_func (gpointer user_data)
   self->queued_update = 0;
 
   run_context = prompt_run_context_new ();
-  prompt_run_context_push_host (run_context);
   prompt_run_context_append_argv (run_context, "podman");
   prompt_run_context_append_argv (run_context, "ps");
   prompt_run_context_append_argv (run_context, "--all");
@@ -317,9 +279,7 @@ prompt_podman_provider_update_source_func (gpointer user_data)
   if (!(stream = prompt_run_context_create_stdio_stream (run_context, &error)) ||
       !(subprocess = prompt_run_context_spawn (run_context, &error)))
     {
-      prompt_application_report_error (PROMPT_APPLICATION_DEFAULT,
-                                       PROMPT_TYPE_PODMAN_PROVIDER,
-                                       error);
+      g_critical ("Failed to spawn subprocess: %s", error->message);
       return G_SOURCE_REMOVE;
     }
 

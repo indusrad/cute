@@ -130,6 +130,8 @@ prompt_agent_impl_add_provider (PromptAgentImpl         *self,
   g_assert (PROMPT_IS_AGENT_IMPL (self));
   g_assert (PROMPT_IS_CONTAINER_PROVIDER (provider));
 
+  g_ptr_array_add (self->providers, g_object_ref (provider));
+
   g_signal_connect_object (provider,
                            "added",
                            G_CALLBACK (prompt_agent_impl_provider_added_cb),
