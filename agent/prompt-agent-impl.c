@@ -34,6 +34,7 @@
 struct _PromptAgentImpl
 {
   PromptIpcAgentSkeleton parent_instance;
+  GPtrArray *providers;
   GPtrArray *containers;
   guint has_listed_containers : 1;
 };
@@ -49,6 +50,7 @@ prompt_agent_impl_finalize (GObject *object)
   PromptAgentImpl *self = (PromptAgentImpl *)object;
 
   g_clear_pointer (&self->containers, g_ptr_array_unref);
+  g_clear_pointer (&self->providers, g_ptr_array_unref);
 
   G_OBJECT_CLASS (prompt_agent_impl_parent_class)->finalize (object);
 }
@@ -65,12 +67,89 @@ static void
 prompt_agent_impl_init (PromptAgentImpl *self)
 {
   self->containers = g_ptr_array_new_with_free_func (g_object_unref);
+  self->providers = g_ptr_array_new_with_free_func (g_object_unref);
 }
 
 PromptAgentImpl *
 prompt_agent_impl_new (GError **error)
 {
   return g_object_new (PROMPT_TYPE_AGENT_IMPL, NULL);
+}
+
+static void
+prompt_agent_impl_provider_added_cb (PromptAgentImpl         *self,
+                                     PromptIpcContainer      *container,
+                                     PromptContainerProvider *provider)
+{
+  g_assert (PROMPT_IS_AGENT_IMPL (self));
+  g_assert (PROMPT_IPC_IS_CONTAINER (container));
+  g_assert (PROMPT_IS_CONTAINER_PROVIDER (provider));
+
+  prompt_agent_impl_add_container (self, container);
+}
+
+static void
+prompt_agent_impl_provider_removed_cb (PromptAgentImpl         *self,
+                                       PromptIpcContainer      *container,
+                                       PromptContainerProvider *provider)
+{
+  static const char * const empty[] = {NULL};
+  const char *id;
+
+  g_assert (PROMPT_IS_AGENT_IMPL (self));
+  g_assert (PROMPT_IPC_IS_CONTAINER (container));
+  g_assert (PROMPT_IS_CONTAINER_PROVIDER (provider));
+
+  id = prompt_ipc_container_get_id (container);
+
+  g_return_if_fail (id != NULL);
+
+  for (guint i = 0; i < self->containers->len; i++)
+    {
+      PromptIpcContainer *element = g_ptr_array_index (self->containers, i);
+      const char *element_id = prompt_ipc_container_get_id (element);
+
+      if (g_strcmp0 (id, element_id) == 0)
+        {
+          g_ptr_array_remove_index (self->containers, i);
+
+          if (self->has_listed_containers)
+            prompt_ipc_agent_emit_containers_changed (PROMPT_IPC_AGENT (self), i, 1, empty);
+
+          break;
+        }
+    }
+}
+
+void
+prompt_agent_impl_add_provider (PromptAgentImpl         *self,
+                                PromptContainerProvider *provider)
+{
+  guint n_items;
+
+  g_assert (PROMPT_IS_AGENT_IMPL (self));
+  g_assert (PROMPT_IS_CONTAINER_PROVIDER (provider));
+
+  g_signal_connect_object (provider,
+                           "added",
+                           G_CALLBACK (prompt_agent_impl_provider_added_cb),
+                           self,
+                           G_CONNECT_SWAPPED);
+
+  g_signal_connect_object (provider,
+                           "removed",
+                           G_CALLBACK (prompt_agent_impl_provider_removed_cb),
+                           self,
+                           G_CONNECT_SWAPPED);
+
+  n_items = g_list_model_get_n_items (G_LIST_MODEL (provider));
+
+  for (guint i = 0; i < n_items; i++)
+    {
+      g_autoptr(PromptIpcContainer) container = g_list_model_get_item (G_LIST_MODEL (provider), i);
+
+      prompt_agent_impl_provider_added_cb (self, container, provider);
+    }
 }
 
 void
