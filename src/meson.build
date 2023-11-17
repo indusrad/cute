@@ -1,5 +1,3 @@
-subdir('agent')
-
 prompt_sources = [
   'main.c',
   'prompt-application.c',
@@ -72,7 +70,7 @@ prompt_c_args = [
 prompt_include_directories = [
   include_directories('.'),
   include_directories('..'),
-  include_directories('agent'),
+  include_directories('../agent'),
 ]
 
 executable('prompt', prompt_sources + prompt_agent_ipc,

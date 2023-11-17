@@ -124,6 +124,7 @@ foreach link_arg: test_link_args
 endforeach
 
 subdir('data')
+subdir('agent')
 subdir('src')
 subdir('po')
 

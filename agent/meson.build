@@ -59,5 +59,5 @@ executable('prompt-agent', prompt_agent_sources + prompt_agent_ipc,
           install_dir: get_option('libexecdir'),
                c_args: prompt_agent_c_args,
             link_args: prompt_agent_link_args,
-  include_directories: include_directories('../..'),
+  include_directories: include_directories('..'),
 )
