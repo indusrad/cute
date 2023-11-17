@@ -100,6 +100,20 @@
     <property name="Id" access="read" type="s"/>
 
     <!--
+      IconName:
+
+      An icon name suitable for the container.
+    -->
+    <property name="IconName" access="read" type="s"/>
+
+    <!--
+      DisplayName:
+
+      A user-visible display name for the container.
+    -->
+    <property name="DisplayName" access="read" type="s"/>
+
+    <!--
       Spawn:
 
       Spawns the process wihtin the container and returns an object
