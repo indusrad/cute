@@ -634,6 +634,81 @@ static const PromptPaletteData prompt_palettes_inline[] = {
       },
     },
   },
+
+  {
+    .id = "campbell",
+    .name = N_("Campbell"),
+    .faces = {
+      {
+        .foreground = GDK_RGBA ("777777"),
+        .background = GDK_RGBA ("0c0c0c"),
+        .indexed = {
+          GDK_RGBA ("0c0c0c"),
+          GDK_RGBA ("c50f1f"),
+          GDK_RGBA ("13a10e"),
+          GDK_RGBA ("c19c00"),
+          GDK_RGBA ("0037da"),
+          GDK_RGBA ("881798"),
+          GDK_RGBA ("3a96dd"),
+          GDK_RGBA ("cccccc"),
+          GDK_RGBA ("767676"),
+          GDK_RGBA ("e74856"),
+          GDK_RGBA ("16c60c"),
+          GDK_RGBA ("f9f1a5"),
+          GDK_RGBA ("3b78ff"),
+          GDK_RGBA ("b4009e"),
+          GDK_RGBA ("61d6d6"),
+          GDK_RGBA ("f2f2f2"),
+        },
+        .visual_bell = {
+          .foreground = GDK_RGBA ("0c0c0c"),
+          .background = GDK_RGBA ("c19c00")
+        },
+        .superuser = {
+          .foreground = GDK_RGBA ("ffffff"),
+          .background = GDK_RGBA ("c50f1f")
+        },
+        .remote = {
+          .foreground = GDK_RGBA ("ffffff"),
+          .background = GDK_RGBA ("881798"),
+        },
+      },
+      {
+        .foreground = GDK_RGBA ("777777"),
+        .background = GDK_RGBA ("0c0c0c"),
+        .indexed = {
+          GDK_RGBA ("0c0c0c"),
+          GDK_RGBA ("c50f1f"),
+          GDK_RGBA ("13a10e"),
+          GDK_RGBA ("c19c00"),
+          GDK_RGBA ("0037da"),
+          GDK_RGBA ("881798"),
+          GDK_RGBA ("3a96dd"),
+          GDK_RGBA ("cccccc"),
+          GDK_RGBA ("767676"),
+          GDK_RGBA ("e74856"),
+          GDK_RGBA ("16c60c"),
+          GDK_RGBA ("f9f1a5"),
+          GDK_RGBA ("3b78ff"),
+          GDK_RGBA ("b4009e"),
+          GDK_RGBA ("61d6d6"),
+          GDK_RGBA ("f2f2f2"),
+        },
+        .visual_bell = {
+          .foreground = GDK_RGBA ("0c0c0c"),
+          .background = GDK_RGBA ("c19c00")
+        },
+        .superuser = {
+          .foreground = GDK_RGBA ("ffffff"),
+          .background = GDK_RGBA ("c50f1f")
+        },
+        .remote = {
+          .foreground = GDK_RGBA ("ffffff"),
+          .background = GDK_RGBA ("881798")
+        },
+      },
+    },
+  },
 };
 
 
