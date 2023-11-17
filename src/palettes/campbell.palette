@@ -3,7 +3,7 @@ Name=Campbell
 
 [Light]
 Foreground=#777777
-Background=#0c0c0c
+Background=#f3f3f3
 Color0=#0c0c0c
 Color1=#c50f1f
 Color2=#13a10e
@@ -19,7 +19,7 @@ Color11=#f9f1a5
 Color12=#3b78ff
 Color13=#b4009e
 Color14=#61d6d6
-Color15=#f2f2f2
+Color15=#0d0d0d
 BellForeground=#0c0c0c
 BellBackground=#c19c00
 RemoteForeground=#ffffff
