@@ -151,7 +151,6 @@ prompt_preferences_window_select_custom_font (GtkWidget  *widget,
                                               const char *action_name,
                                               GVariant   *param)
 {
-  PromptPreferencesWindow *self = (PromptPreferencesWindow *)widget;
   g_autoptr(PangoFontDescription) font_desc = NULL;
   g_autoptr(GtkCustomFilter) filter = NULL;
   g_autoptr(GtkFontDialog) dialog = NULL;
@@ -159,7 +158,7 @@ prompt_preferences_window_select_custom_font (GtkWidget  *widget,
   PromptApplication *app;
   PromptSettings *settings;
 
-  g_assert (PROMPT_IS_PREFERENCES_WINDOW (self));
+  g_assert (PROMPT_IS_PREFERENCES_WINDOW (widget));
 
   app = PROMPT_APPLICATION_DEFAULT;
   settings = prompt_application_get_settings (app);
@@ -188,10 +187,9 @@ prompt_preferences_window_add_profile (GtkWidget  *widget,
                                        const char *action_name,
                                        GVariant   *param)
 {
-  PromptPreferencesWindow *self = (PromptPreferencesWindow *)widget;
   g_autoptr(PromptProfile) profile = NULL;
 
-  g_assert (PROMPT_IS_PREFERENCES_WINDOW (self));
+  g_assert (PROMPT_IS_PREFERENCES_WINDOW (widget));
 
   profile = prompt_profile_new (NULL);
 

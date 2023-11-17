@@ -165,12 +165,11 @@ prompt_process_impl_handle_get_leader_kind (PromptIpcProcess      *process,
                                             GUnixFDList           *in_fd_list,
                                             GVariant              *in_pty_fd)
 {
-  PromptProcessImpl *self = (PromptProcessImpl *)process;
   const char *leader_kind = NULL;
   _g_autofd int pty_fd = -1;
   int pty_fd_handle;
 
-  g_assert (PROMPT_IS_PROCESS_IMPL (self));
+  g_assert (PROMPT_IS_PROCESS_IMPL (process));
   g_assert (G_IS_DBUS_METHOD_INVOCATION (invocation));
   g_assert (g_variant_is_of_type (in_pty_fd, G_VARIANT_TYPE_HANDLE));
 
