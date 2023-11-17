@@ -166,6 +166,9 @@ prompt_agent_push_spawn (PromptRunContext   *run_context,
 
   prompt_run_context_append_args (run_context, argv);
 
+  prompt_run_context_setenv (run_context, "COLORTERM", "truecolor");
+  prompt_run_context_setenv (run_context, "TERM", "xterm-256color");
+
   if (env && g_variant_iter_init (&iter, env) > 0)
     {
       char *key;
