@@ -1,0 +1,15 @@
+include:
+  - project: "gnome/citemplates"
+    file: "flatpak/flatpak_ci_initiative.yml"
+
+stages:
+  - test
+
+flatpak:
+  variables:
+    BUNDLE: "org.gnome.Prompt.Devel.flatpak"
+    MANIFEST_PATH: "org.gnome.Prompt.Devel.json"
+    FLATPAK_MODULE: "prompt"
+    RUNTIME_REPO: "https://nightly.gnome.org/gnome-nightly.flatpakrepo"
+    APP_ID: "org.gnome.Prompt.Devel"
+  extends: ".flatpak"
