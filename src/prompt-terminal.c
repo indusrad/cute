@@ -94,7 +94,7 @@ prompt_terminal_update_colors (PromptTerminal *self)
   dark = adw_style_manager_get_dark (style_manager);
 
   if (self->palette == NULL)
-    self->palette = prompt_palette_new_from_name ("gnome");
+    self->palette = prompt_palette_lookup ("gnome");
 
   face = prompt_palette_get_face (self->palette, dark);
 

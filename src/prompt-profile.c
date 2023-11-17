@@ -296,7 +296,11 @@ prompt_profile_set_property (GObject      *object,
     case PROP_PALETTE_ID:
       {
         const char *id = g_value_get_string (value);
-        g_autoptr(PromptPalette) palette = prompt_palette_new_from_name (id);
+        g_autoptr(PromptPalette) palette = prompt_palette_lookup (id);
+
+        if (palette == NULL)
+          palette = prompt_palette_lookup ("gnome");
+
         prompt_profile_set_palette (self, palette);
       }
       break;
@@ -675,7 +679,7 @@ prompt_profile_dup_palette (PromptProfile *self)
 
   name = g_settings_get_string (self->settings, PROMPT_PROFILE_KEY_PALETTE);
 
-  return prompt_palette_new_from_name (name);
+  return prompt_palette_lookup (name);
 }
 
 void

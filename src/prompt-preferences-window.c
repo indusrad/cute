@@ -410,22 +410,18 @@ create_palette_preview (gpointer item,
                         gpointer user_data)
 {
   AdwStyleManager *style_manager = user_data;
-  PromptPreferencesListItem *list_item = item;
-  g_autoptr(PromptPalette) palette = NULL;
+  g_autoptr(GVariant) action_target = NULL;
+  PromptPalette *palette = item;
   PromptSettings *settings;
-  GVariant *action_target;
   GtkButton *button;
-  const char *key;
   GtkWidget *preview;
   GtkWidget *child;
 
-  g_assert (PROMPT_IS_PREFERENCES_LIST_ITEM (list_item));
+  g_assert (PROMPT_IS_PALETTE (palette));
   g_assert (ADW_IS_STYLE_MANAGER (style_manager));
 
   settings = prompt_application_get_settings (PROMPT_APPLICATION_DEFAULT);
-  action_target = prompt_preferences_list_item_get_value (list_item);
-  key = g_variant_get_string (action_target, NULL);
-  palette = prompt_palette_new_from_name (key);
+  action_target = g_variant_take_ref (g_variant_new_string (prompt_palette_get_id (palette)));
   preview = prompt_palette_preview_new (palette);
   g_object_bind_property (style_manager, "dark", preview, "dark", G_BINDING_SYNC_CREATE);
   g_object_bind_property (settings, "font-desc", preview, "font-desc", G_BINDING_SYNC_CREATE);
@@ -459,7 +455,7 @@ prompt_preferences_window_constructed (GObject *object)
 
   G_OBJECT_CLASS (prompt_preferences_window_parent_class)->constructed (object);
 
-  palettes = prompt_palette_list_model_get_default ();
+  palettes = prompt_palette_get_all ();
   gtk_flow_box_bind_model (self->palette_previews,
                            palettes,
                            create_palette_preview,
