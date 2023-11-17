@@ -78,8 +78,8 @@ prompt_session_container_handle_spawn (PromptIpcContainer    *container,
   g_assert (G_IS_UNIX_FD_LIST (in_fd_list));
   g_assert (cwd != NULL);
   g_assert (argv != NULL);
-  g_assert (fds != NULL);
-  g_assert (env != NULL);
+  g_assert (in_fds != NULL);
+  g_assert (in_env != NULL);
 
   run_context = prompt_run_context_new ();
 
