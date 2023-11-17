@@ -122,6 +122,19 @@
                 <child>
                   <object class="AdwPreferencesGroup">
                     <child>
+                      <object class="AdwComboRow" id="containers">
+                        <property name="title" translatable="yes">Default Container</property>
+                        <property name="subtitle" translatable="yes">THe default container to use with this profile</property>
+                        <property name="expression">
+                          <closure function="get_container_title" type="gchararray"/>
+                        </property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="AdwPreferencesGroup">
+                    <child>
                       <object class="AdwSwitchRow" id="login_shell">
                         <property name="title" translatable="yes">Use Login Shell</property>
                       </object>

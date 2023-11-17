@@ -23,6 +23,7 @@
 
 #include <glib/gi18n.h>
 
+#include "prompt-application.h"
 #include "prompt-profile-editor.h"
 #include "prompt-preferences-list-item.h"
 
@@ -34,6 +35,7 @@ struct _PromptProfileEditor
 
   AdwEntryRow       *label;
   AdwSwitchRow      *bold_is_bright;
+  AdwComboRow       *containers;
   AdwSwitchRow      *use_custom_commmand;
   AdwSwitchRow      *login_shell;
   AdwSpinRow        *scrollback_lines;
@@ -126,13 +128,36 @@ prompt_profile_editor_uuid_copy (GtkWidget  *widget,
   adw_toast_overlay_add_toast (self->toasts, toast);
 }
 
+static char *
+get_container_title (PromptIpcContainer *container)
+{
+  const char *display_name;
+  const char *provider;
+
+  g_assert (!container || PROMPT_IPC_IS_CONTAINER (container));
+
+  provider = prompt_ipc_container_get_provider (container);
+  display_name = prompt_ipc_container_get_display_name (container);
+
+  if (g_strcmp0 (provider, "session") == 0)
+    return g_strdup (_("User Session"));
+
+  return g_strdup (display_name);
+}
+
 static void
 prompt_profile_editor_constructed (GObject *object)
 {
   PromptProfileEditor *self = (PromptProfileEditor *)object;
+  PromptApplication *app = PROMPT_APPLICATION_DEFAULT;
   g_autoptr(GSettings) gsettings = NULL;
+  g_autoptr(GListModel) containers = NULL;
 
   G_OBJECT_CLASS (prompt_profile_editor_parent_class)->constructed (object);
+
+  containers = prompt_application_list_containers (app);
+
+  adw_combo_row_set_model (self->containers, containers);
 
   adw_combo_row_set_model (self->palette,
                            prompt_palette_list_model_get_default ());
@@ -310,6 +335,7 @@ prompt_profile_editor_class_init (PromptProfileEditorClass *klass)
   gtk_widget_class_bind_template_child (widget_class, PromptProfileEditor, bold_is_bright);
   gtk_widget_class_bind_template_child (widget_class, PromptProfileEditor, cjk_ambiguous_width);
   gtk_widget_class_bind_template_child (widget_class, PromptProfileEditor, cjk_ambiguous_widths);
+  gtk_widget_class_bind_template_child (widget_class, PromptProfileEditor, containers);
   gtk_widget_class_bind_template_child (widget_class, PromptProfileEditor, custom_commmand);
   gtk_widget_class_bind_template_child (widget_class, PromptProfileEditor, delete_binding);
   gtk_widget_class_bind_template_child (widget_class, PromptProfileEditor, erase_bindings);
@@ -329,6 +355,8 @@ prompt_profile_editor_class_init (PromptProfileEditorClass *klass)
   gtk_widget_class_bind_template_child (widget_class, PromptProfileEditor, toasts);
   gtk_widget_class_bind_template_child (widget_class, PromptProfileEditor, use_custom_commmand);
   gtk_widget_class_bind_template_child (widget_class, PromptProfileEditor, uuid);
+
+  gtk_widget_class_bind_template_callback (widget_class, get_container_title);
 
   gtk_widget_class_install_action (widget_class, "uuid.copy", NULL, prompt_profile_editor_uuid_copy);
 }
