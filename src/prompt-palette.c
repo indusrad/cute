@@ -57,6 +57,14 @@ struct _PromptPalette
 
 G_DEFINE_FINAL_TYPE (PromptPalette, prompt_palette, G_TYPE_OBJECT)
 
+enum {
+  PROP_0,
+  PROP_NAME,
+  N_PROPS
+};
+
+static GParamSpec *properties[N_PROPS];
+
 static void
 prompt_palette_finalize (GObject *object)
 {
@@ -68,11 +76,39 @@ prompt_palette_finalize (GObject *object)
 }
 
 static void
+prompt_palette_get_property (GObject    *object,
+                             guint       prop_id,
+                             GValue     *value,
+                             GParamSpec *pspec)
+{
+  PromptPalette *self = PROMPT_PALETTE (object);
+
+  switch (prop_id)
+    {
+    case PROP_NAME:
+      g_value_set_static_string (value, self->palette->name);
+      break;
+
+    default:
+      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+    }
+}
+
+static void
 prompt_palette_class_init (PromptPaletteClass *klass)
 {
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
   object_class->finalize = prompt_palette_finalize;
+  object_class->get_property = prompt_palette_get_property;
+
+  properties [PROP_NAME] =
+    g_param_spec_string ("name", NULL, NULL,
+                         NULL,
+                         (G_PARAM_READABLE |
+                          G_PARAM_STATIC_STRINGS));
+
+  g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void
@@ -149,19 +185,19 @@ prompt_palette_get_face (PromptPalette *self,
 GListModel *
 prompt_palette_get_all (void)
 {
-  static GListStore *instance;
+  static GtkSortListModel *instance;
 
   if (instance == NULL)
     {
       g_auto(GStrv) resources = NULL;
+      GListStore *liststore;
 
-      instance = g_list_store_new (PROMPT_TYPE_PALETTE);
-      g_object_add_weak_pointer (G_OBJECT (instance), (gpointer *)&instance);
+      liststore = g_list_store_new (PROMPT_TYPE_PALETTE);
 
       for (guint i = 0; i < G_N_ELEMENTS (prompt_palettes_inline); i++)
         {
           g_autoptr(PromptPalette) palette = prompt_palette_new_from_name (prompt_palettes_inline[i].id);
-          g_list_store_append (instance, palette);
+          g_list_store_append (liststore, palette);
         }
 
       resources = g_resources_enumerate_children ("/org/gnome/Prompt/palettes/", 0, NULL);
@@ -174,8 +210,12 @@ prompt_palette_get_all (void)
 
           g_assert_no_error (error);
 
-          g_list_store_append (instance, palette);
+          g_list_store_append (liststore, palette);
         }
+
+      instance = gtk_sort_list_model_new (G_LIST_MODEL (liststore),
+                                          GTK_SORTER (gtk_string_sorter_new (gtk_property_expression_new (PROMPT_TYPE_PALETTE, NULL, "name"))));
+      g_object_add_weak_pointer (G_OBJECT (instance), (gpointer *)&instance);
     }
 
   return G_LIST_MODEL (instance);
