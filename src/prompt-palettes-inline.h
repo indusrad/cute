@@ -115,6 +115,7 @@ static const PromptPaletteData prompt_palettes_inline[] = {
       {
         .foreground = GDK_RGBA ("002b36"),
         .background = GDK_RGBA ("fdf6e3"),
+        .cursor = GDK_RGBA ("93a1a1"),
         .indexed = {
           GDK_RGBA ("073642"),
           GDK_RGBA ("dc322f"),
@@ -149,6 +150,7 @@ static const PromptPaletteData prompt_palettes_inline[] = {
       {
         .foreground = GDK_RGBA ("839496"),
         .background = GDK_RGBA ("002b36"),
+        .cursor = GDK_RGBA ("93a1a1"),
         .indexed = {
           GDK_RGBA ("073642"),
           GDK_RGBA ("dc322f"),
