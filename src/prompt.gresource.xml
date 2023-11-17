@@ -18,6 +18,14 @@
     <file preprocess="xml-stripblanks">icons/scalable/actions/process-remote-symbolic.svg</file>
     <file preprocess="xml-stripblanks">icons/scalable/actions/process-superuser-symbolic.svg</file>
     <file>style.css</file>
+    <file>palettes/campbell.palette</file>
+    <file>palettes/dracula.palette</file>
+    <file>palettes/gnome.palette</file>
+    <file>palettes/linux.palette</file>
+    <file>palettes/nord.palette</file>
+    <file>palettes/rxvt.palette</file>
     <file>palettes/solarized.palette</file>
+    <file>palettes/tango.palette</file>
+    <file>palettes/xterm.palette</file>
   </gresource>
 </gresources>

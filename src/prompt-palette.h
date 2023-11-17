@@ -59,7 +59,6 @@ G_DECLARE_FINAL_TYPE (PromptPalette, prompt_palette, PROMPT, PALETTE, GObject)
 GListModel              *prompt_palette_get_all                (void);
 GListModel              *prompt_palette_list_model_get_default (void);
 PromptPalette           *prompt_palette_lookup                 (const char     *name);
-PromptPalette           *prompt_palette_new_from_name          (const char     *name);
 PromptPalette           *prompt_palette_new_from_file          (const char     *file,
                                                                 GError        **error);
 PromptPalette           *prompt_palette_new_from_resource      (const char     *file,
@@ -68,5 +67,6 @@ const char              *prompt_palette_get_id                 (PromptPalette  *
 const char              *prompt_palette_get_name               (PromptPalette  *self);
 const PromptPaletteFace *prompt_palette_get_face               (PromptPalette  *self,
                                                                 gboolean        dark);
+char                    *prompt_palette_to_string              (PromptPalette  *self);
 
 G_END_DECLS

@@ -40,6 +40,9 @@
  *     key/value pairs for everything we have in static data. I'm
  *     sure there is another GTK based terminal which already has a
  *     reasonable palette definition like this you can borrow.
+ *
+ *  ** UP to here has been done **
+ *
  *  4) Use a GtkFlattenListModel to join our internal and dynamic
  *     palettes together.
  *  5) Add loader to PromptApplication at startup. It's fine to
@@ -47,6 +50,12 @@
  *     GFileMonitor might be nice.
  */
 
+typedef struct _PromptPaletteData
+{
+  const char        *id;
+  const char        *name;
+  PromptPaletteFace  faces[2];
+} PromptPaletteData;
 
 struct _PromptPalette
 {
@@ -133,30 +142,6 @@ prompt_palette_lookup (const char *id)
   return NULL;
 }
 
-PromptPalette *
-prompt_palette_new_from_name (const char *name)
-{
-  const PromptPaletteData *data = NULL;
-  PromptPalette *self;
-
-  for (guint i = 0; i < G_N_ELEMENTS (prompt_palettes_inline); i++)
-    {
-      if (g_strcmp0 (name, prompt_palettes_inline[i].id) == 0)
-        {
-          data = &prompt_palettes_inline[i];
-          break;
-        }
-    }
-
-  if (data == NULL)
-    data = &prompt_palettes_inline[0];
-
-  self = g_object_new (PROMPT_TYPE_PALETTE, NULL);
-  self->palette = data;
-
-  return self;
-}
-
 const char *
 prompt_palette_get_id (PromptPalette *self)
 {
@@ -189,18 +174,8 @@ prompt_palette_get_all (void)
 
   if (instance == NULL)
     {
-      g_auto(GStrv) resources = NULL;
-      GListStore *liststore;
-
-      liststore = g_list_store_new (PROMPT_TYPE_PALETTE);
-
-      for (guint i = 0; i < G_N_ELEMENTS (prompt_palettes_inline); i++)
-        {
-          g_autoptr(PromptPalette) palette = prompt_palette_new_from_name (prompt_palettes_inline[i].id);
-          g_list_store_append (liststore, palette);
-        }
-
-      resources = g_resources_enumerate_children ("/org/gnome/Prompt/palettes/", 0, NULL);
+      g_auto(GStrv) resources = g_resources_enumerate_children ("/org/gnome/Prompt/palettes/", 0, NULL);
+      GListStore *liststore = g_list_store_new (PROMPT_TYPE_PALETTE);
 
       for (guint i = 0; resources[i]; i++)
         {
@@ -306,7 +281,6 @@ prompt_palette_load_face (const char         *path,
   if (FALSE ||
       !prompt_palette_load_color (path, &face->foreground, key_file, scheme, "Foreground", error) ||
       !prompt_palette_load_color (path, &face->background, key_file, scheme, "Background", error) ||
-      !prompt_palette_load_color (path, &face->cursor, key_file, scheme, "Cursor", error) ||
       !prompt_palette_load_color (path, &face->indexed[0], key_file, scheme, "Color0", error) ||
       !prompt_palette_load_color (path, &face->indexed[1], key_file, scheme, "Color1", error) ||
       !prompt_palette_load_color (path, &face->indexed[2], key_file, scheme, "Color2", error) ||
@@ -453,4 +427,76 @@ prompt_palette_new_from_resource (const char  *path,
   self->palette = self->allocated;
 
   return self;
+}
+
+static void
+prompt_palette_color_to_string (GKeyFile      *key_file,
+                                const char    *scheme,
+                                const char    *key,
+                                const GdkRGBA *color)
+{
+  char str[32];
+
+  if (g_strcmp0 (key, "Cursor") == 0 && color->alpha == 0)
+    return;
+
+  /* gdk_rgba_to_string() does rgb() which is annoying for
+   * what we want here. most people expect 6-part html hex
+   * and we want to ignore alpha anyway.
+   */
+  g_snprintf (str, sizeof str, "#%02x%02x%02x",
+              (int)(color->red * 255),
+              (int)(color->green * 255),
+              (int)(color->blue * 255));
+
+  g_key_file_set_string (key_file, scheme, key, str);
+}
+
+static void
+prompt_palette_face_to_string (GKeyFile                *key_file,
+                               const char              *scheme,
+                               const PromptPaletteFace *face)
+{
+  prompt_palette_color_to_string (key_file, scheme, "Foreground", &face->foreground);
+  prompt_palette_color_to_string (key_file, scheme, "Background", &face->background);
+  prompt_palette_color_to_string (key_file, scheme, "Cursor", &face->cursor);
+  prompt_palette_color_to_string (key_file, scheme, "Color0", &face->indexed[0]);
+  prompt_palette_color_to_string (key_file, scheme, "Color1", &face->indexed[1]);
+  prompt_palette_color_to_string (key_file, scheme, "Color2", &face->indexed[2]);
+  prompt_palette_color_to_string (key_file, scheme, "Color3", &face->indexed[3]);
+  prompt_palette_color_to_string (key_file, scheme, "Color4", &face->indexed[4]);
+  prompt_palette_color_to_string (key_file, scheme, "Color5", &face->indexed[5]);
+  prompt_palette_color_to_string (key_file, scheme, "Color6", &face->indexed[6]);
+  prompt_palette_color_to_string (key_file, scheme, "Color7", &face->indexed[7]);
+  prompt_palette_color_to_string (key_file, scheme, "Color8", &face->indexed[8]);
+  prompt_palette_color_to_string (key_file, scheme, "Color9", &face->indexed[9]);
+  prompt_palette_color_to_string (key_file, scheme, "Color10", &face->indexed[10]);
+  prompt_palette_color_to_string (key_file, scheme, "Color11", &face->indexed[11]);
+  prompt_palette_color_to_string (key_file, scheme, "Color12", &face->indexed[12]);
+  prompt_palette_color_to_string (key_file, scheme, "Color13", &face->indexed[13]);
+  prompt_palette_color_to_string (key_file, scheme, "Color14", &face->indexed[14]);
+  prompt_palette_color_to_string (key_file, scheme, "Color15", &face->indexed[15]);
+  prompt_palette_color_to_string (key_file, scheme, "BellForeground", &face->visual_bell.foreground);
+  prompt_palette_color_to_string (key_file, scheme, "BellBackground", &face->visual_bell.background);
+  prompt_palette_color_to_string (key_file, scheme, "RemoteForeground", &face->remote.foreground);
+  prompt_palette_color_to_string (key_file, scheme, "RemoteBackground", &face->remote.background);
+  prompt_palette_color_to_string (key_file, scheme, "SuperuserForeground", &face->superuser.foreground);
+  prompt_palette_color_to_string (key_file, scheme, "SuperuserBackground", &face->superuser.background);
+}
+
+char *
+prompt_palette_to_string (PromptPalette *self)
+{
+  g_autoptr(GKeyFile) key_file = NULL;
+
+  g_return_val_if_fail (PROMPT_IS_PALETTE (self), NULL);
+
+  key_file = g_key_file_new ();
+
+  g_key_file_set_string (key_file, "Palette", "Name", self->palette->name);
+
+  prompt_palette_face_to_string (key_file, "Light", &self->palette->faces[0]);
+  prompt_palette_face_to_string (key_file, "Dark", &self->palette->faces[1]);
+
+  return g_key_file_to_data (key_file, NULL, NULL);
 }
