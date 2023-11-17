@@ -102,6 +102,7 @@ prompt_run_context_add_minimal_environment (PromptRunContext *self)
     "WAYLAND_DISPLAY",
     "XAUTHORITY",
     "XDG_CURRENT_DESKTOP",
+    "XDG_RUNTIME_DIR",
     "XDG_MENU_PREFIX",
     "XDG_SEAT",
     "XDG_SESSION_DESKTOP",
