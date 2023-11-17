@@ -23,6 +23,8 @@
 
 #include <glib/gi18n.h>
 
+#include "prompt-agent-ipc.h"
+
 #include "prompt-application.h"
 #include "prompt-profile-editor.h"
 #include "prompt-preferences-list-item.h"
@@ -145,6 +147,19 @@ get_container_title (PromptIpcContainer *container)
   return g_strdup (display_name);
 }
 
+static gpointer
+map_container_to_list_item (gpointer item,
+                            gpointer user_data)
+{
+  g_autoptr(PromptIpcContainer) container = PROMPT_IPC_CONTAINER (item);
+  g_autoptr(GVariant) value = g_variant_take_ref (g_variant_new_string (prompt_ipc_container_get_id (container)));
+
+  return g_object_new (PROMPT_TYPE_PREFERENCES_LIST_ITEM,
+                       "title", prompt_ipc_container_get_display_name (container),
+                       "value", value,
+                       NULL);
+}
+
 static void
 prompt_profile_editor_constructed (GObject *object)
 {
@@ -152,10 +167,14 @@ prompt_profile_editor_constructed (GObject *object)
   PromptApplication *app = PROMPT_APPLICATION_DEFAULT;
   g_autoptr(GSettings) gsettings = NULL;
   g_autoptr(GListModel) containers = NULL;
+  g_autoptr(GtkMapListModel) mapped_containers = NULL;
 
   G_OBJECT_CLASS (prompt_profile_editor_parent_class)->constructed (object);
 
   containers = prompt_application_list_containers (app);
+  mapped_containers = gtk_map_list_model_new (g_object_ref (containers),
+                                              map_container_to_list_item,
+                                              NULL, NULL);
 
   adw_combo_row_set_model (self->containers, containers);
 
@@ -197,6 +216,16 @@ prompt_profile_editor_constructed (GObject *object)
   g_object_bind_property (self->profile, "opacity",
                           self->opacity_adjustment, "value",
                           G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
+
+  g_settings_bind_with_mapping (gsettings,
+                                PROMPT_PROFILE_KEY_DEFAULT_CONTAINER,
+                                self->containers,
+                                "selected",
+                                G_SETTINGS_BIND_DEFAULT,
+                                string_to_index,
+                                index_to_string,
+                                g_object_ref (mapped_containers),
+                                g_object_unref);
 
   g_settings_bind_with_mapping (gsettings,
                                 PROMPT_PROFILE_KEY_PALETTE,
