@@ -23,6 +23,7 @@ prompt_agent_sources = [
   'prompt-process-impl.c',
   'prompt-run-context.c',
   'prompt-session-container.c',
+  'prompt-toolbox-container.c',
   'prompt-unix-fd-map.c',
 ]
 

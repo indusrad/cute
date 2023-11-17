@@ -37,6 +37,7 @@
 #include "prompt-agent-impl.h"
 #include "prompt-podman-provider.h"
 #include "prompt-session-container.h"
+#include "prompt-toolbox-container.h"
 
 typedef struct _PromptAgent
 {
@@ -107,6 +108,10 @@ prompt_agent_init (PromptAgent  *agent,
   prompt_agent_impl_add_container (agent->impl, PROMPT_IPC_CONTAINER (session));
 
   podman = prompt_podman_provider_new ();
+  prompt_podman_provider_set_type_for_label (PROMPT_PODMAN_PROVIDER (podman),
+                                             "com.github.containers.toolbox",
+                                             NULL,
+                                             PROMPT_TYPE_TOOLBOX_CONTAINER);
   prompt_agent_impl_add_provider (agent->impl, podman);
 
   g_dbus_connection_start_message_processing (agent->bus);

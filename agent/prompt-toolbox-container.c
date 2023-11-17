@@ -27,66 +27,11 @@ struct _PromptToolboxContainer
   PromptPodmanContainer parent_instance;
 };
 
-enum {
-  PROP_0,
-  N_PROPS
-};
-
-G_DEFINE_FINAL_TYPE (PromptToolboxContainer, prompt_toolbox_container, PROMPT_TYPE_PODMAN_CONTAINER)
-
-static GParamSpec *properties [N_PROPS];
-
-static gboolean
-prompt_toolbox_container_deserialize (PromptPodmanContainer  *container,
-                                      JsonObject             *object,
-                                      GError                **error)
-{
-  return PROMPT_PODMAN_CONTAINER_CLASS (prompt_toolbox_container_parent_class)->deserialize (container, object, error);
-}
-
-static void
-prompt_toolbox_container_finalize (GObject *object)
-{
-  G_OBJECT_CLASS (prompt_toolbox_container_parent_class)->finalize (object);
-}
-
-static void
-prompt_toolbox_container_get_property (GObject    *object,
-                                       guint       prop_id,
-                                       GValue     *value,
-                                       GParamSpec *pspec)
-{
-  switch (prop_id)
-    {
-    default:
-      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-    }
-}
-
-static void
-prompt_toolbox_container_set_property (GObject      *object,
-                                       guint         prop_id,
-                                       const GValue *value,
-                                       GParamSpec   *pspec)
-{
-  switch (prop_id)
-    {
-    default:
-      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-    }
-}
+G_DEFINE_TYPE (PromptToolboxContainer, prompt_toolbox_container, PROMPT_TYPE_PODMAN_CONTAINER)
 
 static void
 prompt_toolbox_container_class_init (PromptToolboxContainerClass *klass)
 {
-  GObjectClass *object_class = G_OBJECT_CLASS (klass);
-  PromptPodmanContainerClass *podman_container_class = PROMPT_PODMAN_CONTAINER_CLASS (klass);
-
-  object_class->finalize = prompt_toolbox_container_finalize;
-  object_class->get_property = prompt_toolbox_container_get_property;
-  object_class->set_property = prompt_toolbox_container_set_property;
-
-  podman_container_class->deserialize = prompt_toolbox_container_deserialize;
 }
 
 static void
