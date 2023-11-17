@@ -58,12 +58,34 @@ prompt_podman_container_deserialize_labels (PromptPodmanContainer *self,
     }
 }
 
+static void
+prompt_podman_container_deserialize_name (PromptPodmanContainer *self,
+                                          JsonArray             *names)
+{
+  g_assert (PROMPT_IS_PODMAN_CONTAINER (self));
+  g_assert (names != NULL);
+
+  if (json_array_get_length (names) > 0)
+    {
+      JsonNode *element = json_array_get_element (names, 0);
+
+      if (element != NULL &&
+          JSON_NODE_HOLDS_VALUE (element) &&
+          json_node_get_value_type (element) == G_TYPE_STRING)
+        prompt_ipc_container_set_display_name (PROMPT_IPC_CONTAINER (self),
+                                               json_node_get_string (element));
+    }
+
+}
+
 static gboolean
 prompt_podman_container_real_deserialize (PromptPodmanContainer  *self,
                                           JsonObject             *object,
                                           GError                **error)
 {
   JsonObject *labels_object;
+  JsonArray *names_array;
+  JsonNode *names;
   JsonNode *labels;
   JsonNode *id;
 
@@ -90,6 +112,12 @@ prompt_podman_container_real_deserialize (PromptPodmanContainer  *self,
       JSON_NODE_HOLDS_OBJECT (labels) &&
       (labels_object = json_node_get_object (labels)))
     prompt_podman_container_deserialize_labels (self, labels_object);
+
+  if (json_object_has_member (object, "Names") &&
+      (names = json_object_get_member (object, "Names")) &&
+      JSON_NODE_HOLDS_ARRAY (names) &&
+      (names_array = json_node_get_array (names)))
+    prompt_podman_container_deserialize_name (self, names_array);
 
   return TRUE;
 }
