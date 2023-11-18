@@ -22,15 +22,50 @@
 
 #include <glib/gi18n.h>
 
+#include "prompt-agent-util.h"
 #include "prompt-podman-container.h"
+#include "prompt-process-impl.h"
+#include "prompt-run-context.h"
 
 typedef struct
 {
   char *id;
   GHashTable *labels;
+  gboolean has_started;
 } PromptPodmanContainerPrivate;
 
-G_DEFINE_TYPE_WITH_PRIVATE (PromptPodmanContainer, prompt_podman_container, PROMPT_IPC_TYPE_CONTAINER_SKELETON)
+static void container_iface_init (PromptIpcContainerIface *iface);
+
+G_DEFINE_TYPE_WITH_CODE (PromptPodmanContainer, prompt_podman_container, PROMPT_IPC_TYPE_CONTAINER_SKELETON,
+                         G_ADD_PRIVATE (PromptPodmanContainer)
+                         G_IMPLEMENT_INTERFACE (PROMPT_IPC_TYPE_CONTAINER, container_iface_init))
+
+static void
+maybe_start (PromptPodmanContainer *self)
+{
+  PromptPodmanContainerPrivate *priv = prompt_podman_container_get_instance_private (self);
+  g_autoptr(GSubprocessLauncher) launcher = NULL;
+  g_autoptr(GSubprocess) subprocess = NULL;
+  const char *id;
+
+  g_assert (PROMPT_IS_PODMAN_CONTAINER (self));
+
+  id = prompt_ipc_container_get_id (PROMPT_IPC_CONTAINER (self));
+
+  g_assert (id != NULL && id[0] != 0);
+
+  if (priv->has_started)
+    return;
+
+  launcher = g_subprocess_launcher_new (G_SUBPROCESS_FLAGS_STDERR_SILENCE |
+                                        G_SUBPROCESS_FLAGS_STDOUT_SILENCE);
+
+  if ((subprocess = g_subprocess_launcher_spawn (launcher, NULL, "podman", "start", id, NULL)))
+    {
+      g_subprocess_wait_async (subprocess, NULL, NULL, NULL);
+      priv->has_started = TRUE;
+    }
+}
 
 static void
 prompt_podman_container_deserialize_labels (PromptPodmanContainer *self,
@@ -172,4 +207,133 @@ prompt_podman_container_deserialize (PromptPodmanContainer  *self,
   g_return_val_if_fail (object != NULL, FALSE);
 
   return PROMPT_PODMAN_CONTAINER_GET_CLASS (self)->deserialize (self, object, error);
+}
+
+static gboolean
+prompt_podman_container_run_context_cb (PromptRunContext    *run_context,
+                                        const char * const  *argv,
+                                        const char * const  *env,
+                                        const char          *cwd,
+                                        PromptUnixFDMap     *unix_fd_map,
+                                        gpointer             user_data,
+                                        GError             **error)
+{
+  PromptPodmanContainer *self = user_data;
+  const char *id;
+  gboolean has_tty = FALSE;
+  int max_dest_fd;
+
+  g_assert (PROMPT_IS_PODMAN_CONTAINER (self));
+  g_assert (PROMPT_IS_RUN_CONTEXT (run_context));
+  g_assert (argv != NULL);
+  g_assert (env != NULL);
+  g_assert (PROMPT_IS_UNIX_FD_MAP (unix_fd_map));
+
+  id = prompt_ipc_container_get_id (PROMPT_IPC_CONTAINER (self));
+
+  /* Make sure that we request TTY ioctls if necessary */
+  if (prompt_unix_fd_map_stdin_isatty (unix_fd_map) ||
+      prompt_unix_fd_map_stdout_isatty (unix_fd_map) ||
+      prompt_unix_fd_map_stderr_isatty (unix_fd_map))
+    has_tty = TRUE;
+
+  /* Make sure we can pass the FDs down */
+  if (!prompt_run_context_merge_unix_fd_map (run_context, unix_fd_map, error))
+    return FALSE;
+
+  /* Setup basic podman-exec command */
+  prompt_run_context_append_argv (run_context, "podman");
+  prompt_run_context_append_argv (run_context, "exec");
+  prompt_run_context_append_argv (run_context, "--privileged");
+  prompt_run_context_append_argv (run_context, "--interactive");
+  prompt_run_context_append_formatted (run_context, "--user=%s", g_get_user_name ());
+
+  /* Make sure that we request TTY ioctls if necessary */
+  if (has_tty)
+    prompt_run_context_append_argv (run_context, "--tty");
+
+  /* If there is a CWD specified, then apply it */
+  if (cwd != NULL)
+    prompt_run_context_append_formatted (run_context, "--workdir=%s", cwd);
+
+  /* From podman-exec(1):
+   *
+   * Pass down to the process N additional file descriptors (in addition to
+   * 0, 1, 2).  The total FDs will be 3+N.
+   */
+  if ((max_dest_fd = prompt_unix_fd_map_get_max_dest_fd (unix_fd_map)) > 2)
+    prompt_run_context_append_formatted (run_context, "--preserve-fds=%d", max_dest_fd-2);
+
+  /* Append --env=FOO=BAR environment variables */
+  for (guint i = 0; env[i]; i++)
+    prompt_run_context_append_formatted (run_context, "--env=%s", env[i]);
+
+  /* Now specify our runtime identifier. Note that self->id is
+   * like :id but w/o podman: prefix */
+  prompt_run_context_append_argv (run_context, id);
+
+  /* Finally, propagate the upper layer's command arguments */
+  prompt_run_context_append_args (run_context, argv);
+
+  return TRUE;
+}
+
+static gboolean
+prompt_podman_container_handle_spawn (PromptIpcContainer    *container,
+                                      GDBusMethodInvocation *invocation,
+                                      GUnixFDList           *in_fd_list,
+                                      const char            *cwd,
+                                      const char * const    *argv,
+                                      GVariant              *in_fds,
+                                      GVariant              *in_env)
+{
+  g_autoptr(PromptRunContext) run_context = NULL;
+  g_autoptr(PromptIpcProcess) process = NULL;
+  g_autoptr(GSubprocess) subprocess = NULL;
+  g_autoptr(GUnixFDList) out_fd_list = NULL;
+  g_autoptr(GError) error = NULL;
+  g_auto(GStrv) env = NULL;
+  GDBusConnection *connection;
+  g_autofree char *object_path = NULL;
+  g_autofree char *guid = NULL;
+
+  g_assert (PROMPT_IS_PODMAN_CONTAINER (container));
+  g_assert (G_IS_DBUS_METHOD_INVOCATION (invocation));
+  g_assert (G_IS_UNIX_FD_LIST (in_fd_list));
+  g_assert (cwd != NULL);
+  g_assert (argv != NULL);
+  g_assert (in_fds != NULL);
+  g_assert (in_env != NULL);
+
+  maybe_start (PROMPT_PODMAN_CONTAINER (container));
+
+  run_context = prompt_run_context_new ();
+  prompt_run_context_add_minimal_environment (run_context);
+  prompt_run_context_push (run_context,
+                           prompt_podman_container_run_context_cb,
+                           g_object_ref (container),
+                           g_object_unref);
+  prompt_agent_push_spawn (run_context, in_fd_list, cwd, argv, in_fds, in_env);
+
+  guid = g_dbus_generate_guid ();
+  object_path = g_strdup_printf ("/org/gnome/Prompt/Process/%s", guid);
+  out_fd_list = g_unix_fd_list_new ();
+  connection = g_dbus_method_invocation_get_connection (invocation);
+
+  if (!(subprocess = prompt_run_context_spawn (run_context, &error)) ||
+      !(process = prompt_process_impl_new (connection, subprocess, object_path, &error)))
+    g_dbus_method_invocation_return_gerror (g_steal_pointer (&invocation), error);
+  else
+    prompt_ipc_container_complete_spawn (container,
+                                         g_steal_pointer (&invocation),
+                                         out_fd_list,
+                                         object_path);
+
+  return TRUE;
+}
+
+static void
+container_iface_init (PromptIpcContainerIface *iface)
+{
+  iface->handle_spawn = prompt_podman_container_handle_spawn;
 }
