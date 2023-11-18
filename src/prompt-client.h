@@ -33,31 +33,33 @@ G_BEGIN_DECLS
 
 G_DECLARE_FINAL_TYPE (PromptClient, prompt_client, PROMPT, CLIENT, GObject)
 
-PromptClient     *prompt_client_new                   (GError              **error);
-void              prompt_client_force_exit            (PromptClient         *self);
-VtePty           *prompt_client_create_pty            (PromptClient         *self,
-                                                       GError              **error);
-int               prompt_client_create_pty_producer   (PromptClient         *self,
-                                                       VtePty               *pty,
-                                                       GError              **error);
-void              prompt_client_discover_shell_async  (PromptClient         *self,
-                                                       GCancellable         *cancellable,
-                                                       GAsyncReadyCallback   callback,
-                                                       gpointer              user_data);
-char             *prompt_client_discover_shell_finish (PromptClient         *client,
-                                                       GAsyncResult         *result,
-                                                       GError              **error);
-void              prompt_client_spawn_async           (PromptClient         *self,
-                                                       PromptIpcContainer   *container,
-                                                       PromptProfile        *profile,
-                                                       const char           *default_shell,
-                                                       const char           *last_working_directory_uri,
-                                                       VtePty               *pty,
-                                                       GCancellable         *cancellable,
-                                                       GAsyncReadyCallback   callback,
-                                                       gpointer              user_data);
-PromptIpcProcess *prompt_client_spawn_finish          (PromptClient         *self,
-                                                       GAsyncResult         *result,
-                                                       GError              **error);
+PromptClient       *prompt_client_new                        (GError              **error);
+void                prompt_client_force_exit                 (PromptClient         *self);
+VtePty             *prompt_client_create_pty                 (PromptClient         *self,
+                                                              GError              **error);
+int                 prompt_client_create_pty_producer        (PromptClient         *self,
+                                                              VtePty               *pty,
+                                                              GError              **error);
+void                prompt_client_discover_shell_async       (PromptClient         *self,
+                                                              GCancellable         *cancellable,
+                                                              GAsyncReadyCallback   callback,
+                                                              gpointer              user_data);
+char               *prompt_client_discover_shell_finish      (PromptClient         *client,
+                                                              GAsyncResult         *result,
+                                                              GError              **error);
+void                prompt_client_spawn_async                (PromptClient         *self,
+                                                              PromptIpcContainer   *container,
+                                                              PromptProfile        *profile,
+                                                              const char           *default_shell,
+                                                              const char           *last_working_directory_uri,
+                                                              VtePty               *pty,
+                                                              GCancellable         *cancellable,
+                                                              GAsyncReadyCallback   callback,
+                                                              gpointer              user_data);
+PromptIpcProcess   *prompt_client_spawn_finish               (PromptClient         *self,
+                                                              GAsyncResult         *result,
+                                                              GError              **error);
+PromptIpcContainer *prompt_client_discover_current_container (PromptClient         *self,
+                                                              VtePty               *pty);
 
 G_END_DECLS

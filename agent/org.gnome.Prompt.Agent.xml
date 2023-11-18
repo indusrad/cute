@@ -79,6 +79,20 @@
       <arg name="fd" direction="out" type="h"/>
     </method>
 
+    <!--
+      DiscoverCurrentContainer:
+
+      Attempts to discover the current container that is being used within a PTY.
+      This may change based on the user doing things such as "toolbox enter" and
+      we make a best attempt to discover what that was, possibly by parsing
+      information about foreground processes.
+    -->
+    <method name="DiscoverCurrentContainer">
+      <annotation name="org.gtk.GDBus.C.UnixFD" value="true"/>
+      <arg name="pty_fd" direction="in" type="h"/>
+      <arg name="container" direction="out" type="o"/>
+    </method>
+
   </interface>
 
   <interface name="org.gnome.Prompt.Container">

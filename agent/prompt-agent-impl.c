@@ -306,6 +306,99 @@ prompt_agent_impl_handle_get_preferred_shell (PromptIpcAgent        *agent,
   return TRUE;
 }
 
+static gboolean
+prompt_agent_impl_handle_discover_current_container (PromptIpcAgent        *agent,
+                                                     GDBusMethodInvocation *invocation,
+                                                     GUnixFDList           *in_fd_list,
+                                                     GVariant              *in_pty_fd)
+{
+  PromptAgentImpl *self = (PromptAgentImpl *)agent;
+  g_autoptr(GError) error = NULL;
+  _g_autofd int consumer_fd = -1;
+  g_autofree char *container_id = NULL;
+  int in_handle;
+  GPid pid;
+
+  g_assert (PROMPT_IS_AGENT_IMPL (self));
+  g_assert (G_IS_DBUS_METHOD_INVOCATION (invocation));
+
+  in_handle = g_variant_get_handle (in_pty_fd);
+  if (-1 == (consumer_fd = g_unix_fd_list_get (in_fd_list, in_handle, &error)))
+    goto return_gerror;
+
+  pid = tcgetpgrp (consumer_fd);
+
+  g_print ("pid: %d\n", pid);
+
+  if (pid > 0)
+    {
+#if 0
+      g_autofree char *containerenv_path = g_strdup_printf ("/proc/%u/root/var/run/.containerenv", pid);
+      g_autofree char *contents = NULL;
+      gsize len = 0;
+
+      /* Currently this doesn't work because our parent process (toolbox enter) doesn't
+       * have anything mapped in to key off of. But I _really_ want to avoid custom VTE
+       * patches like g-t does in Fedora.
+       */
+
+      /* At this point, we might find tha the foreground process is something like
+       * podman or toolbox, or something else injecting a new PTY between us and
+       * the foreground process we really want to track. Podman should give us a
+       * /var/run/.containerenv in the root directory of the process with enough
+       * info to determine the id.
+       */
+
+      if (g_file_get_contents (containerenv_path, &contents, &len, NULL))
+        {
+          const char *ideq;
+
+          g_print ("%s\n", contents);
+
+          /* g_file_get_contents() ensures we always have a trailing \0 */
+
+          if ((ideq = strstr (contents, "\nid=\"")))
+            {
+              const char *begin = ideq + strlen ("\nid=\"");
+              const char *end = strstr (begin, "\"\n");
+
+              if (end != NULL)
+                container_id = g_strndup (begin, end - begin);
+            }
+        }
+#endif
+    }
+
+  if (container_id == NULL)
+    container_id = g_strdup ("session");
+
+  for (guint i = 0; i < self->containers->len; i++)
+    {
+      PromptIpcContainer *container = g_ptr_array_index (self->containers, i);
+      const char *id = prompt_ipc_container_get_id (container);
+
+      if (g_strcmp0 (container_id, id) == 0)
+        {
+          const char *object_path = g_dbus_interface_skeleton_get_object_path (G_DBUS_INTERFACE_SKELETON (container));
+          prompt_ipc_agent_complete_discover_current_container (agent,
+                                                                g_steal_pointer (&invocation),
+                                                                NULL,
+                                                                object_path);
+          return TRUE;
+        }
+    }
+
+  g_set_error (&error,
+               G_IO_ERROR,
+               G_IO_ERROR_NOT_FOUND,
+               "No such container \"%s\"", container_id);
+
+return_gerror:
+  g_dbus_method_invocation_return_gerror (g_steal_pointer (&invocation), error);
+
+  return TRUE;
+}
+
 static void
 agent_iface_init (PromptIpcAgentIface *iface)
 {
@@ -313,4 +406,5 @@ agent_iface_init (PromptIpcAgentIface *iface)
   iface->handle_create_pty_producer = prompt_agent_impl_handle_create_pty_producer;
   iface->handle_get_preferred_shell = prompt_agent_impl_handle_get_preferred_shell;
   iface->handle_list_containers = prompt_agent_impl_handle_list_containers;
+  iface->handle_discover_current_container = prompt_agent_impl_handle_discover_current_container;
 }

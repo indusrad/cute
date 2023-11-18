@@ -955,3 +955,12 @@ prompt_application_wait_finish (PromptApplication  *self,
 
   return g_task_propagate_int (G_TASK (result), error);
 }
+
+PromptIpcContainer *
+prompt_application_discover_current_container (PromptApplication *self,
+                                               VtePty            *pty)
+{
+  g_return_val_if_fail (PROMPT_IS_APPLICATION (self), NULL);
+
+  return prompt_client_discover_current_container (self->client, pty);
+}

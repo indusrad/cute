@@ -749,3 +749,45 @@ prompt_client_create_pty_producer (PromptClient  *self,
 
   return g_steal_fd (&fd);
 }
+
+PromptIpcContainer *
+prompt_client_discover_current_container (PromptClient *self,
+                                          VtePty       *pty)
+{
+  g_autofree char *object_path = NULL;
+  g_autoptr(GUnixFDList) in_fd_list = NULL;
+  g_autofd int fd = -1;
+  int in_handle;
+  int pty_fd;
+
+  g_return_val_if_fail (PROMPT_IS_CLIENT (self), NULL);
+  g_return_val_if_fail (VTE_IS_PTY (pty), NULL);
+
+  pty_fd = vte_pty_get_fd (pty);
+
+  in_fd_list = g_unix_fd_list_new ();
+  if (-1 == (in_handle = g_unix_fd_list_append (in_fd_list, pty_fd, NULL)))
+    return NULL;
+
+  if (prompt_ipc_agent_call_discover_current_container_sync (self->proxy,
+                                                             g_variant_new_handle (in_handle),
+                                                             in_fd_list,
+                                                             &object_path,
+                                                             NULL,
+                                                             NULL,
+                                                             NULL))
+    {
+      g_print ("path: %s\n", object_path);
+
+      for (guint i = 0; i < self->containers->len; i++)
+        {
+          PromptIpcContainer *container = g_ptr_array_index (self->containers, i);
+
+          if (g_strcmp0 (object_path,
+                         g_dbus_proxy_get_object_path (G_DBUS_PROXY (container))) == 0)
+            return g_object_ref (container);
+        }
+    }
+
+  return NULL;
+}
