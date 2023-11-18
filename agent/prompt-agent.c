@@ -35,6 +35,7 @@
 #include <gio/gio.h>
 
 #include "prompt-agent-impl.h"
+#include "prompt-distrobox-container.h"
 #include "prompt-podman-provider.h"
 #include "prompt-session-container.h"
 #include "prompt-toolbox-container.h"
@@ -112,6 +113,10 @@ prompt_agent_init (PromptAgent  *agent,
                                              "com.github.containers.toolbox",
                                              NULL,
                                              PROMPT_TYPE_TOOLBOX_CONTAINER);
+  prompt_podman_provider_set_type_for_label (PROMPT_PODMAN_PROVIDER (podman),
+                                             "manager",
+                                             "distrobox",
+                                             PROMPT_TYPE_DISTROBOX_CONTAINER);
   prompt_agent_impl_add_provider (agent->impl, podman);
 
   g_dbus_connection_start_message_processing (agent->bus);

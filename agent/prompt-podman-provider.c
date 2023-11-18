@@ -147,9 +147,11 @@ static gboolean
 label_matches (JsonNode          *node,
                const LabelToType *l_to_t)
 {
-  /* TODO: We might want to add support for value checking here,
-   *       depending if we actually end up needing it.
-   */
+  if (l_to_t->value != NULL)
+    return JSON_NODE_HOLDS_VALUE (node) &&
+           json_node_get_value_type (node) == G_TYPE_STRING &&
+           g_strcmp0 (l_to_t->value, json_node_get_string (node)) == 0;
+
   return TRUE;
 }
 

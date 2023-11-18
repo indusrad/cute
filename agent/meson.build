@@ -18,6 +18,7 @@ prompt_agent_sources = [
   'prompt-agent-impl.c',
   'prompt-agent-util.c',
   'prompt-container-provider.c',
+  'prompt-distrobox-container.c',
   'prompt-podman-container.c',
   'prompt-podman-provider.c',
   'prompt-process-impl.c',
