@@ -73,7 +73,7 @@ prompt_session_container_handle_spawn (PromptIpcContainer    *container,
   g_autofree char *object_path = NULL;
   g_autofree char *guid = NULL;
 
-  g_assert (PROMPT_IPC_IS_CONTAINER (container));
+  g_assert (PROMPT_IS_SESSION_CONTAINER (container));
   g_assert (G_IS_DBUS_METHOD_INVOCATION (invocation));
   g_assert (G_IS_UNIX_FD_LIST (in_fd_list));
   g_assert (cwd != NULL);
