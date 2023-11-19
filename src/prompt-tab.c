@@ -178,9 +178,9 @@ prompt_tab_wait_cb (GObject      *object,
       title = g_strdup_printf (_("Process Exited from Signal %d"), WTERMSIG (exit_code));
 
       adw_banner_set_title (self->banner, title);
-      adw_banner_set_revealed (self->banner, TRUE);
       adw_banner_set_button_label (self->banner, _("_Restart"));
       gtk_actionable_set_action_name (GTK_ACTIONABLE (self->banner), "tab.respawn");
+      gtk_widget_set_visible (GTK_WIDGET (self->banner), TRUE);
       return;
     }
 
@@ -210,7 +210,7 @@ prompt_tab_wait_cb (GObject      *object,
       break;
 
     case PROMPT_EXIT_ACTION_NONE:
-      adw_banner_set_revealed (self->banner, TRUE);
+      gtk_widget_set_visible (GTK_WIDGET (self->banner), TRUE);
       break;
 
     default:
@@ -245,10 +245,10 @@ prompt_tab_spawn_cb (GObject      *object,
       vte_terminal_feed (VTE_TERMINAL (self->terminal), "\r\n", -1);
 
       adw_banner_set_title (self->banner, _("Failed to launch terminal"));
-      adw_banner_set_revealed (self->banner, TRUE);
       adw_banner_set_button_label (self->banner, _("Edit Profile"));
       gtk_actionable_set_action_target (GTK_ACTIONABLE (self->banner), "s", profile_uuid);
       gtk_actionable_set_action_name (GTK_ACTIONABLE (self->banner), "app.edit-profile");
+      gtk_widget_set_visible (GTK_WIDGET (self->banner), TRUE);
 
       return;
     }
@@ -279,7 +279,7 @@ prompt_tab_respawn (PromptTab *self)
             self->state == PROMPT_TAB_STATE_EXITED ||
             self->state == PROMPT_TAB_STATE_FAILED);
 
-  adw_banner_set_revealed (self->banner, FALSE);
+  gtk_widget_set_visible (GTK_WIDGET (self->banner), FALSE);
 
   app = PROMPT_APPLICATION_DEFAULT;
   default_container = prompt_profile_dup_default_container (self->profile);
@@ -294,10 +294,10 @@ prompt_tab_respawn (PromptTab *self)
 
       title = g_strdup_printf (_("Cannot locate container “%s”"), default_container);
       adw_banner_set_title (self->banner, title);
-      adw_banner_set_revealed (self->banner, TRUE);
       adw_banner_set_button_label (self->banner, _("Edit Profile"));
       gtk_actionable_set_action_target (GTK_ACTIONABLE (self->banner), "s", profile_uuid);
       gtk_actionable_set_action_name (GTK_ACTIONABLE (self->banner), "app.edit-profile");
+      gtk_widget_set_visible (GTK_WIDGET (self->banner), TRUE);
 
       return;
     }
@@ -317,9 +317,9 @@ prompt_tab_respawn (PromptTab *self)
           self->state = PROMPT_TAB_STATE_FAILED;
 
           adw_banner_set_title (self->banner, _("Failed to create pseudo terminal device"));
-          adw_banner_set_revealed (self->banner, TRUE);
           adw_banner_set_button_label (self->banner, NULL);
           gtk_actionable_set_action_name (GTK_ACTIONABLE (self->banner), NULL);
+          gtk_widget_set_visible (GTK_WIDGET (self->banner), TRUE);
 
           return;
         }
@@ -1069,5 +1069,5 @@ prompt_tab_show_banner (PromptTab *self)
 {
   g_return_if_fail (PROMPT_IS_TAB (self));
 
-  adw_banner_set_revealed (self->banner, TRUE);
+  gtk_widget_set_visible (GTK_WIDGET (self->banner), TRUE);
 }
