@@ -20,6 +20,11 @@
 <interface>
   <template class="PromptTab" parent="GtkWidget">
     <child>
+      <object class="GtkEventControllerFocus">
+        <signal name="notify::contains-focus" handler="prompt_tab_notify_contains_focus_cb" swapped="1"/>
+      </object>
+    </child>
+    <child>
       <object class="GtkBox">
         <property name="orientation">vertical</property>
         <child>

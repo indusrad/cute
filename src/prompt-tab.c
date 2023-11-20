@@ -50,6 +50,7 @@ struct _PromptTab
   PromptIpcProcess  *process;
   char              *title_prefix;
   PromptTabMonitor  *monitor;
+  char              *uuid;
 
   AdwBanner         *banner;
   GtkScrolledWindow *scrolled_window;
@@ -67,9 +68,10 @@ enum {
   PROP_PROCESS_LEADER_KIND,
   PROP_PROFILE,
   PROP_READ_ONLY,
+  PROP_SUBTITLE,
   PROP_TITLE,
   PROP_TITLE_PREFIX,
-  PROP_SUBTITLE,
+  PROP_UUID,
   PROP_ZOOM,
   PROP_ZOOM_LABEL,
   N_PROPS
@@ -369,6 +371,22 @@ prompt_tab_map (GtkWidget *widget)
 }
 
 static void
+prompt_tab_notify_contains_focus_cb (PromptTab               *self,
+                                     GParamSpec              *pspec,
+                                     GtkEventControllerFocus *focus)
+{
+  g_assert (PROMPT_IS_TAB (self));
+  g_assert (GTK_IS_EVENT_CONTROLLER_FOCUS (focus));
+
+  if (gtk_event_controller_focus_contains_focus (focus))
+    {
+      prompt_tab_set_needs_attention (self, FALSE);
+      g_application_withdraw_notification (G_APPLICATION (PROMPT_APPLICATION_DEFAULT),
+                                           self->uuid);
+    }
+}
+
+static void
 prompt_tab_notify_window_title_cb (PromptTab      *self,
                                    GParamSpec     *pspec,
                                    PromptTerminal *terminal)
@@ -494,12 +512,7 @@ prompt_tab_notify_process_leader_kind_cb (PromptTab        *self,
   kind = prompt_tab_monitor_get_process_leader_kind (monitor);
   if (kind == PROMPT_PROCESS_LEADER_KIND_SUPERUSER &&
       !prompt_tab_is_active (self))
-    {
-      GtkWidget *tab_view = gtk_widget_get_ancestor (GTK_WIDGET (self), ADW_TYPE_TAB_VIEW);
-      AdwTabPage *page = adw_tab_view_get_page (ADW_TAB_VIEW (tab_view), GTK_WIDGET (self));
-
-      adw_tab_page_set_needs_attention (page, TRUE);
-    }
+    prompt_tab_set_needs_attention (self, TRUE);
 }
 
 static GIcon *
@@ -612,6 +625,16 @@ prompt_tab_dispose (GObject *object)
 }
 
 static void
+prompt_tab_finalize (GObject *object)
+{
+  PromptTab *self = (PromptTab *)object;
+
+  g_clear_pointer (&self->uuid, g_free);
+
+  G_OBJECT_CLASS (prompt_tab_parent_class)->finalize (object);
+}
+
+static void
 prompt_tab_get_property (GObject    *object,
                          guint       prop_id,
                          GValue     *value,
@@ -648,6 +671,10 @@ prompt_tab_get_property (GObject    *object,
 
     case PROP_TITLE_PREFIX:
       g_value_set_string (value, prompt_tab_get_title_prefix (self));
+      break;
+
+    case PROP_UUID:
+      g_value_set_string (value, prompt_tab_get_uuid (self));
       break;
 
     case PROP_ZOOM:
@@ -702,6 +729,7 @@ prompt_tab_class_init (PromptTabClass *klass)
 
   object_class->constructed = prompt_tab_constructed;
   object_class->dispose = prompt_tab_dispose;
+  object_class->finalize = prompt_tab_finalize;
   object_class->get_property = prompt_tab_get_property;
   object_class->set_property = prompt_tab_set_property;
 
@@ -753,6 +781,12 @@ prompt_tab_class_init (PromptTabClass *klass)
                           G_PARAM_EXPLICIT_NOTIFY |
                           G_PARAM_STATIC_STRINGS));
 
+  properties[PROP_UUID] =
+    g_param_spec_string ("uuid", NULL, NULL,
+                         NULL,
+                         (G_PARAM_READABLE |
+                          G_PARAM_STATIC_STRINGS));
+
   properties[PROP_ZOOM] =
     g_param_spec_enum ("zoom", NULL, NULL,
                        PROMPT_TYPE_ZOOM_LEVEL,
@@ -786,6 +820,7 @@ prompt_tab_class_init (PromptTabClass *klass)
   gtk_widget_class_bind_template_child (widget_class, PromptTab, terminal);
   gtk_widget_class_bind_template_child (widget_class, PromptTab, scrolled_window);
 
+  gtk_widget_class_bind_template_callback (widget_class, prompt_tab_notify_contains_focus_cb);
   gtk_widget_class_bind_template_callback (widget_class, prompt_tab_notify_window_title_cb);
   gtk_widget_class_bind_template_callback (widget_class, prompt_tab_notify_window_subtitle_cb);
   gtk_widget_class_bind_template_callback (widget_class, prompt_tab_increase_font_size_cb);
@@ -802,6 +837,7 @@ prompt_tab_init (PromptTab *self)
 {
   self->state = PROMPT_TAB_STATE_INITIAL;
   self->zoom = PROMPT_ZOOM_LEVEL_DEFAULT;
+  self->uuid = g_uuid_string_random ();
 
   gtk_widget_init_template (GTK_WIDGET (self));
 }
@@ -1083,4 +1119,26 @@ prompt_tab_show_banner (PromptTab *self)
   g_return_if_fail (PROMPT_IS_TAB (self));
 
   gtk_widget_set_visible (GTK_WIDGET (self->banner), TRUE);
+}
+
+void
+prompt_tab_set_needs_attention (PromptTab *self,
+                                gboolean   needs_attention)
+{
+  GtkWidget *tab_view;
+  AdwTabPage *page;
+
+  g_return_if_fail (PROMPT_IS_TAB (self));
+
+  if ((tab_view = gtk_widget_get_ancestor (GTK_WIDGET (self), ADW_TYPE_TAB_VIEW)) &&
+      (page = adw_tab_view_get_page (ADW_TAB_VIEW (tab_view), GTK_WIDGET (self))))
+    adw_tab_page_set_needs_attention (page, needs_attention);
+}
+
+const char *
+prompt_tab_get_uuid (PromptTab *self)
+{
+  g_return_val_if_fail (PROMPT_IS_TAB (self), NULL);
+
+  return self->uuid;
 }

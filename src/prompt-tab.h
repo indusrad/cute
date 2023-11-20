@@ -56,6 +56,7 @@ PromptTab        *prompt_tab_new                                (PromptProfile  
 PromptTerminal   *prompt_tab_get_terminal                       (PromptTab       *self);
 PromptProfile    *prompt_tab_get_profile                        (PromptTab       *self);
 PromptIpcProcess *prompt_tab_get_process                        (PromptTab       *self);
+const char       *prompt_tab_get_uuid                           (PromptTab       *self);
 char             *prompt_tab_dup_subtitle                       (PromptTab       *self);
 char             *prompt_tab_dup_title                          (PromptTab       *self);
 const char       *prompt_tab_get_title_prefix                   (PromptTab       *self);
@@ -75,5 +76,7 @@ gboolean          prompt_tab_is_running                         (PromptTab      
                                                                  char           **cmdline);
 void              prompt_tab_force_quit                         (PromptTab       *self);
 void              prompt_tab_show_banner                        (PromptTab       *self);
+void              prompt_tab_set_needs_attention                (PromptTab       *self,
+                                                                 gboolean         needs_attention);
 
 G_END_DECLS
