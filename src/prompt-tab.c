@@ -28,6 +28,7 @@
 #include "prompt-enums.h"
 #include "prompt-tab.h"
 #include "prompt-tab-monitor.h"
+#include "prompt-tab-notify.h"
 #include "prompt-terminal.h"
 #include "prompt-util.h"
 #include "prompt-window.h"
@@ -51,6 +52,8 @@ struct _PromptTab
   char              *title_prefix;
   PromptTabMonitor  *monitor;
   char              *uuid;
+
+  PromptTabNotify    notify;
 
   AdwBanner         *banner;
   GtkScrolledWindow *scrolled_window;
@@ -606,6 +609,8 @@ prompt_tab_dispose (GObject *object)
   PromptTab *self = (PromptTab *)object;
   GtkWidget *child;
 
+  prompt_tab_notify_destroy (&self->notify);
+
   if (self->process != NULL)
     prompt_ipc_process_call_send_signal (self->process, SIGKILL, NULL, NULL, NULL);
 
@@ -840,6 +845,8 @@ prompt_tab_init (PromptTab *self)
   self->uuid = g_uuid_string_random ();
 
   gtk_widget_init_template (GTK_WIDGET (self));
+
+  prompt_tab_notify_init (&self->notify, self);
 }
 
 PromptTab *
