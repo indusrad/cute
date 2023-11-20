@@ -1,0 +1,369 @@
+From 040ffa57525440de724464922842b6e35f0b27dc Mon Sep 17 00:00:00 2001
+From: Debarshi Ray <debarshir@gnome.org>
+Date: Mon, 10 Jun 2019 20:30:18 +0200
+Subject: [PATCH 8/9] Support tracking the active container inside the terminal
+
+Add sequences
+
+  OSC 777 ; container ; push ; NAME ; RUNTIME ; UID BEL
+  OSC 777 ; container ; push ; NAME ; RUNTIME ; UID ST
+  OSC 777 ; container ; pop ; NAME ; RUNTIME ; UID BEL
+  OSC 777 ; container ; pop ; NAME ; RUNTIME ; UID ST
+
+  OSC 777 ; container ; push ; NAME ; RUNTIME BEL
+  OSC 777 ; container ; push ; NAME ; RUNTIME ST
+  OSC 777 ; container ; pop ; NAME ; RUNTIME BEL
+  OSC 777 ; container ; pop ; NAME ; RUNTIME ST
+
+that let container tools notify the terminal emulator when entering and
+leaving a container environment. The RUNTIME argument namespaces the
+NAME and identifies the container tooling being used. eg., docker,
+flatpak, podman, toolbox, etc.. The UID argument is the real UID of the
+container tools. Only those containers that are used with the same real
+UID as the VTE process are tracked.
+
+The OSC 777 escape sequence is taken from Enlightenment's Terminology:
+https://phab.enlightenment.org/T1765
+
+It's a VTE-specific extension until a standard escape sequence is
+agreed upon across multiple different terminal emulators [1].
+
+[1] https://gitlab.freedesktop.org/terminal-wg/specifications/issues/17
+---
+ src/vte.cc            |  8 ++++
+ src/vte/vteterminal.h |  6 +++
+ src/vtegtk.cc         | 83 +++++++++++++++++++++++++++++++++++++++
+ src/vtegtk.hh         |  4 ++
+ src/vteinternal.hh    | 20 ++++++++++
+ src/vteseq.cc         | 90 +++++++++++++++++++++++++++++++++++++++++++
+ 6 files changed, 211 insertions(+)
+
+diff --git a/src/vte.cc b/src/vte.cc
+index 7c0dad01..aa00c727 100644
+--- a/src/vte.cc
++++ b/src/vte.cc
+@@ -10722,6 +10722,14 @@ Terminal::emit_pending_signals()
+                                   "Emitting `shell-precmd'.\n");
+                 g_signal_emit(freezer.get(), signals[SIGNAL_SHELL_PRECMD], 0);
+         }
++
++	if (m_pending_changes & vte::to_integral(PendingChanges::CONTAINERS)) {
++                _vte_debug_print(VTE_DEBUG_SIGNALS,
++                                 "Notifying `current-container-name' and `current-container-runtime'.\n");
++
++                g_object_notify_by_pspec(freezer.get(), pspecs[PROP_CURRENT_CONTAINER_NAME]);
++                g_object_notify_by_pspec(freezer.get(), pspecs[PROP_CURRENT_CONTAINER_RUNTIME]);
++        }
+ #endif
+ 
+ 	if (m_pending_changes & vte::to_integral(PendingChanges::TITLE)) {
+diff --git a/src/vte/vteterminal.h b/src/vte/vteterminal.h
+index 752fc925..84d161ca 100644
+--- a/src/vte/vteterminal.h
++++ b/src/vte/vteterminal.h
+@@ -567,6 +567,12 @@ _VTE_PUBLIC
+ glong vte_terminal_get_column_count(VteTerminal *terminal) _VTE_CXX_NOEXCEPT _VTE_GNUC_NONNULL(1);
+ _VTE_PUBLIC
+ const char *vte_terminal_get_window_title(VteTerminal *terminal) _VTE_CXX_NOEXCEPT _VTE_GNUC_NONNULL(1);
++#if _VTE_GTK == 3
++_VTE_PUBLIC
++const char *vte_terminal_get_current_container_name(VteTerminal *terminal) _VTE_CXX_NOEXCEPT _VTE_GNUC_NONNULL(1);
++_VTE_PUBLIC
++const char *vte_terminal_get_current_container_runtime(VteTerminal *terminal) _VTE_CXX_NOEXCEPT _VTE_GNUC_NONNULL(1);
++#endif
+ _VTE_PUBLIC
+ const char *vte_terminal_get_current_directory_uri(VteTerminal *terminal) _VTE_CXX_NOEXCEPT _VTE_GNUC_NONNULL(1);
+ _VTE_PUBLIC
+diff --git a/src/vtegtk.cc b/src/vtegtk.cc
+index eb099c9a..7061cda0 100644
+--- a/src/vtegtk.cc
++++ b/src/vtegtk.cc
+@@ -963,6 +963,14 @@ try
+                 case PROP_CURSOR_BLINK_MODE:
+                         g_value_set_enum (value, vte_terminal_get_cursor_blink_mode (terminal));
+                         break;
++#if _VTE_GTK == 3
++                case PROP_CURRENT_CONTAINER_NAME:
++                        g_value_set_string (value, vte_terminal_get_current_container_name (terminal));
++                        break;
++                case PROP_CURRENT_CONTAINER_RUNTIME:
++                        g_value_set_string (value, vte_terminal_get_current_container_runtime (terminal));
++                        break;
++#endif
+                 case PROP_CURRENT_DIRECTORY_URI:
+                         g_value_set_string (value, vte_terminal_get_current_directory_uri (terminal));
+                         break;
+@@ -2423,6 +2431,29 @@ vte_terminal_class_init(VteTerminalClass *klass)
+                                      NULL,
+                                      (GParamFlags) (G_PARAM_READABLE | G_PARAM_STATIC_STRINGS | G_PARAM_EXPLICIT_NOTIFY));
+ 
++#if _VTE_GTK == 3
++        /**
++         * VteTerminal:current-container-name:
++         *
++         * The name of the current container, or %NULL if unset.
++         */
++        pspecs[PROP_CURRENT_CONTAINER_NAME] =
++                g_param_spec_string ("current-container-name", NULL, NULL,
++                                     NULL,
++                                     (GParamFlags) (G_PARAM_READABLE | G_PARAM_STATIC_STRINGS | G_PARAM_EXPLICIT_NOTIFY));
++
++        /**
++         * VteTerminal:current-container-runtime:
++         *
++         * The name of the runtime toolset used to set up the current
++         * container, or %NULL if unset.
++         */
++        pspecs[PROP_CURRENT_CONTAINER_RUNTIME] =
++                g_param_spec_string ("current-container-runtime", NULL, NULL,
++                                     NULL,
++                                     (GParamFlags) (G_PARAM_READABLE | G_PARAM_STATIC_STRINGS | G_PARAM_EXPLICIT_NOTIFY));
++#endif
++
+         /**
+          * VteTerminal:current-directory-uri:
+          *
+@@ -5286,6 +5317,58 @@ catch (...)
+         return -1;
+ }
+ 
++#if _VTE_GTK == 3
++/**
++ * vte_terminal_get_current_container_name:
++ * @terminal: a #VteTerminal
++ *
++ * Returns: (nullable) (transfer none): the name of the current
++ *   container, or %NULL
++ */
++const char *
++vte_terminal_get_current_container_name(VteTerminal *terminal) noexcept
++try
++{
++        g_return_val_if_fail(VTE_IS_TERMINAL(terminal), NULL);
++        auto impl = IMPL(terminal);
++        if (impl->m_containers.empty())
++                return NULL;
++
++        const VteContainer &container = impl->m_containers.top();
++        return container.m_name.c_str();
++}
++catch (...)
++{
++        vte::log_exception();
++        return NULL;
++}
++
++/**
++ * vte_terminal_get_current_container_runtime:
++ * @terminal: a #VteTerminal
++ *
++ * Returns: (nullable) (transfer none): the name of the runtime
++ *   toolset used to set up the current container, or %NULL
++ */
++const char *
++vte_terminal_get_current_container_runtime(VteTerminal *terminal) noexcept
++try
++{
++        g_return_val_if_fail(VTE_IS_TERMINAL(terminal), NULL);
++        auto impl = IMPL(terminal);
++        if (impl->m_containers.empty())
++                return NULL;
++
++        const VteContainer &container = impl->m_containers.top();
++        return container.m_runtime.c_str();
++}
++catch (...)
++{
++        vte::log_exception();
++        return NULL;
++}
++#endif
++
+ /**
+  * vte_terminal_get_current_directory_uri:
+  * @terminal: a #VteTerminal
+diff --git a/src/vtegtk.hh b/src/vtegtk.hh
+index cd42edfa..47aad6cc 100644
+--- a/src/vtegtk.hh
++++ b/src/vtegtk.hh
+@@ -74,6 +74,10 @@ enum {
+         PROP_CJK_AMBIGUOUS_WIDTH,
+         PROP_CURSOR_BLINK_MODE,
+         PROP_CURSOR_SHAPE,
++#if _VTE_GTK == 3
++        PROP_CURRENT_CONTAINER_NAME,
++        PROP_CURRENT_CONTAINER_RUNTIME,
++#endif
+         PROP_CURRENT_DIRECTORY_URI,
+         PROP_CURRENT_FILE_URI,
+         PROP_DELETE_BINDING,
+diff --git a/src/vteinternal.hh b/src/vteinternal.hh
+index 17991e66..44cbce2c 100644
+--- a/src/vteinternal.hh
++++ b/src/vteinternal.hh
+@@ -63,6 +63,9 @@
+ #include <list>
+ #include <queue>
+ #include <optional>
++#if _VTE_GTK == 3
++#include <stack>
++#endif
+ #include <string>
+ #include <variant>
+ #include <vector>
+@@ -125,6 +128,20 @@ typedef enum _VteCharacterReplacement {
+         VTE_CHARACTER_REPLACEMENT_LINE_DRAWING
+ } VteCharacterReplacement;
+ 
++#if _VTE_GTK == 3
++struct VteContainer {
++public:
++        VteContainer(const std::string &name, const std::string &runtime) :
++                m_name{name},
++                m_runtime{runtime}
++        {
++        }
++
++        std::string m_name;
++        std::string m_runtime;
++};
++#endif
++
+ typedef struct _VtePaletteColor {
+ 	struct {
+ 		vte::color::rgb color;
+@@ -737,6 +754,8 @@ public:
+         gboolean m_contents_changed_pending;
+ 
+ #if _VTE_GTK == 3
++        std::stack<VteContainer> m_containers;
++
+         /* desktop notification */
+         std::string m_notification_summary;
+         std::string m_notification_body;
+@@ -759,6 +778,7 @@ public:
+                 NOTIFICATION = 1u << 3,
+                 SHELL_PREEXEC = 1u << 4,
+                 SHELL_PRECMD = 1u << 5,
++                CONTAINERS = 1u << 6,
+ #endif
+         };
+         unsigned m_pending_changes{0};
+diff --git a/src/vteseq.cc b/src/vteseq.cc
+index 44f13505..b8424972 100644
+--- a/src/vteseq.cc
++++ b/src/vteseq.cc
+@@ -19,6 +19,7 @@
+ 
+ #include "config.h"
+ 
++
+ #include <search.h>
+ #include <stdlib.h>
+ #include <string.h>
+@@ -39,6 +40,11 @@
+ #define ST_C0 _VTE_CAP_ST
+ 
+ #include <algorithm>
++#if _VTE_GTK == 3
++#include <string>
++#include <unistd.h>
++#include <sys/types.h>
++#endif
+ 
+ using namespace std::literals;
+ 
+@@ -1308,6 +1314,90 @@ Terminal::handle_urxvt_extension(vte::parser::Sequence const& seq,
+         if (token == endtoken)
+                 return;
+ 
++#if _VTE_GTK == 3
++        if (*token == "container") {
++                ++token;
++
++                if (token == endtoken)
++                        return;
++
++                const std::string sub_command = *token;
++                ++token;
++
++                if (sub_command == "pop") {
++                        if (token == endtoken)
++                                return;
++
++                        ++token;
++
++                        if (token == endtoken)
++                                return;
++
++                        ++token;
++
++                        if (token == endtoken) {
++                                if (!m_containers.empty()) {
++                                        m_containers.pop();
++                                        m_pending_changes |= vte::to_integral(PendingChanges::CONTAINERS);
++                                }
++
++                                return;
++                        }
++
++                        const std::string uid_token = *token;
++                        ++token;
++
++                        const uid_t uid = getuid();
++                        const std::string uid_str = std::to_string(uid);
++
++                        if (uid_token == uid_str) {
++                                if (!m_containers.empty()) {
++                                        m_containers.pop();
++                                        m_pending_changes |= vte::to_integral(PendingChanges::CONTAINERS);
++                                }
++
++                                return;
++                        }
++
++                        return;
++                } else if (sub_command == "push") {
++                        if (token == endtoken)
++                                return;
++
++                        const std::string name = *token;
++                        ++token;
++
++                        if (token == endtoken)
++                                return;
++
++                        const std::string runtime = *token;
++                        ++token;
++
++                        if (token == endtoken) {
++                                m_containers.emplace(name, runtime);
++                                m_pending_changes |= vte::to_integral(PendingChanges::CONTAINERS);
++                                return;
++                        }
++
++                        const std::string uid_token = *token;
++                        ++token;
++
++                        const uid_t uid = getuid();
++                        const std::string uid_str = std::to_string(uid);
++
++                        if (uid_token == uid_str) {
++                                m_containers.emplace(name, runtime);
++                                m_pending_changes |= vte::to_integral(PendingChanges::CONTAINERS);
++                                return;
++                        }
++
++                        return;
++                }
++
++                return;
++        }
++#endif
++
+         if (*token == "notify") {
+                 ++token;
+ 
+-- 
+2.42.0
+
