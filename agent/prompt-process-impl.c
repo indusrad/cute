@@ -228,6 +228,28 @@ complete:
   return TRUE;
 }
 
+static char *
+get_cmdline_for_pid (GPid pid)
+{
+  g_autofree char *cmdline = NULL;
+
+#ifdef __linux__
+  g_autofree char *path = g_strdup_printf ("/proc/%u/cmdline", (guint)pid);
+  gsize len;
+
+  if (g_file_get_contents (path, &cmdline, &len, NULL))
+    {
+      for (gsize i = 0; i < len; i++)
+        {
+          if (cmdline[i] == 0 || g_ascii_iscntrl (cmdline[i]))
+            cmdline[i] = ' ';
+        }
+    }
+#endif
+
+  return g_steal_pointer (&cmdline);
+}
+
 static gboolean
 prompt_process_impl_handle_has_foreground_process (PromptIpcProcess      *process,
                                                    GDBusMethodInvocation *invocation,
@@ -236,6 +258,7 @@ prompt_process_impl_handle_has_foreground_process (PromptIpcProcess      *proces
 {
   PromptProcessImpl *self = (PromptProcessImpl *)process;
   gboolean has_foreground_process = FALSE;
+  g_autofree char *cmdline = NULL;
   _g_autofd int pty_fd = -1;
   int pty_fd_handle;
 
@@ -252,12 +275,16 @@ prompt_process_impl_handle_has_foreground_process (PromptIpcProcess      *proces
       GPid pid = tcgetpgrp (pty_fd);
 
       has_foreground_process = pid != self->pid;
+
+      if (pid > 0)
+        cmdline = get_cmdline_for_pid (pid);
     }
 
   prompt_ipc_process_complete_has_foreground_process (process,
                                                       g_steal_pointer (&invocation),
                                                       NULL,
-                                                      has_foreground_process);
+                                                      has_foreground_process,
+                                                      cmdline ? cmdline : "");
 
   return TRUE;
 }

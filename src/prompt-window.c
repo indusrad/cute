@@ -131,7 +131,7 @@ prompt_window_close_page_cb (PromptWindow *self,
 
   tab = PROMPT_TAB (adw_tab_page_get_child (tab_page));
 
-  if (!prompt_tab_is_running (tab))
+  if (!prompt_tab_is_running (tab, NULL))
     {
       prompt_parking_lot_push (self->parking_lot, tab);
       return GDK_EVENT_PROPAGATE;
@@ -799,7 +799,7 @@ prompt_window_undo_close_tab_action (GtkWidget  *widget,
 
   if ((tab = prompt_parking_lot_pop (self->parking_lot)))
     {
-      if (!prompt_tab_is_running (tab))
+      if (!prompt_tab_is_running (tab, NULL))
         prompt_tab_show_banner (tab);
       prompt_window_add_tab (self, tab);
       prompt_window_set_active_tab (self, tab);
@@ -843,7 +843,7 @@ prompt_window_close_request (GtkWindow *window)
       AdwTabPage *page = adw_tab_view_get_nth_page (self->tab_view, i);
       PromptTab *tab = PROMPT_TAB (adw_tab_page_get_child (page));
 
-      if (prompt_tab_is_running (tab))
+      if (prompt_tab_is_running (tab, NULL))
         g_ptr_array_add (tabs, g_object_ref (tab));
     }
 

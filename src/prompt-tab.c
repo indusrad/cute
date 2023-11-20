@@ -1005,11 +1005,20 @@ prompt_tab_raise (PromptTab *self)
     adw_tab_view_set_selected_page (tab_view, tab_page);
 }
 
+/**
+ * prompt_tab_is_running:
+ * @self: a #PromptTab
+ * @cmdline: (out) (nullable): a location for the command line
+ *
+ * Returns: %TRUE if there is a command running
+ */
 gboolean
-prompt_tab_is_running (PromptTab *self)
+prompt_tab_is_running (PromptTab  *self,
+                       char      **cmdline)
 {
   gboolean has_foreground_process;
   g_autoptr(GUnixFDList) fd_list = NULL;
+  g_autofree char *the_cmdline = NULL;
   VtePty *pty;
   int handle;
   int pty_fd;
@@ -1028,8 +1037,12 @@ prompt_tab_is_running (PromptTab *self)
                                                             g_variant_new_handle (handle),
                                                             fd_list,
                                                             &has_foreground_process,
+                                                            &the_cmdline,
                                                             NULL, NULL, NULL))
     has_foreground_process = FALSE;
+
+  if (cmdline != NULL)
+    *cmdline = g_steal_pointer (&the_cmdline);
 
   return has_foreground_process;
 }
