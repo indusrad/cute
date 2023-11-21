@@ -52,9 +52,6 @@ static inline void
 prompt_tab_notify_show_notification (PromptTabNotify *notify,
                                      const char      *cmdline)
 {
-  g_autoptr(GNotification) notification = NULL;
-  g_autofree char *cmdline_sanitized = NULL;
-  const char *uuid;
   GtkRoot *window;
 
   g_assert (notify != NULL);
@@ -72,6 +69,10 @@ prompt_tab_notify_show_notification (PromptTabNotify *notify,
     }
   else
     {
+      g_autoptr(GNotification) notification = NULL;
+      g_autofree char *cmdline_sanitized = NULL;
+      const char *uuid = prompt_tab_get_uuid (notify->tab);
+
 #ifdef GDK_WINDOWING_X11
       {
         GdkSurface *surface = gtk_native_get_surface (GTK_NATIVE (window));
@@ -80,21 +81,19 @@ prompt_tab_notify_show_notification (PromptTabNotify *notify,
           gdk_x11_surface_set_urgency_hint (surface, TRUE);
       }
 #endif
+
+      cmdline_sanitized = g_utf8_make_valid (cmdline, -1);
+
+      notification = g_notification_new (_("Command completed"));
+      g_notification_set_body (notification, cmdline_sanitized);
+      g_notification_set_default_action_and_target (notification,
+                                                    "app.focus-tab-by-uuid",
+                                                    "s", uuid);
+      g_application_send_notification (G_APPLICATION (PROMPT_APPLICATION_DEFAULT),
+                                       uuid, notification);
     }
 
   prompt_tab_set_needs_attention (notify->tab, TRUE);
-
-  uuid = prompt_tab_get_uuid (notify->tab);
-
-  notification = g_notification_new (_("Command completed"));
-  cmdline_sanitized = g_utf8_make_valid (cmdline, -1);
-  g_notification_set_body (notification, cmdline_sanitized);
-  g_notification_set_default_action_and_target (notification,
-                                                "app.focus-tab-by-uuid",
-                                                "s", uuid);
-  g_application_send_notification (G_APPLICATION (PROMPT_APPLICATION_DEFAULT),
-                                   uuid,
-                                   notification);
 }
 
 static inline void
