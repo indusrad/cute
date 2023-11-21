@@ -6,19 +6,18 @@
   <name>Prompt</name>
   <summary>A container oriented terminal for GNOME</summary>
   <description>
-    <p>No description</p>
+    <p>
+      Prompt is a terminal for GNOME that focuses on ease-of-use in a
+      world of containers.
+    </p>
   </description>
   <project_group>GNOME</project_group>
 
-  <kudos>
-    <kudo>ModernToolkit</kudo>
-  </kudos>
-
-  <update_contact>chergert@src.gnome.org</update_contact>
-  <translation type="gettext">gnome-builder</translation>
+  <update_contact>chergert@gnome.org</update_contact>
+  <translation type="gettext">prompt</translation>
 
   <releases>
-    <release name="0.1.0" date="2023-11-20"/>
+    <release version="0.1.0" date="2023-11-20"/>
   </releases>
 
   <content_rating type="oars-1.1">
