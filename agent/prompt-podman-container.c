@@ -196,6 +196,8 @@ prompt_podman_container_init (PromptPodmanContainer *self)
   PromptPodmanContainerPrivate *priv = prompt_podman_container_get_instance_private (self);
 
   priv->labels = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
+
+  prompt_ipc_container_set_provider (PROMPT_IPC_CONTAINER (self), "podman");
 }
 
 gboolean

@@ -37,4 +37,5 @@ prompt_distrobox_container_class_init (PromptDistroboxContainerClass *klass)
 static void
 prompt_distrobox_container_init (PromptDistroboxContainer *self)
 {
+  prompt_ipc_container_set_provider (PROMPT_IPC_CONTAINER (self), "distrobox");
 }
