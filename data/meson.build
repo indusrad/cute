@@ -1,6 +1,6 @@
 desktop_file = i18n.merge_file(
         input: 'org.gnome.Prompt.desktop.in',
-       output: 'org.gnome.Prompt.desktop',
+       output: '@0@.desktop'.format(app_id),
          type: 'desktop',
        po_dir: '../po',
       install: true,
@@ -12,13 +12,21 @@ if desktop_utils.found()
   test('Validate desktop file', desktop_utils, args: [desktop_file])
 endif
 
-appstream_file = i18n.merge_file(
-        input: 'org.gnome.Prompt.metainfo.xml.in',
-       output: 'org.gnome.Prompt.metainfo.xml',
-       po_dir: '../po',
-      install: true,
-  install_dir: get_option('datadir') / 'metainfo'
+appstream_config = configuration_data()
+appstream_config.set('APP_ID', app_id)
+appstream_file_in = configure_file(
+          input: 'org.gnome.Prompt.metainfo.xml.in.in',
+         output: 'org.gnome.Prompt.metainfo.xml.in',
+  configuration: appstream_config,
 )
+appstream_file = i18n.merge_file(
+        input: appstream_file_in,
+       output: '@0@.appdata.xml'.format(app_id),
+       po_dir: '../../po',
+      install: true,
+  install_dir: join_paths(get_option('datadir'), 'metainfo'),
+)
+
 
 appstreamcli = find_program('appstreamcli', required: false, disabler: true)
 test('Validate appstream file', appstreamcli,
