@@ -18,6 +18,7 @@
   <translation type="gettext">gnome-builder</translation>
 
   <releases>
+    <release name="0.1.0" date="2023-11-20"/>
   </releases>
 
   <content_rating type="oars-1.1">
