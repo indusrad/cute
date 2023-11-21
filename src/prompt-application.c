@@ -441,6 +441,7 @@ prompt_application_about (GSimpleAction *action,
                           gpointer       user_data)
 {
   static const char *developers[] = {"Christian Hergert", NULL};
+  static const char *artists[] = {"Jakub Steiner", NULL};
   PromptApplication *self = user_data;
   GtkWindow *window = NULL;
 
@@ -454,7 +455,8 @@ prompt_application_about (GSimpleAction *action,
                          "copyright", "© 2023 Red Hat, Inc.",
                          "developer-name", "Christian Hergert",
                          "developers", developers,
-                         "version", "0.1.0",
+                         "artists", artists,
+                         "version", PACKAGE_VERSION,
                          "license-type", GTK_LICENSE_GPL_3_0,
                          NULL);
 }
