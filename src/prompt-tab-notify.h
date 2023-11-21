@@ -54,7 +54,6 @@ prompt_tab_notify_show_notification (PromptTabNotify *notify,
 {
   g_autoptr(GNotification) notification = NULL;
   g_autofree char *cmdline_sanitized = NULL;
-  g_autofree char *detailed_action = NULL;
   const char *uuid;
   GtkRoot *window;
 
@@ -90,8 +89,9 @@ prompt_tab_notify_show_notification (PromptTabNotify *notify,
   notification = g_notification_new (_("Command completed"));
   cmdline_sanitized = g_utf8_make_valid (cmdline, -1);
   g_notification_set_body (notification, cmdline_sanitized);
-  detailed_action = g_strdup_printf ("app.focus-tab-by-uuid::%s", uuid);
-  g_notification_set_default_action (notification, detailed_action);
+  g_notification_set_default_action_and_target (notification,
+                                                "app.focus-tab-by-uuid",
+                                                "s", uuid);
   g_application_send_notification (G_APPLICATION (PROMPT_APPLICATION_DEFAULT),
                                    uuid,
                                    notification);
