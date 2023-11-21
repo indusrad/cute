@@ -1012,3 +1012,39 @@ prompt_application_focus_tab_by_uuid (GSimpleAction *action,
         }
     }
 }
+
+/**
+ * prompt_application_find_container_by_name:
+ * @self: a #PromptApplication
+ *
+ * Locates the container by runtime/name.
+ *
+ * Returns: (transfer full) (nullable): a container or %NULL
+ */
+PromptIpcContainer *
+prompt_application_find_container_by_name (PromptApplication *self,
+                                           const char        *runtime,
+                                           const char        *name)
+{
+  g_autoptr(GListModel) model = NULL;
+  guint n_items;
+
+  g_return_val_if_fail (PROMPT_IS_APPLICATION (self), NULL);
+
+  if (runtime == NULL || name == NULL)
+    return NULL;
+
+  model = prompt_application_list_containers (self);
+  n_items = g_list_model_get_n_items (model);
+
+  for (guint i = 0; i < n_items; i++)
+    {
+      g_autoptr(PromptIpcContainer) container = g_list_model_get_item (model, i);
+
+      if (g_strcmp0 (runtime, prompt_ipc_container_get_provider (container)) == 0 &&
+          g_strcmp0 (name, prompt_ipc_container_get_display_name (container)) == 0)
+        return g_steal_pointer (&container);
+    }
+
+  return NULL;
+}

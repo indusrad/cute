@@ -80,5 +80,8 @@ int                 prompt_application_wait_finish                (PromptApplica
                                                                    GError              **error);
 PromptIpcContainer *prompt_application_discover_current_container (PromptApplication    *self,
                                                                    VtePty               *pty);
+PromptIpcContainer *prompt_application_find_container_by_name     (PromptApplication    *self,
+                                                                   const char           *runtime,
+                                                                   const char           *name);
 
 G_END_DECLS
