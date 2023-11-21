@@ -18,8 +18,12 @@ flatpak@x86_64:
   extends:
     - '.flatpak_vars'
     - '.flatpak@x86_64'
+  variables:
+    BUNDLE: "org.gnome.Prompt.Devel-x86_64.flatpak"
 
 flatpak@aarch64:
   extends:
     - '.flatpak_vars'
     - '.flatpak@aarch64'
+  variables:
+    BUNDLE: "org.gnome.Prompt.Devel-aarch64.flatpak"
