@@ -334,15 +334,31 @@ static void
 prompt_window_apply_current_settings (PromptWindow *self,
                                       PromptTab    *tab)
 {
+  PromptApplication *app;
   PromptTab *active_tab;
 
   g_assert (PROMPT_IS_WINDOW (self));
   g_assert (PROMPT_IS_TAB (tab));
 
+  app = PROMPT_APPLICATION_DEFAULT;
+
   if ((active_tab = prompt_window_get_active_tab (self)))
     {
+      PromptTerminal *terminal = prompt_tab_get_terminal (active_tab);
       const char *current_directory_uri = prompt_tab_get_current_directory_uri (active_tab);
+      const char *current_container_name = vte_terminal_get_current_container_name (VTE_TERMINAL (terminal));
+      const char *current_container_runtime = vte_terminal_get_current_container_runtime (VTE_TERMINAL (terminal));
       PromptZoomLevel zoom = prompt_tab_get_zoom (active_tab);
+      g_autoptr(PromptIpcContainer) current_container = NULL;
+
+      if ((current_container = prompt_application_find_container_by_name (app,
+                                                                          current_container_runtime,
+                                                                          current_container_name)))
+        {
+          /* TODO: apply alternate container to tab */
+          g_print ("TODO: spawn with container %s\n",
+                   prompt_ipc_container_get_display_name (current_container));
+        }
 
       if (current_directory_uri != NULL)
         prompt_tab_set_previous_working_directory_uri (tab, current_directory_uri);
