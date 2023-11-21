@@ -1372,3 +1372,31 @@ prompt_window_get_active_profile (PromptWindow *self)
 
   return NULL;
 }
+
+gboolean
+prompt_window_focus_tab_by_uuid (PromptWindow *self,
+                                 const char   *uuid)
+{
+  g_autoptr(GtkSelectionModel) model = NULL;
+  guint n_items;
+
+  g_return_val_if_fail (PROMPT_IS_WINDOW (self), FALSE);
+  g_return_val_if_fail (uuid != NULL, FALSE);
+
+  model = adw_tab_view_get_pages (self->tab_view);
+  n_items = g_list_model_get_n_items (G_LIST_MODEL (model));
+
+  for (guint i = 0; i < n_items; i++)
+    {
+      g_autoptr(AdwTabPage) page = g_list_model_get_item (G_LIST_MODEL (model), i);
+      PromptTab *tab = PROMPT_TAB (adw_tab_page_get_child (page));
+
+      if (0 == g_strcmp0 (uuid, prompt_tab_get_uuid (tab)))
+        {
+          prompt_window_set_active_tab (self, tab);
+          return TRUE;
+        }
+    }
+
+  return FALSE;
+}

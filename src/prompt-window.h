@@ -42,5 +42,7 @@ PromptTab     *prompt_window_get_active_tab     (PromptWindow  *self);
 void           prompt_window_set_active_tab     (PromptWindow  *self,
                                                  PromptTab     *active_tab);
 void           prompt_window_visual_bell        (PromptWindow  *self);
+gboolean       prompt_window_focus_tab_by_uuid  (PromptWindow  *self,
+                                                 const char    *uuid);
 
 G_END_DECLS

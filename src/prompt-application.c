@@ -48,20 +48,23 @@ struct _PromptApplication
   PromptClient        *client;
 };
 
-static void prompt_application_about        (PromptApplication *self,
-                                             GVariant          *param);
-static void prompt_application_edit_profile (PromptApplication *self,
-                                             GVariant          *param);
-static void prompt_application_help_overlay (PromptApplication *self,
-                                             GVariant          *param);
-static void prompt_application_preferences  (PromptApplication *self,
-                                             GVariant          *param);
+static void prompt_application_about             (PromptApplication *self,
+                                                  GVariant          *param);
+static void prompt_application_edit_profile      (PromptApplication *self,
+                                                  GVariant          *param);
+static void prompt_application_help_overlay      (PromptApplication *self,
+                                                  GVariant          *param);
+static void prompt_application_preferences       (PromptApplication *self,
+                                                  GVariant          *param);
+static void prompt_application_focus_tab_by_uuid (PromptApplication *self,
+                                                  GVariant          *param);
 
 PROMPT_DEFINE_ACTION_GROUP (PromptApplication, prompt_application, {
   { "about", prompt_application_about },
   { "edit-profile", prompt_application_edit_profile, "s" },
   { "help-overlay", prompt_application_help_overlay },
   { "preferences", prompt_application_preferences },
+  { "focus-tab-by-uuid", prompt_application_focus_tab_by_uuid, "s" },
 })
 
 G_DEFINE_FINAL_TYPE_WITH_CODE (PromptApplication, prompt_application, ADW_TYPE_APPLICATION,
@@ -963,4 +966,28 @@ prompt_application_discover_current_container (PromptApplication *self,
   g_return_val_if_fail (PROMPT_IS_APPLICATION (self), NULL);
 
   return prompt_client_discover_current_container (self->client, pty);
+}
+
+static void
+prompt_application_focus_tab_by_uuid (PromptApplication *self,
+                                      GVariant          *param)
+{
+  const char *uuid;
+
+  g_assert (PROMPT_IS_APPLICATION (self));
+  g_assert (param != NULL);
+  g_assert (g_variant_is_of_type (param, G_VARIANT_TYPE_STRING));
+
+  uuid = g_variant_get_string (param, NULL);
+
+  for (const GList *windows = gtk_application_get_windows (GTK_APPLICATION (self));
+       windows != NULL;
+       windows = windows->next)
+    {
+      if (PROMPT_IS_WINDOW (windows->data))
+        {
+          if (prompt_window_focus_tab_by_uuid (windows->data, uuid))
+            break;
+        }
+    }
 }
