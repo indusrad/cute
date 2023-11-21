@@ -1,5 +1,12 @@
+desktop_config = configuration_data()
+desktop_config.set('APP_ID', app_id)
+desktop_file_in = configure_file(
+          input: 'org.gnome.Prompt.desktop.in.in',
+         output: 'org.gnome.Prompt.desktop.in',
+  configuration: desktop_config,
+)
 desktop_file = i18n.merge_file(
-        input: 'org.gnome.Prompt.desktop.in',
+        input: desktop_file_in,
        output: '@0@.desktop'.format(app_id),
          type: 'desktop',
        po_dir: '../po',
