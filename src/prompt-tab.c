@@ -44,25 +44,26 @@ typedef enum _PromptTabState
 
 struct _PromptTab
 {
-  GtkWidget          parent_instance;
+  GtkWidget           parent_instance;
 
-  char              *previous_working_directory_uri;
-  PromptProfile     *profile;
-  PromptIpcProcess  *process;
-  char              *title_prefix;
-  PromptTabMonitor  *monitor;
-  char              *uuid;
+  char               *previous_working_directory_uri;
+  PromptProfile      *profile;
+  PromptIpcProcess   *process;
+  char               *title_prefix;
+  PromptTabMonitor   *monitor;
+  char               *uuid;
+  PromptIpcContainer *container_at_creation;
 
-  PromptTabNotify    notify;
+  PromptTabNotify     notify;
 
-  AdwBanner         *banner;
-  GtkScrolledWindow *scrolled_window;
-  PromptTerminal    *terminal;
+  AdwBanner          *banner;
+  GtkScrolledWindow  *scrolled_window;
+  PromptTerminal     *terminal;
 
-  PromptZoomLevel    zoom;
-  PromptTabState     state;
+  PromptZoomLevel     zoom;
+  PromptTabState      state;
 
-  guint              forced_exit : 1;
+  guint               forced_exit : 1;
 };
 
 enum {
@@ -287,9 +288,13 @@ prompt_tab_respawn (PromptTab *self)
   gtk_widget_set_visible (GTK_WIDGET (self->banner), FALSE);
 
   app = PROMPT_APPLICATION_DEFAULT;
-  default_container = prompt_profile_dup_default_container (self->profile);
-  container = prompt_application_lookup_container (app, default_container);
   profile_uuid = prompt_profile_get_uuid (self->profile);
+  default_container = prompt_profile_dup_default_container (self->profile);
+
+  if (self->container_at_creation != NULL)
+    container = g_object_ref (self->container_at_creation);
+  else
+    container = prompt_application_lookup_container (app, default_container);
 
   if (container == NULL)
     {
@@ -622,6 +627,7 @@ prompt_tab_dispose (GObject *object)
   g_clear_object (&self->profile);
   g_clear_object (&self->process);
   g_clear_object (&self->monitor);
+  g_clear_object (&self->container_at_creation);
 
   g_clear_pointer (&self->previous_working_directory_uri, g_free);
   g_clear_pointer (&self->title_prefix, g_free);
@@ -1148,4 +1154,14 @@ prompt_tab_get_uuid (PromptTab *self)
   g_return_val_if_fail (PROMPT_IS_TAB (self), NULL);
 
   return self->uuid;
+}
+
+void
+prompt_tab_set_container (PromptTab          *self,
+                          PromptIpcContainer *container)
+{
+  g_return_if_fail (PROMPT_IS_TAB (self));
+  g_return_if_fail (!container || PROMPT_IPC_IS_CONTAINER (container));
+
+  g_set_object (&self->container_at_creation, container);
 }

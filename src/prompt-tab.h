@@ -78,5 +78,7 @@ void              prompt_tab_force_quit                         (PromptTab      
 void              prompt_tab_show_banner                        (PromptTab       *self);
 void              prompt_tab_set_needs_attention                (PromptTab       *self,
                                                                  gboolean         needs_attention);
+void              prompt_tab_set_container                      (PromptTab          *self,
+                                                                 PromptIpcContainer *container);
 
 G_END_DECLS

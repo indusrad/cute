@@ -354,11 +354,7 @@ prompt_window_apply_current_settings (PromptWindow *self,
       if ((current_container = prompt_application_find_container_by_name (app,
                                                                           current_container_runtime,
                                                                           current_container_name)))
-        {
-          /* TODO: apply alternate container to tab */
-          g_print ("TODO: spawn with container %s\n",
-                   prompt_ipc_container_get_display_name (current_container));
-        }
+        prompt_tab_set_container (tab, current_container);
 
       if (current_directory_uri != NULL)
         prompt_tab_set_previous_working_directory_uri (tab, current_directory_uri);
