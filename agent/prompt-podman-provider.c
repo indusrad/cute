@@ -20,6 +20,8 @@
 
 #include "config.h"
 
+#include <fcntl.h>
+
 #include <json-glib/json-glib.h>
 
 #include "prompt-agent-compat.h"
@@ -277,6 +279,10 @@ prompt_podman_provider_update_source_func (gpointer user_data)
   prompt_run_context_append_argv (run_context, "ps");
   prompt_run_context_append_argv (run_context, "--all");
   prompt_run_context_append_argv (run_context, "--format=json");
+
+  prompt_run_context_take_fd (run_context,
+                              open ("/dev/null", O_RDWR|O_CLOEXEC),
+                              STDERR_FILENO);
 
   if (!(stream = prompt_run_context_create_stdio_stream (run_context, &error)) ||
       !(subprocess = prompt_run_context_spawn (run_context, &error)))
