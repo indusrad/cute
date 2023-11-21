@@ -48,27 +48,31 @@ struct _PromptApplication
   PromptClient        *client;
 };
 
-static void prompt_application_about             (PromptApplication *self,
-                                                  GVariant          *param);
-static void prompt_application_edit_profile      (PromptApplication *self,
-                                                  GVariant          *param);
-static void prompt_application_help_overlay      (PromptApplication *self,
-                                                  GVariant          *param);
-static void prompt_application_preferences       (PromptApplication *self,
-                                                  GVariant          *param);
-static void prompt_application_focus_tab_by_uuid (PromptApplication *self,
-                                                  GVariant          *param);
+static void prompt_application_about             (GSimpleAction *action,
+                                                  GVariant      *param,
+                                                  gpointer       user_data);
+static void prompt_application_edit_profile      (GSimpleAction *action,
+                                                  GVariant      *param,
+                                                  gpointer       user_data);
+static void prompt_application_help_overlay      (GSimpleAction *action,
+                                                  GVariant      *param,
+                                                  gpointer       user_data);
+static void prompt_application_preferences       (GSimpleAction *action,
+                                                  GVariant      *param,
+                                                  gpointer       user_data);
+static void prompt_application_focus_tab_by_uuid (GSimpleAction *action,
+                                                  GVariant      *param,
+                                                  gpointer       user_data);
 
-PROMPT_DEFINE_ACTION_GROUP (PromptApplication, prompt_application, {
+static GActionEntry action_entries[] = {
   { "about", prompt_application_about },
   { "edit-profile", prompt_application_edit_profile, "s" },
   { "help-overlay", prompt_application_help_overlay },
   { "preferences", prompt_application_preferences },
   { "focus-tab-by-uuid", prompt_application_focus_tab_by_uuid, "s" },
-})
+};
 
-G_DEFINE_FINAL_TYPE_WITH_CODE (PromptApplication, prompt_application, ADW_TYPE_APPLICATION,
-                               G_IMPLEMENT_INTERFACE (G_TYPE_ACTION_GROUP, prompt_application_init_action_group))
+G_DEFINE_FINAL_TYPE (PromptApplication, prompt_application, ADW_TYPE_APPLICATION)
 
 enum {
   PROP_0,
@@ -256,6 +260,11 @@ prompt_application_startup (GApplication *application)
   if (!(self->client = prompt_client_new (&error)))
     g_error ("Failed to launch prompt-agent: %s", error->message);
 
+  g_action_map_add_action_entries (G_ACTION_MAP (self),
+                                   action_entries,
+                                   G_N_ELEMENTS (action_entries),
+                                   self);
+
   gtk_application_set_accels_for_action (GTK_APPLICATION (self),
                                          "app.help-overlay",
                                          (const char * const []) {"<ctrl>question", NULL});
@@ -404,9 +413,11 @@ prompt_application_init (PromptApplication *self)
 }
 
 static void
-prompt_application_edit_profile (PromptApplication *self,
-                                 GVariant          *param)
+prompt_application_edit_profile (GSimpleAction *action,
+                                 GVariant      *param,
+                                 gpointer       user_data)
 {
+  PromptApplication *self = user_data;
   g_autoptr(PromptProfile) profile = NULL;
   const char *profile_uuid;
 
@@ -425,10 +436,12 @@ prompt_application_edit_profile (PromptApplication *self,
 }
 
 static void
-prompt_application_about (PromptApplication *self,
-                          GVariant          *param)
+prompt_application_about (GSimpleAction *action,
+                          GVariant      *param,
+                          gpointer       user_data)
 {
   static const char *developers[] = {"Christian Hergert", NULL};
+  PromptApplication *self = user_data;
   GtkWindow *window = NULL;
 
   g_assert (PROMPT_IS_APPLICATION (self));
@@ -447,10 +460,12 @@ prompt_application_about (PromptApplication *self,
 }
 
 static void
-prompt_application_preferences (PromptApplication *self,
-                                GVariant          *param)
+prompt_application_preferences (GSimpleAction *action,
+                                GVariant      *param,
+                                gpointer       user_data)
 {
   PromptPreferencesWindow *window;
+  PromptApplication *self = user_data;
 
   g_assert (PROMPT_IS_APPLICATION (self));
 
@@ -460,10 +475,12 @@ prompt_application_preferences (PromptApplication *self,
 }
 
 static void
-prompt_application_help_overlay (PromptApplication *self,
-                                 GVariant          *param)
+prompt_application_help_overlay (GSimpleAction *action,
+                                 GVariant      *param,
+                                 gpointer       user_data)
 {
   PromptPreferencesWindow *window;
+  PromptApplication *self = user_data;
 
   g_assert (PROMPT_IS_APPLICATION (self));
 
@@ -969,9 +986,11 @@ prompt_application_discover_current_container (PromptApplication *self,
 }
 
 static void
-prompt_application_focus_tab_by_uuid (PromptApplication *self,
-                                      GVariant          *param)
+prompt_application_focus_tab_by_uuid (GSimpleAction *action,
+                                      GVariant      *param,
+                                      gpointer       user_data)
 {
+  PromptApplication *self = user_data;
   const char *uuid;
 
   g_assert (PROMPT_IS_APPLICATION (self));
