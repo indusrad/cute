@@ -924,7 +924,7 @@ prompt_terminal_size_allocate (GtkWidget *widget,
 
   gtk_widget_get_preferred_size (GTK_WIDGET (self->size_revealer), &min, NULL);
   revealer_alloc.x = width + padding.right - min.width;
-  revealer_alloc.y = height - min.height;
+  revealer_alloc.y = height + padding.bottom - min.height;
   revealer_alloc.width = min.width;
   revealer_alloc.height = min.height;
   gtk_widget_size_allocate (GTK_WIDGET (self->size_revealer), &revealer_alloc, -1);
