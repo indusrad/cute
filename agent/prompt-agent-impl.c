@@ -56,10 +56,48 @@ prompt_agent_impl_finalize (GObject *object)
 }
 
 static void
+prompt_agent_impl_load_os_release (PromptAgentImpl *self)
+{
+  g_autofree char *contents = NULL;
+  gsize len;
+
+  g_assert (PROMPT_IS_AGENT_IMPL (self));
+
+  if (g_file_get_contents ("/etc/os-release", &contents, &len, NULL))
+    {
+      const char *begin = strstr (contents, "NAME=\"");
+
+      if (begin != NULL)
+        {
+          const char *end;
+
+          begin += strlen ("NAME=\"");
+
+          if ((end = strchr (begin, '"')))
+            {
+              g_autofree char *name = g_strndup (begin, end - begin);
+              prompt_ipc_agent_set_os_name (PROMPT_IPC_AGENT (self), name);
+            }
+        }
+    }
+}
+
+static void
+prompt_agent_impl_constructed (GObject *object)
+{
+  PromptAgentImpl *self = (PromptAgentImpl *)object;
+
+  G_OBJECT_CLASS (prompt_agent_impl_parent_class)->constructed (object);
+
+  prompt_agent_impl_load_os_release (self);
+}
+
+static void
 prompt_agent_impl_class_init (PromptAgentImplClass *klass)
 {
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
+  object_class->constructed = prompt_agent_impl_constructed;
   object_class->finalize = prompt_agent_impl_finalize;
 }
 

@@ -21,6 +21,9 @@
 -->
 <node xmlns:doc="http://www.freedesktop.org/dbus/1.0/doc.dtd">
   <interface name="org.gnome.Prompt.Agent">
+    <!-- The NAME= field from /etc/os-release -->
+    <property name="OsName" access="read" type="s"/>
+
     <!--
       GetPreferredShell:
 

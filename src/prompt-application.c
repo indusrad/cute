@@ -79,6 +79,7 @@ G_DEFINE_FINAL_TYPE (PromptApplication, prompt_application, ADW_TYPE_APPLICATION
 enum {
   PROP_0,
   PROP_DEFAULT_PROFILE,
+  PROP_OS_NAME,
   PROP_PROFILE_MENU,
   PROP_SYSTEM_FONT_NAME,
   N_PROPS
@@ -355,6 +356,10 @@ prompt_application_get_property (GObject    *object,
       g_value_take_object (value, prompt_application_dup_default_profile (self));
       break;
 
+    case PROP_OS_NAME:
+      g_value_set_string (value, prompt_application_get_os_name (self));
+      break;
+
     case PROP_PROFILE_MENU:
       g_value_set_object (value, self->profile_menu);
       break;
@@ -384,6 +389,12 @@ prompt_application_class_init (PromptApplicationClass *klass)
   properties[PROP_DEFAULT_PROFILE] =
     g_param_spec_object ("default-profile", NULL, NULL,
                          PROMPT_TYPE_PROFILE,
+                         (G_PARAM_READABLE |
+                          G_PARAM_STATIC_STRINGS));
+
+  properties[PROP_OS_NAME] =
+    g_param_spec_string ("os-name", NULL, NULL,
+                         NULL,
                          (G_PARAM_READABLE |
                           G_PARAM_STATIC_STRINGS));
 
@@ -1059,4 +1070,12 @@ prompt_application_find_container_by_name (PromptApplication *self,
     }
 
   return NULL;
+}
+
+const char *
+prompt_application_get_os_name (PromptApplication *self)
+{
+  g_return_val_if_fail (PROMPT_IS_APPLICATION (self), NULL);
+
+  return prompt_client_get_os_name (self->client);
 }

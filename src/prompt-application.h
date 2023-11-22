@@ -36,6 +36,7 @@ G_DECLARE_FINAL_TYPE (PromptApplication, prompt_application, PROMPT, APPLICATION
 
 PromptApplication  *prompt_application_new                        (const char           *application_id,
                                                                    GApplicationFlags     flags);
+const char         *prompt_application_get_os_name                (PromptApplication    *self);
 PromptSettings     *prompt_application_get_settings               (PromptApplication    *self);
 PromptShortcuts    *prompt_application_get_shortcuts              (PromptApplication    *self);
 const char         *prompt_application_get_system_font_name       (PromptApplication    *self);

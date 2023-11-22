@@ -334,7 +334,7 @@ prompt_client_new (GError **error)
   g_set_object (&self->bus, bus);
 
   if (!(self->proxy = prompt_ipc_agent_proxy_new_sync (bus,
-                                                       G_DBUS_PROXY_FLAGS_DO_NOT_LOAD_PROPERTIES,
+                                                       G_DBUS_PROXY_FLAGS_NONE,
                                                        NULL,
                                                        "/org/gnome/Prompt/Agent",
                                                        NULL,
@@ -790,4 +790,12 @@ prompt_client_discover_current_container (PromptClient *self,
     }
 
   return NULL;
+}
+
+const char *
+prompt_client_get_os_name (PromptClient *self)
+{
+  g_return_val_if_fail (PROMPT_IS_CLIENT (self), NULL);
+
+  return prompt_ipc_agent_get_os_name (self->proxy);
 }

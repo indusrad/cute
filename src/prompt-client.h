@@ -61,5 +61,6 @@ PromptIpcProcess   *prompt_client_spawn_finish               (PromptClient      
                                                               GError              **error);
 PromptIpcContainer *prompt_client_discover_current_container (PromptClient         *self,
                                                               VtePty               *pty);
+const char         *prompt_client_get_os_name                (PromptClient         *self);
 
 G_END_DECLS
