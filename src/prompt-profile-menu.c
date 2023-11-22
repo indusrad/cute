@@ -45,8 +45,13 @@ static int
 prompt_profile_menu_get_n_items (GMenuModel *model)
 {
   PromptProfileMenu *self = PROMPT_PROFILE_MENU (model);
+  guint n_items = self->uuids ? g_strv_length (self->uuids) : 0;
 
-  return self->uuids ? g_strv_length (self->uuids) : 0;
+  /* Ignore profiles when only 1 item (session) is available */
+  if (n_items <= 1)
+    return 0;
+
+  return n_items;
 }
 
 static gboolean
@@ -103,8 +108,8 @@ prompt_profile_menu_get_item_attributes (GMenuModel  *model,
 
 static void
 prompt_profile_menu_notify_profile_uuids_cb (PromptProfileMenu *self,
-                                              GParamSpec         *pspec,
-                                              PromptSettings    *settings)
+                                             GParamSpec        *pspec,
+                                             PromptSettings    *settings)
 {
   char **profile_uuids;
   guint old_len;
@@ -115,11 +120,10 @@ prompt_profile_menu_notify_profile_uuids_cb (PromptProfileMenu *self,
 
   profile_uuids = prompt_settings_dup_profile_uuids (settings);
 
-  old_len = g_strv_length (self->uuids);
-  new_len = g_strv_length (profile_uuids);
-
+  old_len = prompt_profile_menu_get_n_items (G_MENU_MODEL (self));
   g_clear_pointer (&self->uuids, g_strfreev);
   self->uuids = profile_uuids;
+  new_len = prompt_profile_menu_get_n_items (G_MENU_MODEL (self));
 
   g_menu_model_items_changed (G_MENU_MODEL (self), 0, old_len, new_len);
 }
