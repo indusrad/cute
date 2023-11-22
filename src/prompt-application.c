@@ -27,6 +27,7 @@
 #include "prompt-action-group.h"
 #include "prompt-application.h"
 #include "prompt-client.h"
+#include "prompt-container-menu.h"
 #include "prompt-preferences-window.h"
 #include "prompt-profile-menu.h"
 #include "prompt-settings.h"
@@ -42,6 +43,7 @@ struct _PromptApplication
   GListStore          *profiles;
   PromptSettings      *settings;
   PromptShortcuts     *shortcuts;
+  PromptContainerMenu *container_menu;
   PromptProfileMenu   *profile_menu;
   char                *system_font_name;
   GDBusProxy          *portal;
@@ -253,12 +255,14 @@ prompt_application_startup (GApplication *application)
   self->profiles = g_list_store_new (PROMPT_TYPE_PROFILE);
   self->settings = prompt_settings_new ();
   self->shortcuts = prompt_shortcuts_new (NULL);
-  self->profile_menu = prompt_profile_menu_new (self->settings);
 
   G_APPLICATION_CLASS (prompt_application_parent_class)->startup (application);
 
   if (!(self->client = prompt_client_new (&error)))
     g_error ("Failed to launch prompt-agent: %s", error->message);
+
+  self->profile_menu = prompt_profile_menu_new (self->settings);
+  self->container_menu = prompt_container_menu_new (G_LIST_MODEL (self->client));
 
   g_action_map_add_action_entries (G_ACTION_MAP (self),
                                    action_entries,
@@ -638,6 +642,14 @@ prompt_application_dup_profile_menu (PromptApplication *self)
   g_return_val_if_fail (PROMPT_IS_APPLICATION (self), NULL);
 
   return g_object_ref (G_MENU_MODEL (self->profile_menu));
+}
+
+GMenuModel *
+prompt_application_dup_container_menu (PromptApplication *self)
+{
+  g_return_val_if_fail (PROMPT_IS_APPLICATION (self), NULL);
+
+  return g_object_ref (G_MENU_MODEL (self->container_menu));
 }
 
 /**

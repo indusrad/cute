@@ -50,6 +50,7 @@ void                prompt_application_set_default_profile        (PromptApplica
 PromptProfile      *prompt_application_dup_profile                (PromptApplication    *self,
                                                                    const char           *profile_uuid);
 GMenuModel         *prompt_application_dup_profile_menu           (PromptApplication    *self);
+GMenuModel         *prompt_application_dup_container_menu         (PromptApplication    *self);
 GListModel         *prompt_application_list_profiles              (PromptApplication    *self);
 GListModel         *prompt_application_list_containers            (PromptApplication    *self);
 PromptIpcContainer *prompt_application_lookup_container           (PromptApplication    *self,
