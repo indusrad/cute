@@ -59,6 +59,9 @@ static void prompt_application_edit_profile      (GSimpleAction *action,
 static void prompt_application_help_overlay      (GSimpleAction *action,
                                                   GVariant      *param,
                                                   gpointer       user_data);
+static void prompt_application_new_window_action (GSimpleAction *action,
+                                                  GVariant      *param,
+                                                  gpointer       user_data);
 static void prompt_application_preferences       (GSimpleAction *action,
                                                   GVariant      *param,
                                                   gpointer       user_data);
@@ -72,6 +75,7 @@ static GActionEntry action_entries[] = {
   { "help-overlay", prompt_application_help_overlay },
   { "preferences", prompt_application_preferences },
   { "focus-tab-by-uuid", prompt_application_focus_tab_by_uuid, "s" },
+  { "new-window", prompt_application_new_window_action },
 };
 
 G_DEFINE_FINAL_TYPE (PromptApplication, prompt_application, ADW_TYPE_APPLICATION)
@@ -136,6 +140,8 @@ prompt_application_command_line (GApplication            *app,
 
   if (g_variant_dict_contains (dict, "preferences"))
     g_action_group_activate_action (G_ACTION_GROUP (self), "preferences", NULL);
+  else if (g_variant_dict_contains (dict, "new-window"))
+    prompt_application_new_window_action (NULL, NULL, self);
   else
     g_application_activate (G_APPLICATION (self));
 
@@ -418,6 +424,7 @@ static void
 prompt_application_init (PromptApplication *self)
 {
   static const GOptionEntry main_entries[] = {
+    { "new-window", 'n', 0, G_OPTION_ARG_NONE, NULL, N_("New terminal window") },
     { "preferences", 0, 0, G_OPTION_ARG_NONE, NULL, N_("Show the application preferences") },
     { NULL }
   };
@@ -487,6 +494,22 @@ prompt_application_preferences (GSimpleAction *action,
   g_assert (PROMPT_IS_APPLICATION (self));
 
   window = prompt_preferences_window_get_default ();
+  gtk_application_add_window (GTK_APPLICATION (self), GTK_WINDOW (window));
+  gtk_window_present (GTK_WINDOW (window));
+}
+
+static void
+prompt_application_new_window_action (GSimpleAction *action,
+                                      GVariant      *param,
+                                      gpointer       user_data)
+{
+  PromptApplication *self = user_data;
+  PromptWindow *window;
+
+  g_assert (!action || G_IS_SIMPLE_ACTION (action));
+  g_assert (PROMPT_IS_APPLICATION (self));
+
+  window = prompt_window_new ();
   gtk_application_add_window (GTK_APPLICATION (self), GTK_WINDOW (window));
   gtk_window_present (GTK_WINDOW (window));
 }
