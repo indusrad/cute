@@ -480,6 +480,18 @@ generate_debug_info (PromptApplication *self)
                           VTE_MICRO_VERSION,
                           vte_get_features ());
 
+#if DEVELOPMENT_BUILD
+  g_string_append_c (str, '\n');
+  g_string_append (str, "** DEVELOPMENT BUILD **\n");
+#endif
+
+  if (strstr (APP_ID, "Devel") != NULL)
+    {
+      g_string_append_c (str, '\n');
+      g_string_append_printf (str, "App ID: %s\n", APP_ID);
+    }
+
+
   g_string_append_c (str, '\n');
   g_string_append (str, "Containers:\n");
 
