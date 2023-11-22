@@ -452,6 +452,7 @@ generate_debug_info (PromptApplication *self)
 {
   GString *str = g_string_new (NULL);
   g_autoptr(GListModel) containers = NULL;
+  g_autofree char *flatpak_info = NULL;
   guint n_items;
 
   g_string_append_printf (str,
@@ -509,6 +510,12 @@ generate_debug_info (PromptApplication *self)
                               "  • %s (%s)\n",
                               prompt_ipc_container_get_display_name (container),
                               prompt_ipc_container_get_provider (container));
+    }
+
+  if (g_file_get_contents ("/.flatpak-info", &flatpak_info, NULL, NULL))
+    {
+      g_string_append_c (str, '\n');
+      g_string_append (str, flatpak_info);
     }
 
   return g_string_free (str, FALSE);
