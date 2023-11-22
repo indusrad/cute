@@ -447,6 +447,61 @@ prompt_application_edit_profile (GSimpleAction *action,
     }
 }
 
+static char *
+generate_debug_info (PromptApplication *self)
+{
+  GString *str = g_string_new (NULL);
+  g_autoptr(GListModel) containers = NULL;
+  guint n_items;
+
+  g_string_append_printf (str,
+                          "GLib: %d.%d.%d (compiled against %d.%d.%d)\n",
+                          glib_major_version,
+                          glib_minor_version,
+                          glib_micro_version,
+                          GLIB_MAJOR_VERSION,
+                          GLIB_MINOR_VERSION,
+                          GLIB_MICRO_VERSION);
+  g_string_append_printf (str,
+                          "GTK: %d.%d.%d (compiled against %d.%d.%d)\n",
+                          gtk_get_major_version (),
+                          gtk_get_minor_version (),
+                          gtk_get_micro_version (),
+                          GTK_MAJOR_VERSION,
+                          GTK_MINOR_VERSION,
+                          GTK_MICRO_VERSION);
+  g_string_append_printf (str,
+                          "VTE: %d.%d.%d (compiled against %d.%d.%d) %s\n",
+                          vte_get_major_version (),
+                          vte_get_minor_version (),
+                          vte_get_micro_version (),
+                          VTE_MAJOR_VERSION,
+                          VTE_MINOR_VERSION,
+                          VTE_MICRO_VERSION,
+                          vte_get_features ());
+
+  g_string_append_c (str, '\n');
+  g_string_append (str, "Containers:\n");
+
+  containers = prompt_application_list_containers (self);
+  n_items = g_list_model_get_n_items (containers);
+
+  for (guint i = 0; i < n_items; i++)
+    {
+      g_autoptr(PromptIpcContainer) container = g_list_model_get_item (containers, i);
+
+      if (g_strcmp0 ("session", prompt_ipc_container_get_id (container)) == 0)
+        continue;
+
+      g_string_append_printf (str,
+                              "  • %s (%s)\n",
+                              prompt_ipc_container_get_display_name (container),
+                              prompt_ipc_container_get_provider (container));
+    }
+
+  return g_string_free (str, FALSE);
+}
+
 static void
 prompt_application_about (GSimpleAction *action,
                           GVariant      *param,
@@ -456,20 +511,26 @@ prompt_application_about (GSimpleAction *action,
   static const char *artists[] = {"Jakub Steiner", NULL};
   PromptApplication *self = user_data;
   GtkWindow *window = NULL;
+  g_autofree char *debug_info = NULL;
 
   g_assert (PROMPT_IS_APPLICATION (self));
 
   window = gtk_application_get_active_window (GTK_APPLICATION (self));
+  debug_info = generate_debug_info (self);
 
   adw_show_about_window (window,
                          "application-icon", PACKAGE_ICON_NAME,
                          "application-name", PACKAGE_NAME,
+                         "artists", artists,
                          "copyright", "© 2023 Red Hat, Inc.",
+                         "debug-info", debug_info,
                          "developer-name", "Christian Hergert",
                          "developers", developers,
-                         "artists", artists,
-                         "version", PACKAGE_VERSION,
+                         "issue-url", "https://gitlab.gnome.org/chergert/prompt/issues",
                          "license-type", GTK_LICENSE_GPL_3_0,
+                         "translator-credits", _("translator-credits"),
+                         "version", PACKAGE_VERSION,
+                         "website", "https://gitlab.gnome.org/chergert/prompt",
                          NULL);
 }
 
