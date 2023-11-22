@@ -337,11 +337,13 @@ prompt_window_apply_current_settings (PromptWindow *self,
 {
   PromptApplication *app;
   PromptTab *active_tab;
+  PromptProfile *profile;
 
   g_assert (PROMPT_IS_WINDOW (self));
   g_assert (PROMPT_IS_TAB (tab));
 
   app = PROMPT_APPLICATION_DEFAULT;
+  profile = prompt_tab_get_profile (tab);
 
   if ((active_tab = prompt_window_get_active_tab (self)))
     {
@@ -352,10 +354,13 @@ prompt_window_apply_current_settings (PromptWindow *self,
       PromptZoomLevel zoom = prompt_tab_get_zoom (active_tab);
       g_autoptr(PromptIpcContainer) current_container = NULL;
 
-      if ((current_container = prompt_application_find_container_by_name (app,
-                                                                          current_container_runtime,
-                                                                          current_container_name)))
-        prompt_tab_set_container (tab, current_container);
+      if (prompt_profile_get_preserve_container (profile))
+        {
+          if ((current_container = prompt_application_find_container_by_name (app,
+                                                                              current_container_runtime,
+                                                                              current_container_name)))
+            prompt_tab_set_container (tab, current_container);
+        }
 
       if (current_directory_uri != NULL)
         prompt_tab_set_previous_working_directory_uri (tab, current_directory_uri);

@@ -59,6 +59,11 @@
     <value nick="dark" value="4"/>
   </enum>
 
+  <enum id="org.gnome.Prompt.PreserveContainer">
+    <value nick="never" value="0"/>
+    <value nick="always" value="1"/>
+  </enum>
+
   <enum id="org.gnome.Prompt.PreserveDirectory">
     <value nick="never" value="0"/>
     <value nick="safe" value="1"/>
@@ -218,6 +223,12 @@
       <default>'session'</default>
       <summary>Default Container</summary>
       <description>The default container to run the command in</description>
+    </key>
+
+    <key name="preserve-container" enum="org.gnome.Prompt.PreserveContainer">
+      <default>'always'</default>
+      <summary>Preserve Container</summary>
+      <description>Preserve the active container when creating new tabs and windows</description>
     </key>
 
     <key name="exit-action" enum="org.gnome.Prompt.ExitAction">

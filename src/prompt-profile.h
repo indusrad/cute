@@ -40,6 +40,7 @@ G_BEGIN_DECLS
 #define PROMPT_PROFILE_KEY_LOGIN_SHELL         "login-shell"
 #define PROMPT_PROFILE_KEY_OPACITY             "opacity"
 #define PROMPT_PROFILE_KEY_PALETTE             "palette"
+#define PROMPT_PROFILE_KEY_PRESERVE_CONTAINER  "preserve-container"
 #define PROMPT_PROFILE_KEY_PRESERVE_DIRECTORY  "preserve-directory"
 #define PROMPT_PROFILE_KEY_SCROLL_ON_KEYSTROKE "scroll-on-keystroke"
 #define PROMPT_PROFILE_KEY_SCROLL_ON_OUTPUT    "scroll-on-output"
@@ -52,6 +53,12 @@ typedef enum _PromptExitAction
   PROMPT_EXIT_ACTION_RESTART = 1,
   PROMPT_EXIT_ACTION_CLOSE   = 2,
 } PromptExitAction;
+
+typedef enum _PromptPreserveContainer
+{
+  PROMPT_PRESERVE_CONTAINER_NEVER  = 0,
+  PROMPT_PRESERVE_CONTAINER_ALWAYS = 1,
+} PromptPreserveContainer;
 
 typedef enum _PromptPreserveDirectory
 {
@@ -98,6 +105,9 @@ void                     prompt_profile_set_bold_is_bright      (PromptProfile  
 PromptExitAction         prompt_profile_get_exit_action         (PromptProfile            *self);
 void                     prompt_profile_set_exit_action         (PromptProfile            *self,
                                                                  PromptExitAction          exit_action);
+PromptPreserveContainer  prompt_profile_get_preserve_container  (PromptProfile            *self);
+void                     prompt_profile_set_preserve_container  (PromptProfile            *self,
+                                                                 PromptPreserveContainer   preserve_container);
 PromptPreserveDirectory  prompt_profile_get_preserve_directory  (PromptProfile            *self);
 void                     prompt_profile_set_preserve_directory  (PromptProfile            *self,
                                                                  PromptPreserveDirectory   preserve_directory);

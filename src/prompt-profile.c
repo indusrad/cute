@@ -52,6 +52,7 @@ enum {
   PROP_OPACITY,
   PROP_PALETTE,
   PROP_PALETTE_ID,
+  PROP_PRESERVE_CONTAINER,
   PROP_PRESERVE_DIRECTORY,
   PROP_SCROLL_ON_KEYSTROKE,
   PROP_SCROLL_ON_OUTPUT,
@@ -206,6 +207,10 @@ prompt_profile_get_property (GObject    *object,
       }
       break;
 
+    case PROP_PRESERVE_CONTAINER:
+      g_value_set_enum (value, prompt_profile_get_preserve_container (self));
+      break;
+
     case PROP_PRESERVE_DIRECTORY:
       g_value_set_enum (value, prompt_profile_get_preserve_directory (self));
       break;
@@ -303,6 +308,10 @@ prompt_profile_set_property (GObject      *object,
 
         prompt_profile_set_palette (self, palette);
       }
+      break;
+
+    case PROP_PRESERVE_CONTAINER:
+      prompt_profile_set_preserve_container (self, g_value_get_enum (value));
       break;
 
     case PROP_PRESERVE_DIRECTORY:
@@ -438,6 +447,14 @@ prompt_profile_class_init (PromptProfileClass *klass)
                          (G_PARAM_READWRITE |
                           G_PARAM_EXPLICIT_NOTIFY |
                           G_PARAM_STATIC_STRINGS));
+
+  properties[PROP_PRESERVE_CONTAINER] =
+    g_param_spec_enum ("preserve-container", NULL, NULL,
+                       PROMPT_TYPE_PRESERVE_CONTAINER,
+                       PROMPT_PRESERVE_CONTAINER_NEVER,
+                       (G_PARAM_READWRITE |
+                        G_PARAM_EXPLICIT_NOTIFY |
+                        G_PARAM_STATIC_STRINGS));
 
   properties[PROP_PRESERVE_DIRECTORY] =
     g_param_spec_enum ("preserve-directory", NULL, NULL,
@@ -619,6 +636,26 @@ prompt_profile_set_exit_action (PromptProfile    *self,
   g_settings_set_enum (self->settings,
                        PROMPT_PROFILE_KEY_EXIT_ACTION,
                        exit_action);
+}
+
+PromptPreserveContainer
+prompt_profile_get_preserve_container (PromptProfile *self)
+{
+  g_return_val_if_fail (PROMPT_IS_PROFILE (self), 0);
+
+  return g_settings_get_enum (self->settings, PROMPT_PROFILE_KEY_PRESERVE_CONTAINER);
+}
+
+void
+prompt_profile_set_preserve_container (PromptProfile           *self,
+                                       PromptPreserveContainer  preserve_container)
+{
+  g_return_if_fail (PROMPT_IS_PROFILE (self));
+  g_return_if_fail (preserve_container <= PROMPT_PRESERVE_CONTAINER_ALWAYS);
+
+  g_settings_set_enum (self->settings,
+                       PROMPT_PROFILE_KEY_PRESERVE_CONTAINER,
+                       preserve_container);
 }
 
 PromptPreserveDirectory

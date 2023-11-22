@@ -47,6 +47,8 @@ struct _PromptProfileEditor
   AdwComboRow       *exit_action;
   GListModel        *exit_actions;
   AdwComboRow       *palette;
+  AdwComboRow       *preserve_container;
+  GListModel        *preserve_containers;
   AdwComboRow       *preserve_directory;
   GListModel        *preserve_directories;
   AdwEntryRow       *custom_commmand;
@@ -268,6 +270,16 @@ prompt_profile_editor_constructed (GObject *object)
                                 g_object_unref);
 
   g_settings_bind_with_mapping (gsettings,
+                                PROMPT_PROFILE_KEY_PRESERVE_CONTAINER,
+                                self->preserve_container,
+                                "selected",
+                                G_SETTINGS_BIND_DEFAULT,
+                                string_to_index,
+                                index_to_string,
+                                g_object_ref (self->preserve_containers),
+                                g_object_unref);
+
+  g_settings_bind_with_mapping (gsettings,
                                 PROMPT_PROFILE_KEY_PRESERVE_DIRECTORY,
                                 self->preserve_directory,
                                 "selected",
@@ -376,6 +388,8 @@ prompt_profile_editor_class_init (PromptProfileEditorClass *klass)
   gtk_widget_class_bind_template_child (widget_class, PromptProfileEditor, opacity);
   gtk_widget_class_bind_template_child (widget_class, PromptProfileEditor, opacity_adjustment);
   gtk_widget_class_bind_template_child (widget_class, PromptProfileEditor, palette);
+  gtk_widget_class_bind_template_child (widget_class, PromptProfileEditor, preserve_containers);
+  gtk_widget_class_bind_template_child (widget_class, PromptProfileEditor, preserve_container);
   gtk_widget_class_bind_template_child (widget_class, PromptProfileEditor, preserve_directories);
   gtk_widget_class_bind_template_child (widget_class, PromptProfileEditor, preserve_directory);
   gtk_widget_class_bind_template_child (widget_class, PromptProfileEditor, scroll_on_keystroke);

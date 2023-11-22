@@ -122,6 +122,15 @@
                 <child>
                   <object class="AdwPreferencesGroup">
                     <child>
+                      <object class="AdwSwitchRow" id="login_shell">
+                        <property name="title" translatable="yes">Use Login Shell</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="AdwPreferencesGroup">
+                    <child>
                       <object class="AdwComboRow" id="containers">
                         <property name="title" translatable="yes">Default Container</property>
                         <property name="subtitle" translatable="yes">THe default container to use with this profile</property>
@@ -130,13 +139,30 @@
                         </property>
                       </object>
                     </child>
-                  </object>
-                </child>
-                <child>
-                  <object class="AdwPreferencesGroup">
                     <child>
-                      <object class="AdwSwitchRow" id="login_shell">
-                        <property name="title" translatable="yes">Use Login Shell</property>
+                      <object class="AdwComboRow" id="preserve_container">
+                        <property name="title" translatable="yes">Preserve Container</property>
+                        <property name="subtitle" translatable="yes">Preserve the current container when opening new tabs and windows</property>
+                        <property name="expression">
+                          <lookup name="title" type="PromptPreferencesListItem"/>
+                        </property>
+                        <property name="model">
+                          <object class="GListStore" id="preserve_containers">
+                            <property name="item-type">PromptPreferencesListItem</property>
+                            <child>
+                              <object class="PromptPreferencesListItem">
+                                <property name="title" translatable="yes">Never</property>
+                                <property name="value">'never'</property>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="PromptPreferencesListItem">
+                                <property name="title" translatable="yes">Always</property>
+                                <property name="value">'always'</property>
+                              </object>
+                            </child>
+                          </object>
+                        </property>
                       </object>
                     </child>
                   </object>
