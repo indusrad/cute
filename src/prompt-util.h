@@ -63,4 +63,10 @@ prompt_take_str (char **out_str,
   *out_str = new_str;
 }
 
+static inline gboolean
+prompt_str_empty0 (const char *s)
+{
+  return !s || !*s;
+}
+
 G_END_DECLS
