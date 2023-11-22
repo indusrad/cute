@@ -637,7 +637,7 @@ prompt_profile_set_preserve_directory (PromptProfile           *self,
   g_return_if_fail (preserve_directory <= PROMPT_PRESERVE_DIRECTORY_ALWAYS);
 
   g_settings_set_enum (self->settings,
-                       PROMPT_PROFILE_KEY_EXIT_ACTION,
+                       PROMPT_PROFILE_KEY_PRESERVE_DIRECTORY,
                        preserve_directory);
 }
 
