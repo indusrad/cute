@@ -32,6 +32,7 @@
 #include "prompt-profile-editor.h"
 #include "prompt-profile-row.h"
 #include "prompt-shortcut-row.h"
+#include "prompt-util.h"
 
 struct _PromptPreferencesWindow
 {
@@ -141,7 +142,7 @@ prompt_preferences_window_select_custom_font_cb (GObject      *object,
     {
       g_autofree char *font_name = pango_font_description_to_string (font_desc);
 
-      if (font_name != NULL)
+      if (!prompt_str_empty0 (font_name))
         prompt_settings_set_font_name (settings, font_name);
     }
 }
@@ -163,7 +164,8 @@ prompt_preferences_window_select_custom_font (GtkWidget  *widget,
   app = PROMPT_APPLICATION_DEFAULT;
   settings = prompt_application_get_settings (app);
 
-  if (!(font_name = prompt_settings_dup_font_name (settings)) || font_name[0] == 0)
+  font_name = prompt_settings_dup_font_name (settings);
+  if (prompt_str_empty0 (font_name))
     g_set_str (&font_name, prompt_application_get_system_font_name (app));
 
   font_desc = pango_font_description_from_string (font_name);

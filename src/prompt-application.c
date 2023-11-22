@@ -31,6 +31,7 @@
 #include "prompt-preferences-window.h"
 #include "prompt-profile-menu.h"
 #include "prompt-settings.h"
+#include "prompt-util.h"
 #include "prompt-window.h"
 
 #define PORTAL_BUS_NAME "org.freedesktop.portal.Desktop"
@@ -634,7 +635,7 @@ prompt_application_dup_profile (PromptApplication *self,
 
   g_return_val_if_fail (PROMPT_IS_APPLICATION (self), NULL);
 
-  if (profile_uuid == 0 || profile_uuid[0] == 0)
+  if (prompt_str_empty0 (profile_uuid))
     return prompt_application_dup_default_profile (self);
 
   model = prompt_application_list_profiles (self);
@@ -711,7 +712,7 @@ prompt_application_lookup_container (PromptApplication *self,
 
   g_return_val_if_fail (PROMPT_IS_APPLICATION (self), NULL);
 
-  if (container_id == NULL || container_id[0] == 0)
+  if (prompt_str_empty0 (container_id))
     return NULL;
 
   model = prompt_application_list_containers (self);

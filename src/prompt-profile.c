@@ -540,7 +540,7 @@ prompt_profile_dup_label (PromptProfile *self)
 
   label = g_settings_get_string (self->settings, PROMPT_PROFILE_KEY_LABEL);
 
-  if (label == NULL || label[0] == 0)
+  if (prompt_str_empty0 (label))
     g_set_str (&label, _("Untitled Profile"));
 
   return g_steal_pointer (&label);

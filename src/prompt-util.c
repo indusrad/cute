@@ -292,7 +292,7 @@ prompt_parse_shells (const char *etc_shells)
 {
   g_auto(GStrv) split = NULL;
 
-  if (etc_shells == NULL || etc_shells[0] == 0)
+  if (prompt_str_empty0 (etc_shells))
     return G_LIST_MODEL (g_list_store_new (GTK_TYPE_STRING_OBJECT));
 
   split = g_strsplit (etc_shells, "\n", 0);

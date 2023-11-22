@@ -26,6 +26,7 @@
 #include "prompt-application.h"
 #include "prompt-enums.h"
 #include "prompt-settings.h"
+#include "prompt-util.h"
 
 struct _PromptSettings
 {
@@ -622,7 +623,7 @@ prompt_settings_dup_font_desc (PromptSettings *self)
 
   if (prompt_settings_get_use_system_font (self) ||
       !(font_name = prompt_settings_dup_font_name (self)) ||
-      font_name[0] == 0)
+      prompt_str_empty0 (font_name))
     return pango_font_description_from_string (system_font_name);
 
   return pango_font_description_from_string (font_name);

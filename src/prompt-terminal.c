@@ -462,7 +462,7 @@ open_link_action (GtkWidget  *widget,
 
   g_assert (PROMPT_IS_TERMINAL (self));
 
-  if (self->url == NULL || self->url[0] == 0)
+  if (prompt_str_empty0 (self->url))
     return;
 
   launcher = gtk_uri_launcher_new (self->url);

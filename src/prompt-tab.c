@@ -895,7 +895,7 @@ prompt_tab_set_title_prefix (PromptTab *self,
 {
   g_return_if_fail (PROMPT_IS_TAB (self));
 
-  if (title_prefix != NULL && title_prefix[0] == 0)
+  if (prompt_str_empty0 (title_prefix))
     title_prefix = NULL;
 
   if (g_set_str (&self->title_prefix, title_prefix))

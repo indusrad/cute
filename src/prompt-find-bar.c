@@ -81,7 +81,7 @@ prompt_find_bar_get_search (PromptFindBar *self,
 
   text = gtk_editable_get_text (GTK_EDITABLE (self->entry));
 
-  if (text[0] == 0)
+  if (prompt_str_empty0 (text))
     return NULL;
 
   if (!gtk_check_button_get_active (GTK_CHECK_BUTTON (self->match_case)))
