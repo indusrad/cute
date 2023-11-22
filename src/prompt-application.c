@@ -85,7 +85,6 @@ enum {
   PROP_0,
   PROP_DEFAULT_PROFILE,
   PROP_OS_NAME,
-  PROP_PROFILE_MENU,
   PROP_SYSTEM_FONT_NAME,
   N_PROPS
 };
@@ -367,10 +366,6 @@ prompt_application_get_property (GObject    *object,
       g_value_set_string (value, prompt_application_get_os_name (self));
       break;
 
-    case PROP_PROFILE_MENU:
-      g_value_set_object (value, self->profile_menu);
-      break;
-
     case PROP_SYSTEM_FONT_NAME:
       g_value_set_string (value, self->system_font_name);
       break;
@@ -402,12 +397,6 @@ prompt_application_class_init (PromptApplicationClass *klass)
   properties[PROP_OS_NAME] =
     g_param_spec_string ("os-name", NULL, NULL,
                          NULL,
-                         (G_PARAM_READABLE |
-                          G_PARAM_STATIC_STRINGS));
-
-  properties[PROP_PROFILE_MENU] =
-    g_param_spec_object ("profile-menu", NULL, NULL,
-                         PROMPT_TYPE_PROFILE_MENU,
                          (G_PARAM_READABLE |
                           G_PARAM_STATIC_STRINGS));
 
