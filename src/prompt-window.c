@@ -40,6 +40,7 @@ struct _PromptWindow
   PromptShortcuts       *shortcuts;
   PromptParkingLot      *parking_lot;
 
+  AdwSplitButton        *split_button;
   PromptFindBar         *find_bar;
   GtkRevealer           *find_bar_revealer;
   AdwHeaderBar          *header_bar;
@@ -994,6 +995,10 @@ static void
 prompt_window_constructed (GObject *object)
 {
   PromptWindow *self = (PromptWindow *)object;
+  PromptApplication *app = PROMPT_APPLICATION_DEFAULT;
+  g_autoptr(GMenuModel) profile_menu = NULL;
+  g_autoptr(GMenuModel) container_menu = NULL;
+  g_autoptr(GMenu) menu = NULL;
 
   G_OBJECT_CLASS (prompt_window_parent_class)->constructed (object);
 
@@ -1003,6 +1008,16 @@ prompt_window_constructed (GObject *object)
 
   prompt_window_add_theme_controls (self);
   prompt_window_add_zoom_controls (self);
+
+  menu = g_menu_new ();
+
+  profile_menu = prompt_application_dup_profile_menu (app);
+  g_menu_append_section (menu, _("Profiles"), profile_menu);
+
+  container_menu = prompt_application_dup_container_menu (app);
+  g_menu_append_section (menu, _("Containers"), container_menu);
+
+  adw_split_button_set_menu_model (self->split_button, G_MENU_MODEL (menu));
 }
 
 static void
@@ -1112,6 +1127,7 @@ prompt_window_class_init (PromptWindowClass *klass)
   gtk_widget_class_bind_template_child (widget_class, PromptWindow, header_bar);
   gtk_widget_class_bind_template_child (widget_class, PromptWindow, primary_menu);
   gtk_widget_class_bind_template_child (widget_class, PromptWindow, primary_menu_button);
+  gtk_widget_class_bind_template_child (widget_class, PromptWindow, split_button);
   gtk_widget_class_bind_template_child (widget_class, PromptWindow, tab_bar);
   gtk_widget_class_bind_template_child (widget_class, PromptWindow, tab_menu);
   gtk_widget_class_bind_template_child (widget_class, PromptWindow, tab_overview);

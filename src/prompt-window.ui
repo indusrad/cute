@@ -325,17 +325,12 @@
                 <child>
                   <object class="AdwHeaderBar" id="header_bar">
                     <child type="start">
-                      <object class="AdwSplitButton">
+                      <object class="AdwSplitButton" id="split_button">
                         <property name="icon-name">tab-new-symbolic</property>
                         <property name="tooltip-text" translatable="yes">New Terminal</property>
                         <property name="action-name">win.new-terminal</property>
                         <property name="action-target">'default'</property>
                         <property name="focus-on-click">false</property>
-                        <binding name="menu-model">
-                          <lookup name="profile-menu" type="PromptApplication">
-                            <lookup name="application">PromptWindow</lookup>
-                          </lookup>
-                        </binding>
                       </object>
                     </child>
                     <child type="title">
