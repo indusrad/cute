@@ -142,7 +142,7 @@ get_container_title (PromptIpcContainer *container)
   display_name = prompt_ipc_container_get_display_name (container);
 
   if (g_strcmp0 (provider, "session") == 0)
-    return g_strdup (_("User Session"));
+    return g_strdup (prompt_application_get_os_name (PROMPT_APPLICATION_DEFAULT));
 
   return g_strdup (display_name);
 }

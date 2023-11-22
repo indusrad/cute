@@ -25,6 +25,7 @@
 
 #include "prompt-agent-ipc.h"
 
+#include "prompt-application.h"
 #include "prompt-container-menu.h"
 #include "prompt-util.h"
 
@@ -95,6 +96,9 @@ prompt_container_menu_get_item_attributes (GMenuModel  *model,
   id = prompt_ipc_container_get_id (container);
 
   if (prompt_str_empty0 (label))
+    label = prompt_application_get_os_name (PROMPT_APPLICATION_DEFAULT);
+
+  if (label == NULL)
     label = _("User Session");
 
   ht = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, (GDestroyNotify)g_variant_unref);
