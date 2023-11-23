@@ -33,6 +33,7 @@ struct _PromptContainerMenu
 {
   GMenuModel  parent_instance;
   GListModel *containers;
+  guint       is_hidden : 1;
 };
 
 enum {
@@ -49,6 +50,9 @@ static int
 prompt_container_menu_get_n_items (GMenuModel *model)
 {
   PromptContainerMenu *self = PROMPT_CONTAINER_MENU (model);
+
+  if (self->is_hidden)
+    return 0;
 
   return g_list_model_get_n_items (self->containers);
 }
@@ -116,10 +120,29 @@ prompt_container_menu_items_changed_cb (PromptContainerMenu *self,
                                         guint                added,
                                         GListModel          *model)
 {
+  gboolean is_hidden;
+  gboolean will_hide;
+
   g_assert (PROMPT_IS_CONTAINER_MENU (self));
   g_assert (G_IS_LIST_MODEL (model));
 
-  g_menu_model_items_changed (G_MENU_MODEL (self), position, removed, added);
+  is_hidden = self->is_hidden;
+  will_hide = g_list_model_get_n_items (model) <= 1;
+
+  self->is_hidden = will_hide;
+
+  if (is_hidden && will_hide)
+    return;
+
+  if (is_hidden)
+    g_menu_model_items_changed (G_MENU_MODEL (self), 0, 0, g_list_model_get_n_items (model));
+  else if (will_hide)
+    {
+      removed++;
+      position = 0;
+    }
+  else
+    g_menu_model_items_changed (G_MENU_MODEL (self), position, removed, added);
 }
 
 static void
@@ -148,9 +171,9 @@ prompt_container_menu_dispose (GObject *object)
 
 static void
 prompt_container_menu_get_property (GObject    *object,
-                                   guint       prop_id,
-                                   GValue     *value,
-                                   GParamSpec *pspec)
+                                    guint       prop_id,
+                                    GValue     *value,
+                                    GParamSpec *pspec)
 {
   PromptContainerMenu *self = PROMPT_CONTAINER_MENU (object);
 
@@ -167,9 +190,9 @@ prompt_container_menu_get_property (GObject    *object,
 
 static void
 prompt_container_menu_set_property (GObject      *object,
-                                   guint         prop_id,
-                                   const GValue *value,
-                                   GParamSpec   *pspec)
+                                    guint         prop_id,
+                                    const GValue *value,
+                                    GParamSpec   *pspec)
 {
   PromptContainerMenu *self = PROMPT_CONTAINER_MENU (object);
 
@@ -214,6 +237,7 @@ prompt_container_menu_class_init (PromptContainerMenuClass *klass)
 static void
 prompt_container_menu_init (PromptContainerMenu *self)
 {
+  self->is_hidden = TRUE;
 }
 
 PromptContainerMenu *
