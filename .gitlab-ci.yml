@@ -3,11 +3,11 @@ include:
     file: "flatpak/flatpak_ci_initiative.yml"
 
 stages:
-  - test
+  - "test"
+  - "deploy"
 
 .flatpak_vars:
   variables:
-    BUNDLE: "org.gnome.Prompt.Devel.flatpak"
     MANIFEST_PATH: "org.gnome.Prompt.Devel.json"
     FLATPAK_MODULE: "prompt"
     RUNTIME_REPO: "https://nightly.gnome.org/gnome-nightly.flatpakrepo"
@@ -27,3 +27,11 @@ flatpak@aarch64:
     - '.flatpak@aarch64'
   variables:
     BUNDLE: "org.gnome.Prompt.Devel-aarch64.flatpak"
+
+nightly@x86_64:
+  extends: ".publish_nightly"
+  needs: ["flatpak@x86_64"]
+
+nightly@aarch64:
+  extends: ".publish_nightly"
+  needs: ["flatpak@aarch64"]
