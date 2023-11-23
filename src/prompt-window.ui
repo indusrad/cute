@@ -45,7 +45,7 @@
               </lookup>
             </binding>
             <property name="action">action(win.new-window)</property>
-            <property name="arguments">''</property>
+            <property name="arguments">('','')</property>
           </object>
         </child>
         <child>
@@ -56,7 +56,7 @@
               </lookup>
             </binding>
             <property name="action">action(win.new-tab)</property>
-            <property name="arguments">''</property>
+            <property name="arguments">('','')</property>
           </object>
         </child>
         <child>
@@ -335,7 +335,7 @@
                             <property name="icon-name">tab-new-symbolic</property>
                             <property name="tooltip-text" translatable="yes">New Terminal</property>
                             <property name="action-name">win.new-terminal</property>
-                            <property name="action-target">'default'</property>
+                            <property name="action-target">('default','')</property>
                             <property name="focus-on-click">false</property>
                           </object>
                         </child>
@@ -458,13 +458,13 @@
         <attribute name="id">new-tab</attribute>
         <attribute name="label" translatable="yes">New _Tab</attribute>
         <attribute name="action">win.new-tab</attribute>
-        <attribute name="target" type="s">'default'</attribute>
+        <attribute name="target" type="(ss)">('default','')</attribute>
       </item>
       <item>
         <attribute name="id">new-window</attribute>
         <attribute name="label" translatable="yes">New _Window</attribute>
         <attribute name="action">win.new-window</attribute>
-        <attribute name="target" type="s">'default'</attribute>
+        <attribute name="target" type="(ss)">('default','')</attribute>
       </item>
     </section>
     <section>

@@ -30,6 +30,7 @@
 #include "prompt-tab-monitor.h"
 #include "prompt-theme-selector.h"
 #include "prompt-title-dialog.h"
+#include "prompt-util.h"
 #include "prompt-window.h"
 #include "prompt-window-dressing.h"
 
@@ -402,18 +403,27 @@ prompt_window_new_tab_action (GtkWidget  *widget,
 {
   PromptWindow *self = (PromptWindow *)widget;
   g_autoptr(PromptProfile) profile = NULL;
-  const char *profile_uuid;
+  const char *profile_uuid = "";
+  const char *container_id = "";
   PromptTab *tab;
 
   g_assert (PROMPT_IS_WINDOW (self));
   g_assert (param != NULL);
-  g_assert (g_variant_is_of_type (param, G_VARIANT_TYPE_STRING));
+  g_assert (g_variant_is_of_type (param, G_VARIANT_TYPE ("(ss)")));
 
-  profile_uuid = g_variant_get_string (param, NULL);
+  g_variant_get (param, "(&s&s)", &profile_uuid, &container_id);
   profile = prompt_window_dup_profile_for_param (self, profile_uuid);
 
   tab = prompt_tab_new (profile);
   prompt_window_apply_current_settings (self, tab);
+
+  if (!prompt_str_empty0 (container_id))
+    {
+      g_autoptr(PromptIpcContainer) container = NULL;
+
+      if ((container = prompt_application_lookup_container (PROMPT_APPLICATION_DEFAULT, container_id)))
+        prompt_tab_set_container (tab, container);
+    }
 
   prompt_window_add_tab (self, tab);
   prompt_window_set_active_tab (self, tab);
@@ -427,18 +437,27 @@ prompt_window_new_window_action (GtkWidget  *widget,
   PromptWindow *self = (PromptWindow *)widget;
   g_autoptr(PromptProfile) profile = NULL;
   PromptWindow *window;
-  const char *profile_uuid;
+  const char *profile_uuid = "";
+  const char *container_id = "";
   PromptTab *tab;
 
   g_assert (PROMPT_IS_WINDOW (self));
   g_assert (param != NULL);
-  g_assert (g_variant_is_of_type (param, G_VARIANT_TYPE_STRING));
+  g_assert (g_variant_is_of_type (param, G_VARIANT_TYPE ("(ss)")));
 
-  profile_uuid = g_variant_get_string (param, NULL);
+  g_variant_get (param, "(&s&s)", &profile_uuid, &container_id);
   profile = prompt_window_dup_profile_for_param (self, profile_uuid);
 
   tab = prompt_tab_new (profile);
   prompt_window_apply_current_settings (self, tab);
+
+  if (!prompt_str_empty0 (container_id))
+    {
+      g_autoptr(PromptIpcContainer) container = NULL;
+
+      if ((container = prompt_application_lookup_container (PROMPT_APPLICATION_DEFAULT, container_id)))
+        prompt_tab_set_container (tab, container);
+    }
 
   window = g_object_new (PROMPT_TYPE_WINDOW, NULL);
   prompt_window_add_tab (window, tab);
@@ -453,7 +472,7 @@ prompt_window_new_terminal_action (GtkWidget  *widget,
 {
   g_assert (PROMPT_IS_WINDOW (widget));
   g_assert (param != NULL);
-  g_assert (g_variant_is_of_type (param, G_VARIANT_TYPE_STRING));
+  g_assert (g_variant_is_of_type (param, G_VARIANT_TYPE ("(ss)")));
 
   if (prompt_application_control_is_pressed (PROMPT_APPLICATION_DEFAULT))
     prompt_window_new_window_action (widget, NULL, param);
@@ -1195,9 +1214,9 @@ prompt_window_class_init (PromptWindowClass *klass)
   gtk_widget_class_bind_template_callback (widget_class, prompt_window_setup_menu_cb);
   gtk_widget_class_bind_template_callback (widget_class, prompt_window_tab_overview_notify_open_cb);
 
-  gtk_widget_class_install_action (widget_class, "win.new-tab", "s", prompt_window_new_tab_action);
-  gtk_widget_class_install_action (widget_class, "win.new-window", "s", prompt_window_new_window_action);
-  gtk_widget_class_install_action (widget_class, "win.new-terminal", "s", prompt_window_new_terminal_action);
+  gtk_widget_class_install_action (widget_class, "win.new-tab", "(ss)", prompt_window_new_tab_action);
+  gtk_widget_class_install_action (widget_class, "win.new-window", "(ss)", prompt_window_new_window_action);
+  gtk_widget_class_install_action (widget_class, "win.new-terminal", "(ss)", prompt_window_new_terminal_action);
   gtk_widget_class_install_action (widget_class, "win.fullscreen", NULL, prompt_window_fullscreen_action);
   gtk_widget_class_install_action (widget_class, "win.unfullscreen", NULL, prompt_window_unfullscreen_action);
   gtk_widget_class_install_action (widget_class, "win.toggle-fullscreen", NULL, prompt_window_toggle_fullscreen);
