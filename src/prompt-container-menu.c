@@ -137,10 +137,7 @@ prompt_container_menu_items_changed_cb (PromptContainerMenu *self,
   if (is_hidden)
     g_menu_model_items_changed (G_MENU_MODEL (self), 0, 0, g_list_model_get_n_items (model));
   else if (will_hide)
-    {
-      removed++;
-      position = 0;
-    }
+    g_menu_model_items_changed (G_MENU_MODEL (self), 0, removed+1, 0);
   else
     g_menu_model_items_changed (G_MENU_MODEL (self), position, removed, added);
 }
