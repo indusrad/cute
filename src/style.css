@@ -37,6 +37,10 @@ findbar .close-button image
   padding: 0;
 }
 
+popover button.pill.flat
+{
+  padding: 0;
+}
 
 themeselector {
   margin: 9px;

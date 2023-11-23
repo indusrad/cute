@@ -983,7 +983,7 @@ prompt_window_add_zoom_controls (PromptWindow *self)
                                   GTK_ACCESSIBLE_PROPERTY_LABEL,
                                   _("Zoom out"), -1);
   self->zoom_label = g_object_new (GTK_TYPE_BUTTON,
-                                   "css-classes", (const char * const[]) {"flat", NULL},
+                                   "css-classes", (const char * const[]) {"flat", "pill", NULL},
                                    "action-name", "win.zoom-one",
                                    "hexpand", TRUE,
                                    "tooltip-text", _("Reset Zoom"),
