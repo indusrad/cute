@@ -154,6 +154,12 @@ prompt_container_menu_constructed (GObject *object)
                            G_CALLBACK (prompt_container_menu_items_changed_cb),
                            self,
                            G_CONNECT_SWAPPED);
+
+  prompt_container_menu_items_changed_cb (self,
+                                          0,
+                                          0,
+                                          g_list_model_get_n_items (self->containers),
+                                          self->containers);
 }
 
 static void
