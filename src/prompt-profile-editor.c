@@ -21,6 +21,8 @@
 
 #include "config.h"
 
+#include <math.h>
+
 #include <glib/gi18n.h>
 
 #include "prompt-agent-ipc.h"
@@ -54,6 +56,7 @@ struct _PromptProfileEditor
   AdwEntryRow       *custom_commmand;
   GtkScale          *opacity;
   GtkAdjustment     *opacity_adjustment;
+  GtkLabel          *opacity_label;
   AdwToastOverlay   *toasts;
   GtkLabel          *uuid;
   GListStore        *erase_bindings;
@@ -162,6 +165,24 @@ map_container_to_list_item (gpointer item,
                        NULL);
 }
 
+static gboolean
+opacity_to_label (GBinding     *binding,
+                  const GValue *from_value,
+                  GValue       *to_value,
+                  gpointer      user_data)
+{
+  double opacity;
+
+  g_assert (G_IS_BINDING (binding));
+  g_assert (G_VALUE_HOLDS_DOUBLE (from_value));
+  g_assert (G_VALUE_HOLDS_STRING (to_value));
+
+  opacity = g_value_get_double (from_value);
+  g_value_take_string (to_value, g_strdup_printf ("%3.0lf%%", floor (100.*opacity)));
+
+  return TRUE;
+}
+
 static void
 prompt_profile_editor_constructed (GObject *object)
 {
@@ -218,6 +239,10 @@ prompt_profile_editor_constructed (GObject *object)
   g_object_bind_property (self->profile, "opacity",
                           self->opacity_adjustment, "value",
                           G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
+  g_object_bind_property_full (self->profile, "opacity",
+                               self->opacity_label, "label",
+                               G_BINDING_SYNC_CREATE,
+                               opacity_to_label, NULL, NULL, NULL);
 
   g_settings_bind_with_mapping (gsettings,
                                 PROMPT_PROFILE_KEY_DEFAULT_CONTAINER,
@@ -387,6 +412,7 @@ prompt_profile_editor_class_init (PromptProfileEditorClass *klass)
   gtk_widget_class_bind_template_child (widget_class, PromptProfileEditor, login_shell);
   gtk_widget_class_bind_template_child (widget_class, PromptProfileEditor, opacity);
   gtk_widget_class_bind_template_child (widget_class, PromptProfileEditor, opacity_adjustment);
+  gtk_widget_class_bind_template_child (widget_class, PromptProfileEditor, opacity_label);
   gtk_widget_class_bind_template_child (widget_class, PromptProfileEditor, palette);
   gtk_widget_class_bind_template_child (widget_class, PromptProfileEditor, preserve_containers);
   gtk_widget_class_bind_template_child (widget_class, PromptProfileEditor, preserve_container);
