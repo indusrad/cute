@@ -70,6 +70,7 @@ prompt_tab_notify_show_notification (PromptTabNotify *notify,
   else
     {
       g_autoptr(GNotification) notification = NULL;
+      g_autoptr(GIcon) icon = NULL;
       g_autofree char *cmdline_sanitized = NULL;
       const char *uuid = prompt_tab_get_uuid (notify->tab);
 
@@ -82,10 +83,12 @@ prompt_tab_notify_show_notification (PromptTabNotify *notify,
       }
 #endif
 
+      icon = g_themed_icon_new (APP_ID "-symbolic");
       cmdline_sanitized = g_utf8_make_valid (cmdline, -1);
 
       notification = g_notification_new (_("Command completed"));
       g_notification_set_body (notification, cmdline_sanitized);
+      g_notification_set_icon (notification, icon);
       g_notification_set_default_action_and_target (notification,
                                                     "app.focus-tab-by-uuid",
                                                     "s", uuid);
