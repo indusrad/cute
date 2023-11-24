@@ -123,7 +123,13 @@ prompt_podman_provider_init (PromptPodmanProvider *self)
 PromptContainerProvider *
 prompt_podman_provider_new (void)
 {
-  return g_object_new (PROMPT_TYPE_PODMAN_PROVIDER, NULL);
+  PromptPodmanProvider *self;
+
+  self = g_object_new (PROMPT_TYPE_PODMAN_PROVIDER, NULL);
+  g_clear_handle_id (&self->queued_update, g_source_remove);
+  prompt_podman_provider_update_sync (self, NULL, NULL);
+
+  return PROMPT_CONTAINER_PROVIDER (self);
 }
 
 void
@@ -322,4 +328,74 @@ prompt_podman_provider_queue_update (PromptPodmanProvider *self)
     self->queued_update = g_idle_add_full (G_PRIORITY_LOW,
                                            prompt_podman_provider_update_source_func,
                                            self, NULL);
+}
+
+gboolean
+prompt_podman_provider_update_sync (PromptPodmanProvider  *self,
+                                    GCancellable          *cancellable,
+                                    GError               **error)
+{
+  g_autoptr(PromptRunContext) run_context = NULL;
+  g_autoptr(GSubprocess) subprocess = NULL;
+  g_autoptr(GIOStream) stream = NULL;
+  g_autoptr(GPtrArray) containers = NULL;
+  g_autoptr(JsonParser) parser = NULL;
+  JsonArray *root_array;
+  JsonNode *root;
+  GOutputStream *stdin_stream;
+  GInputStream *stdout_stream;
+
+  g_return_val_if_fail (PROMPT_IS_PODMAN_PROVIDER (self), FALSE);
+  g_return_val_if_fail (!cancellable || G_IS_CANCELLABLE (cancellable), FALSE);
+
+  run_context = prompt_run_context_new ();
+  prompt_run_context_append_argv (run_context, "podman");
+  prompt_run_context_append_argv (run_context, "ps");
+  prompt_run_context_append_argv (run_context, "--all");
+  prompt_run_context_append_argv (run_context, "--format=json");
+
+  prompt_run_context_take_fd (run_context,
+                              open ("/dev/null", O_RDWR|O_CLOEXEC),
+                              STDERR_FILENO);
+
+  if (!(stream = prompt_run_context_create_stdio_stream (run_context, error)) ||
+      !(subprocess = prompt_run_context_spawn (run_context, error)))
+    return FALSE;
+
+  stdout_stream = g_io_stream_get_input_stream (stream);
+  stdin_stream = g_io_stream_get_output_stream (stream);
+
+  g_assert (!g_io_stream_is_closed (stream));
+  g_assert (!g_input_stream_is_closed (stdout_stream));
+  g_assert (!g_output_stream_is_closed (stdin_stream));
+
+  parser = json_parser_new ();
+
+  if (!json_parser_load_from_stream (parser, stdout_stream, cancellable, error))
+    return FALSE;
+
+  containers = g_ptr_array_new_with_free_func (g_object_unref);
+
+  if ((root = json_parser_get_root (parser)) &&
+      JSON_NODE_HOLDS_ARRAY (root) &&
+      (root_array = json_node_get_array (root)))
+    {
+      guint n_elements = json_array_get_length (root_array);
+
+      for (guint i = 0; i < n_elements; i++)
+        {
+          g_autoptr(PromptPodmanContainer) container = NULL;
+          JsonNode *element = json_array_get_element (root_array, i);
+          JsonObject *element_object;
+
+          if (JSON_NODE_HOLDS_OBJECT (element) &&
+              (element_object = json_node_get_object (element)) &&
+              (container = prompt_podman_provider_deserialize (self, element_object)))
+            g_ptr_array_add (containers, g_steal_pointer (&container));
+        }
+    }
+
+  prompt_container_provider_merge (PROMPT_CONTAINER_PROVIDER (self), containers);
+
+  return TRUE;
 }
