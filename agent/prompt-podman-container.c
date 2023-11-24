@@ -270,8 +270,7 @@ prompt_podman_container_run_context_cb (PromptRunContext    *run_context,
   for (guint i = 0; env[i]; i++)
     prompt_run_context_append_formatted (run_context, "--env=%s", env[i]);
 
-  /* Now specify our runtime identifier. Note that self->id is
-   * like :id but w/o podman: prefix */
+  /* Now specify our runtime identifier */
   prompt_run_context_append_argv (run_context, id);
 
   /* Finally, propagate the upper layer's command arguments */
