@@ -163,6 +163,8 @@ prompt_agent_push_spawn (PromptRunContext   *run_context,
 
   if (cwd && cwd[0])
     prompt_run_context_set_cwd (run_context, cwd);
+  else
+    prompt_run_context_set_cwd (run_context, g_get_home_dir ());
 
   prompt_run_context_append_args (run_context, argv);
 
