@@ -1,4 +1,4 @@
-From ac804cbbb8c6ab7cdc2bbfd7a782b3224c8bbf2e Mon Sep 17 00:00:00 2001
+From ca043fc64a78954fd873c71d3e034df7038908ef Mon Sep 17 00:00:00 2001
 From: Debarshi Ray <debarshir@gnome.org>
 Date: Thu, 22 Jan 2015 16:37:10 +0100
 Subject: [PATCH 3/9] Test the notification-received signal
@@ -8,10 +8,10 @@ Subject: [PATCH 3/9] Test the notification-received signal
  1 file changed, 11 insertions(+), 1 deletion(-)
 
 diff --git a/src/app/app.cc b/src/app/app.cc
-index d6bbfe1c..9c9bd47f 100644
+index d5a65fc4..e8a51192 100644
 --- a/src/app/app.cc
 +++ b/src/app/app.cc
-@@ -2322,6 +2322,14 @@ window_window_title_changed_cb(VteTerminal* terminal,
+@@ -2316,6 +2316,14 @@ window_window_title_changed_cb(VteTerminal* terminal,
          gtk_window_set_title(GTK_WINDOW(window), title && title[0] ? title : "Terminal");
  }
  
@@ -26,7 +26,7 @@ index d6bbfe1c..9c9bd47f 100644
  static void
  window_lower_window_cb(VteTerminal* terminal,
                         VteappWindow* window)
-@@ -2618,8 +2626,10 @@ vteapp_window_constructed(GObject *object)
+@@ -2607,8 +2615,10 @@ vteapp_window_constructed(GObject *object)
          if (options.object_notifications)
                  g_signal_connect(window->terminal, "notify", G_CALLBACK(window_notify_cb), window);
  
@@ -39,5 +39,5 @@ index d6bbfe1c..9c9bd47f 100644
                  G_GNUC_BEGIN_IGNORE_DEPRECATIONS;
                  gtk_widget_set_double_buffered(GTK_WIDGET(window->terminal), false);
 -- 
-2.42.0
+2.41.0
 

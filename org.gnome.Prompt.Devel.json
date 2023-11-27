@@ -75,7 +75,7 @@
                 },
                 {
                     "type" : "patch",
-                    "path" : "build-aux/0009-terminal-make-new-API-available-to-GTK-4.patch"
+                    "path" : "build-aux/0009-expose-notification-shellcmd-containers-to-GTK-4.patch"
                 }
             ]
         },

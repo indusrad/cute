@@ -1,6 +1,6 @@
-From 040ffa57525440de724464922842b6e35f0b27dc Mon Sep 17 00:00:00 2001
+From b9810afb87a3e0abb3e0e23f113ae1c2a8b336fd Mon Sep 17 00:00:00 2001
 From: Debarshi Ray <debarshir@gnome.org>
-Date: Mon, 10 Jun 2019 20:30:18 +0200
+Date: Sun, 26 Nov 2023 18:44:32 -0800
 Subject: [PATCH 8/9] Support tracking the active container inside the terminal
 
 Add sequences
@@ -32,22 +32,22 @@ agreed upon across multiple different terminal emulators [1].
 ---
  src/vte.cc            |  8 ++++
  src/vte/vteterminal.h |  6 +++
- src/vtegtk.cc         | 83 +++++++++++++++++++++++++++++++++++++++
+ src/vtegtk.cc         | 83 +++++++++++++++++++++++++++++++++++++++++
  src/vtegtk.hh         |  4 ++
  src/vteinternal.hh    | 20 ++++++++++
- src/vteseq.cc         | 90 +++++++++++++++++++++++++++++++++++++++++++
- 6 files changed, 211 insertions(+)
+ src/vteseq.cc         | 87 +++++++++++++++++++++++++++++++++++++++++++
+ 6 files changed, 208 insertions(+)
 
 diff --git a/src/vte.cc b/src/vte.cc
-index 7c0dad01..aa00c727 100644
+index 7a49405c..ad85807d 100644
 --- a/src/vte.cc
 +++ b/src/vte.cc
-@@ -10722,6 +10722,14 @@ Terminal::emit_pending_signals()
+@@ -10801,6 +10801,14 @@ Terminal::emit_pending_signals()
                                    "Emitting `shell-precmd'.\n");
                  g_signal_emit(freezer.get(), signals[SIGNAL_SHELL_PRECMD], 0);
          }
 +
-+	if (m_pending_changes & vte::to_integral(PendingChanges::CONTAINERS)) {
++        if (m_pending_changes & vte::to_integral(PendingChanges::CONTAINERS)) {
 +                _vte_debug_print(VTE_DEBUG_SIGNALS,
 +                                 "Notifying `current-container-name' and `current-container-runtime'.\n");
 +
@@ -58,7 +58,7 @@ index 7c0dad01..aa00c727 100644
  
  	if (m_pending_changes & vte::to_integral(PendingChanges::TITLE)) {
 diff --git a/src/vte/vteterminal.h b/src/vte/vteterminal.h
-index 752fc925..84d161ca 100644
+index 9b06afeb..e8792f2b 100644
 --- a/src/vte/vteterminal.h
 +++ b/src/vte/vteterminal.h
 @@ -567,6 +567,12 @@ _VTE_PUBLIC
@@ -75,10 +75,10 @@ index 752fc925..84d161ca 100644
  const char *vte_terminal_get_current_directory_uri(VteTerminal *terminal) _VTE_CXX_NOEXCEPT _VTE_GNUC_NONNULL(1);
  _VTE_PUBLIC
 diff --git a/src/vtegtk.cc b/src/vtegtk.cc
-index eb099c9a..7061cda0 100644
+index 4e264b3b..b25f87fa 100644
 --- a/src/vtegtk.cc
 +++ b/src/vtegtk.cc
-@@ -963,6 +963,14 @@ try
+@@ -999,6 +999,14 @@ try
                  case PROP_CURSOR_BLINK_MODE:
                          g_value_set_enum (value, vte_terminal_get_cursor_blink_mode (terminal));
                          break;
@@ -93,7 +93,7 @@ index eb099c9a..7061cda0 100644
                  case PROP_CURRENT_DIRECTORY_URI:
                          g_value_set_string (value, vte_terminal_get_current_directory_uri (terminal));
                          break;
-@@ -2423,6 +2431,29 @@ vte_terminal_class_init(VteTerminalClass *klass)
+@@ -2529,6 +2537,29 @@ vte_terminal_class_init(VteTerminalClass *klass)
                                       NULL,
                                       (GParamFlags) (G_PARAM_READABLE | G_PARAM_STATIC_STRINGS | G_PARAM_EXPLICIT_NOTIFY));
  
@@ -123,7 +123,7 @@ index eb099c9a..7061cda0 100644
          /**
           * VteTerminal:current-directory-uri:
           *
-@@ -5286,6 +5317,58 @@ catch (...)
+@@ -5395,6 +5426,58 @@ catch (...)
          return -1;
  }
  
@@ -183,11 +183,11 @@ index eb099c9a..7061cda0 100644
   * vte_terminal_get_current_directory_uri:
   * @terminal: a #VteTerminal
 diff --git a/src/vtegtk.hh b/src/vtegtk.hh
-index cd42edfa..47aad6cc 100644
+index a1c3f3df..3505bce5 100644
 --- a/src/vtegtk.hh
 +++ b/src/vtegtk.hh
-@@ -74,6 +74,10 @@ enum {
-         PROP_CJK_AMBIGUOUS_WIDTH,
+@@ -77,6 +77,10 @@ enum {
+         PROP_CONTEXT_MENU,
          PROP_CURSOR_BLINK_MODE,
          PROP_CURSOR_SHAPE,
 +#if _VTE_GTK == 3
@@ -198,7 +198,7 @@ index cd42edfa..47aad6cc 100644
          PROP_CURRENT_FILE_URI,
          PROP_DELETE_BINDING,
 diff --git a/src/vteinternal.hh b/src/vteinternal.hh
-index 17991e66..44cbce2c 100644
+index 5cdf015e..3659281d 100644
 --- a/src/vteinternal.hh
 +++ b/src/vteinternal.hh
 @@ -63,6 +63,9 @@
@@ -232,15 +232,15 @@ index 17991e66..44cbce2c 100644
  typedef struct _VtePaletteColor {
  	struct {
  		vte::color::rgb color;
-@@ -737,6 +754,8 @@ public:
-         gboolean m_contents_changed_pending;
+@@ -738,6 +755,8 @@ public:
  
  #if _VTE_GTK == 3
+         /* desktop notification */
 +        std::stack<VteContainer> m_containers;
 +
-         /* desktop notification */
          std::string m_notification_summary;
          std::string m_notification_body;
+ #endif
 @@ -759,6 +778,7 @@ public:
                  NOTIFICATION = 1u << 3,
                  SHELL_PREEXEC = 1u << 4,
@@ -250,18 +250,10 @@ index 17991e66..44cbce2c 100644
          };
          unsigned m_pending_changes{0};
 diff --git a/src/vteseq.cc b/src/vteseq.cc
-index 44f13505..b8424972 100644
+index 44f13505..1072c5dc 100644
 --- a/src/vteseq.cc
 +++ b/src/vteseq.cc
-@@ -19,6 +19,7 @@
- 
- #include "config.h"
- 
-+
- #include <search.h>
- #include <stdlib.h>
- #include <string.h>
-@@ -39,6 +40,11 @@
+@@ -39,6 +39,11 @@
  #define ST_C0 _VTE_CAP_ST
  
  #include <algorithm>
@@ -273,11 +265,10 @@ index 44f13505..b8424972 100644
  
  using namespace std::literals;
  
-@@ -1308,6 +1314,90 @@ Terminal::handle_urxvt_extension(vte::parser::Sequence const& seq,
+@@ -1308,6 +1313,88 @@ Terminal::handle_urxvt_extension(vte::parser::Sequence const& seq,
          if (token == endtoken)
                  return;
  
-+#if _VTE_GTK == 3
 +        if (*token == "container") {
 +                ++token;
 +
@@ -359,11 +350,10 @@ index 44f13505..b8424972 100644
 +
 +                return;
 +        }
-+#endif
 +
          if (*token == "notify") {
                  ++token;
  
 -- 
-2.42.0
+2.41.0
 
