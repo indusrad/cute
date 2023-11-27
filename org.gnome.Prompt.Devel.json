@@ -76,6 +76,10 @@
                 {
                     "type" : "patch",
                     "path" : "build-aux/0009-expose-notification-shellcmd-containers-to-GTK-4.patch"
+                },
+                {
+                    "type" : "patch",
+                    "path" : "build-aux/0010-vte-drive-updates-from-GdkFrameClock.patch"
                 }
             ]
         },
