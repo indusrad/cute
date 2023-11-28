@@ -1,0 +1,35 @@
+From c9dc4879db2bb5964e2a117e5cbdb247587216e0 Mon Sep 17 00:00:00 2001
+From: Christian Hergert <chergert@redhat.com>
+Date: Tue, 28 Nov 2023 13:56:28 -0800
+Subject: [PATCH] vte: emit adjustment changed in tick callback
+
+We want this to run every frame that we process new data so that the
+layout phase of the frame clock will update the scroll position.
+---
+ src/vte.cc | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/src/vte.cc b/src/vte.cc
+index f91740b2..1286a3cc 100644
+--- a/src/vte.cc
++++ b/src/vte.cc
+@@ -10903,8 +10903,6 @@ Terminal::process(bool emit_adj_changed)
+                 }
+                 connect_pty_read();
+         }
+-        if (emit_adj_changed)
+-                emit_adjustment_changed();
+ 
+         bool is_active = !m_incoming_queue.empty();
+         if (is_active) {
+@@ -10933,6 +10931,7 @@ try
+         that->m_is_processing = false;
+ 
+         that->invalidate_dirty_rects_and_process_updates();
++        that->emit_adjustment_changed();
+ 
+         if (!is_active) {
+                 stop_processing(that);
+-- 
+2.43.0
+

@@ -80,6 +80,10 @@
                 {
                     "type" : "patch",
                     "path" : "build-aux/0010-vte-drive-updates-from-GdkFrameClock.patch"
+                },
+                {
+                    "type" : "patch",
+                    "path" : "build-aux/0011-vte-emit-adjustment-changed-in-tick-callback.patch"
                 }
             ]
         },
