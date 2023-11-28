@@ -41,30 +41,75 @@ G_DEFINE_TYPE_WITH_CODE (PromptPodmanContainer, prompt_podman_container, PROMPT_
                          G_IMPLEMENT_INTERFACE (PROMPT_IPC_TYPE_CONTAINER, container_iface_init))
 
 static void
-maybe_start (PromptPodmanContainer *self)
+maybe_start_cb (GObject      *object,
+                GAsyncResult *result,
+                gpointer      user_data)
+{
+  GSubprocess *subprocess = (GSubprocess *)object;
+  g_autoptr(GTask) task = user_data;
+  g_autoptr(GError) error = NULL;
+
+  g_assert (G_IS_SUBPROCESS (subprocess));
+  g_assert (G_IS_ASYNC_RESULT (result));
+  g_assert (G_IS_TASK (task));
+
+  if (!g_subprocess_wait_check_finish (subprocess, result, &error))
+    g_task_return_error (task, g_steal_pointer (&error));
+  else
+    g_task_return_boolean (task, TRUE);
+}
+
+static void
+maybe_start (PromptPodmanContainer *self,
+             GCancellable          *cancellable,
+             GAsyncReadyCallback    callback,
+             gpointer               user_data)
 {
   PromptPodmanContainerPrivate *priv = prompt_podman_container_get_instance_private (self);
   g_autoptr(GSubprocessLauncher) launcher = NULL;
   g_autoptr(GSubprocess) subprocess = NULL;
+  g_autoptr(GError) error = NULL;
+  g_autoptr(GTask) task = NULL;
   const char *id;
 
   g_assert (PROMPT_IS_PODMAN_CONTAINER (self));
 
-  id = prompt_ipc_container_get_id (PROMPT_IPC_CONTAINER (self));
+  task = g_task_new (self, cancellable, callback, user_data);
+  g_task_set_source_tag (task, maybe_start);
 
+  id = prompt_ipc_container_get_id (PROMPT_IPC_CONTAINER (self));
   g_assert (id != NULL && id[0] != 0);
 
   if (priv->has_started)
-    return;
+    {
+      g_task_return_boolean (task, TRUE);
+      return;
+    }
+
+  priv->has_started = TRUE;
 
   launcher = g_subprocess_launcher_new (G_SUBPROCESS_FLAGS_STDERR_SILENCE |
                                         G_SUBPROCESS_FLAGS_STDOUT_SILENCE);
 
-  if ((subprocess = g_subprocess_launcher_spawn (launcher, NULL, "podman", "start", id, NULL)))
-    {
-      g_subprocess_wait_async (subprocess, NULL, NULL, NULL);
-      priv->has_started = TRUE;
-    }
+  /* Wait so that we don't try to run before the pod has started */
+  if ((subprocess = g_subprocess_launcher_spawn (launcher, &error, "podman", "start", id, NULL)))
+    g_subprocess_wait_check_async (subprocess,
+                                   cancellable,
+                                   maybe_start_cb,
+                                   g_steal_pointer (&task));
+  else
+    g_task_return_error (task, g_steal_pointer (&error));
+}
+
+static gboolean
+maybe_start_finish (PromptPodmanContainer  *self,
+                    GAsyncResult           *result,
+                    GError                **error)
+{
+  g_assert (PROMPT_IS_PODMAN_CONTAINER (self));
+  g_assert (G_IS_TASK (result));
+
+  return g_task_propagate_boolean (G_TASK (result), error);
 }
 
 static void
@@ -279,6 +324,50 @@ prompt_podman_container_run_context_cb (PromptRunContext    *run_context,
   return TRUE;
 }
 
+static void
+prompt_podman_container_handle_spawn_cb (GObject      *object,
+                                         GAsyncResult *result,
+                                         gpointer      user_data)
+{
+  PromptPodmanContainer *self = (PromptPodmanContainer *)object;
+  g_autoptr(PromptRunContext) run_context = user_data;
+  g_autoptr(PromptIpcProcess) process = NULL;
+  g_autoptr(GSubprocess) subprocess = NULL;
+  g_autoptr(GUnixFDList) out_fd_list = NULL;
+  g_autoptr(GError) error = NULL;
+  g_autofree char *object_path = NULL;
+  g_autofree char *guid = NULL;
+  GDBusMethodInvocation *invocation;
+  GDBusConnection *connection;
+
+  g_assert (PROMPT_IS_PODMAN_CONTAINER (self));
+  g_assert (G_IS_ASYNC_RESULT (result));
+  g_assert (PROMPT_IS_RUN_CONTEXT (run_context));
+
+  invocation = g_object_get_data (G_OBJECT (run_context), "INVOCATION");
+  g_assert (G_IS_DBUS_METHOD_INVOCATION (invocation));
+
+  connection = g_dbus_method_invocation_get_connection (invocation);
+  g_assert (G_IS_DBUS_CONNECTION (connection));
+
+  out_fd_list = g_unix_fd_list_new ();
+  guid = g_dbus_generate_guid ();
+  object_path = g_strdup_printf ("/org/gnome/Prompt/Process/%s", guid);
+
+  if (!maybe_start_finish (self, result, &error) ||
+      !(subprocess = prompt_run_context_spawn (run_context, &error)) ||
+      !(process = prompt_process_impl_new (connection, subprocess, object_path, &error)))
+    {
+      g_dbus_method_invocation_return_gerror (g_object_ref (invocation), error);
+      return;
+    }
+
+  prompt_ipc_container_complete_spawn (PROMPT_IPC_CONTAINER (self),
+                                       g_object_ref (invocation),
+                                       out_fd_list,
+                                       object_path);
+}
+
 static gboolean
 prompt_podman_container_handle_spawn (PromptIpcContainer    *container,
                                       GDBusMethodInvocation *invocation,
@@ -289,14 +378,7 @@ prompt_podman_container_handle_spawn (PromptIpcContainer    *container,
                                       GVariant              *in_env)
 {
   g_autoptr(PromptRunContext) run_context = NULL;
-  g_autoptr(PromptIpcProcess) process = NULL;
-  g_autoptr(GSubprocess) subprocess = NULL;
-  g_autoptr(GUnixFDList) out_fd_list = NULL;
   g_autoptr(GError) error = NULL;
-  g_auto(GStrv) env = NULL;
-  GDBusConnection *connection;
-  g_autofree char *object_path = NULL;
-  g_autofree char *guid = NULL;
 
   g_assert (PROMPT_IS_PODMAN_CONTAINER (container));
   g_assert (G_IS_DBUS_METHOD_INVOCATION (invocation));
@@ -306,8 +388,6 @@ prompt_podman_container_handle_spawn (PromptIpcContainer    *container,
   g_assert (in_fds != NULL);
   g_assert (in_env != NULL);
 
-  maybe_start (PROMPT_PODMAN_CONTAINER (container));
-
   run_context = prompt_run_context_new ();
   prompt_run_context_add_minimal_environment (run_context);
   prompt_run_context_push (run_context,
@@ -316,19 +396,15 @@ prompt_podman_container_handle_spawn (PromptIpcContainer    *container,
                            g_object_unref);
   prompt_agent_push_spawn (run_context, in_fd_list, cwd, argv, in_fds, in_env);
 
-  guid = g_dbus_generate_guid ();
-  object_path = g_strdup_printf ("/org/gnome/Prompt/Process/%s", guid);
-  out_fd_list = g_unix_fd_list_new ();
-  connection = g_dbus_method_invocation_get_connection (invocation);
+  g_object_set_data_full (G_OBJECT (run_context),
+                          "INVOCATION",
+                          g_steal_pointer (&invocation),
+                          g_object_unref);
 
-  if (!(subprocess = prompt_run_context_spawn (run_context, &error)) ||
-      !(process = prompt_process_impl_new (connection, subprocess, object_path, &error)))
-    g_dbus_method_invocation_return_gerror (g_steal_pointer (&invocation), error);
-  else
-    prompt_ipc_container_complete_spawn (container,
-                                         g_steal_pointer (&invocation),
-                                         out_fd_list,
-                                         object_path);
+  maybe_start (PROMPT_PODMAN_CONTAINER (container),
+               NULL,
+               prompt_podman_container_handle_spawn_cb,
+               g_steal_pointer (&run_context));
 
   return TRUE;
 }
