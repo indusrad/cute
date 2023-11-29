@@ -57,6 +57,7 @@ PromptTerminal   *prompt_tab_get_terminal                       (PromptTab      
 PromptProfile    *prompt_tab_get_profile                        (PromptTab           *self);
 PromptIpcProcess *prompt_tab_get_process                        (PromptTab           *self);
 const char       *prompt_tab_get_uuid                           (PromptTab           *self);
+char             *prompt_tab_dup_cmdline                        (PromptTab           *self);
 char             *prompt_tab_dup_subtitle                       (PromptTab           *self);
 char             *prompt_tab_dup_title                          (PromptTab           *self);
 const char       *prompt_tab_get_title_prefix                   (PromptTab           *self);

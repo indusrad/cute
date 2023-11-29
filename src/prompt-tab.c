@@ -1181,3 +1181,16 @@ prompt_tab_set_container (PromptTab          *self,
 
   g_set_object (&self->container_at_creation, container);
 }
+
+char *
+prompt_tab_dup_cmdline (PromptTab *self)
+{
+  g_autofree char *cmdline = NULL;
+
+  g_return_val_if_fail (PROMPT_IS_TAB (self), NULL);
+
+  if (prompt_tab_is_running (self, &cmdline))
+    return g_steal_pointer (&cmdline);
+
+  return NULL;
+}

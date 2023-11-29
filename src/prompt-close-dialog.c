@@ -26,6 +26,7 @@
 
 #include "prompt-tab.h"
 #include "prompt-close-dialog.h"
+#include "prompt-util.h"
 #include "prompt-window.h"
 
 typedef struct
@@ -135,22 +136,40 @@ _prompt_close_dialog_new (GtkWindow *parent,
   for (guint i = 0; i < tabs->len; i++)
     {
       PromptTab *tab = g_ptr_array_index (tabs, i);
-      g_autofree gchar *title_str = prompt_tab_dup_title (tab);
-      g_autofree gchar *subtitle_str = prompt_tab_dup_subtitle (tab);
+      g_autofree char *truncated = NULL;
+      g_autofree char *cmdline = NULL;
+      g_autofree char *title = NULL;
+      g_autofree char *subtitle = NULL;
+      const char *row_title = NULL;
+      const char *row_subtitle = NULL;
       GtkWidget *row;
       SaveRequest sr;
 
-      row = adw_action_row_new ();
+      cmdline = prompt_tab_dup_cmdline (tab);
+      title = prompt_tab_dup_title (tab);
+      subtitle = prompt_tab_dup_subtitle (tab);
 
-      if (strlen (title_str) > 200)
+      if (prompt_str_empty0 (cmdline))
         {
-          char *tmp = g_strndup (title_str, 200);
-          g_free (title_str);
-          title_str = tmp;
+          row_title = title;
+          row_subtitle = subtitle;
+        }
+      else
+        {
+          row_title = cmdline;
+          row_subtitle = prompt_str_empty0 (subtitle) ? title : subtitle;
         }
 
-      adw_preferences_row_set_title (ADW_PREFERENCES_ROW (row), title_str);
-      adw_action_row_set_subtitle (ADW_ACTION_ROW (row), subtitle_str);
+      row = adw_action_row_new ();
+
+      if (strlen (row_title) > 200)
+        {
+          truncated = g_strndup (row_title, 200);
+          row_title = truncated;
+        }
+
+      adw_preferences_row_set_title (ADW_PREFERENCES_ROW (row), row_title);
+      adw_action_row_set_subtitle (ADW_ACTION_ROW (row), row_subtitle);
       adw_preferences_group_add (ADW_PREFERENCES_GROUP (group), row);
 
       sr.tab = g_object_ref (tab);
