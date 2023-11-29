@@ -50,6 +50,7 @@
         </child>
         <child>
           <object class="AdwPreferencesGroup">
+            <property name="visible">false</property>
             <child>
               <object class="AdwActionRow">
                 <property name="title" translatable="yes">Transparency</property>
