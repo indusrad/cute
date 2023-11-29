@@ -32,13 +32,18 @@ if not get_option('buildtype').startswith('debug')
   test_link_args += ['-Wl,-Bsymbolic', '-fno-plt']
 endif
 
+app_schema_id = app_id
+app_schema_profile_id = '@0@.Profile'.format(app_id)
+app_schema_shortcuts_id = '@0@.Shortcuts'.format(app_id)
+app_schema_shortcuts_path = '@0@Shortcuts/'.format(app_schema_path)
+
 config_h = configuration_data()
 config_h.set_quoted('APP_ID', app_id)
-config_h.set_quoted('APP_SCHEMA_ID', app_id)
+config_h.set_quoted('APP_SCHEMA_ID', app_schema_id)
 config_h.set_quoted('APP_SCHEMA_PATH', app_schema_path)
-config_h.set_quoted('APP_SCHEMA_PROFILE_ID', '@0@.Profile'.format(app_id))
-config_h.set_quoted('APP_SCHEMA_SHORTCUTS_ID', '@0@.Shortcuts'.format(app_id))
-config_h.set_quoted('APP_SCHEMA_SHORTCUTS_PATH', '@0@Shortcuts/'.format(app_schema_path))
+config_h.set_quoted('APP_SCHEMA_PROFILE_ID', app_schema_profile_id)
+config_h.set_quoted('APP_SCHEMA_SHORTCUTS_ID', app_schema_shortcuts_id)
+config_h.set_quoted('APP_SCHEMA_SHORTCUTS_PATH', app_schema_shortcuts_path)
 config_h.set_quoted('PACKAGE_VERSION', meson.project_version())
 config_h.set_quoted('GETTEXT_PACKAGE', 'prompt')
 config_h.set_quoted('LOCALEDIR', get_option('prefix') / get_option('localedir'))

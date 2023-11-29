@@ -17,26 +17,26 @@
 
   SPDX-License-Identifier: GPL-3.0-or-later
 -->
-<schemalist gettext-domain=@GETTEXT_PACKAGE@>
+<schemalist gettext-domain="prompt">
 
-  <enum id="org.gnome.Prompt.CjkAmbiguousWidth">
+  <enum id="@APP_SCHEMA_ID@.CjkAmbiguousWidth">
     <value nick="narrow" value="1"/>
     <value nick="wide" value="2"/>
   </enum>
 
-  <enum id="org.gnome.Prompt.CursorBlinkMode">
+  <enum id="@APP_SCHEMA_ID@.CursorBlinkMode">
     <value nick="system" value="0"/>
     <value nick="on" value="1"/>
     <value nick="off" value="2"/>
   </enum>
 
-  <enum id="org.gnome.Prompt.CursorShape">
+  <enum id="@APP_SCHEMA_ID@.CursorShape">
     <value nick="block" value="0"/>
     <value nick="ibeam" value="1"/>
     <value nick="underline" value="2"/>
   </enum>
 
-  <enum id="org.gnome.Prompt.EraseBinding">
+  <enum id="@APP_SCHEMA_ID@.EraseBinding">
     <value nick="auto" value="0"/>
     <value nick="ascii-backspace" value="1"/>
     <value nick="ascii-delete" value="2"/>
@@ -44,13 +44,13 @@
     <value nick="tty" value="4"/>
   </enum>
 
-  <enum id="org.gnome.Prompt.ExitAction">
+  <enum id="@APP_SCHEMA_ID@.ExitAction">
     <value nick="none" value="0"/>
     <value nick="restart" value="1"/>
     <value nick="close" value="2"/>
   </enum>
 
-  <enum id="org.gnome.Prompt.InterfaceStyle">
+  <enum id="@APP_SCHEMA_ID@.InterfaceStyle">
     <!-- ADW_COLOR_SCHEME_DFEAULT -->
     <value nick="system" value="0"/>
     <!-- ADW_COLOR_SCHEME_FORCE_LIGHT -->
@@ -59,36 +59,36 @@
     <value nick="dark" value="4"/>
   </enum>
 
-  <enum id="org.gnome.Prompt.PreserveContainer">
+  <enum id="@APP_SCHEMA_ID@.PreserveContainer">
     <value nick="never" value="0"/>
     <value nick="always" value="1"/>
   </enum>
 
-  <enum id="org.gnome.Prompt.PreserveDirectory">
+  <enum id="@APP_SCHEMA_ID@.PreserveDirectory">
     <value nick="never" value="0"/>
     <value nick="safe" value="1"/>
     <value nick="always" value="2"/>
   </enum>
 
-  <enum id="org.gnome.Prompt.NewTabPosition">
+  <enum id="@APP_SCHEMA_ID@.NewTabPosition">
     <value nick="last" value="0"/>
     <value nick="next" value="1"/>
   </enum>
 
-  <enum id="org.gnome.Prompt.ScrollbarPolicy">
+  <enum id="@APP_SCHEMA_ID@.ScrollbarPolicy">
     <value nick="never" value="0"/>
     <value nick="system" value="1"/>
     <value nick="always" value="2"/>
   </enum>
 
-  <enum id="org.gnome.Prompt.TextBlinkMode">
+  <enum id="@APP_SCHEMA_ID@.TextBlinkMode">
     <value nick="never" value="0"/>
     <value nick="focused" value="1"/>
     <value nick="unfocused" value="2"/>
     <value nick="always" value="3"/>
   </enum>
 
-  <schema id=@APP_SCHEMA_ID@ path=@APP_SCHEMA_PATH@>
+  <schema id="@APP_SCHEMA_ID@" path="@APP_SCHEMA_PATH@">
 
     <key name="default-profile-uuid" type="s">
       <default>''</default>
@@ -102,7 +102,7 @@
       <description>A list of UUID for every profile</description>
     </key>
 
-    <key name="new-tab-position" enum="org.gnome.Prompt.NewTabPosition">
+    <key name="new-tab-position" enum="@APP_SCHEMA_ID@.NewTabPosition">
       <default>'next'</default>
       <summary>New Tab Position</summary>
       <description>Where to place new tabs</description>
@@ -132,31 +132,31 @@
       <description>The font description to use if use-system-font is set to False</description>
     </key>
 
-    <key name="cursor-shape" enum="org.gnome.Prompt.CursorShape">
+    <key name="cursor-shape" enum="@APP_SCHEMA_ID@.CursorShape">
       <default>'block'</default>
       <summary>Cursor Shape</summary>
       <description>The default shape of the cursor</description>
     </key>
 
-    <key name="cursor-blink-mode" enum="org.gnome.Prompt.CursorBlinkMode">
+    <key name="cursor-blink-mode" enum="@APP_SCHEMA_ID@.CursorBlinkMode">
       <default>'system'</default>
       <summary>Cursor Blink Mode</summary>
       <description>The default blink mode cursor</description>
     </key>
 
-    <key name="scrollbar-policy" enum="org.gnome.Prompt.ScrollbarPolicy">
+    <key name="scrollbar-policy" enum="@APP_SCHEMA_ID@.ScrollbarPolicy">
       <default>'system'</default>
       <summary>Scrollbar Policy</summary>
       <description>If scrollbars should be displayed</description>
     </key>
 
-    <key name="text-blink-mode" enum="org.gnome.Prompt.TextBlinkMode">
+    <key name="text-blink-mode" enum="@APP_SCHEMA_ID@.TextBlinkMode">
       <default>'always'</default>
       <summary>Text Blink Mode</summary>
       <description>When text blinking is allowed</description>
     </key>
 
-    <key name="interface-style" enum="org.gnome.Prompt.InterfaceStyle">
+    <key name="interface-style" enum="@APP_SCHEMA_ID@.InterfaceStyle">
       <default>'system'</default>
       <summary>Interface Style</summary>
       <description>If light or dark interface style should be used</description>
@@ -168,7 +168,7 @@
 
   </schema>
 
-  <schema id=@APP_SCHEMA_PROFILE_ID@>
+  <schema id="@APP_SCHEMA_PROFILE_ID@">
 
     <key name="label" type="s">
       <default>''</default>
@@ -225,19 +225,19 @@
       <description>The default container to run the command in</description>
     </key>
 
-    <key name="preserve-container" enum="org.gnome.Prompt.PreserveContainer">
+    <key name="preserve-container" enum="@APP_SCHEMA_ID@.PreserveContainer">
       <default>'always'</default>
       <summary>Preserve Container</summary>
       <description>Preserve the active container when creating new tabs and windows</description>
     </key>
 
-    <key name="exit-action" enum="org.gnome.Prompt.ExitAction">
+    <key name="exit-action" enum="@APP_SCHEMA_ID@.ExitAction">
       <default>'close'</default>
       <summary>Exit Action</summary>
       <description>The action to take when the shell exits</description>
     </key>
 
-    <key name="preserve-directory" enum="org.gnome.Prompt.PreserveDirectory">
+    <key name="preserve-directory" enum="@APP_SCHEMA_ID@.PreserveDirectory">
       <default>'safe'</default>
       <summary>Preserve Directory</summary>
       <description>If the directory should preserved for new terminals</description>
@@ -262,19 +262,19 @@
       <description>Setting bold on one of the lower 8 colors in the palette will use bright variant (upper 8 colors)</description>
     </key>
 
-    <key name="cjk-ambiguous-width" enum="org.gnome.Prompt.CjkAmbiguousWidth">
+    <key name="cjk-ambiguous-width" enum="@APP_SCHEMA_ID@.CjkAmbiguousWidth">
       <default>'narrow'</default>
       <summary>CJK Ambiguous Width</summary>
       <description>The size to apply to ambiguous width characters</description>
     </key>
 
-    <key name="backspace-binding" enum="org.gnome.Prompt.EraseBinding">
+    <key name="backspace-binding" enum="@APP_SCHEMA_ID@.EraseBinding">
       <default>'ascii-delete'</default>
       <summary>Backspace Binding</summary>
       <description>What to send to the PTY when a backspace is entered</description>
     </key>
 
-    <key name="delete-binding" enum="org.gnome.Prompt.EraseBinding">
+    <key name="delete-binding" enum="@APP_SCHEMA_ID@.EraseBinding">
       <default>'delete-sequence'</default>
       <summary>Backspace Binding</summary>
       <description>What to send to the PTY when a backspace is entered</description>
@@ -282,7 +282,7 @@
 
   </schema>
 
-  <schema id=@APP_SCHEMA_SHORTCUTS_ID@ path=@APP_SCHEMA_SHORTCUTS_PATH@>
+  <schema id="@APP_SCHEMA_SHORTCUTS_ID@" path="@APP_SCHEMA_SHORTCUTS_PATH@">
 
     <key name="copy-clipboard" type="s">
       <default>'&lt;ctrl&gt;&lt;shift&gt;c'</default>

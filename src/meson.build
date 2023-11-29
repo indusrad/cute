@@ -48,10 +48,16 @@ prompt_sources += gnome.compile_resources('prompt-resources',
   c_name: 'prompt'
 )
 
+schema_config = configuration_data()
+schema_config.set('APP_SCHEMA_ID', app_schema_id)
+schema_config.set('APP_SCHEMA_PATH', app_schema_path)
+schema_config.set('APP_SCHEMA_PROFILE_ID', app_schema_profile_id)
+schema_config.set('APP_SCHEMA_SHORTCUTS_ID', app_schema_shortcuts_id)
+schema_config.set('APP_SCHEMA_SHORTCUTS_PATH', app_schema_shortcuts_path)
 configure_file(
           input: 'org.gnome.Prompt.gschema.xml.in',
          output: '@0@.gschema.xml'.format(app_id),
-  configuration: config_h,
+  configuration: schema_config,
     install_dir: get_option('datadir') / 'glib-2.0' / 'schemas',
 )
 
