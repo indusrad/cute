@@ -538,14 +538,13 @@ prompt_tab_dup_icon (PromptTab *self)
     case PROMPT_PROCESS_LEADER_KIND_REMOTE:
       return g_themed_icon_new ("process-remote-symbolic");
 
-    case PROMPT_PROCESS_LEADER_KIND_UNKNOWN:
-      return NULL;
-
-    case PROMPT_PROCESS_LEADER_KIND_CONTAINER:
-      return g_themed_icon_new ("process-container-symbolic");
-
     case PROMPT_PROCESS_LEADER_KIND_SUPERUSER:
       return g_themed_icon_new ("process-superuser-symbolic");
+
+    case PROMPT_PROCESS_LEADER_KIND_UNKNOWN:
+    case PROMPT_PROCESS_LEADER_KIND_CONTAINER:
+      return NULL;
+
     }
 }
 
