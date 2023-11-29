@@ -261,6 +261,7 @@ prompt_process_impl_handle_has_foreground_process (PromptIpcProcess      *proces
   g_autofree char *cmdline = NULL;
   _g_autofd int pty_fd = -1;
   int pty_fd_handle;
+  GPid pid = -1;
 
   g_assert (PROMPT_IS_PROCESS_IMPL (self));
   g_assert (G_IS_DBUS_METHOD_INVOCATION (invocation));
@@ -272,8 +273,7 @@ prompt_process_impl_handle_has_foreground_process (PromptIpcProcess      *proces
 
   if (pty_fd != -1)
     {
-      GPid pid = tcgetpgrp (pty_fd);
-
+      pid = tcgetpgrp (pty_fd);
       has_foreground_process = pid != self->pid;
 
       if (pid > 0)
@@ -284,6 +284,7 @@ prompt_process_impl_handle_has_foreground_process (PromptIpcProcess      *proces
                                                       g_steal_pointer (&invocation),
                                                       NULL,
                                                       has_foreground_process,
+                                                      pid,
                                                       cmdline ? cmdline : "");
 
   return TRUE;

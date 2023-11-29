@@ -1085,6 +1085,7 @@ prompt_tab_is_running (PromptTab  *self,
   g_autoptr(GUnixFDList) fd_list = NULL;
   g_autofree char *the_cmdline = NULL;
   VtePty *pty;
+  GPid the_pid;
   int handle;
   int pty_fd;
 
@@ -1102,6 +1103,7 @@ prompt_tab_is_running (PromptTab  *self,
                                                             g_variant_new_handle (handle),
                                                             fd_list,
                                                             &has_foreground_process,
+                                                            &the_pid,
                                                             &the_cmdline,
                                                             NULL, NULL, NULL))
     has_foreground_process = FALSE;
