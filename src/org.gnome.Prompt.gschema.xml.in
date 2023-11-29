@@ -127,7 +127,7 @@
     </key>
 
     <key name="font-name" type="s">
-      <default>''</default>
+      <default>'Monospace 10'</default>
       <summary>Font Name</summary>
       <description>The font description to use if use-system-font is set to False</description>
     </key>
