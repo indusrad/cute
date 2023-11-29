@@ -1081,37 +1081,7 @@ gboolean
 prompt_tab_is_running (PromptTab  *self,
                        char      **cmdline)
 {
-  gboolean has_foreground_process;
-  g_autoptr(GUnixFDList) fd_list = NULL;
-  g_autofree char *the_cmdline = NULL;
-  VtePty *pty;
-  GPid the_pid;
-  int handle;
-  int pty_fd;
-
-  g_return_val_if_fail (PROMPT_IS_TAB (self), 0);
-
-  if (self->process == NULL)
-    return FALSE;
-
-  pty = vte_terminal_get_pty (VTE_TERMINAL (self->terminal));
-  pty_fd = vte_pty_get_fd (pty);
-  fd_list = g_unix_fd_list_new ();
-  handle = g_unix_fd_list_append (fd_list, pty_fd, NULL);
-
-  if (!prompt_ipc_process_call_has_foreground_process_sync (self->process,
-                                                            g_variant_new_handle (handle),
-                                                            fd_list,
-                                                            &has_foreground_process,
-                                                            &the_pid,
-                                                            &the_cmdline,
-                                                            NULL, NULL, NULL))
-    has_foreground_process = FALSE;
-
-  if (cmdline != NULL)
-    *cmdline = g_steal_pointer (&the_cmdline);
-
-  return has_foreground_process;
+  return prompt_tab_has_foreground_process (self, NULL, cmdline);
 }
 
 void
@@ -1184,15 +1154,49 @@ prompt_tab_set_container (PromptTab          *self,
   g_set_object (&self->container_at_creation, container);
 }
 
-char *
-prompt_tab_dup_cmdline (PromptTab *self)
+gboolean
+prompt_tab_has_foreground_process (PromptTab  *self,
+                                   GPid       *pid,
+                                   char      **cmdline)
 {
-  g_autofree char *cmdline = NULL;
+  gboolean has_foreground_process;
+  g_autoptr(GUnixFDList) fd_list = NULL;
+  g_autofree char *the_cmdline = NULL;
+  VtePty *pty;
+  GPid the_pid;
+  int handle;
+  int pty_fd;
 
-  g_return_val_if_fail (PROMPT_IS_TAB (self), NULL);
+  g_return_val_if_fail (PROMPT_IS_TAB (self), 0);
 
-  if (prompt_tab_is_running (self, &cmdline))
-    return g_steal_pointer (&cmdline);
+  if (pid)
+    *pid = -1;
 
-  return NULL;
+  if (cmdline)
+    *cmdline = NULL;
+
+  if (self->process == NULL)
+    return FALSE;
+
+  pty = vte_terminal_get_pty (VTE_TERMINAL (self->terminal));
+  pty_fd = vte_pty_get_fd (pty);
+  fd_list = g_unix_fd_list_new ();
+  handle = g_unix_fd_list_append (fd_list, pty_fd, NULL);
+
+  if (!prompt_ipc_process_call_has_foreground_process_sync (self->process,
+                                                            g_variant_new_handle (handle),
+                                                            fd_list,
+                                                            &has_foreground_process,
+                                                            &the_pid,
+                                                            &the_cmdline,
+                                                            NULL, NULL, NULL))
+    has_foreground_process = FALSE;
+
+  if (cmdline)
+    *cmdline = g_steal_pointer (&the_cmdline);
+
+  if (pid)
+    *pid = the_pid;
+
+  return has_foreground_process;
 }

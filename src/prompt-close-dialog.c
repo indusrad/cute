@@ -140,36 +140,31 @@ _prompt_close_dialog_new (GtkWindow *parent,
       g_autofree char *cmdline = NULL;
       g_autofree char *title = NULL;
       g_autofree char *subtitle = NULL;
-      const char *row_title = NULL;
-      const char *row_subtitle = NULL;
       GtkWidget *row;
       SaveRequest sr;
+      GPid pid;
 
-      cmdline = prompt_tab_dup_cmdline (tab);
-      title = prompt_tab_dup_title (tab);
-      subtitle = prompt_tab_dup_subtitle (tab);
-
-      if (prompt_str_empty0 (cmdline))
+      if (prompt_tab_has_foreground_process (tab, &pid, &cmdline))
         {
-          row_title = title;
-          row_subtitle = subtitle;
+          g_autoptr(GString) subtitle_gstr = g_string_new (NULL);
+
+          g_utf8_make_valid (cmdline, -1);
+          title = g_steal_pointer (&cmdline);
+          subtitle = g_strdup_printf (_("Process %d"), pid);
         }
       else
         {
-          row_title = cmdline;
-          row_subtitle = prompt_str_empty0 (subtitle) ? title : subtitle;
+          title = prompt_tab_dup_title (tab);
+          subtitle = prompt_tab_dup_subtitle (tab);
         }
+
+      if (g_utf8_strlen (title, -1) > 200)
+        g_utf8_offset_to_pointer (title, 200)[0] = 0;
 
       row = adw_action_row_new ();
 
-      if (strlen (row_title) > 200)
-        {
-          truncated = g_strndup (row_title, 200);
-          row_title = truncated;
-        }
-
-      adw_preferences_row_set_title (ADW_PREFERENCES_ROW (row), row_title);
-      adw_action_row_set_subtitle (ADW_ACTION_ROW (row), row_subtitle);
+      adw_preferences_row_set_title (ADW_PREFERENCES_ROW (row), title);
+      adw_action_row_set_subtitle (ADW_ACTION_ROW (row), subtitle);
       adw_preferences_group_add (ADW_PREFERENCES_GROUP (group), row);
 
       sr.tab = g_object_ref (tab);

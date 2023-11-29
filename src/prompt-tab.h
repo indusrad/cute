@@ -57,7 +57,6 @@ PromptTerminal   *prompt_tab_get_terminal                       (PromptTab      
 PromptProfile    *prompt_tab_get_profile                        (PromptTab           *self);
 PromptIpcProcess *prompt_tab_get_process                        (PromptTab           *self);
 const char       *prompt_tab_get_uuid                           (PromptTab           *self);
-char             *prompt_tab_dup_cmdline                        (PromptTab           *self);
 char             *prompt_tab_dup_subtitle                       (PromptTab           *self);
 char             *prompt_tab_dup_title                          (PromptTab           *self);
 const char       *prompt_tab_get_title_prefix                   (PromptTab           *self);
@@ -81,5 +80,8 @@ void              prompt_tab_set_needs_attention                (PromptTab      
                                                                  gboolean             needs_attention);
 void              prompt_tab_set_container                      (PromptTab           *self,
                                                                  PromptIpcContainer  *container);
+gboolean          prompt_tab_has_foreground_process             (PromptTab           *self,
+                                                                 GPid                *pid,
+                                                                 char               **cmdline);
 
 G_END_DECLS
