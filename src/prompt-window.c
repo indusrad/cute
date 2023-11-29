@@ -195,9 +195,10 @@ prompt_window_tab_overview_notify_open_cb (PromptWindow   *self,
 
   if (!adw_tab_overview_get_open (tab_overview))
     {
+      PromptTab *active_tab;
       GtkSettings *settings = gtk_settings_get_default ();
       gboolean gtk_enable_animations = TRUE;
-      guint delay_msec = 410; /* Sync with libadwaita */
+      guint delay_msec = 425; /* Sync with libadwaita */
 
       g_object_get (settings,
                     "gtk-enable-animations", &gtk_enable_animations,
@@ -210,6 +211,9 @@ prompt_window_tab_overview_notify_open_cb (PromptWindow   *self,
                                                           delay_msec,
                                                           prompt_window_focus_active_tab_cb,
                                                           self, NULL);
+
+      if ((active_tab = prompt_window_get_active_tab (self)))
+        gtk_widget_grab_focus (GTK_WIDGET (active_tab));
     }
 
   self->tab_overview_animating = TRUE;
