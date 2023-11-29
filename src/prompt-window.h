@@ -44,5 +44,6 @@ void           prompt_window_set_active_tab     (PromptWindow  *self,
 void           prompt_window_visual_bell        (PromptWindow  *self);
 gboolean       prompt_window_focus_tab_by_uuid  (PromptWindow  *self,
                                                  const char    *uuid);
+gboolean       prompt_window_is_animating       (PromptWindow  *self);
 
 G_END_DECLS

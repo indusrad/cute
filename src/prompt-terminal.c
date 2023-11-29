@@ -1022,14 +1022,14 @@ prompt_terminal_snapshot (GtkWidget   *widget,
                           GtkSnapshot *snapshot)
 {
   PromptTerminal *self = PROMPT_TERMINAL (widget);
-  AdwTabOverview *tab_overview;
+  PromptWindow *window;
 
   g_assert (PROMPT_IS_TERMINAL (self));
   g_assert (GTK_IS_SNAPSHOT (snapshot));
 
-  tab_overview = ADW_TAB_OVERVIEW (gtk_widget_get_ancestor (widget, ADW_TYPE_TAB_OVERVIEW));
+  window = PROMPT_WINDOW (gtk_widget_get_root (GTK_WIDGET (self)));
 
-  if (adw_tab_overview_get_open (tab_overview))
+  if (prompt_window_is_animating (window))
     GTK_WIDGET_CLASS (prompt_terminal_parent_class)->snapshot (widget, snapshot);
   else
     prompt_terminal_rewrite_snapshot (widget, snapshot);

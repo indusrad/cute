@@ -62,6 +62,8 @@ struct _PromptWindow
 
   guint                  visual_bell_source;
   guint                  focus_active_tab_source;
+
+  guint                  tab_overview_animating : 1;
 };
 
 G_DEFINE_FINAL_TYPE (PromptWindow, prompt_window, ADW_TYPE_APPLICATION_WINDOW)
@@ -162,9 +164,13 @@ prompt_window_focus_active_tab_cb (gpointer data)
   g_assert (PROMPT_IS_WINDOW (self));
 
   self->focus_active_tab_source = 0;
+  self->tab_overview_animating = FALSE;
 
   if ((active_tab = prompt_window_get_active_tab (self)))
-    gtk_widget_grab_focus (GTK_WIDGET (active_tab));
+    {
+      gtk_widget_grab_focus (GTK_WIDGET (active_tab));
+      gtk_widget_queue_resize (GTK_WIDGET (active_tab));
+    }
 
   return G_SOURCE_REMOVE;
 }
@@ -205,6 +211,8 @@ prompt_window_tab_overview_notify_open_cb (PromptWindow   *self,
                                                           prompt_window_focus_active_tab_cb,
                                                           self, NULL);
     }
+
+  self->tab_overview_animating = TRUE;
 }
 
 static void
@@ -1499,4 +1507,12 @@ prompt_window_focus_tab_by_uuid (PromptWindow *self,
     }
 
   return FALSE;
+}
+
+gboolean
+prompt_window_is_animating (PromptWindow *self)
+{
+  g_return_val_if_fail (PROMPT_IS_WINDOW (self), FALSE);
+
+  return self->tab_overview_animating;
 }
