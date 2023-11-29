@@ -404,6 +404,25 @@ prompt_window_dup_profile_for_param (PromptWindow *self,
   return g_steal_pointer (&profile);
 }
 
+static AdwTabPage *
+prompt_window_tab_overview_create_tab_cb (PromptWindow   *self,
+                                          AdwTabOverview *tab_overview)
+{
+  g_autoptr(PromptProfile) profile = NULL;
+  PromptTab *tab;
+
+  g_assert (PROMPT_IS_WINDOW (self));
+  g_assert (ADW_IS_TAB_OVERVIEW (tab_overview));
+
+  profile = prompt_window_dup_profile_for_param (self, "default");
+  tab = prompt_tab_new (profile);
+
+  prompt_window_add_tab (self, tab);
+  prompt_window_set_active_tab (self, tab);
+
+  return adw_tab_view_get_selected_page (self->tab_view);
+}
+
 static void
 prompt_window_new_tab_action (GtkWidget  *widget,
                               const char *action_name,
@@ -1221,6 +1240,7 @@ prompt_window_class_init (PromptWindowClass *klass)
   gtk_widget_class_bind_template_callback (widget_class, prompt_window_close_page_cb);
   gtk_widget_class_bind_template_callback (widget_class, prompt_window_setup_menu_cb);
   gtk_widget_class_bind_template_callback (widget_class, prompt_window_tab_overview_notify_open_cb);
+  gtk_widget_class_bind_template_callback (widget_class, prompt_window_tab_overview_create_tab_cb);
 
   gtk_widget_class_install_action (widget_class, "win.new-tab", "(ss)", prompt_window_new_tab_action);
   gtk_widget_class_install_action (widget_class, "win.new-window", "(ss)", prompt_window_new_window_action);

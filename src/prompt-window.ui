@@ -314,7 +314,9 @@
     </child>
     <property name="content">
       <object class="AdwTabOverview" id="tab_overview">
+        <property name="enable-new-tab">true</property>
         <signal name="notify::open" handler="prompt_window_tab_overview_notify_open_cb" swapped="1" after="1"/>
+        <signal name="create-tab" handler="prompt_window_tab_overview_create_tab_cb" swapped="1"/>
         <property name="view">tab_view</property>
         <property name="child">
           <object class="AdwToolbarView">
