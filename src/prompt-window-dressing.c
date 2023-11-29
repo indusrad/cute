@@ -119,11 +119,11 @@ prompt_window_dressing_update (PromptWindowDressing *self)
                               "window.%s vte-terminal > revealer.size label { color: %s; background-color: alpha(%s, %s); }\n",
                               self->css_class, fg, bg, popover_alpha_str);
       g_string_append_printf (string,
-                              "window.%s toolbarview.overview { background: alpha(currentColor, .05); }\n",
-                              self->css_class);
+                              "window.%s toolbarview.overview { background: mix(%s,%s,.05); }\n",
+                              self->css_class, bg, fg);
       g_string_append_printf (string,
-                              "window.%s revealer.raised.top-bar { background: transparent; }\n",
-                              self->css_class);
+                              "window.%s revealer.raised.top-bar { background: %s; }\n",
+                              self->css_class, bg);
       g_string_append_printf (string,
                               "window.%s box.visual-bell { animation: visual-bell-%s-%s 0.5s ease-out; }\n"
                               "@keyframes visual-bell-%s-%s { 50%% { background: %s; color: %s; } }\n",
