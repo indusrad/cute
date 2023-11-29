@@ -103,7 +103,7 @@
     </key>
 
     <key name="new-tab-position" enum="@APP_SCHEMA_ID@.NewTabPosition">
-      <default>'next'</default>
+      <default>'last'</default>
       <summary>New Tab Position</summary>
       <description>Where to place new tabs</description>
     </key>
