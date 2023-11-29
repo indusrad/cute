@@ -550,6 +550,22 @@ prompt_tab_dup_icon (PromptTab *self)
 }
 
 static void
+prompt_tab_notify_palette_cb (PromptTab      *self,
+                              GParamSpec     *pspec,
+                              PromptTerminal *terminal)
+{
+  GtkWidget *view;
+  AdwTabPage *page;
+
+  g_assert (PROMPT_IS_TAB (self));
+  g_assert (PROMPT_IS_TERMINAL (terminal));
+
+  if ((view = gtk_widget_get_ancestor (GTK_WIDGET (self), ADW_TYPE_TAB_VIEW)) &&
+      (page = adw_tab_view_get_page (ADW_TAB_VIEW (view), GTK_WIDGET (self))))
+    adw_tab_page_invalidate_thumbnail (page);
+}
+
+static void
 prompt_tab_constructed (GObject *object)
 {
   PromptTab *self = (PromptTab *)object;
@@ -836,6 +852,7 @@ prompt_tab_class_init (PromptTabClass *klass)
   gtk_widget_class_bind_template_callback (widget_class, prompt_tab_notify_window_subtitle_cb);
   gtk_widget_class_bind_template_callback (widget_class, prompt_tab_increase_font_size_cb);
   gtk_widget_class_bind_template_callback (widget_class, prompt_tab_decrease_font_size_cb);
+  gtk_widget_class_bind_template_callback (widget_class, prompt_tab_notify_palette_cb);
   gtk_widget_class_bind_template_callback (widget_class, prompt_tab_bell_cb);
 
   gtk_widget_class_install_action (widget_class, "tab.respawn", NULL, prompt_tab_respawn_action);
