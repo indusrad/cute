@@ -56,6 +56,8 @@ struct _PromptTerminal
   GtkRevealer        *size_revealer;
   GtkLabel           *size_label;
 
+  GdkRGBA             background;
+
   guint               size_dismiss_source;
 };
 
@@ -103,6 +105,8 @@ prompt_terminal_update_colors (PromptTerminal *self)
                            &face->background,
                            &face->indexed[0],
                            G_N_ELEMENTS (face->indexed));
+
+  self->background = face->background;
 
   if (face->cursor.alpha > 0)
     vte_terminal_set_color_cursor (VTE_TERMINAL (self), &face->cursor);
@@ -1022,17 +1026,11 @@ prompt_terminal_snapshot (GtkWidget   *widget,
                           GtkSnapshot *snapshot)
 {
   PromptTerminal *self = PROMPT_TERMINAL (widget);
-  PromptWindow *window;
 
   g_assert (PROMPT_IS_TERMINAL (self));
   g_assert (GTK_IS_SNAPSHOT (snapshot));
 
-  window = PROMPT_WINDOW (gtk_widget_get_root (GTK_WIDGET (self)));
-
-  if (prompt_window_is_animating (window))
-    GTK_WIDGET_CLASS (prompt_terminal_parent_class)->snapshot (widget, snapshot);
-  else
-    prompt_terminal_rewrite_snapshot (widget, snapshot);
+  prompt_terminal_rewrite_snapshot (widget, snapshot);
 
   gtk_widget_snapshot_child (widget, GTK_WIDGET (self->size_revealer), snapshot);
   gtk_widget_snapshot_child (widget, GTK_WIDGET (self->drop_highlight), snapshot);

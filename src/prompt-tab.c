@@ -54,6 +54,8 @@ struct _PromptTab
   char               *uuid;
   PromptIpcContainer *container_at_creation;
 
+  GdkTexture         *cached_texture;
+
   PromptTabNotify     notify;
 
   AdwBanner          *banner;
@@ -624,6 +626,95 @@ prompt_tab_constructed (GObject *object)
 }
 
 static void
+prompt_tab_snapshot (GtkWidget   *widget,
+                     GtkSnapshot *snapshot)
+{
+  PromptTab *self = (PromptTab *)widget;
+  PromptWindow *window;
+  GdkRGBA bg;
+  gboolean animating;
+  int width;
+  int height;
+
+  g_assert (PROMPT_IS_TAB (self));
+  g_assert (GTK_IS_SNAPSHOT (snapshot));
+
+  window = PROMPT_WINDOW (gtk_widget_get_root (widget));
+  animating = prompt_window_is_animating (window);
+  width = gtk_widget_get_width (widget);
+  height = gtk_widget_get_height (widget);
+
+  vte_terminal_get_color_background_for_draw (VTE_TERMINAL (self->terminal), &bg);
+
+  if (animating &&
+      prompt_window_get_active_tab (window) == self)
+    {
+
+      if (self->cached_texture == NULL)
+        {
+          GtkSnapshot *sub_snapshot = gtk_snapshot_new ();
+          int scale_factor = gtk_widget_get_scale_factor (widget);
+          g_autoptr(GskRenderNode) node = NULL;
+          graphene_matrix_t matrix;
+          GskRenderer *renderer;
+
+          gtk_snapshot_scale (sub_snapshot, scale_factor, scale_factor);
+          gtk_snapshot_append_color (sub_snapshot,
+                                     &bg,
+                                     &GRAPHENE_RECT_INIT (0, 0, width, height));
+
+          if (gtk_widget_compute_transform (GTK_WIDGET (self->terminal),
+                                            GTK_WIDGET (self),
+                                            &matrix))
+            {
+              gtk_snapshot_transform_matrix (sub_snapshot, &matrix);
+              GTK_WIDGET_GET_CLASS (self->terminal)->snapshot (GTK_WIDGET (self->terminal), sub_snapshot);
+            }
+
+          node = gtk_snapshot_free_to_node (sub_snapshot);
+          renderer = gtk_native_get_renderer (GTK_NATIVE (window));
+
+          self->cached_texture = gsk_renderer_render_texture (renderer,
+                                                              node,
+                                                              &GRAPHENE_RECT_INIT (0,
+                                                                                   0,
+                                                                                   width * scale_factor,
+                                                                                   height * scale_factor));
+        }
+
+      gtk_snapshot_append_texture (snapshot,
+                                   self->cached_texture,
+                                   &GRAPHENE_RECT_INIT (0, 0, width, height));
+    }
+  else
+    {
+      g_clear_object (&self->cached_texture);
+
+      if (animating)
+        gtk_snapshot_append_color (snapshot,
+                                   &bg,
+                                   &GRAPHENE_RECT_INIT (0, 0, width, height));
+
+      GTK_WIDGET_CLASS (prompt_tab_parent_class)->snapshot (widget, snapshot);
+    }
+}
+
+static void
+prompt_tab_size_allocate (GtkWidget *widget,
+                          int        width,
+                          int        height,
+                          int        baseline)
+{
+  PromptTab *self = (PromptTab *)widget;
+
+  g_assert (PROMPT_IS_TAB (self));
+
+  GTK_WIDGET_CLASS (prompt_tab_parent_class)->size_allocate (widget, width, height, baseline);
+
+  g_clear_object (&self->cached_texture);
+}
+
+static void
 prompt_tab_dispose (GObject *object)
 {
   PromptTab *self = (PromptTab *)object;
@@ -639,6 +730,7 @@ prompt_tab_dispose (GObject *object)
   while ((child = gtk_widget_get_first_child (GTK_WIDGET (self))))
     gtk_widget_unparent (child);
 
+  g_clear_object (&self->cached_texture);
   g_clear_object (&self->profile);
   g_clear_object (&self->process);
   g_clear_object (&self->monitor);
@@ -761,6 +853,8 @@ prompt_tab_class_init (PromptTabClass *klass)
 
   widget_class->grab_focus = prompt_tab_grab_focus;
   widget_class->map = prompt_tab_map;
+  widget_class->snapshot = prompt_tab_snapshot;
+  widget_class->size_allocate = prompt_tab_size_allocate;
 
   properties[PROP_ICON] =
     g_param_spec_object ("icon", NULL, NULL,
