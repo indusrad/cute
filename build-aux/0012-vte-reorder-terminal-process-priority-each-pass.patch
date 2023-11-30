@@ -1,0 +1,35 @@
+From 75add37fa8e6c0f00f95d4cd852ec471def88412 Mon Sep 17 00:00:00 2001
+From: Christian Hergert <chergert@redhat.com>
+Date: Thu, 30 Nov 2023 13:39:34 -0800
+Subject: [PATCH] vte: reorder terminal process priority each pass
+
+We want other terminals to receive higher priority after processing a
+single pass.
+---
+ src/vte.cc | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/src/vte.cc b/src/vte.cc
+index df28616f..88c582ea 100644
+--- a/src/vte.cc
++++ b/src/vte.cc
+@@ -10961,12 +10961,15 @@ try
+         that->invalidate_dirty_rects_and_process_updates();
+         that->emit_adjustment_changed();
+ 
++        stop_processing(that);
++
+         if (!is_active) {
+-                stop_processing(that);
+                 vte::base::Chunk::prune();
+                 return G_SOURCE_REMOVE;
+         }
+ 
++        add_process_timeout(that);
++
+         return G_SOURCE_CONTINUE;
+ }
+ catch (...)
+-- 
+2.43.0
+
