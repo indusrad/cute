@@ -32,7 +32,7 @@
             "name" : "vte",
             "buildsystem" : "meson",
             "config-opts" : [
-                "-Dgtk3=false",
+                "-Dgtk3=true",
                 "-Dgtk4=true"
             ],
             "sources" : [
