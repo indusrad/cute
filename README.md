@@ -58,3 +58,5 @@ container information to the application.
 ![A dialog providing appearance preferences such as color palette](https://gitlab.gnome.org/chergert/prompt/-/raw/main/data/screenshots/palette-selector.png "Built-in color palettes provide both dark and light mode variants")
 
 ![A dialog providing per-profile overrides](https://gitlab.gnome.org/chergert/prompt/-/raw/main/data/screenshots/edit-profile.png "Profiles allow for overriding a number of features such as default container")
+
+![The terminal showing an overlay when the column or row size changes](https://gitlab.gnome.org/chergert/prompt/-/raw/main/data/screenshots/columns-and-rows.png "A column and row size indicator is displayed when resizing the window")
