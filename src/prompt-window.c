@@ -369,7 +369,7 @@ prompt_window_apply_current_settings (PromptWindow *self,
       PromptZoomLevel zoom = prompt_tab_get_zoom (active_tab);
       g_autoptr(PromptIpcContainer) current_container = NULL;
 
-      if (prompt_profile_get_preserve_container (profile))
+      if (prompt_profile_get_preserve_container (profile) != PROMPT_PRESERVE_CONTAINER_NEVER)
         {
           if ((current_container = prompt_application_find_container_by_name (app,
                                                                               current_container_runtime,
