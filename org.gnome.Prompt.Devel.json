@@ -76,18 +76,6 @@
                 {
                     "type" : "patch",
                     "path" : "build-aux/0009-expose-notification-shellcmd-containers-to-GTK-4.patch"
-                },
-                {
-                    "type" : "patch",
-                    "path" : "build-aux/0010-vte-drive-updates-from-GdkFrameClock.patch"
-                },
-                {
-                    "type" : "patch",
-                    "path" : "build-aux/0011-vte-emit-adjustment-changed-in-tick-callback.patch"
-                },
-                {
-                    "type" : "patch",
-                    "path" : "build-aux/0012-vte-reorder-terminal-process-priority-each-pass.patch"
                 }
             ]
         },
