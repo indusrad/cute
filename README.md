@@ -41,3 +41,20 @@ In the future, this may be reduced, but at the moment both Prompt and tools
 like "toolbox" need to be aware of what escape-sequences to use to propagate
 container information to the application.
 
+## Screenshots
+
+![Shows a menu with available containers](https://gitlab.gnome.org/chergert/prompt/-/raw/main/data/screenshots/containers-menu.png "Containers are automatically discovered and displayed")
+
+![A dialog showing options for behavior change such as scrollback, bell, and more](https://gitlab.gnome.org/chergert/prompt/-/raw/main/data/screenshots/containers-menu.png "Many behaviors of the terminal may be tweaked to user preference")
+
+![A dialog allowing the user to rename a tab](https://gitlab.gnome.org/chergert/prompt/-/raw/main/data/screenshots/rename-tab.png "You may rename a tab by providing a prefix to the title")
+
+![A menu showing the options for light/dark/follow system style](https://gitlab.gnome.org/chergert/prompt/-/raw/main/data/screenshots/integrated-dark-mode.png "Palettes provide an integrated dark mode")
+
+![All terminals displayed as a grid](https://gitlab.gnome.org/chergert/prompt/-/raw/main/data/screenshots/tab-overview.png "You can see an overview of your tabs at any time")
+
+![A window containing a list of shortcuts which may be remapped to new values](https://gitlab.gnome.org/chergert/prompt/-/raw/main/data/screenshots/shortcut-editing.png "Many shortcuts may be remapped to user preference")
+
+![A dialog providing appearance preferences such as color palette](https://gitlab.gnome.org/chergert/prompt/-/raw/main/data/screenshots/palette-selector.png "Built-in color palettes provide both dark and light mode variants")
+
+![A dialog providing per-profile overrides](https://gitlab.gnome.org/chergert/prompt/-/raw/main/data/screenshots/edit-profile.png "Profiles allow for overriding a number of features such as default container")
