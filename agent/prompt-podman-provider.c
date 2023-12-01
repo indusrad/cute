@@ -123,13 +123,7 @@ prompt_podman_provider_init (PromptPodmanProvider *self)
 PromptContainerProvider *
 prompt_podman_provider_new (void)
 {
-  PromptPodmanProvider *self;
-
-  self = g_object_new (PROMPT_TYPE_PODMAN_PROVIDER, NULL);
-  g_clear_handle_id (&self->queued_update, g_source_remove);
-  prompt_podman_provider_update_sync (self, NULL, NULL);
-
-  return PROMPT_CONTAINER_PROVIDER (self);
+  return g_object_new (PROMPT_TYPE_PODMAN_PROVIDER, NULL);
 }
 
 void
@@ -347,6 +341,8 @@ prompt_podman_provider_update_sync (PromptPodmanProvider  *self,
 
   g_return_val_if_fail (PROMPT_IS_PODMAN_PROVIDER (self), FALSE);
   g_return_val_if_fail (!cancellable || G_IS_CANCELLABLE (cancellable), FALSE);
+
+  g_clear_handle_id (&self->queued_update, g_source_remove);
 
   run_context = prompt_run_context_new ();
   prompt_run_context_append_argv (run_context, "podman");

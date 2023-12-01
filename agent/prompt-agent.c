@@ -117,6 +117,7 @@ prompt_agent_init (PromptAgent  *agent,
                                              "manager",
                                              "distrobox",
                                              PROMPT_TYPE_DISTROBOX_CONTAINER);
+  prompt_podman_provider_update_sync (PROMPT_PODMAN_PROVIDER (podman), NULL, NULL);
   prompt_agent_impl_add_provider (agent->impl, podman);
 
   g_dbus_connection_start_message_processing (agent->bus);
