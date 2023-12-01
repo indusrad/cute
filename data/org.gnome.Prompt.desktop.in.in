@@ -10,7 +10,7 @@ Terminal=false
 Type=Application
 Categories=GNOME;GTK;System;TerminalEmulator;
 # Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
-Keywords=shell;prompt;command;commandline;cmd;
+Keywords=terminal;shell;prompt;command;commandline;cmd;
 Actions=new-window;preferences;
 
 [Desktop Action new-window]
