@@ -29,6 +29,7 @@ Prompt is a terminal for GNOME with first-class support for containers.
  * There are various tweaks to how VTE draws which are performed by rewriting
    the retained render tree. This allows for appropriate padding around the
    terminal while still keeping scrollback from looking cut off.
+ * User customizable keyboard shortcuts.
 
 ## Distribution Notes
 
