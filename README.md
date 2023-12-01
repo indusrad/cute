@@ -2,6 +2,17 @@
 
 Prompt is a terminal for GNOME with first-class support for containers.
 
+
+## Authors Note
+
+Prompt came out of my work to make VTE much faster on modern Linux desktops
+which run GTK 4 and a Wayland-based compositor such as GNOME Shell. It is
+competitively fast in this area, although unlikely the fastest. It supports a
+number of features due to VTE in exchange. Some of those include robust
+clipboard support, drag-n-drop integration, scrollbars, tabs, a modern
+interface, configurable color palettes, menus, tab overviews, you get the idea.
+
+
 ## Features
 
  * We recognize that there are a number of situations where users have
@@ -33,6 +44,7 @@ Prompt is a terminal for GNOME with first-class support for containers.
    terminal while still keeping scrollback from looking cut off.
  * User customizable keyboard shortcuts.
 
+
 ## Distribution Notes
 
 Prompt is built in a way that can be shipped as a Flatpak and still provide a
@@ -42,6 +54,7 @@ this relies on a number of VTE patches which are in the `build-aux/` directory.
 In the future, this may be reduced, but at the moment both Prompt and tools
 like "toolbox" need to be aware of what escape-sequences to use to propagate
 container information to the application.
+
 
 ## Screenshots
 
