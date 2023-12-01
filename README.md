@@ -79,3 +79,5 @@ container information to the application.
 ![A scarf is displayed on the top of a window indicating root access](https://gitlab.gnome.org/chergert/prompt/-/raw/main/data/screenshots/sudo-tracking.png "The terminal will remind you when you're root on the local system")
 
 ![A scarf is displayed on the top of a window indicating remote SSH access](https://gitlab.gnome.org/chergert/prompt/-/raw/main/data/screenshots/ssh-tracking.png "The terminal will remind you when you're on a remote system")
+
+![A terminal with a partially transparent background](https://gitlab.gnome.org/chergert/prompt/-/raw/main/data/screenshots/transparency.png "Transparency support is available for the daring")
