@@ -20,7 +20,9 @@ Prompt is a terminal for GNOME with first-class support for containers.
  * A number of palettes are provided with native support for light/dark mode
    and can update with your desktop style preference.
  * Due to how `prompt-agent` works, we can do various foreground process
-   tracking for things like sudo or SSH without significant overhead.
+   tracking for things like sudo or SSH without significant overhead. This
+   requires some improvements in various container systems which is in the
+   process of merging at the time of writing.
  * Tab overview using modern libadwaita features.
  * Transparency support does exist but must be tweaked manually using GSettings
    until better transitions can be implemented in libadwaita.
@@ -60,3 +62,7 @@ container information to the application.
 ![A dialog providing per-profile overrides](https://gitlab.gnome.org/chergert/prompt/-/raw/main/data/screenshots/edit-profile.png "Profiles allow for overriding a number of features such as default container")
 
 ![The terminal showing an overlay when the column or row size changes](https://gitlab.gnome.org/chergert/prompt/-/raw/main/data/screenshots/columns-and-rows.png "A column and row size indicator is displayed when resizing the window")
+
+![A scarf is displayed on the top of a window indicating root access](https://gitlab.gnome.org/chergert/prompt/-/raw/main/data/screenshots/sudo-tracking.png "The terminal will remind you when you're root on the local system")
+
+![A scarf is displayed on the top of a window indicating remote SSH access](https://gitlab.gnome.org/chergert/prompt/-/raw/main/data/screenshots/ssh-tracking.png "The terminal will remind you when you're on a remote system")
