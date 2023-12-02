@@ -3,6 +3,18 @@
 Prompt is a terminal for GNOME with first-class support for containers.
 
 
+## Installation
+
+Currently Prompt has a CI pipeline which produces a Flatpak for both
+`x86_64` and `aarch64`. Until we've made an official release and have
+a Flatpak repository, the easiest way to install is to grab a Flatpak
+bundle from the CI pipeline and install locally.
+
+```
+flatpak --user install --bundle ./org.gnome.Prompt.Devel-x86_64.flatpak
+```
+
+
 ## Authors Note
 
 Prompt came out of my work to make VTE much faster on modern Linux desktops
