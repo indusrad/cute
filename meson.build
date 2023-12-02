@@ -54,6 +54,17 @@ config_h.set_quoted('PACKAGE_ICON_NAME', app_id)
 config_h.set_quoted('PACKAGE_NAME', 'Prompt')
 config_h.set10('DEVELOPMENT_BUILD', get_option('development'))
 
+check_functions = [
+  ['HAVE_GRANTPT', 'grantpt'],
+  ['HAVE_POSIX_OPENPT', 'posix_openpt'],
+  ['HAVE_PTSNAME', 'ptsname'],
+  ['HAVE_PTSNAME_R', 'ptsname_r'],
+  ['HAVE_UNLOCKPT', 'unlockpt'],
+]
+foreach func: check_functions
+  config_h.set(func[0], cc.has_function(func[1]))
+endforeach
+
 project_c_args = []
 test_c_args = [
   '-Wcast-align',
