@@ -60,7 +60,7 @@ container information to the application.
 
 ![Shows a menu with available containers](https://gitlab.gnome.org/chergert/prompt/-/raw/main/data/screenshots/containers-menu.png "Containers are automatically discovered and displayed")
 
-![A dialog showing options for behavior change such as scrollback, bell, and more](https://gitlab.gnome.org/chergert/prompt/-/raw/main/data/screenshots/containers-menu.png "Many behaviors of the terminal may be tweaked to user preference")
+![A dialog showing options for behavior change such as scrollback, bell, and more](https://gitlab.gnome.org/chergert/prompt/-/raw/main/data/screenshots/change-behavior.png "Many behaviors of the terminal may be tweaked to user preference")
 
 ![A dialog allowing the user to rename a tab](https://gitlab.gnome.org/chergert/prompt/-/raw/main/data/screenshots/rename-tab.png "You may rename a tab by providing a prefix to the title")
 
