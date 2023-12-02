@@ -88,7 +88,7 @@ prompt_pty_create_producer (int      consumer_fd,
    * have that if we're in a Flatpak on something like CentOS 7.
    * Handle that by doing a minimal kernel check first.
    */
-  if (_linux_check_version (4, 13))
+  if (ret == -1 && _linux_check_version (4, 13))
     ret = ioctl (consumer_fd, TIOCGPTPEER, O_NOCTTY | O_RDWR | O_CLOEXEC | extra);
 #endif
 
@@ -147,6 +147,41 @@ prompt_pty_create_producer (int      consumer_fd,
     }
 #else
 # warning "Compiled without TIOCPKT support, this is discouraged"
+#endif
+
+#ifdef __linux__
+  {
+    static GFile *run_host_ptmx;
+
+    if (run_host_ptmx == NULL)
+      run_host_ptmx = g_file_new_for_path ("/run/host/dev/pts/ptmx");
+
+    /* We want to try to open a PTY for the child that will be available
+     * at the same location in and outside of the container. This helps
+     * ensure that various TTY operations can do the right thing.
+     *
+     * Since we created the PTY, we know that came from /dev so just see
+     * if /run/host/dev/pts/ptmx is the same as the host.
+     */
+    if (g_file_query_exists (run_host_ptmx, NULL))
+      {
+        char tty_name[64];
+
+        if (ttyname_r (ret, tty_name, sizeof tty_name) == 0)
+          {
+            g_autofree char *path = g_build_filename ("/run/host", tty_name, NULL);
+            int alt_fd;
+
+            alt_fd = open (path, O_NOCTTY | O_RDWR | O_CLOEXEC | extra);
+
+            if (alt_fd != -1)
+              {
+                close (ret);
+                ret = alt_fd;
+              }
+          }
+      }
+  }
 #endif
 
   return _g_steal_fd (&ret);
