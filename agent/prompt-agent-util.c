@@ -32,7 +32,9 @@
 # include <fcntl.h>
 #endif
 
+#include <stdio.h>
 #include <sys/ioctl.h>
+#include <sys/utsname.h>
 #include <termios.h>
 
 #include <glib-unix.h>
@@ -40,12 +42,33 @@
 #include "prompt-agent-compat.h"
 #include "prompt-agent-util.h"
 
+#ifdef __linux__
+static gboolean
+_linux_check_version (int major,
+                      int minor)
+{
+  struct utsname u;
+
+  if (uname (&u) == 0)
+    {
+      guint u_major;
+      guint u_minor;
+
+      if (sscanf (u.release, "%u.%u.", &u_major, &u_minor) == 2)
+        return (u_major > major) ||
+               ((u_major == major) && (u_minor >= minor));
+    }
+
+  return FALSE;
+}
+#endif
+
 static int
 prompt_pty_create_producer (int      consumer_fd,
                             gboolean blocking)
 {
   _g_autofd int ret = -1;
-  gint extra = blocking ? 0 : O_NONBLOCK;
+  int extra = blocking ? 0 : O_NONBLOCK;
 #if defined(HAVE_PTSNAME_R) || defined(__FreeBSD__)
   char name[256];
 #else
@@ -60,21 +83,33 @@ prompt_pty_create_producer (int      consumer_fd,
   if (unlockpt (consumer_fd) != 0)
     return -1;
 
-#ifdef HAVE_PTSNAME_R
-  if (ptsname_r (consumer_fd, name, sizeof name - 1) != 0)
-    return -1;
-  name[sizeof name - 1] = '\0';
-#elif defined(__FreeBSD__)
-  if (fdevname_r (consumer_fd, name + 5, sizeof name - 6) == NULL)
-    return -1;
-  memcpy (name, "/dev/", 5);
-  name[sizeof name - 1] = '\0';
-#else
-  if (NULL == (name = ptsname (consumer_fd)))
-    return -1;
+#ifdef __linux__
+  /* TIOCGPTPEER was added in Linux 4.13. We are not guaranteed to
+   * have that if we're in a Flatpak on something like CentOS 7.
+   * Handle that by doing a minimal kernel check first.
+   */
+  if (_linux_check_version (4, 13))
+    ret = ioctl (consumer_fd, TIOCGPTPEER, O_NOCTTY | O_RDWR | O_CLOEXEC | extra);
 #endif
 
-  ret = open (name, O_NOCTTY | O_RDWR | O_CLOEXEC | extra);
+  if (ret == -1)
+    {
+#ifdef HAVE_PTSNAME_R
+      if (ptsname_r (consumer_fd, name, sizeof name - 1) != 0)
+        return -1;
+      name[sizeof name - 1] = '\0';
+#elif defined(__FreeBSD__)
+      if (fdevname_r (consumer_fd, name + 5, sizeof name - 6) == NULL)
+        return -1;
+      memcpy (name, "/dev/", 5);
+      name[sizeof name - 1] = '\0';
+#else
+      if (NULL == (name = ptsname (consumer_fd)))
+        return -1;
+#endif
+
+      ret = open (name, O_NOCTTY | O_RDWR | O_CLOEXEC | extra);
+    }
 
 #ifndef __linux__
   if (ret == -1 && errno == EINVAL)
