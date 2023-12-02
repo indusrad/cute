@@ -34,6 +34,7 @@ G_BEGIN_DECLS
 #define PROMPT_SETTING_KEY_INTERFACE_STYLE      "interface-style"
 #define PROMPT_SETTING_KEY_NEW_TAB_POSITION     "new-tab-position"
 #define PROMPT_SETTING_KEY_PROFILE_UUIDS        "profile-uuids"
+#define PROMPT_SETTING_KEY_RESTORE_WINDOW_SIZE  "restore-window-size"
 #define PROMPT_SETTING_KEY_SCROLLBAR_POLICY     "scrollbar-policy"
 #define PROMPT_SETTING_KEY_TEXT_BLINK_MODE      "text-blink-mode"
 #define PROMPT_SETTING_KEY_USE_SYSTEM_FONT      "use-system-font"
@@ -90,6 +91,9 @@ void                    prompt_settings_set_font_name            (PromptSettings
 gboolean                prompt_settings_get_use_system_font      (PromptSettings             *self);
 void                    prompt_settings_set_use_system_font      (PromptSettings             *self,
                                                                   gboolean                    use_system_font);
+gboolean                prompt_settings_get_restore_window_size  (PromptSettings             *self);
+void                    prompt_settings_set_restore_window_size  (PromptSettings             *self,
+                                                                  gboolean                    restore_window_size);
 PromptScrollbarPolicy   prompt_settings_get_scrollbar_policy     (PromptSettings             *self);
 void                    prompt_settings_set_scrollbar_policy     (PromptSettings             *self,
                                                                   PromptScrollbarPolicy       scrollbar_policy);

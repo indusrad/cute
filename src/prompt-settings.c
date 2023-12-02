@@ -45,6 +45,7 @@ enum {
   PROP_INTERFACE_STYLE,
   PROP_NEW_TAB_POSITION,
   PROP_PROFILE_UUIDS,
+  PROP_RESTORE_WINDOW_SIZE,
   PROP_SCROLLBAR_POLICY,
   PROP_TEXT_BLINK_MODE,
   PROP_USE_SYSTEM_FONT,
@@ -91,6 +92,8 @@ prompt_settings_changed_cb (PromptSettings *self,
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_TEXT_BLINK_MODE]);
   else if (g_str_equal (key, PROMPT_SETTING_KEY_INTERFACE_STYLE))
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_INTERFACE_STYLE]);
+  else if (g_str_equal (key, PROMPT_SETTING_KEY_RESTORE_WINDOW_SIZE))
+    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_RESTORE_WINDOW_SIZE]);
   else if (g_str_equal (key, PROMPT_SETTING_KEY_FONT_NAME))
     {
       g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_FONT_NAME]);
@@ -159,6 +162,10 @@ prompt_settings_get_property (GObject    *object,
       g_value_take_boxed (value, prompt_settings_dup_profile_uuids (self));
       break;
 
+    case PROP_RESTORE_WINDOW_SIZE:
+      g_value_set_boolean (value, prompt_settings_get_restore_window_size (self));
+      break;
+
     case PROP_SCROLLBAR_POLICY:
       g_value_set_enum (value, prompt_settings_get_scrollbar_policy (self));
       break;
@@ -220,6 +227,10 @@ prompt_settings_set_property (GObject      *object,
 
     case PROP_DEFAULT_PROFILE_UUID:
       prompt_settings_set_default_profile_uuid (self, g_value_get_string (value));
+      break;
+
+    case PROP_RESTORE_WINDOW_SIZE:
+      prompt_settings_set_restore_window_size (self, g_value_get_boolean (value));
       break;
 
     case PROP_SCROLLBAR_POLICY:
@@ -317,6 +328,13 @@ prompt_settings_class_init (PromptSettingsClass *klass)
                         G_TYPE_STRV,
                         (G_PARAM_READABLE |
                          G_PARAM_STATIC_STRINGS));
+
+  properties[PROP_RESTORE_WINDOW_SIZE] =
+    g_param_spec_boolean ("restore-window-size", NULL, NULL,
+                          FALSE,
+                          (G_PARAM_READWRITE |
+                           G_PARAM_EXPLICIT_NOTIFY |
+                           G_PARAM_STATIC_STRINGS));
 
   properties[PROP_SCROLLBAR_POLICY] =
     g_param_spec_enum ("scrollbar-policy", NULL, NULL,
@@ -679,6 +697,25 @@ prompt_settings_set_text_blink_mode (PromptSettings   *self,
   g_settings_set_enum (self->settings,
                        PROMPT_SETTING_KEY_TEXT_BLINK_MODE,
                        text_blink_mode);
+}
+
+gboolean
+prompt_settings_get_restore_window_size (PromptSettings *self)
+{
+  g_return_val_if_fail (PROMPT_IS_SETTINGS (self), FALSE);
+
+  return g_settings_get_boolean (self->settings, PROMPT_SETTING_KEY_RESTORE_WINDOW_SIZE);
+}
+
+void
+prompt_settings_set_restore_window_size (PromptSettings *self,
+                                         gboolean        restore_window_size)
+{
+  g_return_if_fail (PROMPT_IS_SETTINGS (self));
+
+  g_settings_set_boolean (self->settings,
+                          PROMPT_SETTING_KEY_RESTORE_WINDOW_SIZE,
+                          restore_window_size);
 }
 
 void

@@ -1328,8 +1328,8 @@ prompt_window_new_for_profile (PromptProfile *profile)
   PromptTerminal *terminal;
   PromptWindow *self;
   PromptTab *tab;
-  guint columns;
-  guint rows;
+  guint columns = 81;
+  guint rows = 24;
 
   g_return_val_if_fail (!profile || PROMPT_IS_PROFILE (profile), NULL);
 
@@ -1349,8 +1349,12 @@ prompt_window_new_for_profile (PromptProfile *profile)
 
   tab = prompt_tab_new (profile);
   terminal = prompt_tab_get_terminal (tab);
-  prompt_settings_get_window_size (settings, &columns, &rows);
+
+  if (prompt_settings_get_restore_window_size (settings))
+    prompt_settings_get_window_size (settings, &columns, &rows);
+
   vte_terminal_set_size (VTE_TERMINAL (terminal), columns, rows);
+
   prompt_window_append_tab (self, tab);
 
   gtk_window_set_default_size (GTK_WINDOW (self), -1, -1);

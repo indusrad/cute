@@ -277,7 +277,7 @@
         <property name="icon-name">preferences-desktop-accessibility-symbolic</property>
         <child>
           <object class="AdwPreferencesGroup">
-            <property name="title" translatable="yes">Tabs</property>
+            <property name="title" translatable="yes">Interface</property>
             <child>
               <object class="AdwComboRow" id="tab_position">
                 <property name="title" translatable="yes">New Tab Position</property>
@@ -301,6 +301,16 @@
                     </child>
                   </object>
                 </property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <child>
+              <object class="AdwSwitchRow" id="restore_window_size">
+                <property name="title" translatable="yes">Restore Window Size</property>
+                <property name="subtitle" translatable="yes">Restore the previous window size when creating a new window</property>
               </object>
             </child>
           </object>
