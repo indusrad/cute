@@ -32,6 +32,9 @@
 # include <fcntl.h>
 #endif
 
+#include <sys/ioctl.h>
+#include <termios.h>
+
 #include <glib-unix.h>
 
 #include "prompt-agent-compat.h"
@@ -99,6 +102,16 @@ prompt_pty_create_producer (int      consumer_fd,
             return -1;
         }
     }
+#endif
+
+#ifdef TIOCPKT
+  if (ret != -1)
+    {
+      static int one = 1;
+      ioctl(ret, TIOCPKT, &one);
+    }
+#else
+# warning "Compiled without TIOCPKT support, this is discouraged"
 #endif
 
   return _g_steal_fd (&ret);
