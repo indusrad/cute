@@ -34,6 +34,7 @@
 
 #include <stdio.h>
 #include <sys/ioctl.h>
+#include <sys/stat.h>
 #include <sys/utsname.h>
 #include <termios.h>
 
@@ -170,15 +171,20 @@ prompt_pty_create_producer (int      consumer_fd,
         if (ttyname_r (ret, tty_name, sizeof tty_name) == 0)
           {
             g_autofree char *path = g_build_filename ("/run/host", tty_name, NULL);
-            int alt_fd;
+            _g_autofd int alt_fd = -1;
+            struct stat old_stat, new_stat;
 
             alt_fd = open (path, O_NOCTTY | O_RDWR | O_CLOEXEC | extra);
 
-            if (alt_fd != -1)
-              {
-                close (ret);
-                ret = alt_fd;
-              }
+            if (alt_fd != -1
+                && fstat (ret, &old_stat) != -1
+                && fstat (alt_fd, &new_stat) != -1
+                && old_stat.st_dev == new_stat.st_dev
+                && old_stat.st_ino == new_stat.st_ino)
+            {
+                _g_clear_fd (&ret, NULL);
+                ret = _g_steal_fd (&alt_fd);
+            }
           }
       }
   }
