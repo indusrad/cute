@@ -32,7 +32,6 @@
 # include <fcntl.h>
 #endif
 
-#include <stdio.h>
 #include <sys/ioctl.h>
 #include <sys/stat.h>
 #include <sys/utsname.h>
@@ -52,12 +51,11 @@ _linux_check_version (int major,
 
   if (uname (&u) == 0)
     {
-      guint u_major;
-      guint u_minor;
+      g_auto(GStrv) parts = g_strsplit (u.release, ".", 3);
+      guint64 u_major = parts[0] ? g_ascii_strtoull (parts[0], NULL, 10) : 0;
+      guint64 u_minor = parts[0] && parts[1] ? g_ascii_strtoull (parts[1], NULL, 10) : 0;
 
-      if (sscanf (u.release, "%u.%u.", &u_major, &u_minor) == 2)
-        return (u_major > major) ||
-               ((u_major == major) && (u_minor >= minor));
+      return (u_major > major) || ((u_major == major) && (u_minor >= minor));
     }
 
   return FALSE;
