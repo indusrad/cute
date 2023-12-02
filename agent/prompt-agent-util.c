@@ -60,6 +60,26 @@ _linux_check_version (int major,
 
   return FALSE;
 }
+
+/* This just allows us to work around fstat() being different on old
+ * glibc and new glibc yet we need to support both.
+ */
+static gboolean
+gio_stat (const char *path,
+          guint      *st_dev,
+          guint64    *st_ino)
+{
+  g_autoptr(GFile) file = g_file_new_for_path (path);
+  g_autoptr(GFileInfo) info = g_file_query_info (file, "unix::inode,unix::device", 0, NULL, NULL);
+
+  if (info == NULL)
+    return FALSE;
+
+  *st_dev = g_file_info_get_attribute_uint32 (info, "unix::device");
+  *st_ino = g_file_info_get_attribute_uint64 (info, "unix::inode");
+
+  return TRUE;
+}
 #endif
 
 static int
@@ -69,9 +89,9 @@ prompt_pty_create_producer (int      consumer_fd,
   _g_autofd int ret = -1;
   int extra = blocking ? 0 : O_NONBLOCK;
 #if defined(HAVE_PTSNAME_R) || defined(__FreeBSD__)
-  char name[256];
+  char name[256] = {0};
 #else
-  const char *name;
+  const char *name = NULL;
 #endif
 
   g_return_val_if_fail (consumer_fd != -1, -1);
@@ -170,19 +190,20 @@ prompt_pty_create_producer (int      consumer_fd,
           {
             g_autofree char *path = g_build_filename ("/run/host", tty_name, NULL);
             _g_autofd int alt_fd = -1;
-            struct stat old_stat, new_stat;
+            guint old_st_dev, new_st_dev;
+            guint64 old_st_ino, new_st_ino;
 
             alt_fd = open (path, O_NOCTTY | O_RDWR | O_CLOEXEC | extra);
 
-            if (alt_fd != -1
-                && fstat (ret, &old_stat) != -1
-                && fstat (alt_fd, &new_stat) != -1
-                && old_stat.st_dev == new_stat.st_dev
-                && old_stat.st_ino == new_stat.st_ino)
-            {
+            if (alt_fd != -1 &&
+                gio_stat (path, &old_st_dev, &old_st_ino) &&
+                gio_stat (path, &new_st_dev, &new_st_ino) &&
+                old_st_dev == new_st_dev &&
+                old_st_ino == new_st_ino)
+              {
                 _g_clear_fd (&ret, NULL);
                 ret = _g_steal_fd (&alt_fd);
-            }
+              }
           }
       }
   }
