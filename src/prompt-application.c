@@ -131,15 +131,43 @@ prompt_application_command_line (GApplication            *app,
                                  GApplicationCommandLine *cmdline)
 {
   PromptApplication *self = (PromptApplication *)app;
+  g_autofree char *command = NULL;
+  g_auto(GStrv) argv = NULL;
   GVariantDict *dict;
+  int argc;
 
   g_assert (PROMPT_IS_APPLICATION (self));
   g_assert (G_IS_APPLICATION_COMMAND_LINE (cmdline));
 
   dict = g_application_command_line_get_options_dict (cmdline);
 
+  argv = g_application_command_line_get_arguments (cmdline, &argc);
+
   if (g_variant_dict_contains (dict, "preferences"))
     g_action_group_activate_action (G_ACTION_GROUP (self), "preferences", NULL);
+  else if (g_variant_dict_contains (dict, "command") &&
+           g_variant_dict_lookup (dict, "command", "s", &command))
+    {
+      const char *cwd = g_application_command_line_get_cwd (cmdline);
+      g_autoptr(GError) error = NULL;
+      g_autofree char *cwd_uri = NULL;
+      PromptWindow *window;
+
+      if (!g_shell_parse_argv (command, &argc, &argv, &error))
+        {
+          g_application_command_line_printerr (cmdline,
+                                               _("Cannot parse command: %s"),
+                                               error->message);
+          return EXIT_FAILURE;
+        }
+
+      if (cwd != NULL && g_path_is_absolute (cwd))
+        cwd_uri = g_strdup_printf ("file://%s", cwd);
+
+      window = prompt_window_new_for_command ((const char * const *)argv, cwd_uri);
+      gtk_application_add_window (GTK_APPLICATION (self), GTK_WINDOW (window));
+      gtk_window_present (GTK_WINDOW (window));
+    }
   else if (g_variant_dict_contains (dict, "new-window"))
     prompt_application_new_window_action (NULL, NULL, self);
   else
@@ -416,6 +444,7 @@ prompt_application_init (PromptApplication *self)
   static const GOptionEntry main_entries[] = {
     { "new-window", 'n', 0, G_OPTION_ARG_NONE, NULL, N_("New terminal window") },
     { "preferences", 0, 0, G_OPTION_ARG_NONE, NULL, N_("Show the application preferences") },
+    { "command", 'c', 0, G_OPTION_ARG_STRING, NULL, N_("Command to execute in new window") },
     { NULL }
   };
 
@@ -858,6 +887,7 @@ typedef struct _Spawn
   PromptProfile *profile;
   char *last_working_directory_uri;
   VtePty *pty;
+  char **argv;
 } Spawn;
 
 static void
@@ -869,6 +899,7 @@ spawn_free (gpointer data)
   g_clear_object (&spawn->profile);
   g_clear_object (&spawn->pty);
   g_clear_pointer (&spawn->last_working_directory_uri, g_free);
+  g_clear_pointer (&spawn->argv, g_strfreev);
   g_free (spawn);
 }
 
@@ -928,6 +959,7 @@ prompt_application_get_preferred_shell_cb (GObject      *object,
                              default_shell,
                              spawn->last_working_directory_uri,
                              spawn->pty,
+                             (const char * const *)spawn->argv,
                              g_task_get_cancellable (task),
                              prompt_application_spawn_cb,
                              g_object_ref (task));
@@ -939,6 +971,7 @@ prompt_application_spawn_async (PromptApplication   *self,
                                 PromptProfile       *profile,
                                 const char          *last_working_directory_uri,
                                 VtePty              *pty,
+                                const char * const  *argv,
                                 GCancellable        *cancellable,
                                 GAsyncReadyCallback  callback,
                                 gpointer             user_data)
@@ -960,6 +993,7 @@ prompt_application_spawn_async (PromptApplication   *self,
   g_set_object (&spawn->profile, profile);
   g_set_object (&spawn->pty, pty);
   g_set_str (&spawn->last_working_directory_uri, last_working_directory_uri);
+  spawn->argv = g_strdupv ((char **)argv);
   g_task_set_task_data (task, spawn, spawn_free);
 
   prompt_client_discover_shell_async (self->client,

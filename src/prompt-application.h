@@ -66,6 +66,7 @@ void                prompt_application_spawn_async                (PromptApplica
                                                                    PromptProfile        *profile,
                                                                    const char           *last_working_directory_uri,
                                                                    VtePty               *pty,
+                                                                   const char * const   *argv,
                                                                    GCancellable         *cancellable,
                                                                    GAsyncReadyCallback   callback,
                                                                    gpointer              user_data);

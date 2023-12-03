@@ -53,6 +53,7 @@ void                prompt_client_spawn_async                (PromptClient      
                                                               const char           *default_shell,
                                                               const char           *last_working_directory_uri,
                                                               VtePty               *pty,
+                                                              const char * const   *alt_argv,
                                                               GCancellable         *cancellable,
                                                               GAsyncReadyCallback   callback,
                                                               gpointer              user_data);

@@ -485,6 +485,7 @@ prompt_client_spawn_async (PromptClient        *self,
                            const char          *default_shell,
                            const char          *last_working_directory_uri,
                            VtePty              *pty,
+                           const char * const  *alt_argv,
                            GCancellable        *cancellable,
                            GAsyncReadyCallback  callback,
                            gpointer             user_data)
@@ -542,7 +543,12 @@ prompt_client_spawn_async (PromptClient        *self,
 
   argv_builder = g_strv_builder_new ();
 
-  if (prompt_profile_get_use_custom_command (profile))
+  if (alt_argv != NULL && alt_argv[0] != NULL)
+    {
+      arg0 = NULL;
+      g_strv_builder_addv (argv_builder, (const char **)alt_argv);
+    }
+  else if (prompt_profile_get_use_custom_command (profile))
     {
       g_auto(GStrv) argv = NULL;
 
@@ -563,33 +569,43 @@ prompt_client_spawn_async (PromptClient        *self,
       g_strv_builder_add (argv_builder, arg0);
     }
 
-  if (prompt_profile_get_login_shell (profile) &&
+  if (arg0 != NULL &&
+      prompt_profile_get_login_shell (profile) &&
       prompt_shell_supports_dash_l (arg0))
     g_strv_builder_add (argv_builder, "-l");
 
   if (last_working_directory_uri != NULL)
     last_directory = g_file_new_for_uri (last_working_directory_uri);
 
-  switch (prompt_profile_get_preserve_directory (profile))
+  if (alt_argv != NULL && alt_argv[0] != NULL)
     {
-    case PROMPT_PRESERVE_DIRECTORY_NEVER:
-      break;
-
-    case PROMPT_PRESERVE_DIRECTORY_SAFE:
-      /* TODO: We might want to check with the container that this
-       * is a shell (as opposed to one available on the host).
-       */
-      if (!prompt_is_shell (arg0))
-        break;
-      G_GNUC_FALLTHROUGH;
-
-    case PROMPT_PRESERVE_DIRECTORY_ALWAYS:
-      if (last_directory != NULL && g_file_is_native (last_directory))
+      if (last_directory != NULL)
         cwd = g_file_peek_path (last_directory);
-      break;
+    }
 
-    default:
-      g_assert_not_reached ();
+  if (cwd == NULL)
+    {
+      switch (prompt_profile_get_preserve_directory (profile))
+        {
+        case PROMPT_PRESERVE_DIRECTORY_NEVER:
+          break;
+
+        case PROMPT_PRESERVE_DIRECTORY_SAFE:
+          /* TODO: We might want to check with the container that this
+           * is a shell (as opposed to one available on the host).
+           */
+          if (!prompt_is_shell (arg0))
+            break;
+          G_GNUC_FALLTHROUGH;
+
+        case PROMPT_PRESERVE_DIRECTORY_ALWAYS:
+          if (last_directory != NULL && g_file_is_native (last_directory))
+            cwd = g_file_peek_path (last_directory);
+          break;
+
+        default:
+          g_assert_not_reached ();
+        }
     }
 
   if (cwd == NULL)

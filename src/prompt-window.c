@@ -1314,14 +1314,10 @@ prompt_window_init (PromptWindow *self)
   adw_tab_view_set_shortcuts (self->tab_view, 0);
 }
 
-PromptWindow *
-prompt_window_new (void)
-{
-  return prompt_window_new_for_profile (NULL);
-}
-
-PromptWindow *
-prompt_window_new_for_profile (PromptProfile *profile)
+static PromptWindow *
+prompt_window_new_for_profile_and_command (PromptProfile      *profile,
+                                           const char * const *argv,
+                                           const char         *cwd_uri)
 {
   g_autoptr(PromptProfile) default_profile = NULL;
   PromptSettings *settings;
@@ -1355,6 +1351,12 @@ prompt_window_new_for_profile (PromptProfile *profile)
 
   vte_terminal_set_size (VTE_TERMINAL (terminal), columns, rows);
 
+  if (argv != NULL && argv[0] != NULL)
+    prompt_tab_set_command (tab, argv);
+
+  if (!prompt_str_empty0 (cwd_uri))
+    prompt_tab_set_previous_working_directory_uri (tab, cwd_uri);
+
   prompt_window_append_tab (self, tab);
 
   gtk_window_set_default_size (GTK_WINDOW (self), -1, -1);
@@ -1372,6 +1374,25 @@ prompt_window_append_tab (PromptWindow *self,
   adw_tab_view_append (self->tab_view, GTK_WIDGET (tab));
 
   gtk_widget_grab_focus (GTK_WIDGET (tab));
+}
+
+PromptWindow *
+prompt_window_new (void)
+{
+  return prompt_window_new_for_profile (NULL);
+}
+
+PromptWindow *
+prompt_window_new_for_command (const char * const *argv,
+                               const char         *cwd_uri)
+{
+  return prompt_window_new_for_profile_and_command (NULL, argv, cwd_uri);
+}
+
+PromptWindow *
+prompt_window_new_for_profile (PromptProfile *profile)
+{
+  return prompt_window_new_for_profile_and_command (profile, NULL, NULL);
 }
 
 void

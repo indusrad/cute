@@ -46,26 +46,27 @@ struct _PromptTab
 {
   GtkWidget           parent_instance;
 
-  char               *previous_working_directory_uri;
-  PromptProfile      *profile;
-  PromptIpcProcess   *process;
-  char               *title_prefix;
-  PromptTabMonitor   *monitor;
-  char               *uuid;
-  PromptIpcContainer *container_at_creation;
+  char                *previous_working_directory_uri;
+  PromptProfile       *profile;
+  PromptIpcProcess    *process;
+  char                *title_prefix;
+  PromptTabMonitor    *monitor;
+  char                *uuid;
+  PromptIpcContainer  *container_at_creation;
+  char               **command;
 
-  GdkTexture         *cached_texture;
+  GdkTexture          *cached_texture;
 
-  PromptTabNotify     notify;
+  PromptTabNotify      notify;
 
-  AdwBanner          *banner;
-  GtkScrolledWindow  *scrolled_window;
-  PromptTerminal     *terminal;
+  AdwBanner           *banner;
+  GtkScrolledWindow   *scrolled_window;
+  PromptTerminal      *terminal;
 
-  PromptZoomLevel     zoom;
-  PromptTabState      state;
+  PromptZoomLevel      zoom;
+  PromptTabState       state;
 
-  guint               forced_exit : 1;
+  guint                forced_exit : 1;
 };
 
 enum {
@@ -194,6 +195,9 @@ prompt_tab_wait_cb (GObject      *object,
 
   exit_action = prompt_profile_get_exit_action (self->profile);
   tab_view = gtk_widget_get_ancestor (GTK_WIDGET (self), ADW_TYPE_TAB_VIEW);
+
+  if (self->command != NULL)
+    exit_action = PROMPT_EXIT_ACTION_NONE;
 
   if (ADW_IS_TAB_VIEW (tab_view))
     page = adw_tab_view_get_page (ADW_TAB_VIEW (tab_view), GTK_WIDGET (self));
@@ -346,6 +350,7 @@ prompt_tab_respawn (PromptTab *self)
                                   self->profile,
                                   self->previous_working_directory_uri,
                                   pty,
+                                  (const char * const *)self->command,
                                   NULL,
                                   prompt_tab_spawn_cb,
                                   g_object_ref (self));
@@ -738,6 +743,7 @@ prompt_tab_dispose (GObject *object)
 
   g_clear_pointer (&self->previous_working_directory_uri, g_free);
   g_clear_pointer (&self->title_prefix, g_free);
+  g_clear_pointer (&self->command, g_strfreev);
 
   G_OBJECT_CLASS (prompt_tab_parent_class)->dispose (object);
 }
@@ -1293,4 +1299,20 @@ prompt_tab_has_foreground_process (PromptTab  *self,
     *pid = the_pid;
 
   return has_foreground_process;
+}
+
+void
+prompt_tab_set_command (PromptTab          *self,
+                        const char * const *command)
+{
+  char **copy;
+
+  g_return_if_fail (PROMPT_IS_TAB (self));
+
+  if (command != NULL && command[0] == NULL)
+    command = NULL;
+
+  copy = g_strdupv ((char **)command);
+  g_strfreev (self->command);
+  self->command = copy;
 }
