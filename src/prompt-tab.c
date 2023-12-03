@@ -530,6 +530,18 @@ prompt_tab_notify_process_leader_kind_cb (PromptTab        *self,
     prompt_tab_set_needs_attention (self, TRUE);
 }
 
+static PromptIpcContainer *
+prompt_tab_discover_container (PromptTab *self)
+{
+  VteTerminal *terminal = VTE_TERMINAL (self->terminal);
+  const char *current_container_name = vte_terminal_get_current_container_name (terminal);
+  const char *current_container_runtime = vte_terminal_get_current_container_runtime (terminal);
+
+  return prompt_application_find_container_by_name (PROMPT_APPLICATION_DEFAULT,
+                                                    current_container_runtime,
+                                                    current_container_name);
+}
+
 static GIcon *
 prompt_tab_dup_icon (PromptTab *self)
 {
@@ -548,10 +560,20 @@ prompt_tab_dup_icon (PromptTab *self)
     case PROMPT_PROCESS_LEADER_KIND_SUPERUSER:
       return g_themed_icon_new ("process-superuser-symbolic");
 
-    case PROMPT_PROCESS_LEADER_KIND_UNKNOWN:
     case PROMPT_PROCESS_LEADER_KIND_CONTAINER:
-      return NULL;
+    case PROMPT_PROCESS_LEADER_KIND_UNKNOWN:
+      {
+        g_autoptr(PromptIpcContainer) container = NULL;
+        const char *icon_name;
 
+        if (!(container = prompt_tab_discover_container (self)))
+          g_set_object (&container, self->container_at_creation);
+
+        if (container != NULL &&
+            (icon_name = prompt_ipc_container_get_icon_name (container)))
+          return g_themed_icon_new (icon_name);
+      }
+      return NULL;
     }
 }
 
@@ -717,6 +739,14 @@ prompt_tab_size_allocate (GtkWidget *widget,
   GTK_WIDGET_CLASS (prompt_tab_parent_class)->size_allocate (widget, width, height, baseline);
 
   g_clear_object (&self->cached_texture);
+}
+
+static void
+prompt_tab_invalidate_icon (PromptTab *self)
+{
+  g_assert (PROMPT_IS_TAB (self));
+
+  g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_ICON]);
 }
 
 static void
@@ -953,6 +983,7 @@ prompt_tab_class_init (PromptTabClass *klass)
   gtk_widget_class_bind_template_callback (widget_class, prompt_tab_decrease_font_size_cb);
   gtk_widget_class_bind_template_callback (widget_class, prompt_tab_notify_palette_cb);
   gtk_widget_class_bind_template_callback (widget_class, prompt_tab_bell_cb);
+  gtk_widget_class_bind_template_callback (widget_class, prompt_tab_invalidate_icon);
 
   gtk_widget_class_install_action (widget_class, "tab.respawn", NULL, prompt_tab_respawn_action);
 

@@ -54,6 +54,8 @@
                 <signal name="decrease-font-size" handler="prompt_tab_decrease_font_size_cb" swapped="1"/>
                 <signal name="increase-font-size" handler="prompt_tab_increase_font_size_cb" swapped="1"/>
                 <signal name="bell" handler="prompt_tab_bell_cb" swapped="1"/>
+                <signal name="notify::current-container-name" handler="prompt_tab_invalidate_icon" swapped="1"/>
+                <signal name="notify::current-container-runtime" handler="prompt_tab_invalidate_icon" swapped="1"/>
                 <binding name="palette">
                   <lookup name="palette" type="PromptProfile">
                     <lookup name="profile">PromptTab</lookup>

@@ -14,7 +14,8 @@
     <file preprocess="xml-stripblanks">prompt-title-dialog.ui</file>
     <file preprocess="xml-stripblanks">prompt-window.ui</file>
     <file preprocess="xml-stripblanks">icons/enter-keyboard-shortcut.svg</file>
-    <file preprocess="xml-stripblanks">icons/scalable/actions/process-container-symbolic.svg</file>
+    <file preprocess="xml-stripblanks">icons/scalable/actions/container-generic-symbolic.svg</file>
+    <file preprocess="xml-stripblanks">icons/scalable/actions/container-toolbox-symbolic.svg</file>
     <file preprocess="xml-stripblanks">icons/scalable/actions/process-remote-symbolic.svg</file>
     <file preprocess="xml-stripblanks">icons/scalable/actions/process-superuser-symbolic.svg</file>
     <file>style.css</file>

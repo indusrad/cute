@@ -37,5 +37,6 @@ prompt_toolbox_container_class_init (PromptToolboxContainerClass *klass)
 static void
 prompt_toolbox_container_init (PromptToolboxContainer *self)
 {
+  prompt_ipc_container_set_icon_name (PROMPT_IPC_CONTAINER (self), "container-toolbox-symbolic");
   prompt_ipc_container_set_provider (PROMPT_IPC_CONTAINER (self), "toolbox");
 }
