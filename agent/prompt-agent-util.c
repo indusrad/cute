@@ -196,7 +196,7 @@ prompt_pty_create_producer (int      consumer_fd,
             alt_fd = open (path, O_NOCTTY | O_RDWR | O_CLOEXEC | extra);
 
             if (alt_fd != -1 &&
-                gio_stat (path, &old_st_dev, &old_st_ino) &&
+                gio_stat (tty_name, &old_st_dev, &old_st_ino) &&
                 gio_stat (path, &new_st_dev, &new_st_ino) &&
                 old_st_dev == new_st_dev &&
                 old_st_ino == new_st_ino)
