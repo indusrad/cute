@@ -65,6 +65,7 @@ struct _PromptWindow
   guint                  focus_active_tab_source;
 
   guint                  tab_overview_animating : 1;
+  guint                  disposed : 1;
 };
 
 G_DEFINE_FINAL_TYPE (PromptWindow, prompt_window, ADW_TYPE_APPLICATION_WINDOW)
@@ -278,6 +279,9 @@ prompt_window_page_detached_cb (PromptWindow *self,
   g_assert (PROMPT_IS_WINDOW (self));
   g_assert (ADW_IS_TAB_PAGE (page));
   g_assert (ADW_IS_TAB_VIEW (tab_view));
+
+  if (self->disposed)
+    return;
 
   n_pages = adw_tab_view_get_n_pages (tab_view);
 
@@ -1194,6 +1198,8 @@ static void
 prompt_window_dispose (GObject *object)
 {
   PromptWindow *self = (PromptWindow *)object;
+
+  self->disposed = TRUE;
 
   gtk_widget_dispose_template (GTK_WIDGET (self), PROMPT_TYPE_WINDOW);
 
