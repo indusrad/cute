@@ -454,6 +454,7 @@ prompt_application_class_init (PromptApplicationClass *klass)
 static void
 prompt_application_init (PromptApplication *self)
 {
+  g_autoptr(GString) summary = g_string_new (_("Examples:"));
   static const GOptionEntry main_entries[] = {
     { "new-window", 'n', 0, G_OPTION_ARG_NONE, NULL, N_("New terminal window") },
     { "preferences", 0, 0, G_OPTION_ARG_NONE, NULL, N_("Show the application preferences") },
@@ -461,7 +462,23 @@ prompt_application_init (PromptApplication *self)
     { NULL }
   };
 
+  g_string_append_c (summary, '\n');
+  g_string_append_c (summary, '\n');
+  g_string_append_printf (summary, "  %s\n", _("Run Separate Instance"));
+  g_string_append (summary, "    prompt -s\n");
+
+  g_string_append_c (summary, '\n');
+  g_string_append_printf (summary, "  %s\n", _("Open Preferences"));
+  g_string_append (summary, "    prompt --preferences\n");
+
+  g_string_append_c (summary, '\n');
+  g_string_append_printf (summary, "  %s\n", _("Run Custom Command in New Window"));
+  g_string_append (summary, "    prompt -x \"bash -c 'sleep 3'\"\n");
+  g_string_append (summary, "    prompt -- bash -c 'sleep 3'");
+
+  g_application_set_option_context_parameter_string (G_APPLICATION (self), _("[-- COMMAND ARGUMENTS]"));
   g_application_add_main_option_entries (G_APPLICATION (self), main_entries);
+  g_application_set_option_context_summary (G_APPLICATION (self), summary->str);
 
   self->system_font_name = g_strdup ("Monospace 11");
 }
