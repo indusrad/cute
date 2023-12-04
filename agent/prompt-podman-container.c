@@ -390,11 +390,11 @@ prompt_podman_container_handle_spawn (PromptIpcContainer    *container,
   g_assert (in_env != NULL);
 
   run_context = prompt_run_context_new ();
-  prompt_run_context_add_minimal_environment (run_context);
   prompt_run_context_push (run_context,
                            prompt_podman_container_run_context_cb,
                            g_object_ref (container),
                            g_object_unref);
+  prompt_run_context_add_minimal_environment (run_context);
   prompt_agent_push_spawn (run_context, in_fd_list, cwd, argv, in_fds, in_env);
 
   g_object_set_data_full (G_OBJECT (run_context),
