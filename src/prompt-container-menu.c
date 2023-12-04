@@ -99,11 +99,11 @@ prompt_container_menu_get_item_attributes (GMenuModel  *model,
   label = prompt_ipc_container_get_display_name (container);
   id = prompt_ipc_container_get_id (container);
 
-  if (prompt_str_empty0 (label))
-    label = prompt_application_get_os_name (PROMPT_APPLICATION_DEFAULT);
+  if (g_strcmp0 (id, "session") == 0)
+    label = _("My Computer");
 
   if (label == NULL)
-    label = _("User Session");
+    label = _("Unknown Container");
 
   ht = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, (GDestroyNotify)g_variant_unref);
   g_hash_table_insert (ht, g_strdup (G_MENU_ATTRIBUTE_ACTION), g_variant_ref_sink (g_variant_new_string ("win.new-terminal")));
