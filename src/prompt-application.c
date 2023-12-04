@@ -495,7 +495,11 @@ generate_debug_info (PromptApplication *self)
   GString *str = g_string_new (NULL);
   g_autoptr(GListModel) containers = NULL;
   g_autofree char *flatpak_info = NULL;
+  const char *os_name = prompt_application_get_os_name (self);
   guint n_items;
+
+  g_string_append_printf (str, "Host: %s\n", os_name);
+  g_string_append_c (str, '\n');
 
   g_string_append_printf (str,
                           "GLib: %d.%d.%d (compiled against %d.%d.%d)\n",
