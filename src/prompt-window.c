@@ -1275,6 +1275,8 @@ prompt_window_class_init (PromptWindowClass *klass)
 static void
 prompt_window_init (PromptWindow *self)
 {
+  g_autoptr(GIcon) default_icon = NULL;
+
   self->active_tab_bindings = g_binding_group_new ();
 
   self->active_tab_signals = g_signal_group_new (PROMPT_TYPE_TAB);
@@ -1299,6 +1301,9 @@ prompt_window_init (PromptWindow *self)
   self->shortcuts = g_object_ref (prompt_application_get_shortcuts (PROMPT_APPLICATION_DEFAULT));
 
   gtk_widget_init_template (GTK_WIDGET (self));
+
+  default_icon = g_themed_icon_new ("utilities-terminal-symbolic");
+  adw_tab_view_set_default_icon (self->tab_view, default_icon);
 
 #if DEVELOPMENT_BUILD
   gtk_widget_add_css_class (GTK_WIDGET (self), "devel");
