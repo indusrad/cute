@@ -81,6 +81,13 @@ prompt_session_container_handle_spawn (PromptIpcContainer    *container,
   g_assert (in_fds != NULL);
   g_assert (in_env != NULL);
 
+  /* Make sure CWD exists within the user session, it might have
+   * come from another container that isn't the same or at a path
+   * that is not accessible to the user (say from a sudo shell).
+   */
+  if (cwd[0] == 0 || !g_file_test (cwd, G_FILE_TEST_IS_DIR))
+    cwd = g_get_home_dir ();
+
   run_context = prompt_run_context_new ();
 
   /* For the default session, we'll just inherit whatever the session gave us
