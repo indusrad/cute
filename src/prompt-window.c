@@ -57,6 +57,7 @@ struct _PromptWindow
 
   GBindingGroup         *active_tab_bindings;
   GSignalGroup          *active_tab_signals;
+  GSignalGroup          *selected_page_signals;
   PromptWindowDressing  *dressing;
   GtkBox                *visual_bell;
 
@@ -300,7 +301,11 @@ prompt_window_notify_selected_page_cb (PromptWindow *self,
   g_assert (PROMPT_IS_WINDOW (self));
   g_assert (ADW_IS_TAB_VIEW (tab_view));
 
-  if ((page = adw_tab_view_get_selected_page (self->tab_view)))
+  page = adw_tab_view_get_selected_page (self->tab_view);
+
+  g_signal_group_set_target (self->selected_page_signals, page);
+
+  if (page != NULL)
     {
       PromptProfile *profile;
 
@@ -641,6 +646,42 @@ prompt_window_detach_action (GtkWidget  *widget,
   adw_tab_view_transfer_page (self->tab_view, tab_page, new_window->tab_view, 0);
 
   gtk_window_present (GTK_WINDOW (new_window));
+}
+
+static void
+prompt_window_tab_pin_action (GtkWidget  *widget,
+                              const char *action_name,
+                              GVariant   *param)
+{
+  PromptWindow *self = (PromptWindow *)widget;
+  AdwTabPage *tab_page;
+  PromptTab *tab;
+
+  g_assert (PROMPT_IS_WINDOW (self));
+
+  if (!(tab = prompt_window_get_active_tab (self)) ||
+      !(tab_page = adw_tab_view_get_page (self->tab_view, GTK_WIDGET (tab))))
+    return;
+
+  adw_tab_view_set_page_pinned (self->tab_view, tab_page, TRUE);
+}
+
+static void
+prompt_window_tab_unpin_action (GtkWidget  *widget,
+                                const char *action_name,
+                                GVariant   *param)
+{
+  PromptWindow *self = (PromptWindow *)widget;
+  AdwTabPage *tab_page;
+  PromptTab *tab;
+
+  g_assert (PROMPT_IS_WINDOW (self));
+
+  if (!(tab = prompt_window_get_active_tab (self)) ||
+      !(tab_page = adw_tab_view_get_page (self->tab_view, GTK_WIDGET (tab))))
+    return;
+
+  adw_tab_view_set_page_pinned (self->tab_view, tab_page, FALSE);
 }
 
 static void
@@ -1122,6 +1163,34 @@ prompt_window_constructed (GObject *object)
 }
 
 static void
+prompt_window_selected_page_notify_pinned_cb (PromptWindow *self,
+                                              GParamSpec   *pspec,
+                                              AdwTabPage   *page)
+{
+  gboolean pinned;
+
+  g_assert (PROMPT_IS_WINDOW (self));
+  g_assert (ADW_IS_TAB_PAGE (page));
+
+  pinned = adw_tab_page_get_pinned (page);
+
+  gtk_widget_action_set_enabled (GTK_WIDGET (self), "tab.pin", !pinned);
+  gtk_widget_action_set_enabled (GTK_WIDGET (self), "tab.unpin", pinned);
+}
+
+static void
+prompt_window_selected_page_bind_cb (PromptWindow *self,
+                                     AdwTabPage   *page,
+                                     GSignalGroup *group)
+{
+  g_assert (PROMPT_IS_WINDOW (self));
+  g_assert (ADW_IS_TAB_PAGE (page));
+  g_assert (G_IS_SIGNAL_GROUP (group));
+
+  prompt_window_selected_page_notify_pinned_cb (self, NULL, page);
+}
+
+static void
 prompt_window_dispose (GObject *object)
 {
   PromptWindow *self = (PromptWindow *)object;
@@ -1130,6 +1199,7 @@ prompt_window_dispose (GObject *object)
 
   g_signal_group_set_target (self->active_tab_signals, NULL);
   g_binding_group_set_source (self->active_tab_bindings, NULL);
+  g_signal_group_set_target (self->selected_page_signals, NULL);
   g_clear_handle_id (&self->focus_active_tab_source, g_source_remove);
   g_clear_object (&self->parking_lot);
 
@@ -1143,6 +1213,7 @@ prompt_window_finalize (GObject *object)
 
   g_clear_object (&self->active_tab_bindings);
   g_clear_object (&self->active_tab_signals);
+  g_clear_object (&self->selected_page_signals);
 
   G_OBJECT_CLASS (prompt_window_parent_class)->finalize (object);
 }
@@ -1261,6 +1332,8 @@ prompt_window_class_init (PromptWindowClass *klass)
   gtk_widget_class_install_action (widget_class, "page.close", NULL, prompt_window_close_action);
   gtk_widget_class_install_action (widget_class, "page.close-others", NULL, prompt_window_close_others_action);
   gtk_widget_class_install_action (widget_class, "page.detach", NULL, prompt_window_detach_action);
+  gtk_widget_class_install_action (widget_class, "tab.pin", NULL, prompt_window_tab_pin_action);
+  gtk_widget_class_install_action (widget_class, "tab.unpin", NULL, prompt_window_tab_unpin_action);
   gtk_widget_class_install_action (widget_class, "tab.reset", "b", prompt_window_tab_reset_action);
   gtk_widget_class_install_action (widget_class, "tab.focus", "i", prompt_window_tab_focus_action);
   gtk_widget_class_install_action (widget_class, "page.next", NULL, prompt_window_page_next_action);
@@ -1278,6 +1351,18 @@ prompt_window_init (PromptWindow *self)
   g_autoptr(GIcon) default_icon = NULL;
 
   self->active_tab_bindings = g_binding_group_new ();
+
+  self->selected_page_signals = g_signal_group_new (ADW_TYPE_TAB_PAGE);
+  g_signal_connect_object (self->selected_page_signals,
+                           "bind",
+                           G_CALLBACK (prompt_window_selected_page_bind_cb),
+                           self,
+                           G_CONNECT_SWAPPED);
+  g_signal_group_connect_object (self->selected_page_signals,
+                                 "notify::pinned",
+                                 G_CALLBACK (prompt_window_selected_page_notify_pinned_cb),
+                                 self,
+                                 G_CONNECT_SWAPPED);
 
   self->active_tab_signals = g_signal_group_new (PROMPT_TYPE_TAB);
   g_signal_connect_object (self->active_tab_signals,
