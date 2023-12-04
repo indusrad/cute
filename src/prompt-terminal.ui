@@ -152,18 +152,6 @@
     </section>
     <section>
       <item>
-        <attribute name="label" translatable="yes">_Pin Tab</attribute>
-        <attribute name="action">tab.pin</attribute>
-        <attribute name="hidden-when">action-disabled</attribute>
-      </item>
-      <item>
-        <attribute name="label" translatable="yes">Un_pin Tab</attribute>
-        <attribute name="action">tab.unpin</attribute>
-        <attribute name="hidden-when">action-disabled</attribute>
-      </item>
-    </section>
-    <section>
-      <item>
         <attribute name="label" translatable="yes">_Open Link</attribute>
         <attribute name="action">terminal.open-link</attribute>
         <attribute name="hidden-when">action-disabled</attribute>
@@ -205,21 +193,8 @@
     </section>
     <section>
       <item>
-        <attribute name="label" translatable="yes">Set Title</attribute>
-        <attribute name="action">win.set-title</attribute>
-      </item>
-    </section>
-    <section>
-      <item>
         <attribute name="label" translatable="yes">Read-Only</attribute>
         <attribute name="action">win.tab.read-only</attribute>
-      </item>
-    </section>
-    <section>
-      <item>
-        <attribute name="id">search</attribute>
-        <attribute name="label" translatable="yes">Search…</attribute>
-        <attribute name="action">win.search</attribute>
       </item>
     </section>
     <section>
@@ -234,6 +209,13 @@
         <attribute name="label" translatable="yes">Reset and Clear</attribute>
         <attribute name="action">tab.reset</attribute>
         <attribute name="target" type="b">true</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="id">search</attribute>
+        <attribute name="label" translatable="yes">Search…</attribute>
+        <attribute name="action">win.search</attribute>
       </item>
     </section>
   </menu>

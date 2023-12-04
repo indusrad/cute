@@ -544,19 +544,6 @@
     </section>
     <section>
       <item>
-        <attribute name="label" translatable="yes">Read Only</attribute>
-        <attribute name="action">win.tab.read-only</attribute>
-      </item>
-    </section>
-    <section>
-      <item>
-        <attribute name="id">search</attribute>
-        <attribute name="label" translatable="yes">Search…</attribute>
-        <attribute name="action">win.search</attribute>
-      </item>
-    </section>
-    <section>
-      <item>
         <attribute name="id">close-other-tabs</attribute>
         <attribute name="label" translatable="yes">Close _Other Tabs</attribute>
         <attribute name="action">page.close-others</attribute>
@@ -565,20 +552,6 @@
         <attribute name="id">close-tab</attribute>
         <attribute name="label" translatable="yes">_Close Tab</attribute>
         <attribute name="action">page.close</attribute>
-      </item>
-    </section>
-    <section>
-      <item>
-        <attribute name="id">reset</attribute>
-        <attribute name="label" translatable="yes">Reset</attribute>
-        <attribute name="action">tab.reset</attribute>
-        <attribute name="target" type="b">false</attribute>
-      </item>
-      <item>
-        <attribute name="id">reset-and-clear</attribute>
-        <attribute name="label" translatable="yes">Reset and Clear</attribute>
-        <attribute name="action">tab.reset</attribute>
-        <attribute name="target" type="b">true</attribute>
       </item>
     </section>
   </menu>
