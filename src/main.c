@@ -37,6 +37,33 @@ check_early_opts (int        *argc,
     { NULL }
   };
 
+  /* If we see a -- then take all of the arguments after that and
+   * replace it into an escaped string suitable to pass as the value
+   * for `-c 'command ...'.
+   */
+  for (int i = 0; i < *argc; i++)
+    {
+      if (g_str_equal ((*argv)[i], "--") && (*argv)[i+1] != NULL)
+        {
+          GString *str = g_string_new (NULL);
+
+          for (int j = i+1; j < *argc; j++)
+            {
+              g_autofree char *quoted = g_shell_quote ((*argv)[j]);
+
+              g_string_append (str, quoted);
+              g_string_append_c (str, ' ');
+              (*argv)[j] = NULL;
+            }
+
+          *argc = i + 1 + 1;
+          (*argv)[i] = g_strdup ("-x");
+          (*argv)[i+1] = g_string_free (str, FALSE);
+
+          break;
+        }
+    }
+
   context = g_option_context_new (NULL);
   g_option_context_set_ignore_unknown_options (context, TRUE);
   g_option_context_set_help_enabled (context, FALSE);

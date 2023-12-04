@@ -145,8 +145,8 @@ prompt_application_command_line (GApplication            *app,
 
   if (g_variant_dict_contains (dict, "preferences"))
     g_action_group_activate_action (G_ACTION_GROUP (self), "preferences", NULL);
-  else if (g_variant_dict_contains (dict, "command") &&
-           g_variant_dict_lookup (dict, "command", "s", &command))
+  else if (g_variant_dict_contains (dict, "execute") &&
+           g_variant_dict_lookup (dict, "execute", "s", &command))
     {
       const char *cwd = g_application_command_line_get_cwd (cmdline);
       g_autoptr(GError) error = NULL;
@@ -457,7 +457,7 @@ prompt_application_init (PromptApplication *self)
   static const GOptionEntry main_entries[] = {
     { "new-window", 'n', 0, G_OPTION_ARG_NONE, NULL, N_("New terminal window") },
     { "preferences", 0, 0, G_OPTION_ARG_NONE, NULL, N_("Show the application preferences") },
-    { "command", 'c', 0, G_OPTION_ARG_STRING, NULL, N_("Command to execute in new window") },
+    { "execute", 'x', 0, G_OPTION_ARG_STRING, NULL, N_("Command to execute in new window") },
     { NULL }
   };
 
