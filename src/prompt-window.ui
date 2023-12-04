@@ -555,4 +555,11 @@
       </item>
     </section>
   </menu>
+  <menu id="my_computer_menu">
+    <item>
+      <attribute name="label" translatable="yes">_My Computer</attribute>
+      <attribute name="action">my-computer</attribute>
+      <attribute name="hidden-when">action-disabled</attribute>
+    </item>
+  </menu>
 </interface>

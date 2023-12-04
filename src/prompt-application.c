@@ -273,12 +273,21 @@ prompt_application_notify_profile_uuids_cb (PromptApplication *self,
   g_list_store_splice (self->profiles, 0, n_items, array->pdata, array->len);
 }
 
+static gboolean
+filter_session_container (gpointer item,
+                          gpointer user_data)
+{
+  return g_strcmp0 ("session", prompt_ipc_container_get_id (item)) != 0;
+}
+
 static void
 prompt_application_startup (GApplication *application)
 {
   static const char *patterns[] = { "org.gnome.*", NULL };
   PromptApplication *self = (PromptApplication *)application;
   g_autoptr(PromptIpcContainer) host = NULL;
+  g_autoptr(GtkFilterListModel) filter_model = NULL;
+  g_autoptr(GtkCustomFilter) filter = NULL;
   g_autoptr(GError) error = NULL;
   AdwStyleManager *style_manager;
 
@@ -297,7 +306,11 @@ prompt_application_startup (GApplication *application)
     g_error ("Failed to launch prompt-agent: %s", error->message);
 
   self->profile_menu = prompt_profile_menu_new (self->settings);
-  self->container_menu = prompt_container_menu_new (G_LIST_MODEL (self->client));
+
+  filter = gtk_custom_filter_new (filter_session_container, NULL, NULL);
+  filter_model = gtk_filter_list_model_new (g_object_ref (G_LIST_MODEL (self->client)),
+                                            g_object_ref (GTK_FILTER (filter)));
+  self->container_menu = prompt_container_menu_new (G_LIST_MODEL (filter_model));
 
   g_action_map_add_action_entries (G_ACTION_MAP (self),
                                    action_entries,

@@ -47,6 +47,7 @@ struct _PromptWindow
   PromptFindBar         *find_bar;
   GtkRevealer           *find_bar_revealer;
   AdwHeaderBar          *header_bar;
+  GMenu                 *my_computer_menu;
   GMenu                 *primary_menu;
   GtkMenuButton         *primary_menu_button;
   AdwTabBar             *tab_bar;
@@ -1094,31 +1095,22 @@ prompt_window_add_theme_controls (PromptWindow *self)
 }
 
 static void
-prompt_window_menu_items_changed_cb (PromptWindow *self,
-                                     guint         position,
-                                     guint         removed,
-                                     guint         added,
-                                     GMenuModel   *model)
+prompt_window_update_menu_visibility (PromptWindow *self)
 {
-  gboolean visible = FALSE;
-  guint n_items;
+  g_autoptr(GListModel) containers = NULL;
+  g_autoptr(GListModel) profiles = NULL;
+  gboolean visible;
 
   g_assert (PROMPT_IS_WINDOW (self));
-  g_assert (!model || G_IS_MENU_MODEL (model));
 
-  model = gtk_menu_button_get_menu_model (self->new_terminal_menu_button);
-  n_items = g_menu_model_get_n_items (model);
+  containers = prompt_application_list_containers (PROMPT_APPLICATION_DEFAULT);
+  profiles = prompt_application_list_profiles (PROMPT_APPLICATION_DEFAULT);
+  visible = g_list_model_get_n_items (containers) > 1 ||
+            g_list_model_get_n_items (profiles) > 1;
 
-  for (guint i = 0; i < n_items; i++)
-    {
-      g_autoptr(GMenuModel) child = g_menu_model_get_item_link (model, i, G_MENU_LINK_SECTION);
-
-      if (child && g_menu_model_get_n_items (child))
-        {
-          visible = TRUE;
-          break;
-        }
-    }
+  gtk_widget_action_set_enabled (GTK_WIDGET (self),
+                                 "my-computer",
+                                 g_list_model_get_n_items (containers) > 1);
 
   gtk_widget_set_visible (GTK_WIDGET (self->new_terminal_separator), visible);
   gtk_widget_set_visible (GTK_WIDGET (self->new_terminal_menu_button), visible);
@@ -1129,6 +1121,8 @@ prompt_window_constructed (GObject *object)
 {
   PromptWindow *self = (PromptWindow *)object;
   PromptApplication *app = PROMPT_APPLICATION_DEFAULT;
+  g_autoptr(GListModel) profiles = NULL;
+  g_autoptr(GListModel) containers = NULL;
   g_autoptr(GMenuModel) profile_menu = NULL;
   g_autoptr(GMenuModel) container_menu = NULL;
   g_autoptr(GMenu) menu = NULL;
@@ -1143,27 +1137,28 @@ prompt_window_constructed (GObject *object)
   prompt_window_add_zoom_controls (self);
 
   menu = g_menu_new ();
-
   profile_menu = prompt_application_dup_profile_menu (app);
   g_menu_append_section (menu, _("Profiles"), profile_menu);
-  g_signal_connect_object (profile_menu,
-                           "items-changed",
-                           G_CALLBACK (prompt_window_menu_items_changed_cb),
-                           self,
-                           G_CONNECT_SWAPPED);
-
+  g_menu_append_section (menu, NULL, G_MENU_MODEL (self->my_computer_menu));
   container_menu = prompt_application_dup_container_menu (app);
   g_menu_append_section (menu, _("Containers"), container_menu);
-  g_signal_connect_object (container_menu,
-                           "items-changed",
-                           G_CALLBACK (prompt_window_menu_items_changed_cb),
-                           self,
-                           G_CONNECT_SWAPPED);
 
   gtk_menu_button_set_menu_model (self->new_terminal_menu_button,
                                   G_MENU_MODEL (menu));
 
-  prompt_window_menu_items_changed_cb (self, 0, 0, 0, NULL);
+  containers = prompt_application_list_containers (PROMPT_APPLICATION_DEFAULT);
+  g_signal_connect_object (containers,
+                           "items-changed",
+                           G_CALLBACK (prompt_window_update_menu_visibility),
+                           self,
+                           G_CONNECT_SWAPPED);
+  profiles = prompt_application_list_profiles (PROMPT_APPLICATION_DEFAULT);
+  g_signal_connect_object (profiles,
+                           "items-changed",
+                           G_CALLBACK (prompt_window_update_menu_visibility),
+                           self,
+                           G_CONNECT_SWAPPED);
+  prompt_window_update_menu_visibility (self);
 }
 
 static void
@@ -1192,6 +1187,16 @@ prompt_window_selected_page_bind_cb (PromptWindow *self,
   g_assert (G_IS_SIGNAL_GROUP (group));
 
   prompt_window_selected_page_notify_pinned_cb (self, NULL, page);
+}
+
+static void
+prompt_window_my_computer_action (GtkWidget  *widget,
+                                  const char *action_name,
+                                  GVariant   *param)
+{
+  g_assert (PROMPT_IS_WINDOW (widget));
+
+  gtk_widget_activate_action (widget, "win.new-terminal", "(ss)", "", "session");
 }
 
 static void
@@ -1313,6 +1318,7 @@ prompt_window_class_init (PromptWindowClass *klass)
   gtk_widget_class_bind_template_child (widget_class, PromptWindow, tab_overview);
   gtk_widget_class_bind_template_child (widget_class, PromptWindow, tab_view);
   gtk_widget_class_bind_template_child (widget_class, PromptWindow, visual_bell);
+  gtk_widget_class_bind_template_child (widget_class, PromptWindow, my_computer_menu);
 
   gtk_widget_class_bind_template_callback (widget_class, prompt_window_page_attached_cb);
   gtk_widget_class_bind_template_callback (widget_class, prompt_window_page_detached_cb);
@@ -1347,6 +1353,7 @@ prompt_window_class_init (PromptWindowClass *klass)
   gtk_widget_class_install_action (widget_class, "win.set-title", NULL, prompt_window_set_title_action);
   gtk_widget_class_install_action (widget_class, "win.search", NULL, prompt_window_search_action);
   gtk_widget_class_install_action (widget_class, "win.undo-close-tab", NULL, prompt_window_undo_close_tab_action);
+  gtk_widget_class_install_action (widget_class, "my-computer", NULL, prompt_window_my_computer_action);
 
   g_type_ensure (PROMPT_TYPE_FIND_BAR);
 }

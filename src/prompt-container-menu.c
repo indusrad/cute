@@ -33,7 +33,6 @@ struct _PromptContainerMenu
 {
   GMenuModel  parent_instance;
   GListModel *containers;
-  guint       is_hidden : 1;
 };
 
 enum {
@@ -51,9 +50,6 @@ prompt_container_menu_get_n_items (GMenuModel *model)
 {
   PromptContainerMenu *self = PROMPT_CONTAINER_MENU (model);
 
-  if (self->is_hidden)
-    return 0;
-
   return g_list_model_get_n_items (self->containers);
 }
 
@@ -65,27 +61,29 @@ prompt_container_menu_is_mutable (GMenuModel *model)
 
 static GMenuModel *
 prompt_container_menu_get_item_link (GMenuModel *model,
-                                    int         position,
-                                    const char *link)
+                                     int         position,
+                                     const char *link)
 {
   return NULL;
 }
 
 static void
 prompt_container_menu_get_item_links (GMenuModel  *model,
-                                     int          position,
-                                     GHashTable **links)
+                                      int          position,
+                                      GHashTable **links)
 {
   *links = NULL;
 }
 
 static void
 prompt_container_menu_get_item_attributes (GMenuModel  *model,
-                                          int          position,
-                                          GHashTable **attributes)
+                                           int          position,
+                                           GHashTable **attributes)
 {
   PromptContainerMenu *self = PROMPT_CONTAINER_MENU (model);
   g_autoptr(PromptIpcContainer) container = NULL;
+  g_autoptr(GIcon) icon = NULL;
+  const char *icon_name;
   const char *label;
   const char *id;
   GHashTable *ht;
@@ -99,16 +97,19 @@ prompt_container_menu_get_item_attributes (GMenuModel  *model,
   label = prompt_ipc_container_get_display_name (container);
   id = prompt_ipc_container_get_id (container);
 
-  if (g_strcmp0 (id, "session") == 0)
-    label = _("My Computer");
-
   if (label == NULL)
     label = _("Unknown Container");
+
+  if ((icon_name = prompt_ipc_container_get_icon_name (container)))
+    icon = g_themed_icon_new (icon_name);
 
   ht = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, (GDestroyNotify)g_variant_unref);
   g_hash_table_insert (ht, g_strdup (G_MENU_ATTRIBUTE_ACTION), g_variant_ref_sink (g_variant_new_string ("win.new-terminal")));
   g_hash_table_insert (ht, g_strdup (G_MENU_ATTRIBUTE_TARGET), g_variant_ref_sink (g_variant_new ("(ss)", "", id)));
   g_hash_table_insert (ht, g_strdup (G_MENU_ATTRIBUTE_LABEL), g_variant_ref_sink (g_variant_new_string (label)));
+
+  if (icon != NULL)
+    g_hash_table_insert (ht, g_strdup (G_MENU_ATTRIBUTE_ICON), g_icon_serialize (icon));
 
   *attributes = ht;
 }
@@ -120,26 +121,10 @@ prompt_container_menu_items_changed_cb (PromptContainerMenu *self,
                                         guint                added,
                                         GListModel          *model)
 {
-  gboolean is_hidden;
-  gboolean will_hide;
-
   g_assert (PROMPT_IS_CONTAINER_MENU (self));
   g_assert (G_IS_LIST_MODEL (model));
 
-  is_hidden = self->is_hidden;
-  will_hide = g_list_model_get_n_items (model) <= 1;
-
-  self->is_hidden = will_hide;
-
-  if (is_hidden && will_hide)
-    return;
-
-  if (is_hidden)
-    g_menu_model_items_changed (G_MENU_MODEL (self), 0, 0, g_list_model_get_n_items (model));
-  else if (will_hide)
-    g_menu_model_items_changed (G_MENU_MODEL (self), 0, removed+1, 0);
-  else
-    g_menu_model_items_changed (G_MENU_MODEL (self), position, removed, added);
+  g_menu_model_items_changed (G_MENU_MODEL (self), position, removed, added);
 }
 
 static void
@@ -240,16 +225,12 @@ prompt_container_menu_class_init (PromptContainerMenuClass *klass)
 static void
 prompt_container_menu_init (PromptContainerMenu *self)
 {
-  self->is_hidden = TRUE;
 }
 
 PromptContainerMenu *
 prompt_container_menu_new (GListModel *containers)
 {
   g_return_val_if_fail (G_IS_LIST_MODEL (containers), NULL);
-  g_return_val_if_fail (g_type_is_a (g_list_model_get_item_type (containers),
-                                     PROMPT_IPC_TYPE_CONTAINER),
-                        NULL);
 
   return g_object_new (PROMPT_TYPE_CONTAINER_MENU,
                        "containers", containers,
