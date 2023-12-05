@@ -169,6 +169,12 @@ prompt_shortcut_accel_dialog_key_pressed (GtkWidget             *widget,
           self->keyval != keyval)
         self->modifier |= GDK_SHIFT_MASK;
 
+      if (self->keyval == GDK_KEY_ISO_Left_Tab && self->modifier == GDK_CONTROL_MASK)
+        {
+          self->keyval = GDK_KEY_Tab;
+          self->modifier = GDK_CONTROL_MASK | GDK_SHIFT_MASK;
+        }
+
       self->editing = FALSE;
 
       prompt_shortcut_accel_dialog_apply_state (self);
