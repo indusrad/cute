@@ -1067,6 +1067,8 @@ prompt_tab_dup_title (PromptTab *self)
 
   if ((window_title = vte_terminal_get_window_title (VTE_TERMINAL (self->terminal))) && window_title[0])
     g_string_append (gstr, window_title);
+  else if (self->command != NULL && self->command[0] != NULL)
+    g_string_append (gstr, self->command[0]);
   else
     g_string_append (gstr, _("Terminal"));
 
