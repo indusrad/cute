@@ -399,9 +399,9 @@ prompt_run_context_push_error (PromptRunContext *self,
   g_return_if_fail (error != NULL);
 
   prompt_run_context_push (self,
-                            prompt_run_context_error_handler,
-                            error,
-                            (GDestroyNotify)g_error_free);
+                           prompt_run_context_error_handler,
+                           error,
+                           (GDestroyNotify)g_error_free);
 }
 
 const char * const *
@@ -1028,4 +1028,64 @@ prompt_run_context_create_stdio_stream (PromptRunContext  *self,
                                            STDIN_FILENO,
                                            STDOUT_FILENO,
                                            error);
+}
+
+static gboolean
+has_systemd (void)
+{
+  static gboolean initialized;
+  static gboolean has_systemd;
+
+  if (!initialized)
+    {
+      g_autofree char *path = g_find_program_in_path ("systemd-run");
+
+      initialized = TRUE;
+      has_systemd = !!path;
+    }
+
+  return has_systemd;
+}
+
+static gboolean
+prompt_run_context_push_scope_cb (PromptRunContext    *self,
+                                  const char * const  *argv,
+                                  const char * const  *env,
+                                  const char          *cwd,
+                                  PromptUnixFDMap     *unix_fd_map,
+                                  gpointer             user_data,
+                                  GError             **error)
+{
+  g_assert (PROMPT_IS_RUN_CONTEXT (self));
+  g_assert (PROMPT_IS_UNIX_FD_MAP (unix_fd_map));
+
+  if (!prompt_run_context_merge_unix_fd_map (self, unix_fd_map, error))
+    return FALSE;
+
+  prompt_run_context_set_cwd (self, cwd);
+  prompt_run_context_set_environ (self, env);
+
+  if (has_systemd ())
+    {
+      prompt_run_context_append_argv (self, "systemd-run");
+      prompt_run_context_append_argv (self, "--user");
+      prompt_run_context_append_argv (self, "--scope");
+      prompt_run_context_append_argv (self, "--collect");
+      prompt_run_context_append_argv (self, "--quiet");
+      prompt_run_context_append_argv (self, "--same-dir");
+    }
+
+  prompt_run_context_append_args (self, argv);
+
+  return TRUE;
+}
+
+void
+prompt_run_context_push_scope (PromptRunContext *self)
+{
+  g_return_if_fail (PROMPT_IS_RUN_CONTEXT (self));
+
+  prompt_run_context_push (self,
+                           prompt_run_context_push_scope_cb,
+                           NULL, NULL);
 }

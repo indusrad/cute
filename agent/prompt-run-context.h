@@ -69,6 +69,7 @@ void                 prompt_run_context_push_at_base            (PromptRunContex
                                                                  GDestroyNotify            handler_data_destroy);
 void                 prompt_run_context_push_error              (PromptRunContext         *self,
                                                                  GError                   *error);
+void                 prompt_run_context_push_scope              (PromptRunContext         *self);
 void                 prompt_run_context_push_shell              (PromptRunContext         *self,
                                                                  PromptRunContextShell     shell);
 const char * const  *prompt_run_context_get_argv                (PromptRunContext         *self);
