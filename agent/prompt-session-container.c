@@ -90,6 +90,9 @@ prompt_session_container_handle_spawn (PromptIpcContainer    *container,
 
   run_context = prompt_run_context_new ();
 
+  /* Place the process inside a new scope similar to what VTE would do. */
+  prompt_run_context_push_scope (run_context);
+
   /* For the default session, we'll just inherit whatever the session gave us
    * as our environment. For other types of containers, that may be different
    * as you likely want to filter some stateful things out.
