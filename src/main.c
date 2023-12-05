@@ -60,6 +60,9 @@ check_early_opts (int        *argc,
           (*argv)[i] = g_strdup ("-x");
           (*argv)[i+1] = g_string_free (str, FALSE);
 
+          /* Always use new instance when executing command */
+          *standalone = TRUE;
+
           break;
         }
     }
