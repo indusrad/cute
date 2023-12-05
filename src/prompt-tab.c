@@ -196,8 +196,11 @@ prompt_tab_wait_cb (GObject      *object,
   exit_action = prompt_profile_get_exit_action (self->profile);
   tab_view = gtk_widget_get_ancestor (GTK_WIDGET (self), ADW_TYPE_TAB_VIEW);
 
+  /* If this was started with something like prompt_window_new_for_command()
+   * then we just want to exit the application (so allow tab to close).
+   */
   if (self->command != NULL)
-    exit_action = PROMPT_EXIT_ACTION_NONE;
+    exit_action = PROMPT_EXIT_ACTION_CLOSE;
 
   if (ADW_IS_TAB_VIEW (tab_view))
     page = adw_tab_view_get_page (ADW_TAB_VIEW (tab_view), GTK_WIDGET (self));
