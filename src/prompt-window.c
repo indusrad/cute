@@ -55,6 +55,8 @@ struct _PromptWindow
   AdwTabOverview        *tab_overview;
   AdwTabView            *tab_view;
   GtkWidget             *zoom_label;
+  GtkWidget             *tab_overview_button;
+  GtkWidget             *new_tab_box;
 
   GBindingGroup         *active_tab_bindings;
   GSignalGroup          *active_tab_signals;
@@ -67,6 +69,7 @@ struct _PromptWindow
 
   guint                  tab_overview_animating : 1;
   guint                  disposed : 1;
+  guint                  single_terminal_mode : 1;
 };
 
 G_DEFINE_FINAL_TYPE (PromptWindow, prompt_window, ADW_TYPE_APPLICATION_WINDOW)
@@ -266,7 +269,8 @@ prompt_window_page_attached_cb (PromptWindow *self,
   g_object_bind_property (child, "icon", page, "icon", G_BINDING_SYNC_CREATE);
 
   gtk_widget_set_visible (GTK_WIDGET (self->tab_bar),
-                          adw_tab_view_get_n_pages (tab_view) > 1);
+                          (!self->single_terminal_mode &&
+                           adw_tab_view_get_n_pages (tab_view) > 1));
 }
 
 static void
@@ -1319,6 +1323,8 @@ prompt_window_class_init (PromptWindowClass *klass)
   gtk_widget_class_bind_template_child (widget_class, PromptWindow, tab_view);
   gtk_widget_class_bind_template_child (widget_class, PromptWindow, visual_bell);
   gtk_widget_class_bind_template_child (widget_class, PromptWindow, my_computer_menu);
+  gtk_widget_class_bind_template_child (widget_class, PromptWindow, tab_overview_button);
+  gtk_widget_class_bind_template_child (widget_class, PromptWindow, new_tab_box);
 
   gtk_widget_class_bind_template_callback (widget_class, prompt_window_page_attached_cb);
   gtk_widget_class_bind_template_callback (widget_class, prompt_window_page_detached_cb);
@@ -1489,7 +1495,38 @@ PromptWindow *
 prompt_window_new_for_command (const char * const *argv,
                                const char         *cwd_uri)
 {
-  return prompt_window_new_for_profile_and_command (NULL, argv, cwd_uri);
+  PromptWindow *self;
+
+  g_return_val_if_fail (argv != NULL, NULL);
+  g_return_val_if_fail (argv[0] != NULL, NULL);
+
+  self = prompt_window_new_for_profile_and_command (NULL, argv, cwd_uri);
+
+  if (self != NULL)
+    {
+      self->single_terminal_mode = TRUE;
+
+      gtk_widget_action_set_enabled (GTK_WIDGET (self), "win.new-tab", FALSE);
+      gtk_widget_action_set_enabled (GTK_WIDGET (self), "win.new-window", FALSE);
+      gtk_widget_action_set_enabled (GTK_WIDGET (self), "win.new-terminal", FALSE);
+      gtk_widget_action_set_enabled (GTK_WIDGET (self), "win.tab-overview", FALSE);
+      gtk_widget_action_set_enabled (GTK_WIDGET (self), "page.move-left", FALSE);
+      gtk_widget_action_set_enabled (GTK_WIDGET (self), "page.move-right", FALSE);
+      gtk_widget_action_set_enabled (GTK_WIDGET (self), "page.close-others", FALSE);
+      gtk_widget_action_set_enabled (GTK_WIDGET (self), "page.detach", FALSE);
+      gtk_widget_action_set_enabled (GTK_WIDGET (self), "tab.pin", FALSE);
+      gtk_widget_action_set_enabled (GTK_WIDGET (self), "tab.unpin", FALSE);
+      gtk_widget_action_set_enabled (GTK_WIDGET (self), "page.next", FALSE);
+      gtk_widget_action_set_enabled (GTK_WIDGET (self), "page.previous", FALSE);
+      gtk_widget_action_set_enabled (GTK_WIDGET (self), "win.undo-close-tab", FALSE);
+      gtk_widget_action_set_enabled (GTK_WIDGET (self), "my-computer", FALSE);
+
+      gtk_widget_set_visible (GTK_WIDGET (self->tab_bar), FALSE);
+      gtk_widget_set_visible (self->new_tab_box, FALSE);
+      gtk_widget_set_visible (self->tab_overview_button, FALSE);
+    }
+
+  return self;
 }
 
 PromptWindow *

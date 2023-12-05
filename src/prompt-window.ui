@@ -327,7 +327,7 @@
                 <child>
                   <object class="AdwHeaderBar" id="header_bar">
                     <child type="start">
-                      <object class="GtkBox">
+                      <object class="GtkBox" id="new_tab_box">
                         <property name="css-name">splitbutton</property>
                         <style>
                           <class name="image-button"/>
@@ -395,7 +395,7 @@
                       </object>
                     </child>
                     <child type="end">
-                      <object class="GtkToggleButton">
+                      <object class="GtkToggleButton" id="tab_overview_button">
                         <property name="icon-name">view-grid-symbolic</property>
                         <property name="tooltip-text" translatable="yes">Show Open Tabs</property>
                         <property name="active" bind-source="tab_overview" bind-property="open" bind-flags="bidirectional|sync-create"/>
@@ -461,12 +461,14 @@
         <attribute name="label" translatable="yes">New _Tab</attribute>
         <attribute name="action">win.new-tab</attribute>
         <attribute name="target" type="(ss)">('default','')</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
       </item>
       <item>
         <attribute name="id">new-window</attribute>
         <attribute name="label" translatable="yes">New _Window</attribute>
         <attribute name="action">win.new-window</attribute>
         <attribute name="target" type="(ss)">('default','')</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
       </item>
     </section>
     <section>
@@ -474,6 +476,7 @@
         <attribute name="id">tab-overview</attribute>
         <attribute name="label" translatable="yes">View Open Tabs</attribute>
         <attribute name="action">win.tab-overview</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
       </item>
     </section>
     <section>
