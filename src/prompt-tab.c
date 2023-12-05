@@ -752,6 +752,33 @@ prompt_tab_invalidate_icon (PromptTab *self)
   g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_ICON]);
 }
 
+static gboolean
+prompt_tab_match_clicked_cb (PromptTab       *self,
+                             double           x,
+                             double           y,
+                             int              button,
+                             GdkModifierType  state,
+                             const char      *match,
+                             PromptTerminal  *terminal)
+{
+  g_autoptr(GtkUriLauncher) launcher = NULL;
+
+  g_assert (PROMPT_IS_TAB (self));
+  g_assert (match != NULL);
+  g_assert (PROMPT_IS_TERMINAL (terminal));
+
+  if (prompt_str_empty0 (match))
+    return FALSE;
+
+  launcher = gtk_uri_launcher_new (match);
+
+  gtk_uri_launcher_launch (launcher,
+                           GTK_WINDOW (gtk_widget_get_root (GTK_WIDGET (self))),
+                           NULL, NULL, NULL);
+
+  return TRUE;
+}
+
 static void
 prompt_tab_dispose (GObject *object)
 {
@@ -987,6 +1014,7 @@ prompt_tab_class_init (PromptTabClass *klass)
   gtk_widget_class_bind_template_callback (widget_class, prompt_tab_notify_palette_cb);
   gtk_widget_class_bind_template_callback (widget_class, prompt_tab_bell_cb);
   gtk_widget_class_bind_template_callback (widget_class, prompt_tab_invalidate_icon);
+  gtk_widget_class_bind_template_callback (widget_class, prompt_tab_match_clicked_cb);
 
   gtk_widget_class_install_action (widget_class, "tab.respawn", NULL, prompt_tab_respawn_action);
 
