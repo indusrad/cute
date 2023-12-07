@@ -222,7 +222,7 @@ find_prompt_agent_path (void)
   return g_build_filename (LIBEXECDIR, "prompt-agent", NULL);
 }
 
-static void
+G_GNUC_NORETURN static void
 prompt_client_wait_cb (GObject      *object,
                        GAsyncResult *result,
                        gpointer      user_data)
