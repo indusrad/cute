@@ -573,7 +573,8 @@ prompt_tab_dup_icon (PromptTab *self)
           g_set_object (&container, self->container_at_creation);
 
         if (container != NULL &&
-            (icon_name = prompt_ipc_container_get_icon_name (container)))
+            (icon_name = prompt_ipc_container_get_icon_name (container)) &&
+            icon_name[0] != 0)
           return g_themed_icon_new (icon_name);
       }
       return NULL;
