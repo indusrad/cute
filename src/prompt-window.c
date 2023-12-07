@@ -1461,7 +1461,10 @@ prompt_window_new_for_profile_and_command (PromptProfile      *profile,
   vte_terminal_set_size (VTE_TERMINAL (terminal), columns, rows);
 
   if (argv != NULL && argv[0] != NULL)
-    prompt_tab_set_command (tab, argv);
+    {
+      prompt_tab_set_command (tab, argv);
+      gtk_window_set_title (GTK_WINDOW (self), argv[0]);
+    }
 
   if (!prompt_str_empty0 (cwd_uri))
     prompt_tab_set_previous_working_directory_uri (tab, cwd_uri);
