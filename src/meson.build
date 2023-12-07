@@ -15,6 +15,7 @@ prompt_sources = [
   'prompt-profile-menu.c',
   'prompt-profile-row.c',
   'prompt-profile.c',
+  'prompt-session.c',
   'prompt-settings.c',
   'prompt-shortcut-accel-dialog.c',
   'prompt-shortcut-row.c',
