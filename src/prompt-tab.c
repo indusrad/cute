@@ -1308,6 +1308,25 @@ prompt_tab_get_uuid (PromptTab *self)
   return self->uuid;
 }
 
+PromptIpcContainer *
+prompt_tab_dup_container (PromptTab *self)
+{
+  g_autoptr(PromptIpcContainer) container = NULL;
+  const char *runtime;
+  const char *name;
+
+  g_return_val_if_fail (PROMPT_IS_TAB (self), NULL);
+
+  if ((runtime = vte_terminal_get_current_container_runtime (VTE_TERMINAL (self->terminal))) &&
+      (name = vte_terminal_get_current_container_name (VTE_TERMINAL (self->terminal))))
+    container = prompt_application_find_container_by_name (PROMPT_APPLICATION_DEFAULT, runtime, name);
+
+  if (container == NULL)
+    g_set_object (&container, self->container_at_creation);
+
+  return g_steal_pointer (&container);
+}
+
 void
 prompt_tab_set_container (PromptTab          *self,
                           PromptIpcContainer *container)
