@@ -48,6 +48,12 @@ prompt_session_save (PromptApplication *app)
           g_autoptr(GListModel) pages = prompt_window_list_pages (window);
           guint n_items = g_list_model_get_n_items (pages);
 
+          g_variant_builder_open (&builder, G_VARIANT_TYPE ("a{sv}"));
+          g_variant_builder_open (&builder, G_VARIANT_TYPE ("{sv}"));
+          g_variant_builder_add (&builder, "s", "tabs");
+          g_variant_builder_open (&builder, G_VARIANT_TYPE ("v"));
+          g_variant_builder_open (&builder, G_VARIANT_TYPE ("aa{sv}"));
+
           for (guint i = 0; i < n_items; i++)
             {
               g_autoptr(AdwTabPage) page = g_list_model_get_item (pages, i);
@@ -58,17 +64,34 @@ prompt_session_save (PromptApplication *app)
                 {
                   PromptTab *tab = PROMPT_TAB (adw_tab_page_get_child (page));
                   g_autoptr(PromptIpcContainer) container = NULL;
+                  g_autofree char *default_container = NULL;
                   PromptProfile *profile;
+                  const char *container_id = NULL;
                   const char *uuid;
 
                   g_assert (PROMPT_IS_TAB (tab));
 
                   profile = prompt_tab_get_profile (tab);
                   uuid = prompt_profile_get_uuid (profile);
+                  default_container = prompt_profile_dup_default_container (profile);
                   container = prompt_tab_dup_container (tab);
 
+                  if (container != NULL)
+                    container_id = prompt_ipc_container_get_id (container);
+
+                  g_variant_builder_open (&builder, G_VARIANT_TYPE ("a{sv}"));
+                  g_variant_builder_add_parsed (&builder, "{'profile', <%s>}", uuid);
+                  if (container_id != NULL &&
+                      g_strcmp0 (default_container, container_id) != 0)
+                    g_variant_builder_add_parsed (&builder, "{'container', <%s>}", container_id);
+                  g_variant_builder_close (&builder);
                 }
             }
+
+          g_variant_builder_close (&builder);
+          g_variant_builder_close (&builder);
+          g_variant_builder_close (&builder);
+          g_variant_builder_close (&builder);
         }
     }
 
@@ -85,5 +108,6 @@ prompt_session_restore (PromptApplication *app,
 {
   g_return_if_fail (PROMPT_IS_APPLICATION (app));
   g_return_if_fail (state != NULL);
+  g_return_if_fail (g_variant_is_of_type (state, G_VARIANT_TYPE ("aa{sv}")));
 
 }
