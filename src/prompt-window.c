@@ -1670,6 +1670,22 @@ prompt_window_get_active_profile (PromptWindow *self)
   return NULL;
 }
 
+/**
+ * prompt_window_list_pages:
+ * @self: a #PromptWindow
+ *
+ * Gets the list of pages in the window.
+ *
+ * Returns: (transfer full): a #GListModel of #AdwTabPage
+ */
+GListModel *
+prompt_window_list_pages (PromptWindow *self)
+{
+  g_return_val_if_fail (PROMPT_IS_WINDOW (self), NULL);
+
+  return G_LIST_MODEL (adw_tab_view_get_pages (self->tab_view));
+}
+
 gboolean
 prompt_window_focus_tab_by_uuid (PromptWindow *self,
                                  const char   *uuid)

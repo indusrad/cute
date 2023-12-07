@@ -37,6 +37,7 @@ PromptWindow  *prompt_window_new_for_command    (const char * const *argv,
 PromptWindow  *prompt_window_new_for_profile    (PromptProfile      *profile);
 void           prompt_window_add_tab            (PromptWindow       *self,
                                                  PromptTab          *tab);
+GListModel    *prompt_window_list_pages         (PromptWindow       *self);
 void           prompt_window_append_tab         (PromptWindow       *self,
                                                  PromptTab          *tab);
 PromptProfile *prompt_window_get_active_profile (PromptWindow       *self);
