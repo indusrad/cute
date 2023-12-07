@@ -26,6 +26,7 @@
 #include "prompt-close-dialog.h"
 #include "prompt-find-bar.h"
 #include "prompt-parking-lot.h"
+#include "prompt-session.h"
 #include "prompt-settings.h"
 #include "prompt-tab-monitor.h"
 #include "prompt-theme-selector.h"
@@ -945,6 +946,22 @@ prompt_window_close_request_cb (GObject      *object,
 }
 
 static gboolean
+is_last_window (PromptWindow *self)
+{
+  const GList *windows = gtk_application_get_windows (GTK_APPLICATION (PROMPT_APPLICATION_DEFAULT));
+
+  for (const GList *iter = windows;
+       iter;
+       iter = iter->next)
+    {
+      if (PROMPT_IS_WINDOW (iter->data) && iter->data != (gpointer)self)
+        return FALSE;
+    }
+
+  return TRUE;
+}
+
+static gboolean
 prompt_window_close_request (GtkWindow *window)
 {
   PromptWindow *self = (PromptWindow *)window;
@@ -968,7 +985,20 @@ prompt_window_close_request (GtkWindow *window)
     }
 
   if (tabs->len == 0)
-    return GDK_EVENT_PROPAGATE;
+    {
+      if (!self->single_terminal_mode && is_last_window (self))
+        {
+          g_autoptr(GVariant) state = prompt_session_save (PROMPT_APPLICATION_DEFAULT);
+
+#if 0
+          g_autofree char *str = g_variant_print (state, TRUE);
+
+          g_print ("%s\n", str);
+#endif
+        }
+
+      return GDK_EVENT_PROPAGATE;
+    }
 
   _prompt_close_dialog_run_async (GTK_WINDOW (self),
                                    tabs,

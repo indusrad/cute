@@ -81,6 +81,7 @@ prompt_session_save (PromptApplication *app)
 
                   g_variant_builder_open (&builder, G_VARIANT_TYPE ("a{sv}"));
                   g_variant_builder_add_parsed (&builder, "{'profile', <%s>}", uuid);
+                  g_variant_builder_add_parsed (&builder, "{'pinned', <%b>}", TRUE);
                   if (container_id != NULL &&
                       g_strcmp0 (default_container, container_id) != 0)
                     g_variant_builder_add_parsed (&builder, "{'container', <%s>}", container_id);
