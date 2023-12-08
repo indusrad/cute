@@ -34,14 +34,14 @@ G_BEGIN_DECLS
  *
  * The @... parameters should be identifical to implementing a
  * #GActionEntry array, except that the activate and change_state
- * functions take a simplier protoype of just:
+ * functions take a simpler prototype of just:
  *
  * ```c
  * void (*activate) (Type *self, GVariant *state);
  * void (*change_state) (Type *self, GVariant *state);
  * ```
  *
- * You must add the following to your type defintion using
+ * You must add the following to your type definition using
  * `G_DEFINE_TYPE_WITH_CODE` or similar:
  *
  * ```c

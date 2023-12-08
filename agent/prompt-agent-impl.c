@@ -380,7 +380,7 @@ prompt_agent_impl_handle_discover_current_container (PromptIpcAgent        *agen
        * patches like g-t does in Fedora.
        */
 
-      /* At this point, we might find tha the foreground process is something like
+      /* At this point, we might find that the foreground process is something like
        * podman or toolbox, or something else injecting a new PTY between us and
        * the foreground process we really want to track. Podman should give us a
        * /var/run/.containerenv in the root directory of the process with enough

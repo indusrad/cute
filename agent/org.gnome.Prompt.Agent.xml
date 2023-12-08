@@ -40,7 +40,7 @@
       This can happen when a new podman container is registered as well
       as any other backend.
 
-      The format is somewhat analagous to GListModel::items-changed
+      The format is somewhat analogous to GListModel::items-changed
       except the list of object paths are provided.
     -->
     <signal name="ContainersChanged">
@@ -133,7 +133,7 @@
     <!--
       Spawn:
 
-      Spawns the process wihtin the container and returns an object
+      Spawns the process within the container and returns an object
       path that can be used to monitor the process lifetime.
     -->
     <method name="Spawn">

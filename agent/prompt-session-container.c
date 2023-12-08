@@ -127,7 +127,7 @@ prompt_session_container_handle_spawn (PromptIpcContainer    *container,
 
   /* Spawn and export our object to the bus. Note that a weak reference is used
    * for the object on the bus so you must keep the object alive to ensure that
-   * it is not removed fro the bus. The default PromptProcessImpl does that for
+   * it is not removed from the bus. The default PromptProcessImpl does that for
    * us by automatically waiting for the child to exit.
    */
   guid = g_dbus_generate_guid ();
