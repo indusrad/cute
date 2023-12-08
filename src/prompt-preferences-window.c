@@ -409,6 +409,45 @@ prompt_preferences_window_notify_default_profile_cb (PromptPreferencesWindow *se
                                 g_object_unref);
 }
 
+static gboolean
+prompt_preferences_window_drop_palette_cb (PromptPreferencesWindow *self,
+                                           const GValue            *value,
+                                           double                   x,
+                                           double                   y,
+                                           GtkDropTarget           *drop_target)
+{
+  g_assert (PROMPT_IS_PREFERENCES_WINDOW (self));
+  g_assert (GTK_IS_DROP_TARGET (drop_target));
+
+  if (G_VALUE_HOLDS (value, GDK_TYPE_FILE_LIST))
+    {
+      const GSList *files = g_value_get_boxed (value);
+
+      for (const GSList *iter = files; iter; iter = iter->next)
+        {
+          GFile *file = iter->data;
+          g_autofree char *name = g_file_get_basename (file);
+          g_autoptr(GFile) dest = NULL;
+
+          if (!g_str_has_suffix (name, ".palette"))
+            return FALSE;
+
+          dest = g_file_new_build_filename (g_get_user_data_dir (),
+                                            APP_ID, "palettes", name,
+                                            NULL);
+          g_file_copy_async (file,
+                             dest,
+                             G_FILE_COPY_OVERWRITE,
+                             G_PRIORITY_DEFAULT,
+                             NULL, NULL, NULL, NULL, NULL);
+        }
+
+      return TRUE;
+    }
+
+  return FALSE;
+}
+
 static GtkWidget *
 create_palette_preview (gpointer item,
                         gpointer user_data)
@@ -782,7 +821,18 @@ prompt_preferences_window_class_init (PromptPreferencesWindowClass *klass)
 static void
 prompt_preferences_window_init (PromptPreferencesWindow *self)
 {
+  GtkDropTarget *drop_target;
+
   gtk_widget_init_template (GTK_WIDGET (self));
+
+  drop_target = gtk_drop_target_new (GDK_TYPE_FILE_LIST, GDK_ACTION_COPY);
+  g_signal_connect_object (drop_target,
+                           "drop",
+                           G_CALLBACK (prompt_preferences_window_drop_palette_cb),
+                           self,
+                           G_CONNECT_SWAPPED);
+  gtk_widget_add_controller (GTK_WIDGET (self->palette_previews),
+                             GTK_EVENT_CONTROLLER (drop_target));
 }
 
 GtkWindow *
