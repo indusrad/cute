@@ -107,8 +107,45 @@ void
 prompt_session_restore (PromptApplication *app,
                         GVariant          *state)
 {
+  g_autoptr(GVariant) windows = NULL;
+  GVariantIter iter;
+  GVariant *window;
+  gint32 version;
+
   g_return_if_fail (PROMPT_IS_APPLICATION (app));
   g_return_if_fail (state != NULL);
-  g_return_if_fail (g_variant_is_of_type (state, G_VARIANT_TYPE ("aa{sv}")));
+  g_return_if_fail (g_variant_is_of_type (state, G_VARIANT_TYPE ("a{sv}")));
 
+  if (!g_variant_lookup (state, "version", "i", &version))
+    return;
+
+  if (!(windows = g_variant_lookup_value (state, "windows", G_VARIANT_TYPE ("aa{sv}"))))
+    return;
+
+  g_variant_iter_init (&iter, windows);
+  while (g_variant_iter_loop (&iter, "@a{sv}", &window))
+    {
+      g_autoptr(GVariant) tabs = NULL;
+      g_autoptr(GVariant) tab = NULL;
+      PromptWindow *the_window = NULL;
+      GVariantIter tab_iter;
+
+      if (!(tabs = g_variant_lookup_value (window, "tabs", G_VARIANT_TYPE ("aa{sv}"))) ||
+          g_variant_n_children (tabs) == 0)
+        continue;
+
+      /* TODO: Restore tabs into the_window */
+      g_variant_iter_init (&tab_iter, tabs);
+      while (g_variant_iter_loop (&tab_iter, "@a{sv}", &tab))
+        {
+          const char *profile = NULL;
+          const char *container = NULL;
+
+          g_variant_lookup (tab, "profile", "&s", &profile);
+          g_variant_lookup (tab, "container", "&s", &container);
+        }
+
+      if (the_window != NULL)
+        gtk_window_present (GTK_WINDOW (the_window));
+    }
 }
