@@ -50,6 +50,10 @@ prompt_session_save (PromptApplication *app)
           guint n_items = g_list_model_get_n_items (pages);
 
           g_variant_builder_open (&builder, G_VARIANT_TYPE ("a{sv}"));
+
+          if (gtk_window_is_maximized (GTK_WINDOW (window)))
+            g_variant_builder_add_parsed (&builder, "{'maximized', <%b>}", TRUE);
+
           g_variant_builder_open (&builder, G_VARIANT_TYPE ("{sv}"));
           g_variant_builder_add (&builder, "s", "tabs");
           g_variant_builder_open (&builder, G_VARIANT_TYPE ("v"));
@@ -147,10 +151,14 @@ prompt_session_restore (PromptApplication *app,
       g_autoptr(GVariant) tab = NULL;
       PromptWindow *the_window = NULL;
       GVariantIter tab_iter;
+      gboolean maximized;
 
       if (!(tabs = g_variant_lookup_value (window, "tabs", G_VARIANT_TYPE ("aa{sv}"))) ||
           g_variant_n_children (tabs) == 0)
         continue;
+
+      if (!g_variant_lookup (window, "maximized", "b", &maximized))
+        maximized = FALSE;
 
       g_variant_iter_init (&tab_iter, tabs);
       while (g_variant_iter_loop (&tab_iter, "@a{sv}", &tab))
@@ -227,6 +235,9 @@ prompt_session_restore (PromptApplication *app,
           the_tab = prompt_tab_new (the_profile);
           prompt_window_add_tab (the_window, the_tab);
           prompt_window_set_active_tab (the_window, the_tab);
+
+          if (maximized)
+            gtk_window_maximize (GTK_WINDOW (the_window));
 
           gtk_window_present (GTK_WINDOW (the_window));
         }
