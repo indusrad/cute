@@ -1297,7 +1297,6 @@ prompt_application_save_session (PromptApplication *self)
     {
       g_autoptr(GFile) file = get_session_file ();
       g_autoptr(GFile) directory = g_file_get_parent (file);
-      g_autoptr(GError) error = NULL;
 
       g_application_hold (G_APPLICATION (self));
 
