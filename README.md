@@ -34,7 +34,7 @@ interface, configurable color palettes, menus, tab overviews, you get the idea.
    terminal's container. At the moment of writing, this is only supported on
    Fedora hosts, but will be extended to other host operating systems soon
    once changes land in VTE, toolbox, and elsewhere.
- * Flatpak'able without loosing features! This works through the use of a
+ * Flatpak'able without losing features! This works through the use of a
    specialized `prompt-agent` that runs on the host to provide Prompt the
    ability to create PTY devices which integrate better with containers.
    Care is taken for this agent to run on systems as far back as CentOS 7.

@@ -33,7 +33,7 @@
  * should implement it.
  *
  *  0) Add a deserialize from GFile/GKeyFile constructor
- *  1) Add a GListModel to PromptApplication to hold dyanmically
+ *  1) Add a GListModel to PromptApplication to hold dynamically
  *     loaded palettes.
  *  2) Drop palettes in something like .local/share/appname/palettes/
  *  3) The format for palettes could probably just be GKeyFile with
