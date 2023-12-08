@@ -61,6 +61,26 @@ interface, configurable color palettes, menus, tab overviews, you get the idea.
    to a single window but may change in the future.
 
 
+## Container Support
+
+Currently `toolbox` knows how to emit the appropriate escape sequence under
+certain conditions (namely being run on a Fedora host). But when the support
+for this uses new, more generic API in VTE we will switch to that.
+
+If you use `jhbuild` for GNOME development, you can make that work by adding
+this to your `.bashrc` to have your jhbuild session persisted between tabs.
+
+```sh
+if [ x$UNDER_JHBUILD != x ]; then
+    printf "\033]777;container;push;%s;jhbuild\033\\" "JHBuild"
+    function pop_container {
+        printf "\033]777;container;pop;;\033\\"
+    }
+    trap pop_container EXIT
+fi
+```
+
+
 ## Distribution Notes
 
 Prompt is built in a way that can be shipped as a Flatpak and still provide a
