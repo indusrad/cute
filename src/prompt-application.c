@@ -117,9 +117,10 @@ get_session_file (void)
 static void
 prompt_application_activate (GApplication *app)
 {
-  PromptWindow *window;
+  PromptApplication *self = (PromptApplication *)app;
 
-  g_assert (PROMPT_IS_APPLICATION (app));
+  g_assert (PROMPT_IS_APPLICATION (self));
+  g_assert (PROMPT_IS_CLIENT (self->client));
 
   for (const GList *windows = gtk_application_get_windows (GTK_APPLICATION (app));
        windows != NULL;
@@ -132,11 +133,12 @@ prompt_application_activate (GApplication *app)
         }
     }
 
-  window = prompt_window_new ();
-
-  /* TODO: Maybe restore session state */
-
-  gtk_window_present (GTK_WINDOW (window));
+  if (self->session == NULL ||
+      !prompt_session_restore (self, self->session))
+    {
+      PromptWindow *window = prompt_window_new ();
+      gtk_window_present (GTK_WINDOW (window));
+    }
 }
 
 static int
@@ -1005,6 +1007,7 @@ prompt_application_get_preferred_shell_cb (GObject      *object,
   g_assert (VTE_IS_PTY (spawn->pty));
   g_assert (PROMPT_IPC_IS_CONTAINER (spawn->container));
   g_assert (PROMPT_IS_PROFILE (spawn->profile));
+  g_assert (PROMPT_IS_CLIENT (self->client));
 
   default_shell = prompt_client_discover_shell_finish (client, result, NULL);
 
@@ -1042,6 +1045,7 @@ prompt_application_spawn_async (PromptApplication   *self,
   g_return_if_fail (PROMPT_IS_PROFILE (profile));
   g_return_if_fail (VTE_IS_PTY (pty));
   g_return_if_fail (!cancellable || G_IS_CANCELLABLE (cancellable));
+  g_return_if_fail (PROMPT_IS_CLIENT (self->client));
 
   task = g_task_new (self, cancellable, callback, user_data);
   g_task_set_source_tag (task, prompt_application_spawn_async);
