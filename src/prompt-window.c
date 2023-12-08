@@ -693,6 +693,20 @@ prompt_window_tab_unpin_action (GtkWidget  *widget,
   adw_tab_view_set_page_pinned (self->tab_view, tab_page, FALSE);
 }
 
+void
+prompt_window_set_tab_pinned (PromptWindow *self,
+                              PromptTab    *tab,
+                              gboolean      pinned)
+{
+  AdwTabPage *tab_page;
+
+  g_return_if_fail (PROMPT_IS_WINDOW (self));
+  g_return_if_fail (PROMPT_IS_TAB (tab));
+
+  if ((tab_page = adw_tab_view_get_page (self->tab_view, GTK_WIDGET (tab))))
+    adw_tab_view_set_page_pinned (self->tab_view, tab_page, pinned);
+}
+
 static void
 prompt_window_page_previous_action (GtkWidget  *widget,
                                     const char *action_name,
@@ -1511,6 +1525,14 @@ PromptWindow *
 prompt_window_new (void)
 {
   return prompt_window_new_for_profile (NULL);
+}
+
+PromptWindow *
+prompt_window_new_empty (void)
+{
+  return g_object_new (PROMPT_TYPE_WINDOW,
+                       "application", PROMPT_APPLICATION_DEFAULT,
+                       NULL);
 }
 
 PromptWindow *
