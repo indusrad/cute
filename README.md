@@ -59,6 +59,9 @@ interface, configurable color palettes, menus, tab overviews, you get the idea.
  * Pinned tab profile/container/directory are saved across sessions so that
    you can get back to your projects quickly. Currently this is restricted
    to a single window but may change in the future.
+ * `prompt-agent` will automatically create systemd scopes for your tab
+   when available to help reduce the chances that the whole app would be
+   killed by the OOM killer instead of the tab taking up resources.
 
 
 ## Container Support
