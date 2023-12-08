@@ -205,7 +205,20 @@ prompt_session_restore (PromptApplication *app,
         }
 
       if (the_window != NULL)
-        gtk_window_present (GTK_WINDOW (the_window));
+        {
+          g_autoptr(PromptProfile) the_profile = NULL;
+          PromptTab *the_tab;
+
+          /* Also add a default profile tab which will be our focused
+           * tab for the new window.
+           */
+          the_profile = prompt_application_dup_default_profile (app);
+          the_tab = prompt_tab_new (the_profile);
+          prompt_window_add_tab (the_window, the_tab);
+          prompt_window_set_active_tab (the_window, the_tab);
+
+          gtk_window_present (GTK_WINDOW (the_window));
+        }
 
       added_window |= the_window != NULL;
     }
