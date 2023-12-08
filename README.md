@@ -63,12 +63,30 @@ interface, configurable color palettes, menus, tab overviews, you get the idea.
 
 ## Container Support
 
+The highlevel is that we should be able to support:
+
+ * Native "user session" even when in Flatpak
+ * Podman/Toolbox/Distrobox (See caveat below)
+ * JHBuild (See caveat below)
+
+I'd certainly love to see support for systemd-nspawn if that is something
+you're interested in and are aware of the mechanics to make that work.
+
+## Toolbox/Podman/Distrobox
+
 Currently `toolbox` knows how to emit the appropriate escape sequence under
 certain conditions (namely being run on a Fedora host). But when the support
 for this uses new, more generic API in VTE we will switch to that.
 
+Until then, opening new tabs with the same container will only work if you are
+on a Fedora host such as Fedora Workstation or Silverblue.
+
+### JHBuild
+
 If you use `jhbuild` for GNOME development, you can make that work by adding
-this to your `.bashrc` to have your jhbuild session persisted between tabs.
+this to your `.bashrc` to have your jhbuild session persisted between tabs
+automatically. Otherwise you'll need to create a jhbuild tab using the menu
+item which is less convenient.
 
 ```sh
 if [ x$UNDER_JHBUILD != x ]; then
