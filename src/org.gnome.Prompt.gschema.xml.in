@@ -162,6 +162,12 @@
       <description>If light or dark interface style should be used</description>
     </key>
 
+    <key name="restore-session" type="b">
+      <default>true</default>
+      <summary>Restore Session</summary>
+      <description>Restore tabs from previous session when starting Prompt</description>
+    </key>
+
     <key name="restore-window-size" type="b">
       <default>true</default>
       <summary>Restore Window Size</summary>

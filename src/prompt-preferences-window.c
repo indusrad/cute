@@ -61,6 +61,7 @@ struct _PromptPreferencesWindow
   AdwComboRow          *preserve_directory;
   GListModel           *preserve_directories;
   GtkListBox           *profiles_list_box;
+  AdwSwitchRow         *restore_session;
   AdwSwitchRow         *restore_window_size;
   AdwSpinRow           *scrollback_lines;
   AdwSwitchRow         *scroll_on_output;
@@ -535,6 +536,9 @@ prompt_preferences_window_constructed (GObject *object)
   g_object_bind_property (settings, "visual-bell",
                           self->visual_bell, "active",
                           G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
+  g_object_bind_property (settings, "restore-session",
+                          self->restore_session, "active",
+                          G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
   g_object_bind_property (settings, "restore-window-size",
                           self->restore_window_size, "active",
                           G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
@@ -710,6 +714,7 @@ prompt_preferences_window_class_init (PromptPreferencesWindowClass *klass)
   gtk_widget_class_bind_template_child (widget_class, PromptPreferencesWindow, preserve_directories);
   gtk_widget_class_bind_template_child (widget_class, PromptPreferencesWindow, preserve_directory);
   gtk_widget_class_bind_template_child (widget_class, PromptPreferencesWindow, profiles_list_box);
+  gtk_widget_class_bind_template_child (widget_class, PromptPreferencesWindow, restore_session);
   gtk_widget_class_bind_template_child (widget_class, PromptPreferencesWindow, restore_window_size);
   gtk_widget_class_bind_template_child (widget_class, PromptPreferencesWindow, scroll_on_keystroke);
   gtk_widget_class_bind_template_child (widget_class, PromptPreferencesWindow, scroll_on_output);
