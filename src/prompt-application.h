@@ -86,5 +86,6 @@ PromptIpcContainer *prompt_application_discover_current_container (PromptApplica
 PromptIpcContainer *prompt_application_find_container_by_name     (PromptApplication    *self,
                                                                    const char           *runtime,
                                                                    const char           *name);
+void                prompt_application_save_session               (PromptApplication    *self);
 
 G_END_DECLS

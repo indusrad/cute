@@ -30,6 +30,7 @@
 #include "prompt-container-menu.h"
 #include "prompt-preferences-window.h"
 #include "prompt-profile-menu.h"
+#include "prompt-session.h"
 #include "prompt-settings.h"
 #include "prompt-util.h"
 #include "prompt-window.h"
@@ -1239,4 +1240,60 @@ prompt_application_get_os_name (PromptApplication *self)
   g_return_val_if_fail (PROMPT_IS_APPLICATION (self), NULL);
 
   return prompt_client_get_os_name (self->client);
+}
+
+static void
+prompt_application_save_session_cb (GObject      *object,
+                                    GAsyncResult *result,
+                                    gpointer      user_data)
+{
+  GFile *file = (GFile *)object;
+  g_autoptr(PromptApplication) self = user_data;
+  g_autoptr(GError) error = NULL;
+
+  g_assert (G_IS_FILE (file));
+  g_assert (G_IS_ASYNC_RESULT (result));
+  g_assert (PROMPT_IS_APPLICATION (self));
+
+  g_application_release (G_APPLICATION (self));
+
+  if (!g_file_replace_contents_finish (file, result, NULL, &error))
+    g_warning ("Failed to save session state: %s", error->message);
+}
+
+void
+prompt_application_save_session (PromptApplication *self)
+{
+  g_autoptr(GVariant) state = NULL;
+  g_autoptr(GBytes) bytes = NULL;
+
+  g_return_if_fail (PROMPT_IS_APPLICATION (self));
+
+  if ((state = prompt_session_save (self)) &&
+      (bytes = g_variant_get_data_as_bytes (state)))
+    {
+      g_autoptr(GFile) file = g_file_new_build_filename (g_get_user_config_dir (),
+                                                         APP_ID,
+                                                         "session.gvariant",
+                                                         NULL);
+      g_autoptr(GFile) directory = g_file_get_parent (file);
+      g_autoptr(GError) error = NULL;
+
+      if (!g_file_make_directory_with_parents (directory, NULL, &error))
+        {
+          g_error ("Failed to create directory for session state: %s", error->message);
+          return;
+        }
+
+      g_application_hold (G_APPLICATION (self));
+
+      g_file_replace_contents_bytes_async (file,
+                                           bytes,
+                                           NULL,
+                                           FALSE,
+                                           G_FILE_CREATE_REPLACE_DESTINATION,
+                                           NULL,
+                                           prompt_application_save_session_cb,
+                                           g_object_ref (self));
+    }
 }

@@ -26,7 +26,6 @@
 #include "prompt-close-dialog.h"
 #include "prompt-find-bar.h"
 #include "prompt-parking-lot.h"
-#include "prompt-session.h"
 #include "prompt-settings.h"
 #include "prompt-tab-monitor.h"
 #include "prompt-theme-selector.h"
@@ -972,6 +971,9 @@ prompt_window_close_request (GtkWindow *window)
 
   prompt_window_save_size (self);
 
+  if (!self->single_terminal_mode && is_last_window (self))
+    prompt_application_save_session (PROMPT_APPLICATION_DEFAULT);
+
   tabs = g_ptr_array_new_with_free_func (g_object_unref);
   n_pages = adw_tab_view_get_n_pages (self->tab_view);
 
@@ -985,20 +987,7 @@ prompt_window_close_request (GtkWindow *window)
     }
 
   if (tabs->len == 0)
-    {
-      if (!self->single_terminal_mode && is_last_window (self))
-        {
-          g_autoptr(GVariant) state = prompt_session_save (PROMPT_APPLICATION_DEFAULT);
-
-#if 0
-          g_autofree char *str = g_variant_print (state, TRUE);
-
-          g_print ("%s\n", str);
-#endif
-        }
-
-      return GDK_EVENT_PROPAGATE;
-    }
+    return GDK_EVENT_PROPAGATE;
 
   _prompt_close_dialog_run_async (GTK_WINDOW (self),
                                    tabs,
