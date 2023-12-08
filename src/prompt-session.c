@@ -21,14 +21,18 @@
 
 #include "config.h"
 
+#include "prompt-application.h"
 #include "prompt-session.h"
+#include "prompt-settings.h"
 #include "prompt-util.h"
 #include "prompt-window.h"
 
 GVariant *
 prompt_session_save (PromptApplication *app)
 {
+  PromptSettings *settings;
   GVariantBuilder builder;
+  gboolean restore_session;
 
   g_return_val_if_fail (PROMPT_IS_APPLICATION (app), NULL);
 
@@ -38,6 +42,9 @@ prompt_session_save (PromptApplication *app)
   g_variant_builder_add (&builder, "s", "windows");
   g_variant_builder_open (&builder, G_VARIANT_TYPE ("v"));
   g_variant_builder_open (&builder, G_VARIANT_TYPE ("aa{sv}"));
+
+  settings = prompt_application_get_settings (PROMPT_APPLICATION_DEFAULT);
+  restore_session = prompt_settings_get_restore_session (settings);
 
   for (const GList *list = gtk_application_get_windows (GTK_APPLICATION (app));
        list != NULL;
@@ -62,10 +69,13 @@ prompt_session_save (PromptApplication *app)
           for (guint i = 0; i < n_items; i++)
             {
               g_autoptr(AdwTabPage) page = g_list_model_get_item (pages, i);
+              gboolean pinned;
 
               g_assert (ADW_IS_TAB_PAGE (page));
 
-              if (adw_tab_page_get_pinned (page))
+              pinned = adw_tab_page_get_pinned (page);
+
+              if (restore_session || pinned)
                 {
                   PromptTab *tab = PROMPT_TAB (adw_tab_page_get_child (page));
                   g_autoptr(PromptIpcContainer) container = NULL;
@@ -76,6 +86,7 @@ prompt_session_save (PromptApplication *app)
                   const char *window_title;
                   const char *cwd;
                   const char *uuid;
+                  gboolean is_active;
                   guint rows;
                   guint columns;
 
@@ -85,6 +96,7 @@ prompt_session_save (PromptApplication *app)
                   uuid = prompt_profile_get_uuid (profile);
                   default_container = prompt_profile_dup_default_container (profile);
                   container = prompt_tab_dup_container (tab);
+                  is_active = prompt_window_get_active_tab (window) == tab;
 
                   terminal = prompt_tab_get_terminal (tab);
                   columns = vte_terminal_get_column_count (VTE_TERMINAL (terminal));
@@ -97,8 +109,9 @@ prompt_session_save (PromptApplication *app)
 
                   g_variant_builder_open (&builder, G_VARIANT_TYPE ("a{sv}"));
                   g_variant_builder_add_parsed (&builder, "{'profile', <%s>}", uuid);
-                  g_variant_builder_add_parsed (&builder, "{'pinned', <%b>}", TRUE);
+                  g_variant_builder_add_parsed (&builder, "{'pinned', <%b>}", pinned);
                   g_variant_builder_add_parsed (&builder, "{'size', <(%u,%u)>}", columns, rows);
+                  g_variant_builder_add_parsed (&builder, "{'active', <%b>}", is_active);
                   if (!prompt_str_empty0 (window_title))
                     g_variant_builder_add_parsed (&builder, "{'window-title', <%s>}", window_title);
                   if (!prompt_str_empty0 (cwd))
@@ -129,8 +142,10 @@ prompt_session_restore (PromptApplication *app,
                         GVariant          *state)
 {
   g_autoptr(GVariant) windows = NULL;
+  PromptSettings *settings;
   GVariantIter iter;
   GVariant *window;
+  gboolean restore_session;
   gboolean added_window = FALSE;
   guint32 version;
 
@@ -144,12 +159,16 @@ prompt_session_restore (PromptApplication *app,
   if (!(windows = g_variant_lookup_value (state, "windows", G_VARIANT_TYPE ("aa{sv}"))))
     return FALSE;
 
+  settings = prompt_application_get_settings (PROMPT_APPLICATION_DEFAULT);
+  restore_session = prompt_settings_get_restore_session (settings);
+
   g_variant_iter_init (&iter, windows);
   while (g_variant_iter_loop (&iter, "@a{sv}", &window))
     {
       g_autoptr(GVariant) tabs = NULL;
       g_autoptr(GVariant) tab = NULL;
       PromptWindow *the_window = NULL;
+      PromptTab *active_tab = NULL;
       GVariantIter tab_iter;
       gboolean maximized;
 
@@ -171,6 +190,7 @@ prompt_session_restore (PromptApplication *app,
           const char *cwd;
           const char *window_title;
           PromptTab *the_tab;
+          gboolean is_active;
           gboolean pinned;
           guint32 columns;
           guint32 rows;
@@ -184,6 +204,9 @@ prompt_session_restore (PromptApplication *app,
           if (!g_variant_lookup (tab, "pinned", "b", &pinned))
             pinned = FALSE;
 
+          if (!pinned && !restore_session)
+            continue;
+
           if (!g_variant_lookup (tab, "size", "(uu)", &columns, &rows))
             columns = 80, rows = 24;
 
@@ -192,6 +215,9 @@ prompt_session_restore (PromptApplication *app,
 
           if (!g_variant_lookup (tab, "window-title", "&s", &window_title))
             window_title = NULL;
+
+          if (!g_variant_lookup (tab, "active", "b", &is_active))
+            is_active = FALSE;
 
           if (!prompt_str_empty0 (container))
             the_container = prompt_application_lookup_container (app, container);
@@ -221,20 +247,35 @@ prompt_session_restore (PromptApplication *app,
 
           prompt_window_add_tab (the_window, the_tab);
           prompt_window_set_tab_pinned (the_window, the_tab, pinned);
+
+          if (is_active)
+            active_tab = the_tab;
         }
 
       if (the_window != NULL)
         {
-          g_autoptr(PromptProfile) the_profile = NULL;
-          PromptTab *the_tab;
+          if (!restore_session)
+            {
+              g_autoptr(PromptProfile) the_profile = NULL;
+              PromptTab *the_tab;
 
-          /* Also add a default profile tab which will be our focused
-           * tab for the new window.
-           */
-          the_profile = prompt_application_dup_default_profile (app);
-          the_tab = prompt_tab_new (the_profile);
-          prompt_window_add_tab (the_window, the_tab);
-          prompt_window_set_active_tab (the_window, the_tab);
+              /* Also add a default profile tab which will be our focused
+               * tab for the new window since we're not restoring the
+               * full tab session for the user.
+               */
+              the_profile = prompt_application_dup_default_profile (app);
+              the_tab = prompt_tab_new (the_profile);
+              prompt_window_add_tab (the_window, the_tab);
+
+              if (!active_tab)
+                active_tab = the_tab;
+            }
+
+          if (active_tab)
+            {
+              prompt_window_set_active_tab (the_window, active_tab);
+              gtk_widget_grab_focus (GTK_WIDGET (active_tab));
+            }
 
           if (maximized)
             gtk_window_maximize (GTK_WINDOW (the_window));
