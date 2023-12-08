@@ -117,6 +117,7 @@ prompt_agent_init (PromptAgent  *agent,
       g_autoptr(PromptSessionContainer) jhbuild_container = prompt_session_container_new ();
       prompt_ipc_container_set_id (PROMPT_IPC_CONTAINER (jhbuild_container), "jhbuild");
       prompt_ipc_container_set_provider (PROMPT_IPC_CONTAINER (jhbuild_container), "jhbuild");
+      prompt_ipc_container_set_display_name (PROMPT_IPC_CONTAINER (jhbuild_container), "JHBuild");
       prompt_session_container_set_command_prefix (PROMPT_SESSION_CONTAINER (jhbuild_container),
                                                    (const char * const []) { jhbuild_path, "run", NULL });
       prompt_agent_impl_add_container (agent->impl, PROMPT_IPC_CONTAINER (jhbuild_container));
