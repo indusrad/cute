@@ -69,6 +69,7 @@ prompt_session_save (PromptApplication *app)
                   PromptTerminal *terminal;
                   PromptProfile *profile;
                   const char *container_id = NULL;
+                  const char *window_title;
                   const char *cwd;
                   const char *uuid;
                   guint rows;
@@ -85,6 +86,7 @@ prompt_session_save (PromptApplication *app)
                   columns = vte_terminal_get_column_count (VTE_TERMINAL (terminal));
                   rows = vte_terminal_get_row_count (VTE_TERMINAL (terminal));
                   cwd = vte_terminal_get_current_directory_uri (VTE_TERMINAL (terminal));
+                  window_title = vte_terminal_get_window_title (VTE_TERMINAL (terminal));
 
                   if (container != NULL)
                     container_id = prompt_ipc_container_get_id (container);
@@ -93,6 +95,8 @@ prompt_session_save (PromptApplication *app)
                   g_variant_builder_add_parsed (&builder, "{'profile', <%s>}", uuid);
                   g_variant_builder_add_parsed (&builder, "{'pinned', <%b>}", TRUE);
                   g_variant_builder_add_parsed (&builder, "{'size', <(%u,%u)>}", columns, rows);
+                  if (!prompt_str_empty0 (window_title))
+                    g_variant_builder_add_parsed (&builder, "{'window-title', <%s>}", window_title);
                   if (!prompt_str_empty0 (cwd))
                     g_variant_builder_add_parsed (&builder, "{'cwd', <%s>}", cwd);
                   if (container_id != NULL &&
@@ -157,6 +161,7 @@ prompt_session_restore (PromptApplication *app,
           const char *profile;
           const char *container;
           const char *cwd;
+          const char *window_title;
           PromptTab *the_tab;
           gboolean pinned;
           guint32 columns;
@@ -177,6 +182,9 @@ prompt_session_restore (PromptApplication *app,
           if (!g_variant_lookup (tab, "cwd", "&s", &cwd))
             cwd = NULL;
 
+          if (!g_variant_lookup (tab, "window-title", "&s", &window_title))
+            window_title = NULL;
+
           if (!prompt_str_empty0 (container))
             the_container = prompt_application_lookup_container (app, container);
 
@@ -196,6 +204,9 @@ prompt_session_restore (PromptApplication *app,
 
           if (cwd != NULL)
             prompt_tab_set_previous_working_directory_uri (the_tab, cwd);
+
+          if (window_title != NULL)
+            prompt_tab_set_initial_title (the_tab, window_title);
 
           terminal = prompt_tab_get_terminal (the_tab);
           vte_terminal_set_size (VTE_TERMINAL (terminal), columns, rows);
