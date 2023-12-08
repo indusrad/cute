@@ -26,6 +26,7 @@
 #include "prompt-palette.h"
 #include "prompt-palettes-inline.h"
 #include "prompt-preferences-list-item.h"
+#include "prompt-user-palettes.h"
 
 /* If you're here, you might be wondering if there is support for
  * custom installation of palettes. Currently, the answer is no. But
@@ -175,7 +176,14 @@ prompt_palette_get_all (void)
   if (instance == NULL)
     {
       g_auto(GStrv) resources = g_resources_enumerate_children ("/org/gnome/Prompt/palettes/", 0, NULL);
-      GListStore *liststore = g_list_store_new (PROMPT_TYPE_PALETTE);
+      g_autofree char *user_palettes_dir = g_build_filename (g_get_user_data_dir (), APP_ID, "palettes", NULL);
+      g_autoptr(PromptUserPalettes) user_palettes = prompt_user_palettes_new (user_palettes_dir);
+      GListStore *builtin = g_list_store_new (PROMPT_TYPE_PALETTE);
+      GListStore *models = g_list_store_new (G_TYPE_LIST_MODEL);
+      GtkFlattenListModel *flatten = gtk_flatten_list_model_new (G_LIST_MODEL (models));
+
+      g_list_store_append (models, builtin);
+      g_list_store_append (models, user_palettes);
 
       for (guint i = 0; resources[i]; i++)
         {
@@ -185,10 +193,10 @@ prompt_palette_get_all (void)
 
           g_assert_no_error (error);
 
-          g_list_store_append (liststore, palette);
+          g_list_store_append (builtin, palette);
         }
 
-      instance = gtk_sort_list_model_new (G_LIST_MODEL (liststore),
+      instance = gtk_sort_list_model_new (G_LIST_MODEL (flatten),
                                           GTK_SORTER (gtk_string_sorter_new (gtk_property_expression_new (PROMPT_TYPE_PALETTE, NULL, "name"))));
       g_object_add_weak_pointer (G_OBJECT (instance), (gpointer *)&instance);
     }

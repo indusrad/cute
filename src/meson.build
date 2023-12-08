@@ -25,6 +25,7 @@ prompt_sources = [
   'prompt-terminal.c',
   'prompt-theme-selector.c',
   'prompt-title-dialog.c',
+  'prompt-user-palettes.c',
   'prompt-util.c',
   'prompt-window-dressing.c',
   'prompt-window.c',
