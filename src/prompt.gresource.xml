@@ -16,6 +16,7 @@
     <file preprocess="xml-stripblanks">icons/enter-keyboard-shortcut.svg</file>
     <file preprocess="xml-stripblanks">icons/scalable/actions/container-generic-symbolic.svg</file>
     <file preprocess="xml-stripblanks">icons/scalable/actions/container-jhbuild-symbolic.svg</file>
+    <file preprocess="xml-stripblanks">icons/scalable/actions/container-podman-symbolic.svg</file>
     <file preprocess="xml-stripblanks">icons/scalable/actions/container-toolbox-symbolic.svg</file>
     <file preprocess="xml-stripblanks">icons/scalable/actions/process-remote-symbolic.svg</file>
     <file preprocess="xml-stripblanks">icons/scalable/actions/process-superuser-symbolic.svg</file>
