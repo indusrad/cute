@@ -1,6 +1,6 @@
-data/org.gnome.Prompt.desktop.in
-data/org.gnome.Prompt.metainfo.xml.in
-data/org.gnome.Prompt.gschema.xml
+data/org.gnome.Prompt.desktop.in.in
+data/org.gnome.Prompt.metainfo.xml.in.in
+src/org.gnome.Prompt.gschema.xml.in
 src/main.c
 src/prompt-window.c
 src/prompt-window.ui
