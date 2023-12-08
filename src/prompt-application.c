@@ -50,6 +50,7 @@ struct _PromptApplication
   char                *system_font_name;
   GDBusProxy          *portal;
   PromptClient        *client;
+  GVariant            *session;
 };
 
 static void prompt_application_about             (GSimpleAction *action,
@@ -104,6 +105,15 @@ prompt_application_new (const char        *application_id,
                        NULL);
 }
 
+static inline GFile *
+get_session_file (void)
+{
+  return g_file_new_build_filename (g_get_user_config_dir (),
+                                    APP_ID,
+                                    "session.gvariant",
+                                    NULL);
+}
+
 static void
 prompt_application_activate (GApplication *app)
 {
@@ -123,6 +133,8 @@ prompt_application_activate (GApplication *app)
     }
 
   window = prompt_window_new ();
+
+  /* TODO: Maybe restore session state */
 
   gtk_window_present (GTK_WINDOW (window));
 }
@@ -289,6 +301,8 @@ prompt_application_startup (GApplication *application)
   g_autoptr(PromptIpcContainer) host = NULL;
   g_autoptr(GtkFilterListModel) filter_model = NULL;
   g_autoptr(GtkCustomFilter) filter = NULL;
+  g_autoptr(GFile) session_file = get_session_file ();
+  g_autoptr(GBytes) session_bytes = NULL;
   g_autoptr(GError) error = NULL;
   AdwStyleManager *style_manager;
 
@@ -300,6 +314,15 @@ prompt_application_startup (GApplication *application)
   self->profiles = g_list_store_new (PROMPT_TYPE_PROFILE);
   self->settings = prompt_settings_new ();
   self->shortcuts = prompt_shortcuts_new (NULL);
+
+  /* Load the session state so it's available if we need it */
+  if ((session_bytes = g_file_load_bytes (session_file, NULL, NULL, NULL)))
+    {
+      g_autoptr(GVariant) variant = g_variant_new_from_bytes (G_VARIANT_TYPE_VARDICT, session_bytes, FALSE);
+
+      if (variant != NULL)
+        self->session = g_variant_take_ref (g_steal_pointer (&variant));
+    }
 
   G_APPLICATION_CLASS (prompt_application_parent_class)->startup (application);
 
@@ -1272,10 +1295,7 @@ prompt_application_save_session (PromptApplication *self)
   if ((state = prompt_session_save (self)) &&
       (bytes = g_variant_get_data_as_bytes (state)))
     {
-      g_autoptr(GFile) file = g_file_new_build_filename (g_get_user_config_dir (),
-                                                         APP_ID,
-                                                         "session.gvariant",
-                                                         NULL);
+      g_autoptr(GFile) file = get_session_file ();
       g_autoptr(GFile) directory = g_file_get_parent (file);
       g_autoptr(GError) error = NULL;
 
