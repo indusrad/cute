@@ -29,6 +29,7 @@
 struct _PromptSessionContainer
 {
   PromptIpcContainerSkeleton parent_instance;
+  char **command_prefix;
 };
 
 static void container_iface_init (PromptIpcContainerIface *iface);
@@ -37,8 +38,21 @@ G_DEFINE_TYPE_WITH_CODE (PromptSessionContainer, prompt_session_container, PROMP
                          G_IMPLEMENT_INTERFACE (PROMPT_IPC_TYPE_CONTAINER, container_iface_init))
 
 static void
+prompt_session_container_finalize (GObject *object)
+{
+  PromptSessionContainer *self = (PromptSessionContainer *)object;
+
+  g_clear_pointer (&self->command_prefix, g_strfreev);
+
+  G_OBJECT_CLASS (prompt_session_container_parent_class)->finalize (object);
+}
+
+static void
 prompt_session_container_class_init (PromptSessionContainerClass *klass)
 {
+  GObjectClass *object_class = G_OBJECT_CLASS (klass);
+
+  object_class->finalize = prompt_session_container_finalize;
 }
 
 static void
@@ -63,6 +77,7 @@ prompt_session_container_handle_spawn (PromptIpcContainer    *container,
                                        GVariant              *in_fds,
                                        GVariant              *in_env)
 {
+  PromptSessionContainer *self = (PromptSessionContainer *)container;
   g_autoptr(PromptRunContext) run_context = NULL;
   g_autoptr(PromptIpcProcess) process = NULL;
   g_autoptr(GSubprocess) subprocess = NULL;
@@ -73,7 +88,7 @@ prompt_session_container_handle_spawn (PromptIpcContainer    *container,
   g_autofree char *object_path = NULL;
   g_autofree char *guid = NULL;
 
-  g_assert (PROMPT_IS_SESSION_CONTAINER (container));
+  g_assert (PROMPT_IS_SESSION_CONTAINER (self));
   g_assert (G_IS_DBUS_METHOD_INVOCATION (invocation));
   g_assert (G_IS_UNIX_FD_LIST (in_fd_list));
   g_assert (cwd != NULL);
@@ -99,6 +114,10 @@ prompt_session_container_handle_spawn (PromptIpcContainer    *container,
    */
   env = g_get_environ ();
   prompt_run_context_set_environ (run_context, (const char * const *)env);
+
+  /* If a command prefix was specified, add that now */
+  if (self->command_prefix != NULL)
+    prompt_run_context_append_args (run_context, (const char * const *)self->command_prefix);
 
   /* Use the spawn helper to copy everything that matters after marshaling
    * out of GVariant format. This will be very much the same for other
@@ -131,4 +150,17 @@ static void
 container_iface_init (PromptIpcContainerIface *iface)
 {
   iface->handle_spawn = prompt_session_container_handle_spawn;
+}
+
+void
+prompt_session_container_set_command_prefix (PromptSessionContainer *self,
+                                             const char * const     *command_prefix)
+{
+  char **copy;
+
+  g_return_if_fail (PROMPT_IS_SESSION_CONTAINER (self));
+
+  copy = g_strdupv ((char **)command_prefix);
+  g_strfreev (self->command_prefix);
+  self->command_prefix = copy;
 }

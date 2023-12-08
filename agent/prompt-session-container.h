@@ -29,6 +29,8 @@ G_BEGIN_DECLS
 
 G_DECLARE_FINAL_TYPE (PromptSessionContainer, prompt_session_container, PROMPT, SESSION_CONTAINER, PromptIpcContainerSkeleton)
 
-PromptSessionContainer *prompt_session_container_new (void);
+PromptSessionContainer *prompt_session_container_new                (void);
+void                    prompt_session_container_set_command_prefix (PromptSessionContainer *self,
+                                                                     const char * const     *command_prefix);
 
 G_END_DECLS
