@@ -58,6 +58,9 @@ interface, configurable color palettes, menus, tab overviews, you get the idea.
  * "Single application mode" allows you to run an application in a prompt
    instance but just for that command. Useful when integrating with
    .desktop files containing Terminal=true.
+ * Pinned tab profile/container/directory are saved across sessions so that
+   you can get back to your projects quickly. Currently this is restricted
+   to a single window but may change in the future.
 
 
 ## Distribution Notes
