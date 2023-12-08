@@ -28,29 +28,6 @@
 #include "prompt-preferences-list-item.h"
 #include "prompt-user-palettes.h"
 
-/* If you're here, you might be wondering if there is support for
- * custom installation of palettes. Currently, the answer is no. But
- * if you were going to venture on that journey, here is how you
- * should implement it.
- *
- *  0) Add a deserialize from GFile/GKeyFile constructor
- *  1) Add a GListModel to PromptApplication to hold dynamically
- *     loaded palettes.
- *  2) Drop palettes in something like .local/share/appname/palettes/
- *  3) The format for palettes could probably just be GKeyFile with
- *     key/value pairs for everything we have in static data. I'm
- *     sure there is another GTK based terminal which already has a
- *     reasonable palette definition like this you can borrow.
- *
- *  ** UP to here has been done **
- *
- *  4) Use a GtkFlattenListModel to join our internal and dynamic
- *     palettes together.
- *  5) Add loader to PromptApplication at startup. It's fine to
- *     just require reloading of the app to pick them up, but a
- *     GFileMonitor might be nice.
- */
-
 typedef struct _PromptPaletteData
 {
   const char        *id;
