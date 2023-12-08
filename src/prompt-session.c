@@ -22,6 +22,7 @@
 #include "config.h"
 
 #include "prompt-session.h"
+#include "prompt-util.h"
 #include "prompt-window.h"
 
 GVariant *
@@ -65,9 +66,13 @@ prompt_session_save (PromptApplication *app)
                   PromptTab *tab = PROMPT_TAB (adw_tab_page_get_child (page));
                   g_autoptr(PromptIpcContainer) container = NULL;
                   g_autofree char *default_container = NULL;
+                  PromptTerminal *terminal;
                   PromptProfile *profile;
                   const char *container_id = NULL;
+                  const char *cwd;
                   const char *uuid;
+                  guint rows;
+                  guint columns;
 
                   g_assert (PROMPT_IS_TAB (tab));
 
@@ -76,12 +81,20 @@ prompt_session_save (PromptApplication *app)
                   default_container = prompt_profile_dup_default_container (profile);
                   container = prompt_tab_dup_container (tab);
 
+                  terminal = prompt_tab_get_terminal (tab);
+                  columns = vte_terminal_get_column_count (VTE_TERMINAL (terminal));
+                  rows = vte_terminal_get_row_count (VTE_TERMINAL (terminal));
+                  cwd = vte_terminal_get_current_directory_uri (VTE_TERMINAL (terminal));
+
                   if (container != NULL)
                     container_id = prompt_ipc_container_get_id (container);
 
                   g_variant_builder_open (&builder, G_VARIANT_TYPE ("a{sv}"));
                   g_variant_builder_add_parsed (&builder, "{'profile', <%s>}", uuid);
                   g_variant_builder_add_parsed (&builder, "{'pinned', <%b>}", TRUE);
+                  g_variant_builder_add_parsed (&builder, "{'size', <(%u,%u)>}", columns, rows);
+                  if (!prompt_str_empty0 (cwd))
+                    g_variant_builder_add_parsed (&builder, "{'cwd', <%s>}", cwd);
                   if (container_id != NULL &&
                       g_strcmp0 (default_container, container_id) != 0)
                     g_variant_builder_add_parsed (&builder, "{'container', <%s>}", container_id);
@@ -103,24 +116,25 @@ prompt_session_save (PromptApplication *app)
   return g_variant_take_ref (g_variant_builder_end (&builder));
 }
 
-void
+gboolean
 prompt_session_restore (PromptApplication *app,
                         GVariant          *state)
 {
   g_autoptr(GVariant) windows = NULL;
   GVariantIter iter;
   GVariant *window;
-  gint32 version;
+  gboolean added_window = FALSE;
+  guint32 version;
 
-  g_return_if_fail (PROMPT_IS_APPLICATION (app));
-  g_return_if_fail (state != NULL);
-  g_return_if_fail (g_variant_is_of_type (state, G_VARIANT_TYPE ("a{sv}")));
+  g_return_val_if_fail (PROMPT_IS_APPLICATION (app), FALSE);
+  g_return_val_if_fail (state != NULL, FALSE);
+  g_return_val_if_fail (g_variant_is_of_type (state, G_VARIANT_TYPE ("a{sv}")), FALSE);
 
-  if (!g_variant_lookup (state, "version", "i", &version))
-    return;
+  if (!g_variant_lookup (state, "version", "u", &version))
+    return FALSE;
 
   if (!(windows = g_variant_lookup_value (state, "windows", G_VARIANT_TYPE ("aa{sv}"))))
-    return;
+    return FALSE;
 
   g_variant_iter_init (&iter, windows);
   while (g_variant_iter_loop (&iter, "@a{sv}", &window))
@@ -134,18 +148,67 @@ prompt_session_restore (PromptApplication *app,
           g_variant_n_children (tabs) == 0)
         continue;
 
-      /* TODO: Restore tabs into the_window */
       g_variant_iter_init (&tab_iter, tabs);
       while (g_variant_iter_loop (&tab_iter, "@a{sv}", &tab))
         {
-          const char *profile = NULL;
-          const char *container = NULL;
+          g_autoptr(PromptIpcContainer) the_container = NULL;
+          g_autoptr(PromptProfile) the_profile = NULL;
+          PromptTerminal *terminal;
+          const char *profile;
+          const char *container;
+          const char *cwd;
+          PromptTab *the_tab;
+          gboolean pinned;
+          guint32 columns;
+          guint32 rows;
 
-          g_variant_lookup (tab, "profile", "&s", &profile);
-          g_variant_lookup (tab, "container", "&s", &container);
+          if (!g_variant_lookup (tab, "profile", "&s", &profile))
+            profile = NULL;
+
+          if (!g_variant_lookup (tab, "container", "&s", &container))
+            container = NULL;
+
+          if (!g_variant_lookup (tab, "pinned", "b", &pinned))
+            pinned = FALSE;
+
+          if (!g_variant_lookup (tab, "size", "(uu)", &columns, &rows))
+            columns = 80, rows = 24;
+
+          if (!g_variant_lookup (tab, "cwd", "&s", &cwd))
+            cwd = NULL;
+
+          if (!prompt_str_empty0 (container))
+            the_container = prompt_application_lookup_container (app, container);
+
+          if (!prompt_str_empty0 (profile))
+            the_profile = prompt_application_dup_profile (app, profile);
+
+          if (the_profile == NULL)
+            the_profile = prompt_application_dup_default_profile (app);
+
+          if (the_window == NULL)
+            the_window = prompt_window_new_empty ();
+
+          the_tab = prompt_tab_new (the_profile);
+
+          if (the_container != NULL)
+            prompt_tab_set_container (the_tab, the_container);
+
+          if (cwd != NULL)
+            prompt_tab_set_previous_working_directory_uri (the_tab, cwd);
+
+          terminal = prompt_tab_get_terminal (the_tab);
+          vte_terminal_set_size (VTE_TERMINAL (terminal), columns, rows);
+
+          prompt_window_add_tab (the_window, the_tab);
+          prompt_window_set_tab_pinned (the_window, the_tab, pinned);
         }
 
       if (the_window != NULL)
         gtk_window_present (GTK_WINDOW (the_window));
+
+      added_window |= the_window != NULL;
     }
+
+  return added_window;
 }
