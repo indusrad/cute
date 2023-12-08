@@ -222,7 +222,11 @@ prompt_tab_wait_cb (GObject      *object,
 
     case PROMPT_EXIT_ACTION_CLOSE:
       if (ADW_IS_TAB_VIEW (tab_view) && ADW_IS_TAB_PAGE (page))
-        adw_tab_view_close_page (ADW_TAB_VIEW (tab_view), page);
+        {
+          if (adw_tab_page_get_pinned (page))
+            adw_tab_view_set_page_pinned (ADW_TAB_VIEW (tab_view), page, FALSE);
+          adw_tab_view_close_page (ADW_TAB_VIEW (tab_view), page);
+        }
       break;
 
     case PROMPT_EXIT_ACTION_NONE:
