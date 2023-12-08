@@ -66,6 +66,8 @@ prompt_agent_init (PromptAgent  *agent,
 {
   g_autoptr(PromptSessionContainer) session = NULL;
   g_autoptr(PromptContainerProvider) podman = NULL;
+  g_autoptr(GFile) jhbuildrc = NULL;
+  g_autofree char *jhbuild_path = NULL;
 
   memset (agent, 0, sizeof *agent);
 
@@ -107,6 +109,18 @@ prompt_agent_init (PromptAgent  *agent,
 
   session = prompt_session_container_new ();
   prompt_agent_impl_add_container (agent->impl, PROMPT_IPC_CONTAINER (session));
+
+  jhbuildrc = g_file_new_build_filename (g_get_home_dir (), ".config", "jhbuildrc", NULL);
+  if (g_file_query_exists (jhbuildrc, NULL) &&
+      (jhbuild_path = g_find_program_in_path ("jhbuild")))
+    {
+      g_autoptr(PromptSessionContainer) jhbuild_container = prompt_session_container_new ();
+      prompt_ipc_container_set_id (PROMPT_IPC_CONTAINER (jhbuild_container), "jhbuild");
+      prompt_ipc_container_set_provider (PROMPT_IPC_CONTAINER (jhbuild_container), "jhbuild");
+      prompt_session_container_set_command_prefix (PROMPT_SESSION_CONTAINER (jhbuild_container),
+                                                   (const char * const []) { jhbuild_path, "run", NULL });
+      prompt_agent_impl_add_container (agent->impl, PROMPT_IPC_CONTAINER (jhbuild_container));
+    }
 
   podman = prompt_podman_provider_new ();
   prompt_podman_provider_set_type_for_label (PROMPT_PODMAN_PROVIDER (podman),
