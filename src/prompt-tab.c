@@ -54,6 +54,7 @@ struct _PromptTab
   char                *uuid;
   PromptIpcContainer  *container_at_creation;
   char               **command;
+  char                *initial_title;
 
   GdkTexture          *cached_texture;
 
@@ -804,6 +805,7 @@ prompt_tab_dispose (GObject *object)
 
   g_clear_pointer (&self->previous_working_directory_uri, g_free);
   g_clear_pointer (&self->title_prefix, g_free);
+  g_clear_pointer (&self->initial_title, g_free);
   g_clear_pointer (&self->command, g_strfreev);
 
   G_OBJECT_CLASS (prompt_tab_parent_class)->dispose (object);
@@ -1098,6 +1100,8 @@ prompt_tab_dup_title (PromptTab *self)
     g_string_append (gstr, window_title);
   else if (self->command != NULL && self->command[0] != NULL)
     g_string_append (gstr, self->command[0]);
+  else if (self->initial_title != NULL)
+    g_string_append (gstr, self->initial_title);
   else
     g_string_append (gstr, _("Terminal"));
 
@@ -1399,4 +1403,13 @@ prompt_tab_set_command (PromptTab          *self,
   copy = g_strdupv ((char **)command);
   g_strfreev (self->command);
   self->command = copy;
+}
+
+void
+prompt_tab_set_initial_title (PromptTab  *self,
+                              const char *initial_title)
+{
+  g_return_if_fail (PROMPT_IS_TAB (self));
+
+  g_set_str (&self->initial_title, initial_title);
 }

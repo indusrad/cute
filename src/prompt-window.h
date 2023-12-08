@@ -32,6 +32,7 @@ G_BEGIN_DECLS
 G_DECLARE_FINAL_TYPE (PromptWindow, prompt_window, PROMPT, WINDOW, AdwApplicationWindow)
 
 PromptWindow  *prompt_window_new                (void);
+PromptWindow  *prompt_window_new_empty          (void);
 PromptWindow  *prompt_window_new_for_command    (const char * const *argv,
                                                  const char         *cwd_uri);
 PromptWindow  *prompt_window_new_for_profile    (PromptProfile      *profile);
@@ -48,5 +49,8 @@ void           prompt_window_visual_bell        (PromptWindow       *self);
 gboolean       prompt_window_focus_tab_by_uuid  (PromptWindow       *self,
                                                  const char         *uuid);
 gboolean       prompt_window_is_animating       (PromptWindow       *self);
+void           prompt_window_set_tab_pinned     (PromptWindow       *self,
+                                                 PromptTab          *tab,
+                                                 gboolean            pinned);
 
 G_END_DECLS

@@ -26,7 +26,7 @@
 G_BEGIN_DECLS
 
 GVariant *prompt_session_save    (PromptApplication *app);
-void      prompt_session_restore (PromptApplication *app,
+gboolean  prompt_session_restore (PromptApplication *app,
                                   GVariant          *state);
 
 G_END_DECLS

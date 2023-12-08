@@ -86,5 +86,7 @@ void                prompt_tab_set_container                      (PromptTab    
 gboolean            prompt_tab_has_foreground_process             (PromptTab           *self,
                                                                    GPid                *pid,
                                                                    char               **cmdline);
+void                prompt_tab_set_initial_title                  (PromptTab           *self,
+                                                                   const char          *initial_title);
 
 G_END_DECLS
