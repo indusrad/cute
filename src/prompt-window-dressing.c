@@ -118,6 +118,12 @@ prompt_window_dressing_update (PromptWindowDressing *self)
       g_string_append_printf (string,
                               "window.%s vte-terminal > revealer.size label { color: %s; background-color: alpha(%s, %s); }\n",
                               self->css_class, fg, bg, popover_alpha_str);
+      /* It would be super if we could make these match the color of the
+       * actual tab contents rather than the active tab profile.
+       */
+      g_string_append_printf (string,
+                              "window.%s toolbarview.overview overlay.card { background: %s; }\n",
+                              self->css_class, bg);
       g_string_append_printf (string,
                               "window.%s toolbarview.overview.background { background: shade(%s,%s); }\n",
                               self->css_class, bg,
