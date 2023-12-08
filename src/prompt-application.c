@@ -1299,14 +1299,9 @@ prompt_application_save_session (PromptApplication *self)
       g_autoptr(GFile) directory = g_file_get_parent (file);
       g_autoptr(GError) error = NULL;
 
-      if (!g_file_make_directory_with_parents (directory, NULL, &error))
-        {
-          g_error ("Failed to create directory for session state: %s", error->message);
-          return;
-        }
-
       g_application_hold (G_APPLICATION (self));
 
+      g_file_make_directory_with_parents (directory, NULL, NULL);
       g_file_replace_contents_bytes_async (file,
                                            bytes,
                                            NULL,
