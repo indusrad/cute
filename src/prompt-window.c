@@ -290,7 +290,7 @@ prompt_window_page_detached_cb (PromptWindow *self,
 
   n_pages = adw_tab_view_get_n_pages (tab_view);
 
-  if (n_pages == 0)
+  if (n_pages == 0 && !adw_tab_view_get_is_transferring_page (tab_view))
     gtk_window_destroy (GTK_WINDOW (self));
   else
     gtk_widget_set_visible (GTK_WIDGET (self->tab_bar), n_pages > 1);
