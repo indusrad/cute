@@ -42,6 +42,8 @@ typedef struct _PromptPaletteFace
 {
   GdkRGBA background;
   GdkRGBA foreground;
+  GdkRGBA titlebar_background;
+  GdkRGBA titlebar_foreground;
   GdkRGBA cursor;
   GdkRGBA indexed[16];
   union {

@@ -80,6 +80,8 @@ prompt_window_dressing_update (PromptWindowDressing *self)
       g_autoptr(GString) gstring = g_string_new (NULL);
       g_autofree char *bg = NULL;
       g_autofree char *fg = NULL;
+      g_autofree char *titlebar_bg = NULL;
+      g_autofree char *titlebar_fg = NULL;
       g_autofree char *su_fg = NULL;
       g_autofree char *su_bg = NULL;
       g_autofree char *rm_fg = NULL;
@@ -93,6 +95,8 @@ prompt_window_dressing_update (PromptWindowDressing *self)
 
       bg = gdk_rgba_to_string (&face->background);
       fg = gdk_rgba_to_string (&face->foreground);
+      titlebar_bg = gdk_rgba_to_string (&face->titlebar_background);
+      titlebar_fg = gdk_rgba_to_string (&face->titlebar_foreground);
       rm_fg = gdk_rgba_to_string (&face->scarves[PROMPT_PALETTE_SCARF_REMOTE].foreground);
       rm_bg = gdk_rgba_to_string (&face->scarves[PROMPT_PALETTE_SCARF_REMOTE].background);
       su_fg = gdk_rgba_to_string (&face->scarves[PROMPT_PALETTE_SCARF_SUPERUSER].foreground);
@@ -139,6 +143,9 @@ prompt_window_dressing_update (PromptWindowDressing *self)
                               "@keyframes visual-bell-%s-%s { 50%% { background: %s; color: %s; } }\n",
                               self->css_class, self->css_class, dark ? "dark" : "light",
                               self->css_class, dark ? "dark" : "light", bell_bg, bell_fg);
+      g_string_append_printf (string,
+                              "window.%s headerbar { background: %s; color: %s; }\n",
+                              self->css_class, titlebar_bg, titlebar_fg);
 
       if (rgba_is_dark (&face->background))
         {

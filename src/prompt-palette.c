@@ -291,6 +291,11 @@ prompt_palette_load_face (const char         *path,
       FALSE)
     return FALSE;
 
+  if (!prompt_palette_load_color (path, &face->titlebar_foreground, key_file, scheme, "TitlebarForeground", NULL))
+    face->titlebar_foreground = face->foreground;
+  if (!prompt_palette_load_color (path, &face->titlebar_background, key_file, scheme, "TitlebarBackground", NULL))
+    face->titlebar_background = face->background;
+
   return TRUE;
 }
 
