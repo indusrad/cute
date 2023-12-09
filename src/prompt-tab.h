@@ -48,7 +48,8 @@ typedef enum _PromptZoomLevel
   PROMPT_ZOOM_LEVEL_PLUS_7,
 } PromptZoomLevel;
 
-#define PROMPT_TYPE_TAB (prompt_tab_get_type())
+#define PROMPT_ZOOM_LEVEL_LAST (PROMPT_ZOOM_LEVEL_PLUS_7+1)
+#define PROMPT_TYPE_TAB        (prompt_tab_get_type())
 
 G_DECLARE_FINAL_TYPE (PromptTab, prompt_tab, PROMPT, TAB, GtkWidget)
 

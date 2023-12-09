@@ -87,6 +87,7 @@ prompt_session_save (PromptApplication *app)
                   const char *cwd;
                   const char *uuid;
                   gboolean is_active;
+                  PromptZoomLevel zoom;
                   guint rows;
                   guint columns;
 
@@ -103,6 +104,7 @@ prompt_session_save (PromptApplication *app)
                   rows = vte_terminal_get_row_count (VTE_TERMINAL (terminal));
                   cwd = vte_terminal_get_current_directory_uri (VTE_TERMINAL (terminal));
                   window_title = vte_terminal_get_window_title (VTE_TERMINAL (terminal));
+                  zoom = prompt_tab_get_zoom (tab);
 
                   if (container != NULL)
                     container_id = prompt_ipc_container_get_id (container);
@@ -111,6 +113,8 @@ prompt_session_save (PromptApplication *app)
                   g_variant_builder_add_parsed (&builder, "{'profile', <%s>}", uuid);
                   g_variant_builder_add_parsed (&builder, "{'pinned', <%b>}", pinned);
                   g_variant_builder_add_parsed (&builder, "{'size', <(%u,%u)>}", columns, rows);
+                  if (zoom != PROMPT_ZOOM_LEVEL_DEFAULT)
+                    g_variant_builder_add_parsed (&builder, "{'zoom', <%u>}", zoom);
                   g_variant_builder_add_parsed (&builder, "{'active', <%b>}", is_active);
                   if (!prompt_str_empty0 (window_title))
                     g_variant_builder_add_parsed (&builder, "{'window-title', <%s>}", window_title);
@@ -190,6 +194,7 @@ prompt_session_restore (PromptApplication *app,
           const char *cwd;
           const char *window_title;
           PromptTab *the_tab;
+          guint32 zoom;
           gboolean is_active;
           gboolean pinned;
           guint32 columns;
@@ -219,6 +224,9 @@ prompt_session_restore (PromptApplication *app,
           if (!g_variant_lookup (tab, "active", "b", &is_active))
             is_active = FALSE;
 
+          if (!g_variant_lookup (tab, "zoom", "u", &zoom) || zoom >= PROMPT_ZOOM_LEVEL_LAST)
+            zoom = PROMPT_ZOOM_LEVEL_DEFAULT;
+
           if (!prompt_str_empty0 (container))
             the_container = prompt_application_lookup_container (app, container);
 
@@ -244,6 +252,9 @@ prompt_session_restore (PromptApplication *app,
 
           terminal = prompt_tab_get_terminal (the_tab);
           vte_terminal_set_size (VTE_TERMINAL (terminal), columns, rows);
+
+          if (zoom != PROMPT_ZOOM_LEVEL_DEFAULT)
+            prompt_tab_set_zoom (the_tab, zoom);
 
           prompt_window_add_tab (the_window, the_tab);
           prompt_window_set_tab_pinned (the_window, the_tab, pinned);
