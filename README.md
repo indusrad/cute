@@ -3,6 +3,17 @@
 Prompt is a terminal for GNOME with first-class support for containers.
 
 
+## Authors Note
+
+Prompt came out of my work to make VTE much faster on modern Linux desktops
+which run GTK 4 and a Wayland-based compositor such as GNOME Shell. It is
+competitively fast in this area, although unlikely the fastest. It supports a
+number of features due to VTE in exchange. Some of those include robust
+clipboard support, drag-n-drop integration, scrollbars, kinetic scrolling, tabs
+with overviews, a modern interface, configurable color palettes, menus, you get
+the idea.
+
+
 ## Installation
 
 You can install the Nightly version of Prompt using the gnome-nightly
@@ -13,15 +24,18 @@ flatpak install --user --from https://nightly.gnome.org/repo/appstream/org.gnome
 ```
 
 
-## Authors Note
+## Building
 
-Prompt came out of my work to make VTE much faster on modern Linux desktops
-which run GTK 4 and a Wayland-based compositor such as GNOME Shell. It is
-competitively fast in this area, although unlikely the fastest. It supports a
-number of features due to VTE in exchange. Some of those include robust
-clipboard support, drag-n-drop integration, scrollbars, kinetic scrolling, tabs
-with overviews, a modern interface, configurable color palettes, menus, you get
-the idea.
+Prompt is designed for Flatpak.
+
+If you wish to install Prompt on your host system, you'll need some patches
+applied to VTE (in build-aux/) until an upstream solution is provided for
+container tracking. We do expect this in the not-too-distant future.
+
+The easiest way to build and test your changes to Prompt is by opening the
+project in GNOME Builder and clicking the Run button.
+
+Otherwise, it is built as any other meson-based project.
 
 
 ## Features
@@ -76,7 +90,8 @@ The highlevel is that we should be able to support:
 I'd certainly love to see support for systemd-nspawn if that is something
 you're interested in and are aware of the mechanics to make that work.
 
-## Toolbox/Podman/Distrobox
+
+### Toolbox/Podman/Distrobox
 
 Currently `toolbox` knows how to emit the appropriate escape sequence under
 certain conditions (namely being run on a Fedora host). But when the support
@@ -84,6 +99,7 @@ for this uses new, more generic API in VTE we will switch to that.
 
 Until then, opening new tabs with the same container will only work if you are
 on a Fedora host such as Fedora Workstation or Silverblue.
+
 
 ### JHBuild
 
@@ -103,15 +119,20 @@ fi
 ```
 
 
-## Distribution Notes
+## How it Works
 
-Prompt is built in a way that can be shipped as a Flatpak and still provide a
-number of modern features we want from a container-aware terminal. Currently
-this relies on a number of VTE patches which are in the `build-aux/` directory.
+Prompt has a small `prompt-agent` that manages PTY, PID tracking, and
+container monitoring. This is spawned on the host-system similar to how you
+would execute a new shell. However, it communicates with the UI via D-Bus
+serialization over a point-to-point `socketpair()`.
 
-In the future, this may be reduced, but at the moment both Prompt and tools
-like "toolbox" need to be aware of what escape-sequences to use to propagate
-container information to the application.
+It is able to do this because `prompg-agent`, on `x86` and `x86_64` will
+restrict it's `glibc` usage to what is available on fairly old Linux
+installs such as CentOS 7. It does use GLib as well for D-Bus communication
+but is limited to what is available with Flatpak on the targetted platforms.
+
+Doing so allows Prompt to support Flatpak natively while also traversing
+container PTY and PID namespaces in an efficient manner.
 
 
 ## Screenshots
