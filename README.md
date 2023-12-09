@@ -19,8 +19,9 @@ Prompt came out of my work to make VTE much faster on modern Linux desktops
 which run GTK 4 and a Wayland-based compositor such as GNOME Shell. It is
 competitively fast in this area, although unlikely the fastest. It supports a
 number of features due to VTE in exchange. Some of those include robust
-clipboard support, drag-n-drop integration, scrollbars, tabs, a modern
-interface, configurable color palettes, menus, tab overviews, you get the idea.
+clipboard support, drag-n-drop integration, scrollbars, kinetic scrolling, tabs
+with overviews, a modern interface, configurable color palettes, menus, you get
+the idea.
 
 
 ## Features
