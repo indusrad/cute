@@ -1,4 +1,4 @@
-From 30809b027359e7545c4a7fe9924b170e34e20c48 Mon Sep 17 00:00:00 2001
+From c1f318490a37e0bf359494566614acce48d4fc62 Mon Sep 17 00:00:00 2001
 From: Christian Hergert <chergert@redhat.com>
 Date: Sun, 26 Nov 2023 18:51:32 -0800
 Subject: [PATCH 9/9] expose notification/shellcmd/containers to GTK 4
@@ -31,10 +31,10 @@ index 68c2032a..4f9a2473 100644
          if (options.no_double_buffer) {
                  G_GNUC_BEGIN_IGNORE_DEPRECATIONS;
 diff --git a/src/vte.cc b/src/vte.cc
-index ad85807d..014bc586 100644
+index 6c649576..9859b73c 100644
 --- a/src/vte.cc
 +++ b/src/vte.cc
-@@ -10781,7 +10781,6 @@ Terminal::emit_pending_signals()
+@@ -10768,7 +10768,6 @@ Terminal::emit_pending_signals()
  
  	emit_adjustment_changed();
  
@@ -42,7 +42,7 @@ index ad85807d..014bc586 100644
          if (m_pending_changes & vte::to_integral(PendingChanges::NOTIFICATION)) {
                  _vte_debug_print (VTE_DEBUG_SIGNALS,
                                    "Emitting `notification-received'.\n");
-@@ -10809,7 +10808,6 @@ Terminal::emit_pending_signals()
+@@ -10796,7 +10795,6 @@ Terminal::emit_pending_signals()
                  g_object_notify_by_pspec(freezer.get(), pspecs[PROP_CURRENT_CONTAINER_NAME]);
                  g_object_notify_by_pspec(freezer.get(), pspecs[PROP_CURRENT_CONTAINER_RUNTIME]);
          }
@@ -195,7 +195,7 @@ index 3505bce5..256d5c01 100644
          PROP_CURRENT_FILE_URI,
          PROP_DELETE_BINDING,
 diff --git a/src/vteinternal.hh b/src/vteinternal.hh
-index 3659281d..7b17311d 100644
+index 4f71e7c9..b181a392 100644
 --- a/src/vteinternal.hh
 +++ b/src/vteinternal.hh
 @@ -63,9 +63,7 @@
@@ -318,5 +318,5 @@ index 1072c5dc..7e699a63 100644
          default:
                  break;
 -- 
-2.41.0
+2.43.0
 

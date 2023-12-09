@@ -1,4 +1,4 @@
-From a24dba545fa83d8e114996192c2fd18c071b5e5f Mon Sep 17 00:00:00 2001
+From 10ebe70d8dedb381d71618ac23b16f3bbc3feea8 Mon Sep 17 00:00:00 2001
 From: Debarshi Ray <debarshir@gnome.org>
 Date: Sun, 26 Nov 2023 18:30:19 -0800
 Subject: [PATCH 6/9] Support precmd notifications from an interactive shell
@@ -27,10 +27,10 @@ https://bugzilla.gnome.org/show_bug.cgi?id=711060
  7 files changed, 31 insertions(+), 6 deletions(-)
 
 diff --git a/src/vte.cc b/src/vte.cc
-index ae0415c9..7a49405c 100644
+index bf9f95bf..e86fe18e 100644
 --- a/src/vte.cc
 +++ b/src/vte.cc
-@@ -10795,6 +10795,12 @@ Terminal::emit_pending_signals()
+@@ -10782,6 +10782,12 @@ Terminal::emit_pending_signals()
                                    "Emitting `shell-preexec'.\n");
                  g_signal_emit(freezer.get(), signals[SIGNAL_SHELL_PREEXEC], 0);
          }
@@ -122,7 +122,7 @@ index 4e400cd3..a1c3f3df 100644
          SIGNAL_NOTIFICATION_RECEIVED,
  #endif
 diff --git a/src/vteinternal.hh b/src/vteinternal.hh
-index c994546f..5cdf015e 100644
+index 0479ae0e..05625f83 100644
 --- a/src/vteinternal.hh
 +++ b/src/vteinternal.hh
 @@ -758,6 +758,7 @@ public:
@@ -149,5 +149,5 @@ index 92d1f857..44f13505 100644
          }
  }
 -- 
-2.41.0
+2.43.0
 

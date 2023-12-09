@@ -1,4 +1,4 @@
-From b9810afb87a3e0abb3e0e23f113ae1c2a8b336fd Mon Sep 17 00:00:00 2001
+From 317f18a302e1c4bdc2e0e6681a1d339331c381f9 Mon Sep 17 00:00:00 2001
 From: Debarshi Ray <debarshir@gnome.org>
 Date: Sun, 26 Nov 2023 18:44:32 -0800
 Subject: [PATCH 8/9] Support tracking the active container inside the terminal
@@ -39,10 +39,10 @@ agreed upon across multiple different terminal emulators [1].
  6 files changed, 208 insertions(+)
 
 diff --git a/src/vte.cc b/src/vte.cc
-index 7a49405c..ad85807d 100644
+index e86fe18e..6c649576 100644
 --- a/src/vte.cc
 +++ b/src/vte.cc
-@@ -10801,6 +10801,14 @@ Terminal::emit_pending_signals()
+@@ -10788,6 +10788,14 @@ Terminal::emit_pending_signals()
                                    "Emitting `shell-precmd'.\n");
                  g_signal_emit(freezer.get(), signals[SIGNAL_SHELL_PRECMD], 0);
          }
@@ -198,7 +198,7 @@ index a1c3f3df..3505bce5 100644
          PROP_CURRENT_FILE_URI,
          PROP_DELETE_BINDING,
 diff --git a/src/vteinternal.hh b/src/vteinternal.hh
-index 5cdf015e..3659281d 100644
+index 05625f83..4f71e7c9 100644
 --- a/src/vteinternal.hh
 +++ b/src/vteinternal.hh
 @@ -63,6 +63,9 @@
@@ -355,5 +355,5 @@ index 44f13505..1072c5dc 100644
                  ++token;
  
 -- 
-2.41.0
+2.43.0
 

@@ -1,4 +1,4 @@
-From 6fddaba0fb3ff107f4f15a15a681fdab19bfd0a7 Mon Sep 17 00:00:00 2001
+From 2ef612ea9faaa1922f5940760fd610c64a334316 Mon Sep 17 00:00:00 2001
 From: Debarshi Ray <debarshir@gnome.org>
 Date: Wed, 2 May 2018 17:30:48 +0200
 Subject: [PATCH 7/9] Test the shell-precmd signal
@@ -35,5 +35,5 @@ index bce12c72..68c2032a 100644
  
          /* Settings */
 -- 
-2.41.0
+2.43.0
 
