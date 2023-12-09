@@ -122,8 +122,11 @@ prompt_window_dressing_update (PromptWindowDressing *self)
        * actual tab contents rather than the active tab profile.
        */
       g_string_append_printf (string,
-                              "window.%s toolbarview.overview overlay.card { background: %s; }\n",
-                              self->css_class, bg);
+                              "window.%s toolbarview.overview overlay.card { background: %s; color: %s; }\n",
+                              self->css_class, bg, fg);
+      g_string_append_printf (string,
+                              "window.%s toolbarview.overview tabthumbnail .icon-title-box { color: %s; }\n",
+                              self->css_class, fg);
       g_string_append_printf (string,
                               "window.%s toolbarview.overview.background { background: shade(%s,%s); }\n",
                               self->css_class, bg,
