@@ -246,8 +246,12 @@ prompt_window_create_window_cb (PromptWindow *self,
 
   g_assert (PROMPT_IS_WINDOW (self));
 
-  other = g_object_new (PROMPT_TYPE_WINDOW, NULL);
+  other = g_object_new (PROMPT_TYPE_WINDOW,
+                        "application", PROMPT_APPLICATION_DEFAULT,
+                        NULL);
+
   gtk_window_present (GTK_WINDOW (other));
+
   return other->tab_view;
 }
 
