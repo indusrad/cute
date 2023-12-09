@@ -2,6 +2,7 @@
 <gresources>
   <gresource prefix="/org/gnome/Prompt">
     <file preprocess="xml-stripblanks">prompt-find-bar.ui</file>
+    <file preprocess="xml-stripblanks">prompt-inspector.ui</file>
     <file preprocess="xml-stripblanks">prompt-palette-preview.ui</file>
     <file preprocess="xml-stripblanks">prompt-preferences-window.ui</file>
     <file preprocess="xml-stripblanks">prompt-profile-editor.ui</file>

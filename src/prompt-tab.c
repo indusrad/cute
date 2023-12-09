@@ -26,6 +26,7 @@
 #include "prompt-agent-ipc.h"
 #include "prompt-application.h"
 #include "prompt-enums.h"
+#include "prompt-inspector.h"
 #include "prompt-tab.h"
 #include "prompt-tab-monitor.h"
 #include "prompt-tab-notify.h"
@@ -431,6 +432,24 @@ prompt_tab_respawn_action (GtkWidget  *widget,
   if (self->state == PROMPT_TAB_STATE_FAILED ||
       self->state == PROMPT_TAB_STATE_EXITED)
     prompt_tab_respawn (self);
+}
+
+static void
+prompt_tab_inspect_action (GtkWidget  *widget,
+                           const char *action_name,
+                           GVariant   *params)
+{
+  PromptTab *self = (PromptTab *)widget;
+  PromptInspector *inspector;
+  GtkRoot *root;
+
+  g_assert (PROMPT_IS_TAB (self));
+
+  inspector = prompt_inspector_new (self);
+  root = gtk_widget_get_root (GTK_WIDGET (self));
+
+  gtk_window_set_transient_for (GTK_WINDOW (inspector), GTK_WINDOW (root));
+  gtk_window_present (GTK_WINDOW (inspector));
 }
 
 static void
@@ -1079,6 +1098,7 @@ prompt_tab_class_init (PromptTabClass *klass)
   gtk_widget_class_bind_template_callback (widget_class, prompt_tab_match_clicked_cb);
 
   gtk_widget_class_install_action (widget_class, "tab.respawn", NULL, prompt_tab_respawn_action);
+  gtk_widget_class_install_action (widget_class, "tab.inspect", NULL, prompt_tab_inspect_action);
 
   g_type_ensure (PROMPT_TYPE_TERMINAL);
 }

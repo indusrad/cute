@@ -149,6 +149,11 @@
         <attribute name="action">win.unfullscreen</attribute>
         <attribute name="hidden-when">action-disabled</attribute>
       </item>
+      <item>
+        <attribute name="id">show-inspector</attribute>
+        <attribute name="label" translatable="yes">_Inspect Terminal</attribute>
+        <attribute name="action">tab.inspect</attribute>
+      </item>
     </section>
     <section>
       <item>

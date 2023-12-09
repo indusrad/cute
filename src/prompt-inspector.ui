@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template class="PromptInspector" parent="AdwApplicationWindow">
+    <property name="title" translatable="yes">Inspector</property>
+    <property name="resizable">false</property>
+    <property name="width-request">350</property>
+    <property name="content">
+      <object class="GtkBox">
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="AdwHeaderBar" id="header_bar">
+            <property name="show-start-title-buttons">false</property>
+            <property name="show-end-title-buttons">true</property>
+            <property name="show-title">false</property>
+            <style>
+              <class name="flat"/>
+            </style>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesPage" id="page">
+            <child>
+              <object class="AdwPreferencesGroup">
+                <child>
+                  <object class="AdwActionRow" id="window_title">
+                    <property name="title" translatable="yes">Window Title</property>
+                    <style>
+                      <class name="property"/>
+                    </style>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="AdwPreferencesGroup">
+                <child>
+                  <object class="AdwActionRow" id="current_directory">
+                    <property name="title" translatable="yes">Current Directory</property>
+                    <style>
+                      <class name="property"/>
+                    </style>
+                  </object>
+                </child>
+                <child>
+                  <object class="AdwActionRow" id="current_file">
+                    <property name="title" translatable="yes">Current File</property>
+                    <style>
+                      <class name="property"/>
+                    </style>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="AdwPreferencesGroup">
+                <property name="title" translatable="yes">Container</property>
+                <child>
+                  <object class="AdwActionRow" id="container_runtime">
+                    <property name="title" translatable="yes">Runtime</property>
+                    <style>
+                      <class name="property"/>
+                    </style>
+                  </object>
+                </child>
+                <child>
+                  <object class="AdwActionRow" id="container_name">
+                    <property name="title" translatable="yes">Name</property>
+                    <style>
+                      <class name="property"/>
+                    </style>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="AdwPreferencesGroup">
+                <property name="title" translatable="yes">Appearance</property>
+                <child>
+                  <object class="AdwActionRow" id="palette_row">
+                    <property name="title" translatable="yes">Palette</property>
+                    <child type="suffix">
+                      <object class="GtkBox">
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="AdwPreferencesGroup">
+                <child>
+                  <object class="AdwActionRow">
+                    <property name="title" translatable="yes">Columns</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="AdwActionRow">
+                    <property name="title" translatable="yes">Rows</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </property>
+  </template>
+</interface>

@@ -5,6 +5,7 @@ prompt_sources = [
   'prompt-close-dialog.c',
   'prompt-container-menu.c',
   'prompt-find-bar.c',
+  'prompt-inspector.c',
   'prompt-palette.c',
   'prompt-palette-preview.c',
   'prompt-palette-preview-color.c',
