@@ -1,4 +1,4 @@
-From c72661e96e3f4a133e869bacf7954ec6d803a7c7 Mon Sep 17 00:00:00 2001
+From d4a2b3a6cc2fc6d10defcfd9d8c6bf8ea4828f41 Mon Sep 17 00:00:00 2001
 From: Debarshi Ray <debarshir@gnome.org>
 Date: Fri, 20 Apr 2018 18:21:53 +0200
 Subject: [PATCH 5/9] Test the shell-preexec signal
@@ -35,5 +35,5 @@ index e8a51192..bce12c72 100644
          /* Settings */
          if (options.no_double_buffer) {
 -- 
-2.41.0
+2.43.0
 

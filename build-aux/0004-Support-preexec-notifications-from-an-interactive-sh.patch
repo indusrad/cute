@@ -1,4 +1,4 @@
-From e7be64f92f2dfd0547f382e88c6718ffcd57536b Mon Sep 17 00:00:00 2001
+From 56d3fdde0ed79364f0a94316bd5389be491e2cd4 Mon Sep 17 00:00:00 2001
 From: Debarshi Ray <debarshir@gnome.org>
 Date: Sun, 26 Nov 2023 18:24:11 -0800
 Subject: [PATCH 4/9] Support preexec notifications from an interactive shell
@@ -27,10 +27,10 @@ https://bugzilla.gnome.org/show_bug.cgi?id=711060
  7 files changed, 34 insertions(+), 2 deletions(-)
 
 diff --git a/src/vte.cc b/src/vte.cc
-index e31d89f7..ae0415c9 100644
+index edc5a4af..bf9f95bf 100644
 --- a/src/vte.cc
 +++ b/src/vte.cc
-@@ -10789,6 +10789,12 @@ Terminal::emit_pending_signals()
+@@ -10776,6 +10776,12 @@ Terminal::emit_pending_signals()
                                m_notification_summary.c_str(),
                                m_notification_body.c_str());
          }
@@ -125,7 +125,7 @@ index e811bd1c..4e400cd3 100644
  #endif
          SIGNAL_WINDOW_TITLE_CHANGED,
 diff --git a/src/vteinternal.hh b/src/vteinternal.hh
-index 325091ea..c994546f 100644
+index cb4f00bb..0479ae0e 100644
 --- a/src/vteinternal.hh
 +++ b/src/vteinternal.hh
 @@ -757,6 +757,7 @@ public:
@@ -152,5 +152,5 @@ index 97e2c5f8..92d1f857 100644
  #endif
  
 -- 
-2.41.0
+2.43.0
 

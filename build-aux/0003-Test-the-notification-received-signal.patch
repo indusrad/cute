@@ -1,4 +1,4 @@
-From ca043fc64a78954fd873c71d3e034df7038908ef Mon Sep 17 00:00:00 2001
+From 986fc30b9727fb783bcfd5750ebdb087a028c74c Mon Sep 17 00:00:00 2001
 From: Debarshi Ray <debarshir@gnome.org>
 Date: Thu, 22 Jan 2015 16:37:10 +0100
 Subject: [PATCH 3/9] Test the notification-received signal
@@ -39,5 +39,5 @@ index d5a65fc4..e8a51192 100644
                  G_GNUC_BEGIN_IGNORE_DEPRECATIONS;
                  gtk_widget_set_double_buffered(GTK_WIDGET(window->terminal), false);
 -- 
-2.41.0
+2.43.0
 
