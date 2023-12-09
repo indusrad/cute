@@ -116,6 +116,59 @@ static double zoom_font_scales[] = {
 };
 
 static gboolean
+on_scroll_scrolled_cb (GtkEventControllerScroll *scroll,
+                       double                    dx,
+                       double                    dy,
+                       PromptTab                *self)
+{
+  GdkModifierType mods;
+
+  g_assert (GTK_IS_EVENT_CONTROLLER_SCROLL (scroll));
+  g_assert (PROMPT_IS_TAB (self));
+
+  mods = gtk_event_controller_get_current_event_state (GTK_EVENT_CONTROLLER (scroll));
+
+  if ((mods & GDK_CONTROL_MASK) != 0)
+    {
+      if (dy < 0)
+        prompt_tab_zoom_in (self);
+      else if (dy > 0)
+        prompt_tab_zoom_out (self);
+
+      return TRUE;
+    }
+
+  return FALSE;
+}
+
+static void
+on_scroll_begin_cb (GtkEventControllerScroll *scroll,
+                    PromptTab                *self)
+{
+  GdkModifierType state;
+
+  g_assert (GTK_IS_EVENT_CONTROLLER_SCROLL (scroll));
+  g_assert (PROMPT_IS_TAB (self));
+
+  state = gtk_event_controller_get_current_event_state (GTK_EVENT_CONTROLLER (scroll));
+
+  if ((state & GDK_CONTROL_MASK) != 0)
+    gtk_event_controller_scroll_set_flags (scroll,
+                                           GTK_EVENT_CONTROLLER_SCROLL_VERTICAL |
+                                           GTK_EVENT_CONTROLLER_SCROLL_DISCRETE);
+}
+
+static void
+on_scroll_end_cb (GtkEventControllerScroll *scroll,
+                  PromptTab                *self)
+{
+  g_assert (GTK_IS_EVENT_CONTROLLER_SCROLL (scroll));
+  g_assert (PROMPT_IS_TAB (self));
+
+  gtk_event_controller_scroll_set_flags (scroll, GTK_EVENT_CONTROLLER_SCROLL_VERTICAL);
+}
+
+static gboolean
 prompt_tab_is_active (PromptTab *self)
 {
   GtkWidget *window;
@@ -1031,6 +1084,8 @@ prompt_tab_class_init (PromptTabClass *klass)
 static void
 prompt_tab_init (PromptTab *self)
 {
+  GtkEventController *controller;
+
   self->state = PROMPT_TAB_STATE_INITIAL;
   self->zoom = PROMPT_ZOOM_LEVEL_DEFAULT;
   self->uuid = g_uuid_string_random ();
@@ -1038,6 +1093,22 @@ prompt_tab_init (PromptTab *self)
   gtk_widget_init_template (GTK_WIDGET (self));
 
   prompt_tab_notify_init (&self->notify, self);
+
+  controller = gtk_event_controller_scroll_new (GTK_EVENT_CONTROLLER_SCROLL_VERTICAL);
+  gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_CAPTURE);
+  g_signal_connect (controller,
+                    "scroll",
+                    G_CALLBACK (on_scroll_scrolled_cb),
+                    self);
+  g_signal_connect (controller,
+                    "scroll-begin",
+                    G_CALLBACK (on_scroll_begin_cb),
+                    self);
+  g_signal_connect (controller,
+                    "scroll-end",
+                    G_CALLBACK (on_scroll_end_cb),
+                    self);
+  gtk_widget_add_controller (GTK_WIDGET (self), controller);
 }
 
 PromptTab *
