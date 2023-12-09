@@ -650,6 +650,8 @@ prompt_tab_notify_palette_cb (PromptTab      *self,
   g_assert (PROMPT_IS_TAB (self));
   g_assert (PROMPT_IS_TERMINAL (terminal));
 
+  g_clear_object (&self->cached_texture);
+
   if ((view = gtk_widget_get_ancestor (GTK_WIDGET (self), ADW_TYPE_TAB_VIEW)) &&
       (page = adw_tab_view_get_page (ADW_TAB_VIEW (view), GTK_WIDGET (self))))
     adw_tab_page_invalidate_thumbnail (page);
