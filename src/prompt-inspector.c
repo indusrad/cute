@@ -88,7 +88,7 @@ prompt_inspector_cursor_moved_cb (PromptInspector *self,
   vte_terminal_get_cursor_position (VTE_TERMINAL (terminal), &column, &row);
 
   str = g_strdup_printf ("%s: %3d,  %s: %3d",
-                         _("Row"), (int)row, _("Column"), (int)column);
+                         _("Row"), 1 + (int)row, _("Column"), 1 + (int)column);
   adw_action_row_set_subtitle (self->cursor, str);
 }
 
