@@ -136,8 +136,8 @@ prompt_window_dressing_update (PromptWindowDressing *self)
                               self->css_class, bg,
                               rgba_is_dark (&face->background) ? "1.2" : ".95");
       g_string_append_printf (string,
-                              "window.%s revealer.raised.top-bar { background: %s; }\n",
-                              self->css_class, bg);
+                              "window.%s revealer.raised.top-bar { background: %s; color: %s; }\n",
+                              self->css_class, titlebar_bg, titlebar_fg);
       g_string_append_printf (string,
                               "window.%s box.visual-bell { animation: visual-bell-%s-%s 0.3s ease-out; }\n"
                               "@keyframes visual-bell-%s-%s { 50%% { background: %s; color: %s; } }\n",
@@ -150,8 +150,8 @@ prompt_window_dressing_update (PromptWindowDressing *self)
       if (rgba_is_dark (&face->background))
         {
           g_string_append_printf (string,
-                                  "window.%s toolbarview > revealer > windowhandle { color: %s; background: alpha(shade(%s,1.25),.5); }\n",
-                                  self->css_class, fg, bg);
+                                  "window.%s toolbarview > revealer > windowhandle { color: %s; background: %s; }\n",
+                                  self->css_class, titlebar_fg, titlebar_bg);
           g_string_append_printf (string,
                                   "window.%s.remote toolbarview > revealer > windowhandle { background: %s; color: %s; }\n",
                                   self->css_class, rm_bg, rm_fg);
@@ -162,8 +162,8 @@ prompt_window_dressing_update (PromptWindowDressing *self)
       else
         {
           g_string_append_printf (string,
-                                  "window.%s toolbarview > revealer > windowhandle { color: %s; background: alpha(shade(%s, .95),.5); }\n",
-                                  self->css_class, fg, bg);
+                                  "window.%s toolbarview > revealer > windowhandle { color: %s; background: %s; }\n",
+                                  self->css_class, titlebar_fg, titlebar_bg);
           g_string_append_printf (string,
                                   "window.%s.remote toolbarview > revealer > windowhandle { background: %s; color: %s; }\n",
                                   self->css_class, rm_bg, rm_fg);

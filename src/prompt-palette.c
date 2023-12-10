@@ -21,7 +21,11 @@
 
 #include "config.h"
 
+#include <math.h>
+
 #include <glib/gi18n.h>
+
+#include "gdkhslaprivate.h"
 
 #include "prompt-palette.h"
 #include "prompt-palettes-inline.h"
@@ -245,6 +249,20 @@ prompt_palette_load_color (const char  *path,
 }
 
 static gboolean
+is_dark (const GdkRGBA *color)
+{
+  /* http://alienryderflex.com/hsp.html */
+  double r = color->red * 255.0;
+  double g = color->green * 255.0;
+  double b = color->blue * 255.0;
+  double hsp = sqrt (0.299 * (r * r) +
+                     0.587 * (g * g) +
+                     0.114 * (b * b));
+
+  return hsp <= 127.5;
+}
+
+static gboolean
 prompt_palette_load_face (const char         *path,
                           PromptPaletteFace  *face,
                           GKeyFile           *key_file,
@@ -292,9 +310,9 @@ prompt_palette_load_face (const char         *path,
     return FALSE;
 
   if (!prompt_palette_load_color (path, &face->titlebar_foreground, key_file, scheme, "TitlebarForeground", NULL))
-    face->titlebar_foreground = face->foreground;
+    face->titlebar_foreground = _gdk_rgba_shade (&face->foreground, is_dark (&face->background) ? 1.25 : .95);
   if (!prompt_palette_load_color (path, &face->titlebar_background, key_file, scheme, "TitlebarBackground", NULL))
-    face->titlebar_background = face->background;
+    face->titlebar_background = _gdk_rgba_shade (&face->background, is_dark (&face->background) ? 1.25 : .95);
 
   return TRUE;
 }
