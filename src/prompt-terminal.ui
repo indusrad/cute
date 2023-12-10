@@ -144,15 +144,9 @@
   <menu id="terminal_menu">
     <section>
       <item>
-        <attribute name="id">toggle-fullscreen</attribute>
-        <attribute name="label" translatable="yes">Leave Fullscreen</attribute>
-        <attribute name="action">win.unfullscreen</attribute>
-        <attribute name="hidden-when">action-disabled</attribute>
-      </item>
-      <item>
-        <attribute name="id">show-inspector</attribute>
-        <attribute name="label" translatable="yes">_Inspect Terminal</attribute>
-        <attribute name="action">tab.inspect</attribute>
+        <attribute name="id">search</attribute>
+        <attribute name="label" translatable="yes">Search…</attribute>
+        <attribute name="action">win.search</attribute>
       </item>
     </section>
     <section>
@@ -218,9 +212,15 @@
     </section>
     <section>
       <item>
-        <attribute name="id">search</attribute>
-        <attribute name="label" translatable="yes">Search…</attribute>
-        <attribute name="action">win.search</attribute>
+        <attribute name="id">toggle-fullscreen</attribute>
+        <attribute name="label" translatable="yes">Leave Fullscreen</attribute>
+        <attribute name="action">win.unfullscreen</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+      </item>
+      <item>
+        <attribute name="id">show-inspector</attribute>
+        <attribute name="label" translatable="yes">_Inspect Terminal</attribute>
+        <attribute name="action">tab.inspect</attribute>
       </item>
     </section>
   </menu>
