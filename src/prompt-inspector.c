@@ -165,23 +165,11 @@ get_coord_at_xy (PromptInspector *self,
                  guint           *row,
                  guint           *col)
 {
-  G_GNUC_BEGIN_IGNORE_DEPRECATIONS
-
   PromptTerminal *terminal = get_terminal (self);
-  GtkStyleContext *style_context = gtk_widget_get_style_context (GTK_WIDGET (terminal));
   guint width = gtk_widget_get_width (GTK_WIDGET (terminal));
   guint height = gtk_widget_get_height (GTK_WIDGET (terminal));
   guint char_width;
   guint char_height;
-  GtkBorder border;
-
-  gtk_style_context_get_padding (style_context, &border);
-
-  width -= border.left + border.right;
-  height -= border.top + border.bottom;
-
-  x -= border.left;
-  y -= border.top;
 
   if (x < 0 || x >= width)
     return FALSE;
@@ -196,8 +184,6 @@ get_coord_at_xy (PromptInspector *self,
   *col = y / char_height;
 
   return TRUE;
-
-  G_GNUC_END_IGNORE_DEPRECATIONS
 }
 
 
