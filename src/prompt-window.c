@@ -508,7 +508,9 @@ prompt_window_new_window_action (GtkWidget  *widget,
         prompt_tab_set_container (tab, container);
     }
 
-  window = g_object_new (PROMPT_TYPE_WINDOW, NULL);
+  window = g_object_new (PROMPT_TYPE_WINDOW,
+                         "application", PROMPT_APPLICATION_DEFAULT,
+                         NULL);
   prompt_window_add_tab (window, tab);
 
   gtk_window_present (GTK_WINDOW (window));
