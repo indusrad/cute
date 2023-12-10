@@ -314,14 +314,6 @@ prompt_uri_open (const char *uri,
   g_return_if_fail (uri != NULL);
   g_return_if_fail (GTK_IS_WINDOW (window));
 
-  /* Tooling from the likes of systemd may look like "file://hostname/usr/..."
-   * when you're looking at systemctl status and what not. Try to translate
-   * those into URIs that we'll actually be able to open.
-   */
-  file_host = g_strdup_printf ("file://%s/", g_get_host_name ());
-  if (g_str_has_prefix (uri, file_host))
-    uri = alt_uri = g_strdup_printf ("file:///%s", uri + strlen (file_host));
-
   if (g_str_has_prefix (uri, "file://"))
     {
       XdpParent *parent;
