@@ -28,14 +28,16 @@ struct _PromptInspector
 {
   AdwPreferencesWindow  parent_instance;
 
-  GSignalGroup         *tab_signals;
+  GSignalGroup         *terminal_signals;
   GBindingGroup        *terminal_bindings;
 
   AdwActionRow         *container_name;
   AdwActionRow         *container_runtime;
   AdwActionRow         *current_directory;
   AdwActionRow         *current_file;
+  AdwActionRow         *cursor;
   AdwActionRow         *hyperlink_hover;
+  AdwActionRow         *size;
   AdwActionRow         *window_title;
 };
 
@@ -50,6 +52,36 @@ G_DEFINE_FINAL_TYPE (PromptInspector, prompt_inspector, ADW_TYPE_PREFERENCES_WIN
 static GParamSpec *properties[N_PROPS];
 
 static void
+prompt_inspector_cursor_moved_cb (PromptInspector *self,
+                                  PromptTerminal  *terminal)
+{
+  g_autofree char *str = NULL;
+  glong column;
+  glong row;
+
+  g_assert (PROMPT_IS_INSPECTOR (self));
+  g_assert (PROMPT_IS_TERMINAL (terminal));
+
+  vte_terminal_get_cursor_position (VTE_TERMINAL (terminal), &column, &row);
+
+  str = g_strdup_printf ("%s: %3d,  %s: %3d",
+                         _("Row"), (int)row, _("Column"), (int)column);
+  adw_action_row_set_subtitle (self->cursor, str);
+}
+
+static void
+prompt_inspector_bind_terminal_cb (PromptInspector *self,
+                                   PromptTerminal  *terminal,
+                                   GSignalGroup    *group)
+{
+  g_assert (PROMPT_IS_INSPECTOR (self));
+  g_assert (PROMPT_IS_TERMINAL (terminal));
+  g_assert (G_IS_SIGNAL_GROUP (group));
+
+  prompt_inspector_cursor_moved_cb (self, terminal);
+}
+
+static void
 prompt_inspector_set_tab (PromptInspector *self,
                           PromptTab       *tab)
 {
@@ -61,7 +93,7 @@ prompt_inspector_set_tab (PromptInspector *self,
   terminal = prompt_tab_get_terminal (tab);
 
   g_binding_group_set_source (self->terminal_bindings, terminal);
-  g_signal_group_set_target (self->tab_signals, tab);
+  g_signal_group_set_target (self->terminal_signals, terminal);
 }
 
 static gboolean
@@ -94,7 +126,7 @@ prompt_inspector_dispose (GObject *object)
   gtk_widget_dispose_template (GTK_WIDGET (self), PROMPT_TYPE_INSPECTOR);
 
   g_clear_object (&self->terminal_bindings);
-  g_clear_object (&self->tab_signals);
+  g_clear_object (&self->terminal_signals);
 
   G_OBJECT_CLASS (prompt_inspector_parent_class)->dispose (object);
 }
@@ -110,7 +142,7 @@ prompt_inspector_get_property (GObject    *object,
   switch (prop_id)
     {
     case PROP_TAB:
-      g_value_take_object (value, g_signal_group_dup_target (self->tab_signals));
+      g_value_take_object (value, g_signal_group_dup_target (self->terminal_signals));
       break;
 
     default:
@@ -160,7 +192,9 @@ prompt_inspector_class_init (PromptInspectorClass *klass)
   gtk_widget_class_bind_template_child (widget_class, PromptInspector, container_runtime);
   gtk_widget_class_bind_template_child (widget_class, PromptInspector, current_directory);
   gtk_widget_class_bind_template_child (widget_class, PromptInspector, current_file);
+  gtk_widget_class_bind_template_child (widget_class, PromptInspector, cursor);
   gtk_widget_class_bind_template_child (widget_class, PromptInspector, hyperlink_hover);
+  gtk_widget_class_bind_template_child (widget_class, PromptInspector, size);
   gtk_widget_class_bind_template_child (widget_class, PromptInspector, window_title);
 }
 
@@ -168,7 +202,7 @@ static void
 prompt_inspector_init (PromptInspector *self)
 {
   self->terminal_bindings = g_binding_group_new ();
-  self->tab_signals = g_signal_group_new (PROMPT_TYPE_TAB);
+  self->terminal_signals = g_signal_group_new (PROMPT_TYPE_TERMINAL);
 
   gtk_widget_init_template (GTK_WIDGET (self));
 
@@ -196,6 +230,17 @@ prompt_inspector_init (PromptInspector *self)
                              self->hyperlink_hover, "subtitle",
                              G_BINDING_SYNC_CREATE,
                              bind_with_empty, NULL, NULL, NULL);
+
+  g_signal_connect_object (self->terminal_signals,
+                           "bind",
+                           G_CALLBACK (prompt_inspector_bind_terminal_cb),
+                           self,
+                           G_CONNECT_SWAPPED);
+  g_signal_group_connect_object (self->terminal_signals,
+                                 "cursor-moved",
+                                 G_CALLBACK (prompt_inspector_cursor_moved_cb),
+                                 self,
+                                 G_CONNECT_SWAPPED);
 }
 
 PromptInspector *
@@ -213,5 +258,5 @@ prompt_inspector_dup_tab (PromptInspector *self)
 {
   g_return_val_if_fail (PROMPT_IS_INSPECTOR (self), NULL);
 
-  return g_signal_group_dup_target (self->tab_signals);
+  return g_signal_group_dup_target (self->terminal_signals);
 }

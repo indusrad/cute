@@ -80,9 +80,8 @@
         <child>
           <object class="AdwPreferencesGroup">
             <child>
-              <object class="AdwActionRow">
+              <object class="AdwActionRow" id="size">
                 <property name="title" translatable="yes">Size</property>
-                <property name="subtitle">Rows × Columns</property>
               </object>
             </child>
           </object>
@@ -137,8 +136,11 @@
           <object class="AdwPreferencesGroup">
             <property name="title" translatable="yes">Cursor</property>
             <child>
-              <object class="AdwActionRow">
+              <object class="AdwActionRow" id="cursor">
                 <property name="title" translatable="yes">Position</property>
+                <style>
+                  <class name="numeric"/>
+                </style>
               </object>
             </child>
           </object>
