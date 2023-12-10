@@ -59,6 +59,8 @@ struct _PromptTerminal
   GdkRGBA             background;
 
   guint               size_dismiss_source;
+  guint               n_columns;
+  guint               n_rows;
 };
 
 enum {
@@ -70,6 +72,7 @@ enum {
 
 enum {
   MATCH_CLICKED,
+  GRID_SIZE_CHANGED,
   N_SIGNALS
 };
 
@@ -880,6 +883,7 @@ prompt_terminal_size_allocate (GtkWidget *widget,
   GtkAllocation revealer_alloc, dnd_alloc;
   GtkBorder padding;
   GtkRoot *root;
+  gboolean emit_size_changed = FALSE;
   int prev_column_count, column_count;
   int prev_row_count, row_count;
 
@@ -892,6 +896,9 @@ prompt_terminal_size_allocate (GtkWidget *widget,
 
   column_count = vte_terminal_get_column_count (VTE_TERMINAL (self));
   row_count = vte_terminal_get_row_count (VTE_TERMINAL (self));
+  emit_size_changed = self->n_columns != column_count || self->n_rows != row_count;
+  self->n_columns = column_count;
+  self->n_rows = row_count;
 
   root = gtk_widget_get_root (widget);
 
@@ -942,6 +949,9 @@ prompt_terminal_size_allocate (GtkWidget *widget,
 
   if (self->popover)
     gtk_popover_present (self->popover);
+
+  if (emit_size_changed)
+    g_signal_emit (self, signals[GRID_SIZE_CHANGED], 0, column_count, row_count);
 }
 
 /*
@@ -1160,6 +1170,15 @@ prompt_terminal_class_init (PromptTerminalClass *klass)
                           G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_properties (object_class, N_PROPS, properties);
+
+  signals[GRID_SIZE_CHANGED] =
+    g_signal_new ("grid-size-changed",
+                  G_TYPE_FROM_CLASS (klass),
+                  G_SIGNAL_RUN_LAST,
+                  0,
+                  NULL, NULL,
+                  NULL,
+                  G_TYPE_NONE, 2, G_TYPE_UINT, G_TYPE_UINT);
 
   signals[MATCH_CLICKED] =
     g_signal_new ("match-clicked",

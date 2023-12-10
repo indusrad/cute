@@ -109,12 +109,30 @@ prompt_inspector_char_size_changed_cb (PromptInspector *self,
 }
 
 static void
+prompt_inspector_grid_size_changed_cb (PromptInspector *self,
+                                       guint            columns,
+                                       guint            rows,
+                                       PromptTerminal  *terminal)
+{
+  g_autofree char *str = NULL;
+
+  g_assert (PROMPT_IS_INSPECTOR (self));
+  g_assert (PROMPT_IS_TERMINAL (terminal));
+
+  str = g_strdup_printf ("%u × %u", columns, rows);
+
+  adw_action_row_set_subtitle (self->grid_size, str);
+}
+
+static void
 prompt_inspector_bind_terminal_cb (PromptInspector *self,
                                    PromptTerminal  *terminal,
                                    GSignalGroup    *group)
 {
   guint width;
   guint height;
+  guint rows;
+  guint columns;
 
   g_assert (PROMPT_IS_INSPECTOR (self));
   g_assert (PROMPT_IS_TERMINAL (terminal));
@@ -123,8 +141,12 @@ prompt_inspector_bind_terminal_cb (PromptInspector *self,
   width = vte_terminal_get_char_width (VTE_TERMINAL (terminal));
   height = vte_terminal_get_char_height (VTE_TERMINAL (terminal));
 
+  columns = vte_terminal_get_column_count (VTE_TERMINAL (terminal));
+  rows = vte_terminal_get_row_count (VTE_TERMINAL (terminal));
+
   prompt_inspector_cursor_moved_cb (self, terminal);
   prompt_inspector_char_size_changed_cb (self, width, height, terminal);
+  prompt_inspector_grid_size_changed_cb (self, columns, rows, terminal);
   prompt_inspector_update_font (self, NULL, terminal);
 }
 
@@ -293,6 +315,11 @@ prompt_inspector_init (PromptInspector *self)
   g_signal_group_connect_object (self->terminal_signals,
                                  "char-size-changed",
                                  G_CALLBACK (prompt_inspector_char_size_changed_cb),
+                                 self,
+                                 G_CONNECT_SWAPPED);
+  g_signal_group_connect_object (self->terminal_signals,
+                                 "grid-size-changed",
+                                 G_CALLBACK (prompt_inspector_grid_size_changed_cb),
                                  self,
                                  G_CONNECT_SWAPPED);
   g_signal_group_connect_object (self->terminal_signals,

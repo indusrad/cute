@@ -82,6 +82,9 @@
             <child>
               <object class="AdwActionRow" id="grid_size">
                 <property name="title" translatable="yes">Grid Size</property>
+                <style>
+                  <class name="numeric"/>
+                </style>
               </object>
             </child>
           </object>
