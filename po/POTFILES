@@ -5,6 +5,7 @@ src/main.c
 src/prompt-application.c
 src/prompt-close-dialog.c
 src/prompt-container-menu.c
+src/prompt-inspector.ui
 src/prompt-palette-preview.ui
 src/prompt-preferences-window.c
 src/prompt-preferences-window.ui
