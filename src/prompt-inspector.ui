@@ -151,7 +151,7 @@
           <object class="AdwPreferencesGroup">
             <property name="title" translatable="yes">Mouse</property>
             <child>
-              <object class="AdwActionRow">
+              <object class="AdwActionRow" id="pointer">
                 <property name="title" translatable="yes">Position</property>
               </object>
             </child>

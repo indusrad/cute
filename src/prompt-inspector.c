@@ -30,6 +30,7 @@ struct _PromptInspector
 
   GSignalGroup         *terminal_signals;
   GBindingGroup        *terminal_bindings;
+  GtkEventController   *motion;
 
   AdwActionRow         *cell_size;
   AdwActionRow         *container_name;
@@ -37,6 +38,7 @@ struct _PromptInspector
   AdwActionRow         *current_directory;
   AdwActionRow         *current_file;
   AdwActionRow         *cursor;
+  AdwActionRow         *pointer;
   AdwActionRow         *font_desc;
   AdwActionRow         *grid_size;
   AdwActionRow         *hyperlink_hover;
@@ -150,6 +152,105 @@ prompt_inspector_bind_terminal_cb (PromptInspector *self,
   prompt_inspector_update_font (self, NULL, terminal);
 }
 
+static PromptTerminal *
+get_terminal (PromptInspector *self)
+{
+  return PROMPT_TERMINAL (gtk_event_controller_get_widget (self->motion));
+}
+
+static gboolean
+get_coord_at_xy (PromptInspector *self,
+                 double           x,
+                 double           y,
+                 guint           *row,
+                 guint           *col)
+{
+  G_GNUC_BEGIN_IGNORE_DEPRECATIONS
+
+  PromptTerminal *terminal = get_terminal (self);
+  GtkStyleContext *style_context = gtk_widget_get_style_context (GTK_WIDGET (terminal));
+  guint width = gtk_widget_get_width (GTK_WIDGET (terminal));
+  guint height = gtk_widget_get_height (GTK_WIDGET (terminal));
+  guint char_width;
+  guint char_height;
+  GtkBorder border;
+
+  gtk_style_context_get_padding (style_context, &border);
+
+  width -= border.left + border.right;
+  height -= border.top + border.bottom;
+
+  x -= border.left;
+  y -= border.top;
+
+  if (x < 0 || x >= width)
+    return FALSE;
+
+  if (y < 0 || y >= height)
+    return FALSE;
+
+  char_width = vte_terminal_get_char_width (VTE_TERMINAL (terminal));
+  char_height = vte_terminal_get_char_height (VTE_TERMINAL (terminal));
+
+  *row = x / char_width;
+  *col = y / char_height;
+
+  return TRUE;
+
+  G_GNUC_END_IGNORE_DEPRECATIONS
+}
+
+
+static void
+prompt_inspector_update_pointer (PromptInspector *self,
+                                 double           x,
+                                 double           y)
+{
+  g_autofree char *str = NULL;
+  guint row, col;
+
+  g_assert (PROMPT_IS_INSPECTOR (self));
+
+  if (get_coord_at_xy (self, x, y, &col, &row))
+    str = g_strdup_printf ("%s: %u,  %s: %u", _("Row"), row + 1, _("Column"), col + 1);
+
+  adw_action_row_set_subtitle (self->pointer, str ? str : _("untracked"));
+}
+
+static void
+prompt_inspector_motion_enter_cb (PromptInspector          *self,
+                                  double                    x,
+                                  double                    y,
+                                  GtkEventControllerMotion *motion)
+{
+  g_assert (PROMPT_IS_INSPECTOR (self));
+  g_assert (GTK_IS_EVENT_CONTROLLER_MOTION (motion));
+
+  prompt_inspector_update_pointer (self, x, y);
+}
+
+static void
+prompt_inspector_motion_leave_cb (PromptInspector          *self,
+                                  GtkEventControllerMotion *motion)
+{
+  g_assert (PROMPT_IS_INSPECTOR (self));
+  g_assert (GTK_IS_EVENT_CONTROLLER_MOTION (motion));
+
+  prompt_inspector_update_pointer (self, -1, -1);
+}
+
+static void
+prompt_inspector_motion_notify_cb (PromptInspector          *self,
+                                   double                    x,
+                                   double                    y,
+                                   GtkEventControllerMotion *motion)
+{
+  g_assert (PROMPT_IS_INSPECTOR (self));
+  g_assert (GTK_IS_EVENT_CONTROLLER_MOTION (motion));
+
+  prompt_inspector_update_pointer (self, x, y);
+}
+
 static void
 prompt_inspector_set_tab (PromptInspector *self,
                           PromptTab       *tab)
@@ -160,6 +261,24 @@ prompt_inspector_set_tab (PromptInspector *self,
   g_assert (PROMPT_IS_TAB (tab));
 
   terminal = prompt_tab_get_terminal (tab);
+
+  self->motion = gtk_event_controller_motion_new ();
+  g_signal_connect_object (self->motion,
+                           "enter",
+                           G_CALLBACK (prompt_inspector_motion_enter_cb),
+                           self,
+                           G_CONNECT_SWAPPED);
+  g_signal_connect_object (self->motion,
+                           "leave",
+                           G_CALLBACK (prompt_inspector_motion_leave_cb),
+                           self,
+                           G_CONNECT_SWAPPED);
+  g_signal_connect_object (self->motion,
+                           "motion",
+                           G_CALLBACK (prompt_inspector_motion_notify_cb),
+                           self,
+                           G_CONNECT_SWAPPED);
+  gtk_widget_add_controller (GTK_WIDGET (terminal), g_object_ref (self->motion));
 
   g_binding_group_set_source (self->terminal_bindings, terminal);
   g_signal_group_set_target (self->terminal_signals, terminal);
@@ -192,10 +311,19 @@ prompt_inspector_dispose (GObject *object)
 {
   PromptInspector *self = (PromptInspector *)object;
 
+  if (self->terminal_signals)
+    {
+      g_autoptr(PromptTerminal) terminal = g_signal_group_dup_target (self->terminal_signals);
+
+      if (terminal && self->motion)
+        gtk_widget_remove_controller (GTK_WIDGET (terminal), self->motion);
+    }
+
   gtk_widget_dispose_template (GTK_WIDGET (self), PROMPT_TYPE_INSPECTOR);
 
   g_clear_object (&self->terminal_bindings);
   g_clear_object (&self->terminal_signals);
+  g_clear_object (&self->motion);
 
   G_OBJECT_CLASS (prompt_inspector_parent_class)->dispose (object);
 }
@@ -266,6 +394,7 @@ prompt_inspector_class_init (PromptInspectorClass *klass)
   gtk_widget_class_bind_template_child (widget_class, PromptInspector, font_desc);
   gtk_widget_class_bind_template_child (widget_class, PromptInspector, grid_size);
   gtk_widget_class_bind_template_child (widget_class, PromptInspector, hyperlink_hover);
+  gtk_widget_class_bind_template_child (widget_class, PromptInspector, pointer);
   gtk_widget_class_bind_template_child (widget_class, PromptInspector, window_title);
 }
 
