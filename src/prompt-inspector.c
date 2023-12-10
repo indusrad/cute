@@ -25,7 +25,15 @@
 struct _PromptInspector
 {
   AdwPreferencesWindow  parent_instance;
-  PromptTab            *tab;
+
+  GSignalGroup         *tab_signals;
+  GBindingGroup        *terminal_bindings;
+
+  AdwActionRow         *container_name;
+  AdwActionRow         *container_runtime;
+  AdwActionRow         *current_directory;
+  AdwActionRow         *current_file;
+  AdwActionRow         *window_title;
 };
 
 enum {
@@ -39,13 +47,35 @@ G_DEFINE_FINAL_TYPE (PromptInspector, prompt_inspector, ADW_TYPE_PREFERENCES_WIN
 static GParamSpec *properties[N_PROPS];
 
 static void
+prompt_inspector_set_tab (PromptInspector *self,
+                          PromptTab       *tab)
+{
+  PromptTerminal *terminal;
+
+  g_assert (PROMPT_IS_INSPECTOR (self));
+  g_assert (PROMPT_IS_TAB (tab));
+
+  terminal = prompt_tab_get_terminal (tab);
+
+  g_binding_group_set_source (self->terminal_bindings, terminal);
+  g_signal_group_set_target (self->tab_signals, tab);
+}
+
+static void
+prompt_inspector_constructed (GObject *object)
+{
+  G_OBJECT_CLASS (prompt_inspector_parent_class)->constructed (object);
+}
+
+static void
 prompt_inspector_dispose (GObject *object)
 {
   PromptInspector *self = (PromptInspector *)object;
 
   gtk_widget_dispose_template (GTK_WIDGET (self), PROMPT_TYPE_INSPECTOR);
 
-  g_clear_object (&self->tab);
+  g_clear_object (&self->terminal_bindings);
+  g_clear_object (&self->tab_signals);
 
   G_OBJECT_CLASS (prompt_inspector_parent_class)->dispose (object);
 }
@@ -61,7 +91,7 @@ prompt_inspector_get_property (GObject    *object,
   switch (prop_id)
     {
     case PROP_TAB:
-      g_value_set_object (value, self->tab);
+      g_value_take_object (value, g_signal_group_dup_target (self->tab_signals));
       break;
 
     default:
@@ -80,7 +110,7 @@ prompt_inspector_set_property (GObject      *object,
   switch (prop_id)
     {
     case PROP_TAB:
-      self->tab = g_value_dup_object (value);
+      prompt_inspector_set_tab (self, g_value_get_object (value));
       break;
 
     default:
@@ -94,6 +124,7 @@ prompt_inspector_class_init (PromptInspectorClass *klass)
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
   GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 
+  object_class->constructed = prompt_inspector_constructed;
   object_class->dispose = prompt_inspector_dispose;
   object_class->get_property = prompt_inspector_get_property;
   object_class->set_property = prompt_inspector_set_property;
@@ -106,12 +137,36 @@ prompt_inspector_class_init (PromptInspectorClass *klass)
   g_object_class_install_properties (object_class, N_PROPS, properties);
 
   gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/Prompt/prompt-inspector.ui");
+  gtk_widget_class_bind_template_child (widget_class, PromptInspector, container_name);
+  gtk_widget_class_bind_template_child (widget_class, PromptInspector, container_runtime);
+  gtk_widget_class_bind_template_child (widget_class, PromptInspector, current_directory);
+  gtk_widget_class_bind_template_child (widget_class, PromptInspector, current_file);
+  gtk_widget_class_bind_template_child (widget_class, PromptInspector, window_title);
 }
 
 static void
 prompt_inspector_init (PromptInspector *self)
 {
+  self->terminal_bindings = g_binding_group_new ();
+  self->tab_signals = g_signal_group_new (PROMPT_TYPE_TAB);
+
   gtk_widget_init_template (GTK_WIDGET (self));
+
+  g_binding_group_bind (self->terminal_bindings, "current-directory-uri",
+                        self->current_directory, "subtitle",
+                        G_BINDING_SYNC_CREATE);
+  g_binding_group_bind (self->terminal_bindings, "current-file-uri",
+                        self->current_file, "subtitle",
+                        G_BINDING_SYNC_CREATE);
+  g_binding_group_bind (self->terminal_bindings, "current-container-name",
+                        self->container_name, "subtitle",
+                        G_BINDING_SYNC_CREATE);
+  g_binding_group_bind (self->terminal_bindings, "current-container-runtime",
+                        self->container_runtime, "subtitle",
+                        G_BINDING_SYNC_CREATE);
+  g_binding_group_bind (self->terminal_bindings, "window-title",
+                        self->window_title, "subtitle",
+                        G_BINDING_SYNC_CREATE);
 }
 
 PromptInspector *
@@ -125,9 +180,9 @@ prompt_inspector_new (PromptTab *tab)
 }
 
 PromptTab *
-prompt_inspector_get_tab (PromptInspector *self)
+prompt_inspector_dup_tab (PromptInspector *self)
 {
   g_return_val_if_fail (PROMPT_IS_INSPECTOR (self), NULL);
 
-  return self->tab;
+  return g_signal_group_dup_target (self->tab_signals);
 }

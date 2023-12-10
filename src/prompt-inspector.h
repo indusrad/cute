@@ -31,6 +31,6 @@ G_BEGIN_DECLS
 G_DECLARE_FINAL_TYPE (PromptInspector, prompt_inspector, PROMPT, INSPECTOR, AdwPreferencesWindow)
 
 PromptInspector *prompt_inspector_new     (PromptTab       *tab);
-PromptTab       *prompt_inspector_get_tab (PromptInspector *self);
+PromptTab       *prompt_inspector_dup_tab (PromptInspector *self);
 
 G_END_DECLS
