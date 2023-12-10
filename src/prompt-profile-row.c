@@ -22,8 +22,9 @@
 #include <glib/gi18n.h>
 
 #include "prompt-application.h"
-#include "prompt-profile-row.h"
 #include "prompt-preferences-window.h"
+#include "prompt-profile-editor.h"
+#include "prompt-profile-row.h"
 
 struct _PromptProfileRow
 {
@@ -62,7 +63,18 @@ prompt_profile_row_edit (GtkWidget  *widget,
                          const char *action_name,
                          GVariant   *param)
 {
-  adw_action_row_activate (ADW_ACTION_ROW (widget));
+  AdwPreferencesWindow *window;
+  PromptProfileEditor *editor;
+  PromptProfileRow *self = (PromptProfileRow *)widget;
+
+  g_assert (PROMPT_IS_PROFILE_ROW (self));
+
+  window = ADW_PREFERENCES_WINDOW (gtk_widget_get_ancestor (widget, ADW_TYPE_PREFERENCES_WINDOW));
+  editor = prompt_profile_editor_new (self->profile);
+
+  adw_preferences_window_pop_subpage (ADW_PREFERENCES_WINDOW (window));
+  adw_preferences_window_push_subpage (ADW_PREFERENCES_WINDOW (window),
+                                       ADW_NAVIGATION_PAGE (editor));
 }
 
 static void
