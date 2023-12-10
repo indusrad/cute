@@ -31,14 +31,15 @@ struct _PromptInspector
   GSignalGroup         *terminal_signals;
   GBindingGroup        *terminal_bindings;
 
+  AdwActionRow         *cell_size;
   AdwActionRow         *container_name;
   AdwActionRow         *container_runtime;
   AdwActionRow         *current_directory;
   AdwActionRow         *current_file;
   AdwActionRow         *cursor;
+  AdwActionRow         *font_desc;
+  AdwActionRow         *grid_size;
   AdwActionRow         *hyperlink_hover;
-  AdwActionRow         *cell_size;
-  AdwActionRow         *size;
   AdwActionRow         *window_title;
 };
 
@@ -51,6 +52,25 @@ enum {
 G_DEFINE_FINAL_TYPE (PromptInspector, prompt_inspector, ADW_TYPE_PREFERENCES_WINDOW)
 
 static GParamSpec *properties[N_PROPS];
+
+static void
+prompt_inspector_update_font (PromptInspector *self,
+                              GParamSpec      *pspec,
+                              PromptTerminal  *terminal)
+{
+  const PangoFontDescription *font_desc = vte_terminal_get_font (VTE_TERMINAL (terminal));
+  PromptTab *tab = PROMPT_TAB (gtk_widget_get_ancestor (GTK_WIDGET (terminal), PROMPT_TYPE_TAB));
+  g_autofree char *str = font_desc ? pango_font_description_to_string (font_desc) : NULL;
+  g_autofree char *label = prompt_tab_dup_zoom_label (tab);
+  g_autoptr(GString) gstr = g_string_new (str);
+
+  if (gstr->len == 0)
+    g_string_append (gstr, _("unset"));
+
+  g_string_append_printf (gstr, " at %s", label);
+
+  adw_action_row_set_subtitle (self->font_desc, gstr->str);
+}
 
 static void
 prompt_inspector_cursor_moved_cb (PromptInspector *self,
@@ -105,6 +125,7 @@ prompt_inspector_bind_terminal_cb (PromptInspector *self,
 
   prompt_inspector_cursor_moved_cb (self, terminal);
   prompt_inspector_char_size_changed_cb (self, width, height, terminal);
+  prompt_inspector_update_font (self, NULL, terminal);
 }
 
 static void
@@ -220,8 +241,9 @@ prompt_inspector_class_init (PromptInspectorClass *klass)
   gtk_widget_class_bind_template_child (widget_class, PromptInspector, current_directory);
   gtk_widget_class_bind_template_child (widget_class, PromptInspector, current_file);
   gtk_widget_class_bind_template_child (widget_class, PromptInspector, cursor);
+  gtk_widget_class_bind_template_child (widget_class, PromptInspector, font_desc);
+  gtk_widget_class_bind_template_child (widget_class, PromptInspector, grid_size);
   gtk_widget_class_bind_template_child (widget_class, PromptInspector, hyperlink_hover);
-  gtk_widget_class_bind_template_child (widget_class, PromptInspector, size);
   gtk_widget_class_bind_template_child (widget_class, PromptInspector, window_title);
 }
 
@@ -271,6 +293,11 @@ prompt_inspector_init (PromptInspector *self)
   g_signal_group_connect_object (self->terminal_signals,
                                  "char-size-changed",
                                  G_CALLBACK (prompt_inspector_char_size_changed_cb),
+                                 self,
+                                 G_CONNECT_SWAPPED);
+  g_signal_group_connect_object (self->terminal_signals,
+                                 "notify::font-desc",
+                                 G_CALLBACK (prompt_inspector_update_font),
                                  self,
                                  G_CONNECT_SWAPPED);
 }

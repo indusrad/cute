@@ -80,8 +80,8 @@
         <child>
           <object class="AdwPreferencesGroup">
             <child>
-              <object class="AdwActionRow" id="size">
-                <property name="title" translatable="yes">Size</property>
+              <object class="AdwActionRow" id="grid_size">
+                <property name="title" translatable="yes">Grid Size</property>
               </object>
             </child>
           </object>
@@ -114,7 +114,7 @@
           <object class="AdwPreferencesGroup">
             <property name="title" translatable="yes">Font</property>
             <child>
-              <object class="AdwActionRow">
+              <object class="AdwActionRow" id="font_desc">
                 <property name="title" translatable="yes">Name</property>
               </object>
             </child>
