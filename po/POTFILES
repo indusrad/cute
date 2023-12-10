@@ -5,11 +5,14 @@ src/main.c
 src/prompt-application.c
 src/prompt-close-dialog.c
 src/prompt-container-menu.c
+src/prompt-find-bar.ui
 src/prompt-inspector.ui
 src/prompt-palette-preview.ui
 src/prompt-preferences-window.c
 src/prompt-preferences-window.ui
 src/prompt-profile.c
+src/prompt-profile-editor.c
+src/prompt-profile-editor.ui
 src/prompt-profile-row.c
 src/prompt-profile-row.ui
 src/prompt-shortcut-accel-dialog.c
