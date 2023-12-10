@@ -449,6 +449,7 @@ prompt_tab_inspect_action (GtkWidget  *widget,
   root = gtk_widget_get_root (GTK_WIDGET (self));
 
   gtk_window_set_transient_for (GTK_WINDOW (inspector), GTK_WINDOW (root));
+  gtk_window_set_modal (GTK_WINDOW (inspector), FALSE);
   gtk_window_present (GTK_WINDOW (inspector));
 }
 
@@ -841,8 +842,6 @@ prompt_tab_match_clicked_cb (PromptTab       *self,
                              const char      *match,
                              PromptTerminal  *terminal)
 {
-  g_autoptr(GtkUriLauncher) launcher = NULL;
-
   g_assert (PROMPT_IS_TAB (self));
   g_assert (match != NULL);
   g_assert (PROMPT_IS_TERMINAL (terminal));
@@ -850,11 +849,7 @@ prompt_tab_match_clicked_cb (PromptTab       *self,
   if (prompt_str_empty0 (match))
     return FALSE;
 
-  launcher = gtk_uri_launcher_new (match);
-
-  gtk_uri_launcher_launch (launcher,
-                           GTK_WINDOW (gtk_widget_get_root (GTK_WIDGET (self))),
-                           NULL, NULL, NULL);
+  prompt_uri_open (match, GTK_WINDOW (gtk_widget_get_root (GTK_WIDGET (self))));
 
   return TRUE;
 }

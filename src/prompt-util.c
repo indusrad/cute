@@ -37,10 +37,14 @@
 
 #include <gio/gio.h>
 
+#include <libportal/portal.h>
+#include <libportal-gtk4/portal-gtk4.h>
+
 #include "gconstructor.h"
 
 #include "prompt-util.h"
 
+static XdpPortal *portal;
 static PromptProcessKind kind = PROMPT_PROCESS_KIND_HOST;
 
 G_DEFINE_CONSTRUCTOR(prompt_init_ctor)
@@ -298,4 +302,45 @@ prompt_parse_shells (const char *etc_shells)
   split = g_strsplit (etc_shells, "\n", 0);
 
   return G_LIST_MODEL (gtk_string_list_new ((const char * const *)split));
+}
+
+void
+prompt_uri_open (const char *uri,
+                 GtkWindow  *window)
+{
+  g_autofree char *file_host = NULL;
+  g_autofree char *alt_uri = NULL;
+
+  g_return_if_fail (uri != NULL);
+  g_return_if_fail (GTK_IS_WINDOW (window));
+
+  /* Tooling from the likes of systemd may look like "file://hostname/usr/..."
+   * when you're looking at systemctl status and what not. Try to translate
+   * those into URIs that we'll actually be able to open.
+   */
+  file_host = g_strdup_printf ("file://%s/", g_get_host_name ());
+  if (g_str_has_prefix (uri, file_host))
+    uri = alt_uri = g_strdup_printf ("file:///%s", uri + strlen (file_host));
+
+  if (g_str_has_prefix (uri, "file://"))
+    {
+      XdpParent *parent;
+
+      if (portal == NULL)
+        portal = xdp_portal_new ();
+
+      parent = xdp_parent_new_gtk (window);
+      xdp_portal_open_uri (portal,
+                           parent,
+                           uri,
+                           XDP_OPEN_URI_FLAG_ASK,
+                           NULL, NULL, NULL);
+      xdp_parent_free (parent);
+
+    }
+  else
+    {
+      g_autoptr(GtkUriLauncher) launcher = gtk_uri_launcher_new (uri);
+      gtk_uri_launcher_launch (launcher, window, NULL, NULL, NULL);
+    }
 }
