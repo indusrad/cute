@@ -37,6 +37,7 @@ struct _PromptInspector
   AdwActionRow         *current_file;
   AdwActionRow         *cursor;
   AdwActionRow         *hyperlink_hover;
+  AdwActionRow         *cell_size;
   AdwActionRow         *size;
   AdwActionRow         *window_title;
 };
@@ -70,15 +71,40 @@ prompt_inspector_cursor_moved_cb (PromptInspector *self,
 }
 
 static void
+prompt_inspector_char_size_changed_cb (PromptInspector *self,
+                                       guint            width,
+                                       guint            height,
+                                       PromptTerminal  *terminal)
+{
+  g_autofree char *str = NULL;
+  int scale_factor;
+
+  g_assert (PROMPT_IS_INSPECTOR (self));
+  g_assert (PROMPT_IS_TERMINAL (terminal));
+
+  scale_factor = gtk_widget_get_scale_factor (GTK_WIDGET (terminal));
+  str = g_strdup_printf ("%u × %u Units (Scale Factor %u)", width, height, scale_factor);
+
+  adw_action_row_set_subtitle (self->cell_size, str);
+}
+
+static void
 prompt_inspector_bind_terminal_cb (PromptInspector *self,
                                    PromptTerminal  *terminal,
                                    GSignalGroup    *group)
 {
+  guint width;
+  guint height;
+
   g_assert (PROMPT_IS_INSPECTOR (self));
   g_assert (PROMPT_IS_TERMINAL (terminal));
   g_assert (G_IS_SIGNAL_GROUP (group));
 
+  width = vte_terminal_get_char_width (VTE_TERMINAL (terminal));
+  height = vte_terminal_get_char_height (VTE_TERMINAL (terminal));
+
   prompt_inspector_cursor_moved_cb (self, terminal);
+  prompt_inspector_char_size_changed_cb (self, width, height, terminal);
 }
 
 static void
@@ -188,6 +214,7 @@ prompt_inspector_class_init (PromptInspectorClass *klass)
   g_object_class_install_properties (object_class, N_PROPS, properties);
 
   gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/Prompt/prompt-inspector.ui");
+  gtk_widget_class_bind_template_child (widget_class, PromptInspector, cell_size);
   gtk_widget_class_bind_template_child (widget_class, PromptInspector, container_name);
   gtk_widget_class_bind_template_child (widget_class, PromptInspector, container_runtime);
   gtk_widget_class_bind_template_child (widget_class, PromptInspector, current_directory);
@@ -239,6 +266,11 @@ prompt_inspector_init (PromptInspector *self)
   g_signal_group_connect_object (self->terminal_signals,
                                  "cursor-moved",
                                  G_CALLBACK (prompt_inspector_cursor_moved_cb),
+                                 self,
+                                 G_CONNECT_SWAPPED);
+  g_signal_group_connect_object (self->terminal_signals,
+                                 "char-size-changed",
+                                 G_CALLBACK (prompt_inspector_char_size_changed_cb),
                                  self,
                                  G_CONNECT_SWAPPED);
 }

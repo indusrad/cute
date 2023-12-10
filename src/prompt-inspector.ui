@@ -119,9 +119,8 @@
               </object>
             </child>
             <child>
-              <object class="AdwActionRow">
+              <object class="AdwActionRow" id="cell_size">
                 <property name="title" translatable="yes">Cell Size</property>
-                <property name="subtitle">Width × Height Pixels</property>
               </object>
             </child>
           </object>
