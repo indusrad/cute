@@ -1,4 +1,5 @@
 prompt_sources = [
+  'gdkhsla.c',
   'main.c',
   'prompt-application.c',
   'prompt-client.c',
