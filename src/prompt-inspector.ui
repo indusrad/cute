@@ -1,108 +1,164 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <template class="PromptInspector" parent="AdwApplicationWindow">
+  <template class="PromptInspector" parent="AdwPreferencesWindow">
     <property name="title" translatable="yes">Inspector</property>
-    <property name="resizable">false</property>
-    <property name="width-request">350</property>
-    <property name="content">
-      <object class="GtkBox">
-        <property name="orientation">vertical</property>
+    <child>
+      <object class="AdwPreferencesPage" id="page">
+        <property name="title" translatable="yes">Process</property>
+        <property name="icon-name">application-x-executable-symbolic</property>
         <child>
-          <object class="AdwHeaderBar" id="header_bar">
-            <property name="show-start-title-buttons">false</property>
-            <property name="show-end-title-buttons">true</property>
-            <property name="show-title">false</property>
-            <style>
-              <class name="flat"/>
-            </style>
+          <object class="AdwPreferencesGroup">
+            <child>
+              <object class="AdwActionRow" id="cmdline">
+                <property name="title" translatable="yes">Command Line</property>
+                <style>
+                  <class name="property"/>
+                </style>
+              </object>
+            </child>
           </object>
         </child>
         <child>
-          <object class="AdwPreferencesPage" id="page">
+          <object class="AdwPreferencesGroup">
             <child>
-              <object class="AdwPreferencesGroup">
-                <child>
-                  <object class="AdwActionRow" id="window_title">
-                    <property name="title" translatable="yes">Window Title</property>
-                    <style>
-                      <class name="property"/>
-                    </style>
-                  </object>
-                </child>
+              <object class="AdwActionRow" id="window_title">
+                <property name="title" translatable="yes">Window Title</property>
+                <style>
+                  <class name="property"/>
+                </style>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <child>
+              <object class="AdwActionRow" id="current_directory">
+                <property name="title" translatable="yes">Current Directory</property>
+                <style>
+                  <class name="property"/>
+                </style>
               </object>
             </child>
             <child>
-              <object class="AdwPreferencesGroup">
-                <child>
-                  <object class="AdwActionRow" id="current_directory">
-                    <property name="title" translatable="yes">Current Directory</property>
-                    <style>
-                      <class name="property"/>
-                    </style>
-                  </object>
-                </child>
-                <child>
-                  <object class="AdwActionRow" id="current_file">
-                    <property name="title" translatable="yes">Current File</property>
-                    <style>
-                      <class name="property"/>
-                    </style>
-                  </object>
-                </child>
+              <object class="AdwActionRow" id="current_file">
+                <property name="title" translatable="yes">Current File</property>
+                <style>
+                  <class name="property"/>
+                </style>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title" translatable="yes">Container</property>
+            <child>
+              <object class="AdwActionRow" id="container_runtime">
+                <property name="title" translatable="yes">Runtime</property>
+                <style>
+                  <class name="property"/>
+                </style>
               </object>
             </child>
             <child>
-              <object class="AdwPreferencesGroup">
-                <property name="title" translatable="yes">Container</property>
-                <child>
-                  <object class="AdwActionRow" id="container_runtime">
-                    <property name="title" translatable="yes">Runtime</property>
-                    <style>
-                      <class name="property"/>
-                    </style>
-                  </object>
-                </child>
-                <child>
-                  <object class="AdwActionRow" id="container_name">
-                    <property name="title" translatable="yes">Name</property>
-                    <style>
-                      <class name="property"/>
-                    </style>
-                  </object>
-                </child>
-              </object>
-            </child>
-            <child>
-              <object class="AdwPreferencesGroup">
-                <property name="title" translatable="yes">Appearance</property>
-                <child>
-                  <object class="AdwActionRow" id="palette_row">
-                    <property name="title" translatable="yes">Palette</property>
-                    <child type="suffix">
-                      <object class="GtkBox">
-                      </object>
-                    </child>
-                  </object>
-                </child>
-              </object>
-            </child>
-            <child>
-              <object class="AdwPreferencesGroup">
-                <child>
-                  <object class="AdwActionRow">
-                    <property name="title" translatable="yes">Columns</property>
-                  </object>
-                </child>
-                <child>
-                  <object class="AdwActionRow">
-                    <property name="title" translatable="yes">Rows</property>
-                  </object>
-                </child>
+              <object class="AdwActionRow" id="container_name">
+                <property name="title" translatable="yes">Name</property>
+                <style>
+                  <class name="property"/>
+                </style>
               </object>
             </child>
           </object>
         </child>
       </object>
-    </property>
+    </child>
+    <child>
+      <object class="AdwPreferencesPage">
+        <property name="title" translatable="yes">Appearance</property>
+        <property name="icon-name">font-select-symbolic</property>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <child>
+              <object class="AdwActionRow">
+                <property name="title" translatable="yes">Size</property>
+                <property name="subtitle">Rows × Columns</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title" translatable="yes">Palette</property>
+            <child>
+              <object class="AdwActionRow" id="palette_row">
+                <property name="title" translatable="yes">Colors</property>
+                <child type="suffix">
+                  <object class="GtkBox">
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="AdwActionRow">
+                <property name="title" translatable="yes">Background</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwActionRow">
+                <property name="title" translatable="yes">Cursor</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title" translatable="yes">Font</property>
+            <child>
+              <object class="AdwActionRow">
+                <property name="title" translatable="yes">Name</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwActionRow">
+                <property name="title" translatable="yes">Cell Size</property>
+                <property name="subtitle">Width × Height Pixels</property>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="AdwPreferencesPage">
+        <property name="title" translatable="yes">Input</property>
+        <property name="icon-name">input-keyboard-symbolic</property>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title" translatable="yes">Cursor</property>
+            <child>
+              <object class="AdwActionRow">
+                <property name="title" translatable="yes">Position</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title" translatable="yes">Mouse</property>
+            <child>
+              <object class="AdwActionRow">
+                <property name="title" translatable="yes">Position</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwActionRow">
+                <property name="title" translatable="yes">Hyperlink</property>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
   </template>
 </interface>

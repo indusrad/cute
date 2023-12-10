@@ -24,7 +24,7 @@
 
 struct _PromptInspector
 {
-  AdwApplicationWindow  parent_instance;
+  AdwPreferencesWindow  parent_instance;
   PromptTab            *tab;
 };
 
@@ -34,7 +34,7 @@ enum {
   N_PROPS
 };
 
-G_DEFINE_FINAL_TYPE (PromptInspector, prompt_inspector, ADW_TYPE_APPLICATION_WINDOW)
+G_DEFINE_FINAL_TYPE (PromptInspector, prompt_inspector, ADW_TYPE_PREFERENCES_WINDOW)
 
 static GParamSpec *properties[N_PROPS];
 

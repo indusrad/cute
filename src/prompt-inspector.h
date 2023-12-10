@@ -28,7 +28,7 @@ G_BEGIN_DECLS
 
 #define PROMPT_TYPE_INSPECTOR (prompt_inspector_get_type())
 
-G_DECLARE_FINAL_TYPE (PromptInspector, prompt_inspector, PROMPT, INSPECTOR, AdwApplicationWindow)
+G_DECLARE_FINAL_TYPE (PromptInspector, prompt_inspector, PROMPT, INSPECTOR, AdwPreferencesWindow)
 
 PromptInspector *prompt_inspector_new     (PromptTab       *tab);
 PromptTab       *prompt_inspector_get_tab (PromptInspector *self);
