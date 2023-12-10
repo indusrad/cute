@@ -152,7 +152,7 @@
               </object>
             </child>
             <child>
-              <object class="AdwActionRow">
+              <object class="AdwActionRow" id="hyperlink_hover">
                 <property name="title" translatable="yes">Hyperlink</property>
               </object>
             </child>

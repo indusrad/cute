@@ -20,6 +20,8 @@
 
 #include "config.h"
 
+#include <glib/gi18n.h>
+
 #include "prompt-inspector.h"
 
 struct _PromptInspector
@@ -33,6 +35,7 @@ struct _PromptInspector
   AdwActionRow         *container_runtime;
   AdwActionRow         *current_directory;
   AdwActionRow         *current_file;
+  AdwActionRow         *hyperlink_hover;
   AdwActionRow         *window_title;
 };
 
@@ -59,6 +62,22 @@ prompt_inspector_set_tab (PromptInspector *self,
 
   g_binding_group_set_source (self->terminal_bindings, terminal);
   g_signal_group_set_target (self->tab_signals, tab);
+}
+
+static gboolean
+bind_with_empty (GBinding     *binding,
+                 const GValue *from_value,
+                 GValue       *to_value,
+                 gpointer      user_data)
+{
+  const char *str = g_value_get_string (from_value);
+
+  if (str && str[0])
+    g_value_set_string (to_value, str);
+  else
+    g_value_set_static_string (to_value, _("unset"));
+
+  return TRUE;
 }
 
 static void
@@ -141,6 +160,7 @@ prompt_inspector_class_init (PromptInspectorClass *klass)
   gtk_widget_class_bind_template_child (widget_class, PromptInspector, container_runtime);
   gtk_widget_class_bind_template_child (widget_class, PromptInspector, current_directory);
   gtk_widget_class_bind_template_child (widget_class, PromptInspector, current_file);
+  gtk_widget_class_bind_template_child (widget_class, PromptInspector, hyperlink_hover);
   gtk_widget_class_bind_template_child (widget_class, PromptInspector, window_title);
 }
 
@@ -152,21 +172,30 @@ prompt_inspector_init (PromptInspector *self)
 
   gtk_widget_init_template (GTK_WIDGET (self));
 
-  g_binding_group_bind (self->terminal_bindings, "current-directory-uri",
-                        self->current_directory, "subtitle",
-                        G_BINDING_SYNC_CREATE);
-  g_binding_group_bind (self->terminal_bindings, "current-file-uri",
-                        self->current_file, "subtitle",
-                        G_BINDING_SYNC_CREATE);
-  g_binding_group_bind (self->terminal_bindings, "current-container-name",
-                        self->container_name, "subtitle",
-                        G_BINDING_SYNC_CREATE);
-  g_binding_group_bind (self->terminal_bindings, "current-container-runtime",
-                        self->container_runtime, "subtitle",
-                        G_BINDING_SYNC_CREATE);
-  g_binding_group_bind (self->terminal_bindings, "window-title",
-                        self->window_title, "subtitle",
-                        G_BINDING_SYNC_CREATE);
+  g_binding_group_bind_full (self->terminal_bindings, "current-directory-uri",
+                             self->current_directory, "subtitle",
+                             G_BINDING_SYNC_CREATE,
+                             bind_with_empty, NULL, NULL, NULL);
+  g_binding_group_bind_full (self->terminal_bindings, "current-file-uri",
+                             self->current_file, "subtitle",
+                             G_BINDING_SYNC_CREATE,
+                             bind_with_empty, NULL, NULL, NULL);
+  g_binding_group_bind_full (self->terminal_bindings, "current-container-name",
+                             self->container_name, "subtitle",
+                             G_BINDING_SYNC_CREATE,
+                             bind_with_empty, NULL, NULL, NULL);
+  g_binding_group_bind_full (self->terminal_bindings, "current-container-runtime",
+                             self->container_runtime, "subtitle",
+                             G_BINDING_SYNC_CREATE,
+                             bind_with_empty, NULL, NULL, NULL);
+  g_binding_group_bind_full (self->terminal_bindings, "window-title",
+                             self->window_title, "subtitle",
+                             G_BINDING_SYNC_CREATE,
+                             bind_with_empty, NULL, NULL, NULL);
+  g_binding_group_bind_full (self->terminal_bindings, "hyperlink-hover-uri",
+                             self->hyperlink_hover, "subtitle",
+                             G_BINDING_SYNC_CREATE,
+                             bind_with_empty, NULL, NULL, NULL);
 }
 
 PromptInspector *
