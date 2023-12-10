@@ -20,8 +20,6 @@
 
 #include "config.h"
 
-#include <glib/gi18n.h>
-
 #include "prompt-agent-util.h"
 #include "prompt-podman-container.h"
 #include "prompt-process-impl.h"
@@ -180,7 +178,7 @@ prompt_podman_container_real_deserialize (PromptPodmanContainer  *self,
       g_set_error (error,
                    G_IO_ERROR,
                    G_IO_ERROR_INVALID_DATA,
-                   _("Failed to locate Id in podman container description"));
+                   "Failed to locate Id in podman container description");
       return FALSE;
     }
 

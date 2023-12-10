@@ -3,7 +3,6 @@ data/org.gnome.Prompt.metainfo.xml.in.in
 src/org.gnome.Prompt.gschema.xml.in
 src/main.c
 src/prompt-application.c
-agent/prompt-podman-container.c
 src/prompt-close-dialog.c
 src/prompt-container-menu.c
 src/prompt-palette-preview.ui
