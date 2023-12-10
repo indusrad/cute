@@ -153,10 +153,14 @@ prompt_window_dressing_update (PromptWindowDressing *self)
                                   "window.%s toolbarview > revealer > windowhandle { color: %s; background: %s; }\n",
                                   self->css_class, titlebar_fg, titlebar_bg);
           g_string_append_printf (string,
+                                  "window.%s.remote headerbar { background: %s; color: %s; }\n"
                                   "window.%s.remote toolbarview > revealer > windowhandle { background: %s; color: %s; }\n",
+                                  self->css_class, rm_bg, rm_fg,
                                   self->css_class, rm_bg, rm_fg);
           g_string_append_printf (string,
+                                  "window.%s.superuser headerbar { background: %s; color: %s; }\n"
                                   "window.%s.superuser toolbarview > revealer > windowhandle { background: %s; color: %s; }\n",
+                                  self->css_class, su_bg, su_fg,
                                   self->css_class, su_bg, su_fg);
         }
       else
