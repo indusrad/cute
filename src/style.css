@@ -122,3 +122,7 @@ preferencesgroup flowboxchild button.palette:not(.selected) {
               0 1px 3px 1px alpha(black, .07),
               0 2px 6px 2px alpha(black, .03);
 }
+
+.card columnview {
+  background: transparent;
+}
