@@ -153,6 +153,9 @@
             <child>
               <object class="AdwActionRow" id="pointer">
                 <property name="title" translatable="yes">Position</property>
+                <style>
+                  <class name="numeric"/>
+                </style>
               </object>
             </child>
             <child>
