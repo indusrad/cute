@@ -1091,6 +1091,7 @@ prompt_tab_class_init (PromptTabClass *klass)
 
   gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/Prompt/prompt-tab.ui");
   gtk_widget_class_set_layout_manager_type (widget_class, GTK_TYPE_BIN_LAYOUT);
+  gtk_widget_class_set_css_name (widget_class, "prompttab");
 
   gtk_widget_class_bind_template_child (widget_class, PromptTab, banner);
   gtk_widget_class_bind_template_child (widget_class, PromptTab, terminal);
