@@ -71,6 +71,32 @@ prompt_palette_preview_color_snapshot (GtkWidget   *widget,
                              &GRAPHENE_RECT_INIT (0, 0, width, height));
 }
 
+static gboolean
+prompt_palette_preview_color_query_tooltip (GtkWidget  *widget,
+                                            int         x,
+                                            int         y,
+                                            gboolean    keyboard_mode,
+                                            GtkTooltip *tooltip)
+{
+  PromptPalettePreviewColor *self = (PromptPalettePreviewColor *)widget;
+  g_autofree char *str = NULL;
+  const PromptPaletteFace *face;
+  const GdkRGBA *color;
+
+  g_assert (PROMPT_IS_PALETTE_PREVIEW_COLOR (self));
+
+  if (self->palette == NULL)
+    return FALSE;
+
+  face = prompt_palette_get_face (self->palette, self->dark);
+  color = &face->indexed[self->index];
+  str = gdk_rgba_to_string (color);
+
+  gtk_tooltip_set_text (tooltip, str);
+
+  return TRUE;
+}
+
 static void
 prompt_palette_preview_color_dispose (GObject *object)
 {
@@ -149,6 +175,7 @@ prompt_palette_preview_color_class_init (PromptPalettePreviewColorClass *klass)
   object_class->set_property = prompt_palette_preview_color_set_property;
 
   widget_class->snapshot = prompt_palette_preview_color_snapshot;
+  widget_class->query_tooltip = prompt_palette_preview_color_query_tooltip;
 
   properties[PROP_DARK] =
     g_param_spec_boolean ("dark", NULL, NULL,
