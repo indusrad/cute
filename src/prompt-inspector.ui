@@ -9,11 +9,19 @@
         <child>
           <object class="AdwPreferencesGroup">
             <child>
-              <object class="AdwActionRow" id="cmdline">
-                <property name="title" translatable="yes">Command Line</property>
+              <object class="AdwActionRow" id="command">
+                <property name="title" translatable="yes">Foreground Process</property>
                 <style>
                   <class name="property"/>
                 </style>
+                <child type="suffix">
+                  <object class="GtkLabel" id="pid">
+                    <style>
+                      <class name="dim-label"/>
+                      <class name="numeric"/>
+                    </style>
+                  </object>
+                </child>
               </object>
             </child>
           </object>

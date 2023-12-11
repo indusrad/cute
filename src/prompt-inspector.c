@@ -33,6 +33,7 @@ struct _PromptInspector
   GtkEventController   *motion;
 
   AdwActionRow         *cell_size;
+  AdwActionRow         *command;
   AdwActionRow         *container_name;
   AdwActionRow         *container_runtime;
   AdwActionRow         *current_directory;
@@ -43,6 +44,7 @@ struct _PromptInspector
   AdwActionRow         *grid_size;
   AdwActionRow         *hyperlink_hover;
   AdwActionRow         *window_title;
+  GtkLabel             *pid;
 };
 
 enum {
@@ -127,6 +129,53 @@ prompt_inspector_grid_size_changed_cb (PromptInspector *self,
 }
 
 static void
+prompt_inspector_shell_preexec_cb (PromptInspector *self,
+                                   PromptTerminal  *terminal)
+{
+  g_autoptr(PromptTab) tab = NULL;
+  g_autofree char *cmdline = NULL;
+  GPid pid;
+
+  g_assert (PROMPT_IS_INSPECTOR (self));
+  g_assert (PROMPT_IS_TERMINAL (terminal));
+
+  if ((tab = prompt_inspector_dup_tab (self)) &&
+      prompt_tab_has_foreground_process (tab, &pid, &cmdline))
+    {
+      char pidstr[16];
+
+      g_snprintf (pidstr, sizeof pidstr, "%d", pid);
+      gtk_label_set_label (self->pid, pidstr);
+      adw_action_row_set_subtitle (self->command, cmdline);
+    }
+  else
+    {
+      gtk_label_set_label (self->pid, NULL);
+      adw_action_row_set_subtitle (self->command, _("Shell"));
+    }
+}
+
+static void
+prompt_inspector_shell_precmd_cb (PromptInspector *self,
+                                  PromptTerminal  *terminal)
+{
+  g_assert (PROMPT_IS_INSPECTOR (self));
+  g_assert (PROMPT_IS_TERMINAL (terminal));
+
+  /* NOTE: If we are in a container that also supports VTE patches
+   * then it will send shell-precmd via escape sequences. The reality
+   * is that our foreground is the `toolbox enter` process (until we
+   * have better patches in VTE) but we show "Shell" instead.
+   *
+   * This is fine for now, but I'd like it to be better and actually
+   * show the proper `tcgetpgrp()` foreground.
+   */
+
+  adw_action_row_set_subtitle (self->command, _("Shell"));
+  gtk_label_set_label (self->pid, NULL);
+}
+
+static void
 prompt_inspector_bind_terminal_cb (PromptInspector *self,
                                    PromptTerminal  *terminal,
                                    GSignalGroup    *group)
@@ -150,6 +199,7 @@ prompt_inspector_bind_terminal_cb (PromptInspector *self,
   prompt_inspector_char_size_changed_cb (self, width, height, terminal);
   prompt_inspector_grid_size_changed_cb (self, columns, rows, terminal);
   prompt_inspector_update_font (self, NULL, terminal);
+  prompt_inspector_shell_preexec_cb (self, terminal);
 }
 
 static PromptTerminal *
@@ -286,6 +336,20 @@ bind_with_empty (GBinding     *binding,
   return TRUE;
 }
 
+PromptTab *
+prompt_inspector_dup_tab (PromptInspector *self)
+{
+  g_autoptr(PromptTerminal) terminal = NULL;
+  PromptTab *tab = NULL;
+
+  g_return_val_if_fail (PROMPT_IS_INSPECTOR (self), NULL);
+
+  if ((terminal = g_signal_group_dup_target (self->terminal_signals)))
+    tab = PROMPT_TAB (gtk_widget_get_ancestor (GTK_WIDGET (terminal), PROMPT_TYPE_TAB));
+
+  return tab ? g_object_ref (tab) : NULL;
+}
+
 static void
 prompt_inspector_constructed (GObject *object)
 {
@@ -325,7 +389,7 @@ prompt_inspector_get_property (GObject    *object,
   switch (prop_id)
     {
     case PROP_TAB:
-      g_value_take_object (value, g_signal_group_dup_target (self->terminal_signals));
+      g_value_take_object (value, prompt_inspector_dup_tab (self));
       break;
 
     default:
@@ -372,6 +436,7 @@ prompt_inspector_class_init (PromptInspectorClass *klass)
 
   gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/Prompt/prompt-inspector.ui");
   gtk_widget_class_bind_template_child (widget_class, PromptInspector, cell_size);
+  gtk_widget_class_bind_template_child (widget_class, PromptInspector, command);
   gtk_widget_class_bind_template_child (widget_class, PromptInspector, container_name);
   gtk_widget_class_bind_template_child (widget_class, PromptInspector, container_runtime);
   gtk_widget_class_bind_template_child (widget_class, PromptInspector, current_directory);
@@ -380,6 +445,7 @@ prompt_inspector_class_init (PromptInspectorClass *klass)
   gtk_widget_class_bind_template_child (widget_class, PromptInspector, font_desc);
   gtk_widget_class_bind_template_child (widget_class, PromptInspector, grid_size);
   gtk_widget_class_bind_template_child (widget_class, PromptInspector, hyperlink_hover);
+  gtk_widget_class_bind_template_child (widget_class, PromptInspector, pid);
   gtk_widget_class_bind_template_child (widget_class, PromptInspector, pointer);
   gtk_widget_class_bind_template_child (widget_class, PromptInspector, window_title);
 }
@@ -442,6 +508,16 @@ prompt_inspector_init (PromptInspector *self)
                                  G_CALLBACK (prompt_inspector_update_font),
                                  self,
                                  G_CONNECT_SWAPPED);
+  g_signal_group_connect_object (self->terminal_signals,
+                                 "shell-precmd",
+                                 G_CALLBACK (prompt_inspector_shell_precmd_cb),
+                                 self,
+                                 G_CONNECT_SWAPPED);
+  g_signal_group_connect_object (self->terminal_signals,
+                                 "shell-preexec",
+                                 G_CALLBACK (prompt_inspector_shell_preexec_cb),
+                                 self,
+                                 G_CONNECT_SWAPPED);
 }
 
 PromptInspector *
@@ -452,12 +528,4 @@ prompt_inspector_new (PromptTab *tab)
   return g_object_new (PROMPT_TYPE_INSPECTOR,
                        "tab", tab,
                        NULL);
-}
-
-PromptTab *
-prompt_inspector_dup_tab (PromptInspector *self)
-{
-  g_return_val_if_fail (PROMPT_IS_INSPECTOR (self), NULL);
-
-  return g_signal_group_dup_target (self->terminal_signals);
 }
