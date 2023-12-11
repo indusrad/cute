@@ -146,6 +146,13 @@ prompt_window_dressing_update (PromptWindowDressing *self)
       g_string_append_printf (string,
                               "window.%s headerbar { background: %s; color: %s; }\n",
                               self->css_class, titlebar_bg, titlebar_fg);
+      g_string_append_printf (string,
+                              "window.%s taboverview tabthumbnail button { background: alpha(%s,.15); color: %s; }\n"
+                              "window.%s taboverview tabthumbnail button:hover { background: alpha(%s,.25); }\n"
+                              "window.%s taboverview tabthumbnail button:active { background: alpha(%s,.55); }\n",
+                              self->css_class, fg, fg,
+                              self->css_class, fg,
+                              self->css_class, fg);
 
       if (rgba_is_dark (&face->background))
         {
