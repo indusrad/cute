@@ -23,28 +23,45 @@
 #include <glib/gi18n.h>
 
 #include "prompt-inspector.h"
+#include "prompt-palette-preview-color.h"
 
 struct _PromptInspector
 {
-  AdwPreferencesWindow  parent_instance;
+  AdwPreferencesWindow       parent_instance;
 
-  GSignalGroup         *terminal_signals;
-  GBindingGroup        *terminal_bindings;
-  GtkEventController   *motion;
+  GSignalGroup              *terminal_signals;
+  GBindingGroup             *terminal_bindings;
+  GtkEventController        *motion;
 
-  AdwActionRow         *cell_size;
-  AdwActionRow         *command;
-  AdwActionRow         *container_name;
-  AdwActionRow         *container_runtime;
-  AdwActionRow         *current_directory;
-  AdwActionRow         *current_file;
-  AdwActionRow         *cursor;
-  AdwActionRow         *pointer;
-  AdwActionRow         *font_desc;
-  AdwActionRow         *grid_size;
-  AdwActionRow         *hyperlink_hover;
-  AdwActionRow         *window_title;
-  GtkLabel             *pid;
+  AdwActionRow              *cell_size;
+  AdwActionRow              *command;
+  AdwActionRow              *container_name;
+  AdwActionRow              *container_runtime;
+  AdwActionRow              *current_directory;
+  AdwActionRow              *current_file;
+  AdwActionRow              *cursor;
+  AdwActionRow              *pointer;
+  AdwActionRow              *font_desc;
+  AdwActionRow              *grid_size;
+  AdwActionRow              *hyperlink_hover;
+  AdwActionRow              *window_title;
+  GtkLabel                  *pid;
+  PromptPalettePreviewColor *color0;
+  PromptPalettePreviewColor *color1;
+  PromptPalettePreviewColor *color2;
+  PromptPalettePreviewColor *color3;
+  PromptPalettePreviewColor *color4;
+  PromptPalettePreviewColor *color5;
+  PromptPalettePreviewColor *color6;
+  PromptPalettePreviewColor *color7;
+  PromptPalettePreviewColor *color8;
+  PromptPalettePreviewColor *color9;
+  PromptPalettePreviewColor *color10;
+  PromptPalettePreviewColor *color11;
+  PromptPalettePreviewColor *color12;
+  PromptPalettePreviewColor *color13;
+  PromptPalettePreviewColor *color14;
+  PromptPalettePreviewColor *color15;
 };
 
 enum {
@@ -436,6 +453,22 @@ prompt_inspector_class_init (PromptInspectorClass *klass)
 
   gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/Prompt/prompt-inspector.ui");
   gtk_widget_class_bind_template_child (widget_class, PromptInspector, cell_size);
+  gtk_widget_class_bind_template_child (widget_class, PromptInspector, color0);
+  gtk_widget_class_bind_template_child (widget_class, PromptInspector, color1);
+  gtk_widget_class_bind_template_child (widget_class, PromptInspector, color2);
+  gtk_widget_class_bind_template_child (widget_class, PromptInspector, color3);
+  gtk_widget_class_bind_template_child (widget_class, PromptInspector, color4);
+  gtk_widget_class_bind_template_child (widget_class, PromptInspector, color5);
+  gtk_widget_class_bind_template_child (widget_class, PromptInspector, color6);
+  gtk_widget_class_bind_template_child (widget_class, PromptInspector, color7);
+  gtk_widget_class_bind_template_child (widget_class, PromptInspector, color8);
+  gtk_widget_class_bind_template_child (widget_class, PromptInspector, color9);
+  gtk_widget_class_bind_template_child (widget_class, PromptInspector, color10);
+  gtk_widget_class_bind_template_child (widget_class, PromptInspector, color11);
+  gtk_widget_class_bind_template_child (widget_class, PromptInspector, color12);
+  gtk_widget_class_bind_template_child (widget_class, PromptInspector, color13);
+  gtk_widget_class_bind_template_child (widget_class, PromptInspector, color14);
+  gtk_widget_class_bind_template_child (widget_class, PromptInspector, color15);
   gtk_widget_class_bind_template_child (widget_class, PromptInspector, command);
   gtk_widget_class_bind_template_child (widget_class, PromptInspector, container_name);
   gtk_widget_class_bind_template_child (widget_class, PromptInspector, container_runtime);
@@ -448,6 +481,8 @@ prompt_inspector_class_init (PromptInspectorClass *klass)
   gtk_widget_class_bind_template_child (widget_class, PromptInspector, pid);
   gtk_widget_class_bind_template_child (widget_class, PromptInspector, pointer);
   gtk_widget_class_bind_template_child (widget_class, PromptInspector, window_title);
+
+  g_type_ensure (PROMPT_TYPE_PALETTE_PREVIEW_COLOR);
 }
 
 static void
@@ -482,6 +517,33 @@ prompt_inspector_init (PromptInspector *self)
                              self->hyperlink_hover, "subtitle",
                              G_BINDING_SYNC_CREATE,
                              bind_with_empty, NULL, NULL, NULL);
+
+#define BIND_PALETTE(n) \
+  G_STMT_START { \
+    g_binding_group_bind (self->terminal_bindings, "palette", \
+                          self->color##n, "palette", \
+                          G_BINDING_SYNC_CREATE); \
+    g_object_bind_property (adw_style_manager_get_default (), "dark", \
+                            self->color##n, "dark", \
+                            G_BINDING_SYNC_CREATE); \
+  } G_STMT_END
+
+  BIND_PALETTE (0);
+  BIND_PALETTE (1);
+  BIND_PALETTE (2);
+  BIND_PALETTE (3);
+  BIND_PALETTE (4);
+  BIND_PALETTE (5);
+  BIND_PALETTE (6);
+  BIND_PALETTE (7);
+  BIND_PALETTE (8);
+  BIND_PALETTE (9);
+  BIND_PALETTE (10);
+  BIND_PALETTE (11);
+  BIND_PALETTE (12);
+  BIND_PALETTE (13);
+  BIND_PALETTE (14);
+  BIND_PALETTE (15);
 
   g_signal_connect_object (self->terminal_signals,
                            "bind",

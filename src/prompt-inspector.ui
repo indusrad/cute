@@ -105,6 +105,115 @@
                 <property name="title" translatable="yes">Colors</property>
                 <child type="suffix">
                   <object class="GtkBox">
+                    <property name="orientation">vertical</property>
+                    <property name="valign">center</property>
+                    <property name="spacing">3</property>
+                    <child>
+                      <object class="GtkBox">
+                        <property name="spacing">3</property>
+                        <child>
+                          <object class="PromptPalettePreviewColor" id="color0">
+                            <property name="index">0</property>
+                            <property name="has-tooltip">true</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="PromptPalettePreviewColor" id="color1">
+                            <property name="index">1</property>
+                            <property name="has-tooltip">true</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="PromptPalettePreviewColor" id="color2">
+                            <property name="index">2</property>
+                            <property name="has-tooltip">true</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="PromptPalettePreviewColor" id="color3">
+                            <property name="index">3</property>
+                            <property name="has-tooltip">true</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="PromptPalettePreviewColor" id="color4">
+                            <property name="index">4</property>
+                            <property name="has-tooltip">true</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="PromptPalettePreviewColor" id="color5">
+                            <property name="index">5</property>
+                            <property name="has-tooltip">true</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="PromptPalettePreviewColor" id="color6">
+                            <property name="index">6</property>
+                            <property name="has-tooltip">true</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="PromptPalettePreviewColor" id="color7">
+                            <property name="index">7</property>
+                            <property name="has-tooltip">true</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkBox">
+                        <property name="spacing">3</property>
+                        <child>
+                          <object class="PromptPalettePreviewColor" id="color8">
+                            <property name="index">8</property>
+                            <property name="has-tooltip">true</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="PromptPalettePreviewColor" id="color9">
+                            <property name="index">9</property>
+                            <property name="has-tooltip">true</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="PromptPalettePreviewColor" id="color10">
+                            <property name="index">10</property>
+                            <property name="has-tooltip">true</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="PromptPalettePreviewColor" id="color11">
+                            <property name="index">11</property>
+                            <property name="has-tooltip">true</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="PromptPalettePreviewColor" id="color12">
+                            <property name="index">12</property>
+                            <property name="has-tooltip">true</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="PromptPalettePreviewColor" id="color13">
+                            <property name="index">13</property>
+                            <property name="has-tooltip">true</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="PromptPalettePreviewColor" id="color14">
+                            <property name="index">14</property>
+                            <property name="has-tooltip">true</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="PromptPalettePreviewColor" id="color15">
+                            <property name="index">15</property>
+                            <property name="has-tooltip">true</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
                   </object>
                 </child>
               </object>
