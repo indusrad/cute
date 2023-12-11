@@ -161,6 +161,7 @@
       <annotation name="org.gtk.GDBus.C.UnixFD" value="true"/>
       <arg name="pty_fd" direction="in" type="h"/>
       <arg name="leader_kind" direction="out" type="s"/>
+      <arg name="cmdline" direction="out" type="s"/>
     </method>
 
     <!--

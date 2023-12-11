@@ -93,6 +93,7 @@ prompt_tab_monitor_update_source_func (gpointer user_data)
   g_autoptr(PromptTab) tab = NULL;
   g_autoptr(GUnixFDList) in_fd_list = NULL;
   g_autofree char *process_leader_kind_str = NULL;
+  g_autofree char *cmdline = NULL;
   PromptIpcProcess *process;
   PromptTerminal *terminal;
   VtePty *pty;
@@ -118,7 +119,10 @@ prompt_tab_monitor_update_source_func (gpointer user_data)
                                                 g_variant_new_handle (in_pty_handle),
                                                 in_fd_list,
                                                 &process_leader_kind_str,
+                                                &cmdline,
                                                 NULL, NULL, NULL);
+
+  prompt_tab_set_command_line (tab, cmdline);
 
   if (process_leader_kind_str == NULL || strcmp (process_leader_kind_str, "unknown") == 0)
     process_leader_kind = PROMPT_PROCESS_LEADER_KIND_UNKNOWN;

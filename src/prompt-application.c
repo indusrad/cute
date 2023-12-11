@@ -1130,7 +1130,7 @@ prompt_application_get_leader_kind_cb (GObject      *object,
   g_assert (G_IS_ASYNC_RESULT (result));
   g_assert (G_IS_TASK (task));
 
-  if (!prompt_ipc_process_call_get_leader_kind_finish (process, &leader_kind, NULL, result, &error))
+  if (!prompt_ipc_process_call_get_leader_kind_finish (process, &leader_kind, NULL, NULL, result, &error))
     wait_complete (task, 0, 0, g_steal_pointer (&error));
 }
 

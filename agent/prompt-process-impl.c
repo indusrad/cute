@@ -159,6 +159,28 @@ prompt_process_impl_handle_send_signal (PromptIpcProcess      *process,
   return TRUE;
 }
 
+static char *
+get_cmdline_for_pid (GPid pid)
+{
+  g_autofree char *cmdline = NULL;
+
+#ifdef __linux__
+  g_autofree char *path = g_strdup_printf ("/proc/%u/cmdline", (guint)pid);
+  gsize len;
+
+  if (g_file_get_contents (path, &cmdline, &len, NULL))
+    {
+      for (gsize i = 0; i < len; i++)
+        {
+          if (cmdline[i] == 0 || g_ascii_iscntrl (cmdline[i]))
+            cmdline[i] = ' ';
+        }
+    }
+#endif
+
+  return g_steal_pointer (&cmdline);
+}
+
 static gboolean
 prompt_process_impl_handle_get_leader_kind (PromptIpcProcess      *process,
                                             GDBusMethodInvocation *invocation,
@@ -166,6 +188,7 @@ prompt_process_impl_handle_get_leader_kind (PromptIpcProcess      *process,
                                             GVariant              *in_pty_fd)
 {
   const char *leader_kind = NULL;
+  g_autofree char *cmdline = NULL;
   _g_autofd int pty_fd = -1;
   int pty_fd_handle;
 
@@ -190,6 +213,8 @@ prompt_process_impl_handle_get_leader_kind (PromptIpcProcess      *process,
           g_autoptr(GFileInfo) info = NULL;
           char execpath[512];
           gssize len;
+
+          cmdline = get_cmdline_for_pid (pid);
 
           /* We use GFile API so that we can avoid linking against
            * stat64 which is different on older glibc versions.
@@ -223,31 +248,10 @@ complete:
   prompt_ipc_process_complete_get_leader_kind (process,
                                                g_steal_pointer (&invocation),
                                                NULL,
-                                               leader_kind);
+                                               leader_kind,
+                                               cmdline ? cmdline : "");
 
   return TRUE;
-}
-
-static char *
-get_cmdline_for_pid (GPid pid)
-{
-  g_autofree char *cmdline = NULL;
-
-#ifdef __linux__
-  g_autofree char *path = g_strdup_printf ("/proc/%u/cmdline", (guint)pid);
-  gsize len;
-
-  if (g_file_get_contents (path, &cmdline, &len, NULL))
-    {
-      for (gsize i = 0; i < len; i++)
-        {
-          if (cmdline[i] == 0 || g_ascii_iscntrl (cmdline[i]))
-            cmdline[i] = ' ';
-        }
-    }
-#endif
-
-  return g_steal_pointer (&cmdline);
 }
 
 static gboolean
