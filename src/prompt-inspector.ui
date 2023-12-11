@@ -218,16 +218,6 @@
                 </child>
               </object>
             </child>
-            <child>
-              <object class="AdwActionRow">
-                <property name="title" translatable="yes">Background</property>
-              </object>
-            </child>
-            <child>
-              <object class="AdwActionRow">
-                <property name="title" translatable="yes">Cursor</property>
-              </object>
-            </child>
           </object>
         </child>
         <child>
@@ -278,46 +268,6 @@
             <child>
               <object class="AdwActionRow" id="hyperlink_hover">
                 <property name="title" translatable="yes">Hyperlink</property>
-              </object>
-            </child>
-          </object>
-        </child>
-      </object>
-    </child>
-    <child>
-      <object class="AdwPreferencesPage">
-        <property name="title" translatable="yes">Events</property>
-        <property name="icon-name">event-log-symbolic</property>
-        <child>
-          <object class="AdwPreferencesGroup">
-            <child>
-              <object class="GtkScrolledWindow">
-                <property name="hexpand">true</property>
-                <property name="vexpand">true</property>
-                <property name="overflow">hidden</property>
-                <style>
-                  <class name="card"/>
-                </style>
-                <child>
-                  <object class="GtkColumnView">
-                    <child>
-                      <object class="GtkColumnViewColumn">
-                        <property name="title" translatable="yes">Time</property>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkColumnViewColumn">
-                        <property name="title" translatable="yes">Event</property>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkColumnViewColumn">
-                        <property name="expand">true</property>
-                        <property name="title" translatable="yes">Details</property>
-                      </object>
-                    </child>
-                  </object>
-                </child>
               </object>
             </child>
           </object>
