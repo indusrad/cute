@@ -65,6 +65,8 @@ struct _PromptTab
   GtkScrolledWindow   *scrolled_window;
   PromptTerminal      *terminal;
 
+  char                *command_line;
+
   PromptZoomLevel      zoom;
   PromptTabState       state;
 
@@ -73,6 +75,7 @@ struct _PromptTab
 
 enum {
   PROP_0,
+  PROP_COMMAND_LINE,
   PROP_ICON,
   PROP_PROCESS_LEADER_KIND,
   PROP_PROFILE,
@@ -880,6 +883,7 @@ prompt_tab_dispose (GObject *object)
   g_clear_pointer (&self->title_prefix, g_free);
   g_clear_pointer (&self->initial_title, g_free);
   g_clear_pointer (&self->command, g_strfreev);
+  g_clear_pointer (&self->command_line, g_free);
 
   G_OBJECT_CLASS (prompt_tab_parent_class)->dispose (object);
 }
@@ -904,6 +908,10 @@ prompt_tab_get_property (GObject    *object,
 
   switch (prop_id)
     {
+    case PROP_COMMAND_LINE:
+      g_value_set_string (value, self->command_line);
+      break;
+
     case PROP_ICON:
       g_value_take_object (value, prompt_tab_dup_icon (self));
       break;
@@ -997,6 +1005,12 @@ prompt_tab_class_init (PromptTabClass *klass)
   widget_class->map = prompt_tab_map;
   widget_class->snapshot = prompt_tab_snapshot;
   widget_class->size_allocate = prompt_tab_size_allocate;
+
+  properties[PROP_COMMAND_LINE] =
+    g_param_spec_string ("command-line", NULL, NULL,
+                         NULL,
+                         (G_PARAM_READABLE |
+                          G_PARAM_STATIC_STRINGS));
 
   properties[PROP_ICON] =
     g_param_spec_object ("icon", NULL, NULL,
@@ -1505,6 +1519,9 @@ prompt_tab_has_foreground_process (PromptTab  *self,
                                                             NULL, NULL, NULL))
     has_foreground_process = FALSE;
 
+  if (g_set_str (&self->command_line, the_cmdline))
+    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_COMMAND_LINE]);
+
   if (cmdline)
     *cmdline = g_steal_pointer (&the_cmdline);
 
@@ -1537,4 +1554,12 @@ prompt_tab_set_initial_title (PromptTab  *self,
   g_return_if_fail (PROMPT_IS_TAB (self));
 
   g_set_str (&self->initial_title, initial_title);
+}
+
+const char *
+prompt_tab_get_command_line (PromptTab *self)
+{
+  g_return_val_if_fail (PROMPT_IS_TAB (self), NULL);
+
+  return self->command_line;
 }
