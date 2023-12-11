@@ -392,7 +392,18 @@ prompt_podman_container_handle_spawn (PromptIpcContainer    *container,
                            prompt_podman_container_run_context_cb,
                            g_object_ref (container),
                            g_object_unref);
+
+  /* Give acces to some minimal state in the environment from
+   * our host system.
+   */
   prompt_run_context_add_minimal_environment (run_context);
+
+  /* We don't want HOME propagated because it could be different
+   * inside the toolbox/distrobox and that can set it up for us.
+   */
+  prompt_run_context_setenv (run_context, "HOME", NULL);
+
+  /* Now do our normal handling of the layer requested by the user. */
   prompt_agent_push_spawn (run_context, in_fd_list, cwd, argv, in_fds, in_env);
 
   g_object_set_data_full (G_OBJECT (run_context),
