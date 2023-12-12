@@ -121,13 +121,13 @@ prompt_window_dressing_update (PromptWindowDressing *self)
                               self->css_class, fg, bg, window_alpha_str);
       g_string_append_printf (string,
                               "window.%s popover > contents { color: %s; background: alpha(%s, %s); }\n",
-                              self->css_class, fg, bg, popover_alpha_str);
+                              self->css_class, titlebar_fg, titlebar_bg, popover_alpha_str);
       g_string_append_printf (string,
                               "window.%s popover > arrow { background: alpha(%s, %s); }\n",
-                              self->css_class, bg, popover_alpha_str);
+                              self->css_class, titlebar_bg, popover_alpha_str);
       g_string_append_printf (string,
                               "window.%s vte-terminal > revealer.size label { color: %s; background-color: alpha(%s, %s); }\n",
-                              self->css_class, fg, bg, popover_alpha_str);
+                              self->css_class, titlebar_fg, titlebar_bg, popover_alpha_str);
       /* It would be super if we could make these match the color of the
        * actual tab contents rather than the active tab profile.
        */
@@ -161,7 +161,6 @@ prompt_window_dressing_update (PromptWindowDressing *self)
                               self->css_class, fg, fg,
                               self->css_class, fg,
                               self->css_class, fg);
-
 
       if (rgba_is_dark (&face->background))
         {
