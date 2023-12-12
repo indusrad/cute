@@ -69,7 +69,6 @@ const char              *prompt_palette_get_id                 (PromptPalette  *
 const char              *prompt_palette_get_name               (PromptPalette  *self);
 const PromptPaletteFace *prompt_palette_get_face               (PromptPalette  *self,
                                                                 gboolean        dark);
-char                    *prompt_palette_to_string              (PromptPalette  *self);
 gboolean                 prompt_palette_use_adwaita            (PromptPalette  *self);
 gboolean                 prompt_palette_is_primary             (PromptPalette  *self);
 
