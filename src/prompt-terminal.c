@@ -43,7 +43,7 @@
 
 struct _PromptTerminal
 {
-  VteTerminal         parent_instance;
+  VteTerminal        parent_instance;
 
   PromptShortcuts   *shortcuts;
   PromptPalette     *palette;
@@ -884,13 +884,10 @@ prompt_terminal_size_allocate (GtkWidget *widget,
   GtkBorder padding;
   GtkRoot *root;
   gboolean emit_size_changed = FALSE;
-  int prev_column_count, column_count;
-  int prev_row_count, row_count;
+  int column_count;
+  int row_count;
 
   g_assert (PROMPT_IS_TERMINAL (self));
-
-  prev_column_count = vte_terminal_get_column_count (VTE_TERMINAL (self));
-  prev_row_count = vte_terminal_get_row_count (VTE_TERMINAL (self));
 
   GTK_WIDGET_CLASS (prompt_terminal_parent_class)->size_allocate (widget, width, height, baseline);
 
@@ -906,7 +903,7 @@ prompt_terminal_size_allocate (GtkWidget *widget,
       GTK_IS_WINDOW (root) &&
       !gtk_window_is_maximized (GTK_WINDOW (root)) &&
       !gtk_window_is_fullscreen (GTK_WINDOW (root)) &&
-      (prev_column_count != column_count || prev_row_count != row_count))
+      emit_size_changed)
     {
       char format[32];
 
