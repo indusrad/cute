@@ -310,6 +310,7 @@ prompt_palette_preview_set_dark (PromptPalettePreview *self,
     {
       self->dark = dark;
       prompt_palette_preview_update_label (self);
+      gtk_widget_queue_draw (GTK_WIDGET (self));
       g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_DARK]);
     }
 }
