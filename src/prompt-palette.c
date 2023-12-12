@@ -44,6 +44,7 @@ struct _PromptPalette
   GObject parent_instance;
   const PromptPaletteData *palette;
   PromptPaletteData *allocated;
+  guint is_primary : 1;
 };
 
 G_DEFINE_FINAL_TYPE (PromptPalette, prompt_palette, G_TYPE_OBJECT)
@@ -477,6 +478,7 @@ prompt_palette_new_from_resource (const char  *path,
   self = g_object_new (PROMPT_TYPE_PALETTE, NULL);
   self->allocated = g_memdup2 (&data, sizeof data);
   self->palette = self->allocated;
+  self->is_primary = g_key_file_get_boolean (key_file, "Palette", "Primary", NULL);
 
   return self;
 }
@@ -557,4 +559,12 @@ gboolean
 prompt_palette_use_adwaita (PromptPalette *self)
 {
   return strstr (self->palette->id, "gnome") != NULL;
+}
+
+gboolean
+prompt_palette_is_primary (PromptPalette *self)
+{
+  g_return_val_if_fail (PROMPT_IS_PALETTE (self), FALSE);
+
+  return self->is_primary;
 }

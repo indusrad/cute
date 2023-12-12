@@ -1,5 +1,6 @@
 [Palette]
 Name=Solarized
+Primary=true
 
 [Light]
 Foreground=#002b36

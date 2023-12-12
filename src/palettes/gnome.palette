@@ -1,5 +1,6 @@
 [Palette]
 Name=GNOME
+Primary=true
 
 [Light]
 Foreground=#1e1e1e

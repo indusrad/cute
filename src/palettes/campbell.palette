@@ -1,5 +1,6 @@
 [Palette]
 Name=Campbell
+Primary=true
 
 [Light]
 Foreground=#777777

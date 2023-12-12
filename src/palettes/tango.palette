@@ -1,5 +1,6 @@
 [Palette]
 Name=Tango
+Primary=true
 
 [Light]
 Foreground=#2e3436

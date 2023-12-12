@@ -1,5 +1,6 @@
 [Palette]
 Name=Nord
+Primary=true
 
 [Light]
 Foreground=#414858
