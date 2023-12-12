@@ -401,6 +401,8 @@ prompt_palette_new_from_file (const char  *path,
   g_autoptr(GKeyFile) key_file = NULL;
   PromptPaletteData data;
   PromptPalette *self;
+  gboolean has_light;
+  gboolean has_dark;
 
   g_return_val_if_fail (path != NULL, NULL);
 
@@ -414,11 +416,26 @@ prompt_palette_new_from_file (const char  *path,
   if (!prompt_palette_load_info (path, &data, key_file, error))
     return NULL;
 
-  if (!prompt_palette_load_face (path, &data.faces[0], key_file, "Light", error))
-    return NULL;
+  has_light = g_key_file_has_group (key_file, "Light");
+  has_dark = g_key_file_has_group (key_file, "Dark");
 
-  if (!prompt_palette_load_face (path, &data.faces[1], key_file, "Dark", error))
-    return NULL;
+  /* If not using Light/Dark breakdown, then assume the values
+   * are directly in "[Palette]". Otherwise we expect both.
+   */
+  if (!has_light && !has_dark)
+    {
+      if (!prompt_palette_load_face (path, &data.faces[0], key_file, "Palette", error))
+        return NULL;
+      data.faces[1] = data.faces[0];
+    }
+  else
+    {
+      if (!prompt_palette_load_face (path, &data.faces[0], key_file, "Light", error))
+        return NULL;
+
+      if (!prompt_palette_load_face (path, &data.faces[1], key_file, "Dark", error))
+        return NULL;
+    }
 
   self = g_object_new (PROMPT_TYPE_PALETTE, NULL);
   self->allocated = g_memdup2 (&data, sizeof data);
