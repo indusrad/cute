@@ -200,11 +200,7 @@ prompt_profile_get_property (GObject    *object,
       break;
 
     case PROP_PALETTE_ID:
-      {
-        g_autoptr(PromptPalette) palette = prompt_profile_dup_palette (self);
-        if (palette != NULL)
-          g_value_set_string (value, prompt_palette_get_id (palette));
-      }
+      g_value_take_string (value, prompt_profile_dup_palette_id (self));
       break;
 
     case PROP_PRESERVE_CONTAINER:
