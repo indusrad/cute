@@ -77,6 +77,8 @@ Otherwise, it is built as any other meson-based project.
  * `prompt-agent` will automatically create systemd scopes for your tab
    when available to help reduce the chances that the whole app would be
    killed by the OOM killer instead of the tab taking up resources.
+ * An terminal inspector to help you debug issues when writing applications
+   for the terminal.
 
 
 ## Container Support
