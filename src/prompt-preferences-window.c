@@ -41,6 +41,7 @@ struct _PromptPreferencesWindow
   char                 *default_palette_id;
   GtkCustomFilter      *filter;
   GtkFilterListModel   *filter_palettes;
+  guint                 filter_show_more : 1;
 
   GtkListBoxRow        *add_profile_row;
   AdwSwitchRow         *audible_bell;
@@ -125,16 +126,49 @@ enum {
 
 static GParamSpec *properties[N_PROPS];
 
+static void
+invalidate_filter (PromptPreferencesWindow *self)
+{
+  g_autoptr(PromptProfile) default_profile = NULL;
+  g_autofree char *default_palette_id = NULL;
+
+  g_assert (PROMPT_IS_PREFERENCES_WINDOW (self));
+
+  default_profile = prompt_application_dup_default_profile (PROMPT_APPLICATION_DEFAULT);
+  default_palette_id = prompt_profile_dup_palette_id (default_profile);
+  g_set_str (&self->default_palette_id, default_palette_id);
+
+  gtk_filter_changed (GTK_FILTER (self->filter), GTK_FILTER_CHANGE_DIFFERENT);
+}
+
 static gboolean
-filter_primary (gpointer item,
-                gpointer user_data)
+do_filter_palettes (gpointer item,
+                    gpointer user_data)
 {
   PromptPreferencesWindow *self = user_data;
+  PromptPalette *palette = item;
+  AdwStyleManager *style_manager;
+  gboolean dark;
 
-  if (prompt_palette_is_primary (item))
+  if (prompt_palette_is_primary (palette))
     return TRUE;
 
-  return g_strcmp0 (self->default_palette_id, prompt_palette_get_id (item)) == 0;
+  if (g_strcmp0 (self->default_palette_id, prompt_palette_get_id (palette)) == 0)
+    return TRUE;
+
+  if (!self->filter_show_more)
+    return FALSE;
+
+  style_manager = adw_style_manager_get_default ();
+  dark = adw_style_manager_get_dark (style_manager);
+
+  if (dark && !prompt_palette_has_dark (palette))
+    return FALSE;
+
+  if (!dark && !prompt_palette_has_light (palette))
+    return FALSE;
+
+  return TRUE;
 }
 
 static gboolean
@@ -246,17 +280,14 @@ prompt_preferences_window_show_all_cb (PromptPreferencesWindow *self,
   g_assert (PROMPT_IS_PREFERENCES_WINDOW (self));
   g_assert (GTK_IS_LINK_BUTTON (button));
 
-  if (gtk_filter_list_model_get_filter (self->filter_palettes) != NULL)
-    {
-      gtk_button_set_label (GTK_BUTTON (self->show_more), _("Show Fewer…"));
-      gtk_filter_list_model_set_filter (self->filter_palettes, NULL);
-    }
+  self->filter_show_more = !self->filter_show_more;
+
+  if (self->filter_show_more)
+    gtk_button_set_label (GTK_BUTTON (self->show_more), _("Show Fewer…"));
   else
-    {
-      gtk_button_set_label (GTK_BUTTON (self->show_more), _("Show More…"));
-      gtk_filter_list_model_set_filter (self->filter_palettes,
-                                        GTK_FILTER (self->filter));
-    }
+    gtk_button_set_label (GTK_BUTTON (self->show_more), _("Show More…"));
+
+  gtk_filter_changed (GTK_FILTER (self->filter), GTK_FILTER_CHANGE_DIFFERENT);
 
   return TRUE;
 }
@@ -362,9 +393,13 @@ prompt_preferences_window_notify_default_profile_cb (PromptPreferencesWindow *se
   profile = prompt_application_dup_default_profile (app);
   gsettings = prompt_profile_dup_settings (profile);
 
-  g_object_bind_property (profile, "palette-id",
-                          self, "default-palette-id",
-                          G_BINDING_SYNC_CREATE);
+  g_signal_connect_object (profile,
+                           "notify::palette-id",
+                           G_CALLBACK (invalidate_filter),
+                           self,
+                           G_CONNECT_SWAPPED);
+
+  invalidate_filter (self);
 
   for (GtkWidget *child = gtk_widget_get_first_child (GTK_WIDGET (self->palette_previews));
        child;
@@ -504,6 +539,7 @@ create_palette_preview (gpointer item,
                         gpointer user_data)
 {
   AdwStyleManager *style_manager = user_data;
+  g_autoptr(PromptProfile) default_profile = NULL;
   g_autoptr(GVariant) action_target = NULL;
   PromptPalette *palette = item;
   PromptSettings *settings;
@@ -532,6 +568,15 @@ create_palette_preview (gpointer item,
                         "child", button,
                         NULL);
 
+  /* This is probably pretty slow and terrible to do here, but we need another
+   * way to track default-palette of default-profile, both of which could change.
+   */
+  default_profile = prompt_application_dup_default_profile (PROMPT_APPLICATION_DEFAULT);
+  g_object_bind_property_full (default_profile, "palette", preview, "selected",
+                               G_BINDING_SYNC_CREATE,
+                               map_palette_to_selected, NULL,
+                               preview, NULL);
+
   return child;
 }
 
@@ -548,9 +593,14 @@ prompt_preferences_window_constructed (GObject *object)
 
   G_OBJECT_CLASS (prompt_preferences_window_parent_class)->constructed (object);
 
-  self->filter = gtk_custom_filter_new (filter_primary, self, NULL);
+  self->filter = gtk_custom_filter_new (do_filter_palettes, self, NULL);
   self->filter_palettes = gtk_filter_list_model_new (g_object_ref (prompt_palette_get_all ()),
                                                      g_object_ref (GTK_FILTER (self->filter)));
+  g_signal_connect_object (style_manager,
+                           "notify::dark",
+                           G_CALLBACK (invalidate_filter),
+                           self,
+                           G_CONNECT_SWAPPED);
 
   gtk_flow_box_bind_model (self->palette_previews,
                            G_LIST_MODEL (self->filter_palettes),
@@ -769,6 +819,7 @@ prompt_preferences_window_dispose (GObject *object)
 
   gtk_widget_dispose_template (GTK_WIDGET (self), PROMPT_TYPE_PREFERENCES_WINDOW);
 
+  g_clear_pointer (&self->default_palette_id, g_free);
   g_clear_object (&self->filter);
   g_clear_object (&self->filter_palettes);
 
