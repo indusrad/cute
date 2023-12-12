@@ -299,15 +299,23 @@ prompt_palette_load_face (const char         *path,
       !prompt_palette_load_color (path, &face->indexed[12], key_file, scheme, "Color12", error) ||
       !prompt_palette_load_color (path, &face->indexed[13], key_file, scheme, "Color13", error) ||
       !prompt_palette_load_color (path, &face->indexed[14], key_file, scheme, "Color14", error) ||
-      !prompt_palette_load_color (path, &face->indexed[15], key_file, scheme, "Color15", error) ||
-      !prompt_palette_load_color (path, &face->visual_bell.foreground, key_file, scheme, "BellForeground", error) ||
-      !prompt_palette_load_color (path, &face->visual_bell.background, key_file, scheme, "BellBackground", error) ||
-      !prompt_palette_load_color (path, &face->superuser.foreground, key_file, scheme, "SuperuserForeground", error) ||
-      !prompt_palette_load_color (path, &face->superuser.background, key_file, scheme, "SuperuserBackground", error) ||
-      !prompt_palette_load_color (path, &face->remote.foreground, key_file, scheme, "RemoteForeground", error) ||
-      !prompt_palette_load_color (path, &face->remote.background, key_file, scheme, "RemoteBackground", error) ||
-      FALSE)
+      !prompt_palette_load_color (path, &face->indexed[15], key_file, scheme, "Color15", error))
     return FALSE;
+
+  if (!prompt_palette_load_color (path, &face->visual_bell.foreground, key_file, scheme, "BellForeground", NULL))
+    face->visual_bell.foreground = face->background;
+  if (!prompt_palette_load_color (path, &face->visual_bell.background, key_file, scheme, "BellBackground", NULL))
+    face->visual_bell.background = face->indexed[11];
+
+  if (!prompt_palette_load_color (path, &face->superuser.foreground, key_file, scheme, "SuperuserForeground", NULL))
+    face->superuser.foreground = face->background;
+  if (!prompt_palette_load_color (path, &face->superuser.background, key_file, scheme, "SuperuserBackground", NULL))
+    face->superuser.background = face->indexed[1];
+
+  if (!prompt_palette_load_color (path, &face->remote.foreground, key_file, scheme, "RemoteForeground", NULL))
+    face->remote.foreground = face->foreground;
+  if (!prompt_palette_load_color (path, &face->remote.background, key_file, scheme, "RemoteBackground", NULL))
+    face->remote.background = face->indexed[12];
 
   if (!prompt_palette_load_color (path, &face->titlebar_foreground, key_file, scheme, "TitlebarForeground", NULL))
     face->titlebar_foreground = _gdk_rgba_shade (&face->foreground, is_dark (&face->background) ? 1.25 : .95);
