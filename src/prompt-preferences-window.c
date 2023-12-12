@@ -283,9 +283,9 @@ prompt_preferences_window_show_all_cb (PromptPreferencesWindow *self,
   self->filter_show_more = !self->filter_show_more;
 
   if (self->filter_show_more)
-    gtk_button_set_label (GTK_BUTTON (self->show_more), _("Show Fewer…"));
+    gtk_button_set_label (GTK_BUTTON (self->show_more), _("Show fewer…"));
   else
-    gtk_button_set_label (GTK_BUTTON (self->show_more), _("Show More…"));
+    gtk_button_set_label (GTK_BUTTON (self->show_more), _("Show more…"));
 
   gtk_filter_changed (GTK_FILTER (self->filter), GTK_FILTER_CHANGE_DIFFERENT);
 
