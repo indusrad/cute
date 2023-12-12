@@ -111,6 +111,7 @@ void                     prompt_profile_set_preserve_container  (PromptProfile  
 PromptPreserveDirectory  prompt_profile_get_preserve_directory  (PromptProfile            *self);
 void                     prompt_profile_set_preserve_directory  (PromptProfile            *self,
                                                                  PromptPreserveDirectory   preserve_directory);
+char                    *prompt_profile_dup_palette_id          (PromptProfile            *self);
 PromptPalette           *prompt_profile_dup_palette             (PromptProfile            *self);
 void                     prompt_profile_set_palette             (PromptProfile            *self,
                                                                  PromptPalette            *palette);

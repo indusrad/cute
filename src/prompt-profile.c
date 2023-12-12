@@ -707,6 +707,14 @@ prompt_profile_duplicate (PromptProfile *self)
   return g_steal_pointer (&copy);
 }
 
+char *
+prompt_profile_dup_palette_id (PromptProfile *self)
+{
+  g_return_val_if_fail (PROMPT_IS_PROFILE (self), NULL);
+
+  return g_settings_get_string (self->settings, PROMPT_PROFILE_KEY_PALETTE);
+}
+
 PromptPalette *
 prompt_profile_dup_palette (PromptProfile *self)
 {
