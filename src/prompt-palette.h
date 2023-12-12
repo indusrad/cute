@@ -71,5 +71,7 @@ const PromptPaletteFace *prompt_palette_get_face               (PromptPalette  *
                                                                 gboolean        dark);
 gboolean                 prompt_palette_use_adwaita            (PromptPalette  *self);
 gboolean                 prompt_palette_is_primary             (PromptPalette  *self);
+gboolean                 prompt_palette_has_dark               (PromptPalette  *self);
+gboolean                 prompt_palette_has_light              (PromptPalette  *self);
 
 G_END_DECLS

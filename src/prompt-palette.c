@@ -45,6 +45,8 @@ struct _PromptPalette
   const PromptPaletteData *palette;
   PromptPaletteData *allocated;
   guint is_primary : 1;
+  guint has_dark : 1;
+  guint has_light : 1;
 };
 
 G_DEFINE_FINAL_TYPE (PromptPalette, prompt_palette, G_TYPE_OBJECT)
@@ -428,6 +430,8 @@ prompt_palette_new_from_file (const char  *path,
       if (!prompt_palette_load_face (path, &data.faces[0], key_file, "Palette", error))
         return NULL;
       data.faces[1] = data.faces[0];
+      has_dark = is_dark (&data.faces[0].background);
+      has_light = !has_dark;
     }
   else
     {
@@ -441,6 +445,8 @@ prompt_palette_new_from_file (const char  *path,
   self = g_object_new (PROMPT_TYPE_PALETTE, NULL);
   self->allocated = g_memdup2 (&data, sizeof data);
   self->palette = self->allocated;
+  self->has_dark = has_dark;
+  self->has_light = has_light;
 
   return self;
 }
@@ -479,6 +485,8 @@ prompt_palette_new_from_resource (const char  *path,
       if (!prompt_palette_load_face (path, &data.faces[0], key_file, "Palette", error))
         return NULL;
       data.faces[1] = data.faces[0];
+      has_dark = is_dark (&data.faces[0].background);
+      has_light = !has_dark;
     }
   else
     {
@@ -493,6 +501,8 @@ prompt_palette_new_from_resource (const char  *path,
   self->allocated = g_memdup2 (&data, sizeof data);
   self->palette = self->allocated;
   self->is_primary = g_key_file_get_boolean (key_file, "Palette", "Primary", NULL);
+  self->has_dark = has_dark;
+  self->has_light = has_light;
 
   return self;
 }
@@ -509,4 +519,20 @@ prompt_palette_is_primary (PromptPalette *self)
   g_return_val_if_fail (PROMPT_IS_PALETTE (self), FALSE);
 
   return self->is_primary;
+}
+
+gboolean
+prompt_palette_has_dark (PromptPalette *self)
+{
+  g_return_val_if_fail (PROMPT_IS_PALETTE (self), FALSE);
+
+  return self->has_dark;
+}
+
+gboolean
+prompt_palette_has_light (PromptPalette *self)
+{
+  g_return_val_if_fail (PROMPT_IS_PALETTE (self), FALSE);
+
+  return self->has_light;
 }
