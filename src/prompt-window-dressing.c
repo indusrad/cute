@@ -23,6 +23,8 @@
 
 #include <math.h>
 
+#include "gdkhslaprivate.h"
+
 #include "prompt-window-dressing.h"
 
 struct _PromptWindowDressing
@@ -88,8 +90,12 @@ prompt_window_dressing_update (PromptWindowDressing *self)
       g_autofree char *rm_bg = NULL;
       g_autofree char *bell_fg = NULL;
       g_autofree char *bell_bg = NULL;
+      g_autofree char *new_tab_bg_str = NULL;
+      g_autofree char *new_tab_fg_str = NULL;
       char window_alpha_str[G_ASCII_DTOSTR_BUF_SIZE];
       char popover_alpha_str[G_ASCII_DTOSTR_BUF_SIZE];
+      GdkRGBA new_tab_bg;
+      GdkRGBA new_tab_fg;
       double window_alpha;
       double popover_alpha;
 
@@ -154,6 +160,7 @@ prompt_window_dressing_update (PromptWindowDressing *self)
                               self->css_class, fg,
                               self->css_class, fg);
 
+
       if (rgba_is_dark (&face->background))
         {
           g_string_append_printf (string,
@@ -185,6 +192,22 @@ prompt_window_dressing_update (PromptWindowDressing *self)
                                   "window.%s.superuser toolbarview > revealer > windowhandle { background: %s; color: %s; }\n",
                                   self->css_class, su_bg, su_fg,
                                   self->css_class, su_bg, su_fg);
+        }
+
+      if (!prompt_palette_use_adwaita (self->palette))
+        {
+          new_tab_bg = face->indexed[4];
+          new_tab_fg = face->indexed[7];
+          new_tab_bg_str = gdk_rgba_to_string (&new_tab_bg);
+          new_tab_fg_str = gdk_rgba_to_string (&new_tab_fg);
+
+          g_string_append_printf (string,
+                                  "window.%s taboverview button.new-tab-button { background: %s; color: %s; }\n"
+                                  "window.%s taboverview button.new-tab-button:hover { background: shade(%s,.95); }\n"
+                                  "window.%s taboverview button.new-tab-button:active { background: shade(%s,.90); }\n",
+                                  self->css_class, new_tab_bg_str, new_tab_fg_str,
+                                  self->css_class, new_tab_bg_str,
+                                  self->css_class, new_tab_bg_str);
         }
     }
 

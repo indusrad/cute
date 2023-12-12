@@ -70,5 +70,6 @@ const char              *prompt_palette_get_name               (PromptPalette  *
 const PromptPaletteFace *prompt_palette_get_face               (PromptPalette  *self,
                                                                 gboolean        dark);
 char                    *prompt_palette_to_string              (PromptPalette  *self);
+gboolean                 prompt_palette_use_adwaita            (PromptPalette  *self);
 
 G_END_DECLS

@@ -508,3 +508,9 @@ prompt_palette_to_string (PromptPalette *self)
 
   return g_key_file_to_data (key_file, NULL, NULL);
 }
+
+gboolean
+prompt_palette_use_adwaita (PromptPalette *self)
+{
+  return strstr (self->palette->id, "gnome") != NULL;
+}
