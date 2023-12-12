@@ -36,6 +36,12 @@
         <child>
           <object class="AdwPreferencesGroup">
             <property name="title" translatable="yes">Palette</property>
+            <child type="header-suffix">
+              <object class="GtkLinkButton" id="show_more">
+                <property name="label" translatable="yes">Show More…</property>
+                <signal name="activate-link" handler="prompt_preferences_window_show_all_cb" swapped="1"/>
+              </object>
+            </child>
             <child>
               <object class="GtkFlowBox" id="palette_previews">
                 <property name="hexpand">true</property>

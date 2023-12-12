@@ -38,6 +38,10 @@ struct _PromptPreferencesWindow
 {
   AdwPreferencesWindow  parent_instance;
 
+  char                 *default_palette_id;
+  GtkCustomFilter      *filter;
+  GtkFilterListModel   *filter_palettes;
+
   GtkListBoxRow        *add_profile_row;
   AdwSwitchRow         *audible_bell;
   AdwComboRow          *backspace_binding;
@@ -102,6 +106,7 @@ struct _PromptPreferencesWindow
   PromptShortcutRow    *shortcut_zoom_in;
   PromptShortcutRow    *shortcut_zoom_one;
   PromptShortcutRow    *shortcut_zoom_out;
+  GtkLinkButton        *show_more;
   AdwComboRow          *tab_position;
   GListModel           *tab_positions;
   AdwComboRow          *text_blink_mode;
@@ -111,6 +116,26 @@ struct _PromptPreferencesWindow
 };
 
 G_DEFINE_FINAL_TYPE (PromptPreferencesWindow, prompt_preferences_window, ADW_TYPE_PREFERENCES_WINDOW)
+
+enum {
+  PROP_0,
+  PROP_DEFAULT_PALETTE_ID,
+  N_PROPS
+};
+
+static GParamSpec *properties[N_PROPS];
+
+static gboolean
+filter_primary (gpointer item,
+                gpointer user_data)
+{
+  PromptPreferencesWindow *self = user_data;
+
+  if (prompt_palette_is_primary (item))
+    return TRUE;
+
+  return g_strcmp0 (self->default_palette_id, prompt_palette_get_id (item)) == 0;
+}
 
 static gboolean
 monospace_filter (gpointer item,
@@ -214,6 +239,28 @@ prompt_preferences_window_profile_row_activated_cb (PromptPreferencesWindow *sel
   prompt_preferences_window_edit_profile (self, profile);
 }
 
+static gboolean
+prompt_preferences_window_show_all_cb (PromptPreferencesWindow *self,
+                                       GtkLinkButton           *button)
+{
+  g_assert (PROMPT_IS_PREFERENCES_WINDOW (self));
+  g_assert (GTK_IS_LINK_BUTTON (button));
+
+  if (gtk_filter_list_model_get_filter (self->filter_palettes) != NULL)
+    {
+      gtk_button_set_label (GTK_BUTTON (self->show_more), _("Show Fewer…"));
+      gtk_filter_list_model_set_filter (self->filter_palettes, NULL);
+    }
+  else
+    {
+      gtk_button_set_label (GTK_BUTTON (self->show_more), _("Show More…"));
+      gtk_filter_list_model_set_filter (self->filter_palettes,
+                                        GTK_FILTER (self->filter));
+    }
+
+  return TRUE;
+}
+
 static GtkWidget *
 prompt_preferences_window_create_profile_row_cb (gpointer item,
                                                  gpointer user_data)
@@ -314,6 +361,10 @@ prompt_preferences_window_notify_default_profile_cb (PromptPreferencesWindow *se
 
   profile = prompt_application_dup_default_profile (app);
   gsettings = prompt_profile_dup_settings (profile);
+
+  g_object_bind_property (profile, "palette-id",
+                          self, "default-palette-id",
+                          G_BINDING_SYNC_CREATE);
 
   for (GtkWidget *child = gtk_widget_get_first_child (GTK_WIDGET (self->palette_previews));
        child;
@@ -494,13 +545,15 @@ prompt_preferences_window_constructed (GObject *object)
   GSettings *gsettings = prompt_settings_get_settings (settings);
   AdwStyleManager *style_manager = adw_style_manager_get_default ();
   g_autoptr(GListModel) profiles = NULL;
-  GListModel *palettes;
 
   G_OBJECT_CLASS (prompt_preferences_window_parent_class)->constructed (object);
 
-  palettes = prompt_palette_get_all ();
+  self->filter = gtk_custom_filter_new (filter_primary, self, NULL);
+  self->filter_palettes = gtk_filter_list_model_new (g_object_ref (prompt_palette_get_all ()),
+                                                     g_object_ref (GTK_FILTER (self->filter)));
+
   gtk_flow_box_bind_model (self->palette_previews,
-                           palettes,
+                           G_LIST_MODEL (self->filter_palettes),
                            create_palette_preview,
                            g_object_ref (style_manager),
                            g_object_unref);
@@ -716,7 +769,52 @@ prompt_preferences_window_dispose (GObject *object)
 
   gtk_widget_dispose_template (GTK_WIDGET (self), PROMPT_TYPE_PREFERENCES_WINDOW);
 
+  g_clear_object (&self->filter);
+  g_clear_object (&self->filter_palettes);
+
   G_OBJECT_CLASS (prompt_preferences_window_parent_class)->dispose (object);
+}
+
+static void
+prompt_preferences_window_get_property (GObject    *object,
+                                        guint       prop_id,
+                                        GValue     *value,
+                                        GParamSpec *pspec)
+{
+  PromptPreferencesWindow *self = PROMPT_PREFERENCES_WINDOW (object);
+
+  switch (prop_id)
+    {
+    case PROP_DEFAULT_PALETTE_ID:
+      g_value_set_string (value, self->default_palette_id);
+      break;
+
+    default:
+      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+    }
+}
+
+static void
+prompt_preferences_window_set_property (GObject      *object,
+                                        guint         prop_id,
+                                        const GValue *value,
+                                        GParamSpec   *pspec)
+{
+  PromptPreferencesWindow *self = PROMPT_PREFERENCES_WINDOW (object);
+
+  switch (prop_id)
+    {
+    case PROP_DEFAULT_PALETTE_ID:
+      if (g_set_str (&self->default_palette_id, g_value_get_string (value)))
+        {
+          gtk_filter_changed (GTK_FILTER (self->filter), GTK_FILTER_CHANGE_DIFFERENT);
+          g_object_notify_by_pspec (G_OBJECT (self), pspec);
+        }
+      break;
+
+    default:
+      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+    }
 }
 
 static void
@@ -727,6 +825,17 @@ prompt_preferences_window_class_init (PromptPreferencesWindowClass *klass)
 
   object_class->constructed = prompt_preferences_window_constructed;
   object_class->dispose = prompt_preferences_window_dispose;
+  object_class->get_property = prompt_preferences_window_get_property;
+  object_class->set_property = prompt_preferences_window_set_property;
+
+  properties[PROP_DEFAULT_PALETTE_ID] =
+    g_param_spec_string ("default-palette-id", NULL, NULL,
+                         NULL,
+                         (G_PARAM_READWRITE |
+                          G_PARAM_EXPLICIT_NOTIFY |
+                          G_PARAM_STATIC_STRINGS));
+
+  g_object_class_install_properties (object_class, N_PROPS, properties);
 
   gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/Prompt/prompt-preferences-window.ui");
 
@@ -794,6 +903,7 @@ prompt_preferences_window_class_init (PromptPreferencesWindowClass *klass)
   gtk_widget_class_bind_template_child (widget_class, PromptPreferencesWindow, shortcut_zoom_in);
   gtk_widget_class_bind_template_child (widget_class, PromptPreferencesWindow, shortcut_zoom_one);
   gtk_widget_class_bind_template_child (widget_class, PromptPreferencesWindow, shortcut_zoom_out);
+  gtk_widget_class_bind_template_child (widget_class, PromptPreferencesWindow, show_more);
   gtk_widget_class_bind_template_child (widget_class, PromptPreferencesWindow, tab_position);
   gtk_widget_class_bind_template_child (widget_class, PromptPreferencesWindow, tab_positions);
   gtk_widget_class_bind_template_child (widget_class, PromptPreferencesWindow, text_blink_mode);
@@ -802,6 +912,7 @@ prompt_preferences_window_class_init (PromptPreferencesWindowClass *klass)
   gtk_widget_class_bind_template_child (widget_class, PromptPreferencesWindow, visual_bell);
 
   gtk_widget_class_bind_template_callback (widget_class, prompt_preferences_window_profile_row_activated_cb);
+  gtk_widget_class_bind_template_callback (widget_class, prompt_preferences_window_show_all_cb);
 
   gtk_widget_class_install_action (widget_class,
                                    "profile.add",
