@@ -21,12 +21,6 @@ Color12=#93a1a1
 Color13=#6c71c4
 Color14=#839496
 Color15=#fdf6e3
-BellForeground=#073642
-BellBackground=#f7e0a2
-SuperuserForeground=#fdf6e3
-SuperuserBackground=#cb4b16
-RemoteForeground=#fdf6e3
-RemoteBackground=#6c71c4
 
 [Dark]
 Foreground=#839496
@@ -48,9 +42,3 @@ Color12=#839496
 Color13=#6c71c4
 Color14=#93a1a1
 Color15=#fdf6e3
-BellForeground=#fdf6e3
-BellBackground=#335459
-SuperuserForeground=#fdf6e3
-SuperuserBackground=#cb4b16
-RemoteForeground=#fdf6e3
-RemoteBackground=#6c71c4

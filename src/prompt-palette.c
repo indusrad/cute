@@ -284,6 +284,8 @@ prompt_palette_load_face (const char         *path,
                           const char         *scheme,
                           GError            **error)
 {
+  gboolean dark;
+
   if (!g_key_file_has_group (key_file, scheme))
     {
       g_set_error (error,
@@ -317,10 +319,12 @@ prompt_palette_load_face (const char         *path,
       !prompt_palette_load_color (path, &face->indexed[15], key_file, scheme, "Color15", error))
     return FALSE;
 
+  dark = is_dark (&face->background);
+
   if (!prompt_palette_load_color (path, &face->titlebar_foreground, key_file, scheme, "TitlebarForeground", NULL))
-    face->titlebar_foreground = _gdk_rgba_shade (&face->foreground, is_dark (&face->background) ? 1.25 : .95);
+    face->titlebar_foreground = _gdk_rgba_shade (&face->foreground, dark ? 1.25 : .95);
   if (!prompt_palette_load_color (path, &face->titlebar_background, key_file, scheme, "TitlebarBackground", NULL))
-    face->titlebar_background = _gdk_rgba_shade (&face->background, is_dark (&face->background) ? 1.25 : .95);
+    face->titlebar_background = _gdk_rgba_shade (&face->background, dark ? 1.25 : .95);
 
   if (!prompt_palette_load_color (path, &face->visual_bell.foreground, key_file, scheme, "BellForeground", NULL))
     face->visual_bell.foreground = face->titlebar_foreground;
@@ -328,14 +332,14 @@ prompt_palette_load_face (const char         *path,
     face->visual_bell.background = mix (&face->indexed[11], &face->titlebar_background, .25);
 
   if (!prompt_palette_load_color (path, &face->superuser.foreground, key_file, scheme, "SuperuserForeground", NULL))
-    face->superuser.foreground = face->titlebar_foreground;
+    face->superuser.foreground = _gdk_rgba_shade (&face->titlebar_foreground, dark ? 1 : .8);
   if (!prompt_palette_load_color (path, &face->superuser.background, key_file, scheme, "SuperuserBackground", NULL))
-    face->superuser.background = mix (&face->indexed[1], &face->titlebar_background, .33);
+    face->superuser.background = mix (&face->indexed[1], &face->background, dark ? .33 : .5);
 
   if (!prompt_palette_load_color (path, &face->remote.foreground, key_file, scheme, "RemoteForeground", NULL))
-    face->remote.foreground = face->titlebar_foreground;
+    face->remote.foreground = _gdk_rgba_shade (&face->titlebar_foreground, dark ? 1 : .8);
   if (!prompt_palette_load_color (path, &face->remote.background, key_file, scheme, "RemoteBackground", NULL))
-    face->remote.background = mix (&face->indexed[12], &face->titlebar_background, .33);
+    face->remote.background = mix (&face->indexed[12], &face->background, dark ? .33 : .5);
 
   return TRUE;
 }
