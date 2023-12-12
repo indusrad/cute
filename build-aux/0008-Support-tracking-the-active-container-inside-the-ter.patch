@@ -1,4 +1,4 @@
-From 317f18a302e1c4bdc2e0e6681a1d339331c381f9 Mon Sep 17 00:00:00 2001
+From c8eccafb31dec03f14e04c0c79eebc16ec175620 Mon Sep 17 00:00:00 2001
 From: Debarshi Ray <debarshir@gnome.org>
 Date: Sun, 26 Nov 2023 18:44:32 -0800
 Subject: [PATCH 8/9] Support tracking the active container inside the terminal
@@ -39,10 +39,10 @@ agreed upon across multiple different terminal emulators [1].
  6 files changed, 208 insertions(+)
 
 diff --git a/src/vte.cc b/src/vte.cc
-index e86fe18e..6c649576 100644
+index 14a259c2..1270356e 100644
 --- a/src/vte.cc
 +++ b/src/vte.cc
-@@ -10788,6 +10788,14 @@ Terminal::emit_pending_signals()
+@@ -10786,6 +10786,14 @@ Terminal::emit_pending_signals()
                                    "Emitting `shell-precmd'.\n");
                  g_signal_emit(freezer.get(), signals[SIGNAL_SHELL_PRECMD], 0);
          }
@@ -58,10 +58,10 @@ index e86fe18e..6c649576 100644
  
  	if (m_pending_changes & vte::to_integral(PendingChanges::TITLE)) {
 diff --git a/src/vte/vteterminal.h b/src/vte/vteterminal.h
-index 9b06afeb..e8792f2b 100644
+index aed105e9..a16773e4 100644
 --- a/src/vte/vteterminal.h
 +++ b/src/vte/vteterminal.h
-@@ -567,6 +567,12 @@ _VTE_PUBLIC
+@@ -574,6 +574,12 @@ _VTE_PUBLIC
  glong vte_terminal_get_column_count(VteTerminal *terminal) _VTE_CXX_NOEXCEPT _VTE_GNUC_NONNULL(1);
  _VTE_PUBLIC
  const char *vte_terminal_get_window_title(VteTerminal *terminal) _VTE_CXX_NOEXCEPT _VTE_GNUC_NONNULL(1);
@@ -75,7 +75,7 @@ index 9b06afeb..e8792f2b 100644
  const char *vte_terminal_get_current_directory_uri(VteTerminal *terminal) _VTE_CXX_NOEXCEPT _VTE_GNUC_NONNULL(1);
  _VTE_PUBLIC
 diff --git a/src/vtegtk.cc b/src/vtegtk.cc
-index 4e264b3b..b25f87fa 100644
+index 79de4a1b..9814cf54 100644
 --- a/src/vtegtk.cc
 +++ b/src/vtegtk.cc
 @@ -999,6 +999,14 @@ try
@@ -93,7 +93,7 @@ index 4e264b3b..b25f87fa 100644
                  case PROP_CURRENT_DIRECTORY_URI:
                          g_value_set_string (value, vte_terminal_get_current_directory_uri (terminal));
                          break;
-@@ -2529,6 +2537,29 @@ vte_terminal_class_init(VteTerminalClass *klass)
+@@ -2530,6 +2538,29 @@ vte_terminal_class_init(VteTerminalClass *klass)
                                       NULL,
                                       (GParamFlags) (G_PARAM_READABLE | G_PARAM_STATIC_STRINGS | G_PARAM_EXPLICIT_NOTIFY));
  
@@ -123,7 +123,7 @@ index 4e264b3b..b25f87fa 100644
          /**
           * VteTerminal:current-directory-uri:
           *
-@@ -5395,6 +5426,58 @@ catch (...)
+@@ -5431,6 +5462,58 @@ catch (...)
          return -1;
  }
  

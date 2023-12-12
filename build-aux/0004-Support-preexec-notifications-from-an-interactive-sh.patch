@@ -1,4 +1,4 @@
-From 56d3fdde0ed79364f0a94316bd5389be491e2cd4 Mon Sep 17 00:00:00 2001
+From 98d83fbd3c9cc25d44757ef1a844a7e6ccd4be5b Mon Sep 17 00:00:00 2001
 From: Debarshi Ray <debarshir@gnome.org>
 Date: Sun, 26 Nov 2023 18:24:11 -0800
 Subject: [PATCH 4/9] Support preexec notifications from an interactive shell
@@ -27,10 +27,10 @@ https://bugzilla.gnome.org/show_bug.cgi?id=711060
  7 files changed, 34 insertions(+), 2 deletions(-)
 
 diff --git a/src/vte.cc b/src/vte.cc
-index edc5a4af..bf9f95bf 100644
+index c7981e1b..49a3d8f3 100644
 --- a/src/vte.cc
 +++ b/src/vte.cc
-@@ -10776,6 +10776,12 @@ Terminal::emit_pending_signals()
+@@ -10774,6 +10774,12 @@ Terminal::emit_pending_signals()
                                m_notification_summary.c_str(),
                                m_notification_body.c_str());
          }
@@ -60,10 +60,10 @@ index 50242223..fbbb1a03 100644
  
  elif [[ -n "${ZSH_VERSION:-}" ]]; then
 diff --git a/src/vte/vteterminal.h b/src/vte/vteterminal.h
-index 13d52f34..90fa4d26 100644
+index 77d96a31..29529020 100644
 --- a/src/vte/vteterminal.h
 +++ b/src/vte/vteterminal.h
-@@ -111,10 +111,11 @@ struct _VteTerminalClass {
+@@ -115,10 +115,11 @@ struct _VteTerminalClass {
  
  #if _VTE_GTK == 3
          void (*notification_received)(VteTerminal* terminal, const gchar *summary, const gchar *body);
@@ -75,9 +75,9 @@ index 13d52f34..90fa4d26 100644
 +        gpointer _extra_padding[1];
  #endif /* _VTE_GTK == 3 */
  
-         /* Add new vfuncs here, and subtract from the padding below. */
+         void (*setup_context_menu)(VteTerminal* terminal,
 diff --git a/src/vtegtk.cc b/src/vtegtk.cc
-index 9bc7679f..0ea2e754 100644
+index c924df55..c4cf5537 100644
 --- a/src/vtegtk.cc
 +++ b/src/vtegtk.cc
 @@ -1347,6 +1347,7 @@ vte_terminal_class_init(VteTerminalClass *klass)

@@ -1,4 +1,4 @@
-From 986fc30b9727fb783bcfd5750ebdb087a028c74c Mon Sep 17 00:00:00 2001
+From d83f2a64b9d39258b28837e586e178ff372d5f8d Mon Sep 17 00:00:00 2001
 From: Debarshi Ray <debarshir@gnome.org>
 Date: Thu, 22 Jan 2015 16:37:10 +0100
 Subject: [PATCH 3/9] Test the notification-received signal

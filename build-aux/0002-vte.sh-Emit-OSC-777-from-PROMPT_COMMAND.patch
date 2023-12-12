@@ -1,4 +1,4 @@
-From 0fc00ca8c070ae1030b4860a26bfd52e558829a2 Mon Sep 17 00:00:00 2001
+From 7802dbb224863dcae3f69bf0e124f90635c496b2 Mon Sep 17 00:00:00 2001
 From: Debarshi Ray <debarshir@gnome.org>
 Date: Thu, 29 Jan 2015 13:09:17 +0100
 Subject: [PATCH 2/9] vte.sh: Emit OSC 777 from PROMPT_COMMAND

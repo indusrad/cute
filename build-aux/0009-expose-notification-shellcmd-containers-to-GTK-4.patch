@@ -1,4 +1,4 @@
-From c1f318490a37e0bf359494566614acce48d4fc62 Mon Sep 17 00:00:00 2001
+From eae1fd1ba683d8126b956eae5e0f0d491cf7977c Mon Sep 17 00:00:00 2001
 From: Christian Hergert <chergert@redhat.com>
 Date: Sun, 26 Nov 2023 18:51:32 -0800
 Subject: [PATCH 9/9] expose notification/shellcmd/containers to GTK 4
@@ -31,10 +31,10 @@ index 68c2032a..4f9a2473 100644
          if (options.no_double_buffer) {
                  G_GNUC_BEGIN_IGNORE_DEPRECATIONS;
 diff --git a/src/vte.cc b/src/vte.cc
-index 6c649576..9859b73c 100644
+index 1270356e..751eff0e 100644
 --- a/src/vte.cc
 +++ b/src/vte.cc
-@@ -10768,7 +10768,6 @@ Terminal::emit_pending_signals()
+@@ -10766,7 +10766,6 @@ Terminal::emit_pending_signals()
  
  	emit_adjustment_changed();
  
@@ -42,7 +42,7 @@ index 6c649576..9859b73c 100644
          if (m_pending_changes & vte::to_integral(PendingChanges::NOTIFICATION)) {
                  _vte_debug_print (VTE_DEBUG_SIGNALS,
                                    "Emitting `notification-received'.\n");
-@@ -10796,7 +10795,6 @@ Terminal::emit_pending_signals()
+@@ -10794,7 +10793,6 @@ Terminal::emit_pending_signals()
                  g_object_notify_by_pspec(freezer.get(), pspecs[PROP_CURRENT_CONTAINER_NAME]);
                  g_object_notify_by_pspec(freezer.get(), pspecs[PROP_CURRENT_CONTAINER_RUNTIME]);
          }
@@ -51,10 +51,10 @@ index 6c649576..9859b73c 100644
  	if (m_pending_changes & vte::to_integral(PendingChanges::TITLE)) {
                  if (m_window_title != m_window_title_pending) {
 diff --git a/src/vte/vteterminal.h b/src/vte/vteterminal.h
-index e8792f2b..ccc5fe8b 100644
+index a16773e4..089dae6e 100644
 --- a/src/vte/vteterminal.h
 +++ b/src/vte/vteterminal.h
-@@ -109,20 +109,14 @@ struct _VteTerminalClass {
+@@ -113,11 +113,9 @@ struct _VteTerminalClass {
  
  	void (*bell)(VteTerminal* terminal);
  
@@ -64,18 +64,21 @@ index e8792f2b..ccc5fe8b 100644
          void (*shell_preexec)(VteTerminal* terminal);
 -#endif /* _VTE_GTK == 3 */
  
-         /* Add new vfuncs here, and subtract from the padding below. */
+         void (*setup_context_menu)(VteTerminal* terminal,
+                                    VteEventContext const* context);
+@@ -125,11 +123,7 @@ struct _VteTerminalClass {
+         /* Add new vfuncs just above, and subtract from the padding below. */
  
          /* Padding for future expansion. */
 -#if _VTE_GTK == 3
--        gpointer _padding[13];
+-        gpointer _padding[12];
 -#elif _VTE_GTK == 4
-         gpointer _padding[16];
+         gpointer _padding[15];
 -#endif /* _VTE_GTK */
  
  // FIXMEgtk4 use class private data instead
          VteTerminalClassPrivate *priv;
-@@ -567,12 +561,10 @@ _VTE_PUBLIC
+@@ -574,12 +568,10 @@ _VTE_PUBLIC
  glong vte_terminal_get_column_count(VteTerminal *terminal) _VTE_CXX_NOEXCEPT _VTE_GNUC_NONNULL(1);
  _VTE_PUBLIC
  const char *vte_terminal_get_window_title(VteTerminal *terminal) _VTE_CXX_NOEXCEPT _VTE_GNUC_NONNULL(1);
@@ -89,7 +92,7 @@ index e8792f2b..ccc5fe8b 100644
  const char *vte_terminal_get_current_directory_uri(VteTerminal *terminal) _VTE_CXX_NOEXCEPT _VTE_GNUC_NONNULL(1);
  _VTE_PUBLIC
 diff --git a/src/vtegtk.cc b/src/vtegtk.cc
-index b25f87fa..54cadfac 100644
+index 9814cf54..5ef11564 100644
 --- a/src/vtegtk.cc
 +++ b/src/vtegtk.cc
 @@ -999,14 +999,12 @@ try
@@ -135,7 +138,7 @@ index b25f87fa..54cadfac 100644
  
          /**
           * VteTerminal::window-title-changed:
-@@ -2537,7 +2531,6 @@ vte_terminal_class_init(VteTerminalClass *klass)
+@@ -2538,7 +2532,6 @@ vte_terminal_class_init(VteTerminalClass *klass)
                                       NULL,
                                       (GParamFlags) (G_PARAM_READABLE | G_PARAM_STATIC_STRINGS | G_PARAM_EXPLICIT_NOTIFY));
  
@@ -143,7 +146,7 @@ index b25f87fa..54cadfac 100644
          /**
           * VteTerminal:current-container-name:
           *
-@@ -2558,7 +2551,6 @@ vte_terminal_class_init(VteTerminalClass *klass)
+@@ -2559,7 +2552,6 @@ vte_terminal_class_init(VteTerminalClass *klass)
                  g_param_spec_string ("current-container-runtime", NULL, NULL,
                                       NULL,
                                       (GParamFlags) (G_PARAM_READABLE | G_PARAM_STATIC_STRINGS | G_PARAM_EXPLICIT_NOTIFY));
@@ -151,7 +154,7 @@ index b25f87fa..54cadfac 100644
  
          /**
           * VteTerminal:current-directory-uri:
-@@ -5426,7 +5418,6 @@ catch (...)
+@@ -5462,7 +5454,6 @@ catch (...)
          return -1;
  }
  
@@ -159,7 +162,7 @@ index b25f87fa..54cadfac 100644
  /**
   * vte_terminal_get_current_container_name:
   * @terminal: a #VteTerminal
-@@ -5476,7 +5467,6 @@ catch (...)
+@@ -5512,7 +5503,6 @@ catch (...)
          vte::log_exception();
          return NULL;
  }

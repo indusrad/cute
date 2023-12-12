@@ -1,4 +1,4 @@
-From 2ef612ea9faaa1922f5940760fd610c64a334316 Mon Sep 17 00:00:00 2001
+From a5894c126fb13fbfa97772a957d8b6b013b0ff6c Mon Sep 17 00:00:00 2001
 From: Debarshi Ray <debarshir@gnome.org>
 Date: Wed, 2 May 2018 17:30:48 +0200
 Subject: [PATCH 7/9] Test the shell-precmd signal
