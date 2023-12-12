@@ -1,0 +1,23 @@
+[Palette]
+Name=Vs Code Light+
+Background=#F9F9F9
+Foreground=#020202
+Cursor=#020202
+Color0=#020202
+Color1=#CD3232
+Color2=#00BC00
+Color3=#A5A900
+Color4=#0752A8
+Color5=#BC05BC
+Color6=#0598BC
+Color7=#343434
+Color8=#5E5E5E
+Color9=#CD3333
+Color10=#1BCE1A
+Color11=#ADBB5B
+Color12=#0752A8
+Color13=#C451CE
+Color14=#52A8C7
+Color15=#A6A3A6
+
+# This file was generated from https://github.com/Gogh-Co/Gogh/tree/master/themes/Vs Code Light+.yml

@@ -1,0 +1,23 @@
+[Palette]
+Name=Gruvbox
+Background=#FBF1C7
+Foreground=#3C3836
+Cursor=#3C3836
+Color0=#FBF1C7
+Color1=#CC241D
+Color2=#98971A
+Color3=#D79921
+Color4=#458588
+Color5=#B16286
+Color6=#689D6A
+Color7=#7C6F64
+Color8=#928374
+Color9=#9D0006
+Color10=#79740E
+Color11=#B57614
+Color12=#076678
+Color13=#8F3F71
+Color14=#427B58
+Color15=#3C3836
+
+# This file was generated from https://github.com/Gogh-Co/Gogh/tree/master/themes/Gruvbox.yml

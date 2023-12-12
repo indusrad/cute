@@ -1,0 +1,23 @@
+[Palette]
+Name=Campbell
+Background=#0C0C0C
+Foreground=#CCCCCC
+Cursor=#FFFFFF
+Color0=#0C0C0C
+Color1=#C50F1F
+Color2=#13A10E
+Color3=#C19C00
+Color4=#0037DA
+Color5=#881798
+Color6=#3A96DD
+Color7=#CCCCCC
+Color8=#767676
+Color9=#E74856
+Color10=#16C60C
+Color11=#F9F1A5
+Color12=#3B78FF
+Color13=#B4009E
+Color14=#61D6D6
+Color15=#F2F2F2
+
+# This file was generated from https://github.com/Gogh-Co/Gogh/tree/master/themes/Campbell.yml

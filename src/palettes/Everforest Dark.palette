@@ -1,0 +1,23 @@
+[Palette]
+Name=Everforest Dark
+Background=#2D353B
+Foreground=#D3C6AA
+Cursor=#D3C6AA
+Color0=#4B565C
+Color1=#E67E80
+Color2=#A7C080
+Color3=#DBBC7F
+Color4=#7FBBB3
+Color5=#D699B6
+Color6=#83C092
+Color7=#D3C6AA
+Color8=#5C6A72
+Color9=#F85552
+Color10=#8DA101
+Color11=#DFA000
+Color12=#3A94C5
+Color13=#DF69BA
+Color14=#35A77C
+Color15=#DFDDC8
+
+# This file was generated from https://github.com/Gogh-Co/Gogh/tree/master/themes/Everforest Dark.yml

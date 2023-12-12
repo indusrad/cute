@@ -1,0 +1,23 @@
+[Palette]
+Name=Github Dark
+Background=#101216
+Foreground=#8B949E
+Cursor=#C9D1D9
+Color0=#000000
+Color1=#F78166
+Color2=#56D364
+Color3=#E3B341
+Color4=#6CA4F8
+Color5=#DB61A2
+Color6=#2B7489
+Color7=#FFFFFF
+Color8=#4D4D4D
+Color9=#F78166
+Color10=#56D364
+Color11=#E3B341
+Color12=#6CA4F8
+Color13=#DB61A2
+Color14=#2B7489
+Color15=#FFFFFF
+
+# This file was generated from https://github.com/Gogh-Co/Gogh/tree/master/themes/Github Dark.yml

@@ -1,0 +1,23 @@
+[Palette]
+Name=Vs Code Dark+
+Background=#1E1E1E
+Foreground=#CCCCCC
+Cursor=#CCCCCC
+Color0=#6A787A
+Color1=#E9653B
+Color2=#39E9A8
+Color3=#E5B684
+Color4=#44AAE6
+Color5=#E17599
+Color6=#3DD5E7
+Color7=#C3DDE1
+Color8=#598489
+Color9=#E65029
+Color10=#00FF9A
+Color11=#E89440
+Color12=#009AFB
+Color13=#FF578F
+Color14=#5FFFFF
+Color15=#D9FBFF
+
+# This file was generated from https://github.com/Gogh-Co/Gogh/tree/master/themes/Vs Code Dark+.yml
