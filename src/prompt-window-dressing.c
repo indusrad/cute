@@ -145,8 +145,10 @@ prompt_window_dressing_update (PromptWindowDressing *self)
                               "window.%s revealer.raised.top-bar { background: %s; color: %s; }\n",
                               self->css_class, titlebar_bg, titlebar_fg);
       g_string_append_printf (string,
+                              "window.%s box.visual-bell headerbar { background: transparent; }\n"
                               "window.%s box.visual-bell { animation: visual-bell-%s-%s 0.3s ease-out; }\n"
                               "@keyframes visual-bell-%s-%s { 50%% { background: %s; color: %s; } }\n",
+                              self->css_class,
                               self->css_class, self->css_class, dark ? "dark" : "light",
                               self->css_class, dark ? "dark" : "light", bell_bg, bell_fg);
       g_string_append_printf (string,
