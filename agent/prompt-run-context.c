@@ -888,7 +888,7 @@ prompt_run_context_child_setup_cb (gpointer data)
   setpgid (0, 0);
 
 #ifdef __linux__
-  prctl (PR_SET_PDEATHSIG, SIGKILL);
+  prctl (PR_SET_PDEATHSIG, SIGHUP);
 #endif
 
   if (isatty (STDIN_FILENO))
