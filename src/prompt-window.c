@@ -722,7 +722,15 @@ prompt_window_page_previous_action (GtkWidget  *widget,
                                     const char *action_name,
                                     GVariant   *param)
 {
-  adw_tab_view_select_previous_page (PROMPT_WINDOW (widget)->tab_view);
+  PromptWindow *self = PROMPT_WINDOW (widget);
+  guint n_pages = adw_tab_view_get_n_pages (self->tab_view);
+
+  if (n_pages == 0)
+    return;
+
+  if (!adw_tab_view_select_previous_page (self->tab_view))
+    adw_tab_view_set_selected_page (self->tab_view,
+                                    adw_tab_view_get_nth_page (self->tab_view, n_pages-1));
 }
 
 static void
@@ -730,7 +738,15 @@ prompt_window_page_next_action (GtkWidget  *widget,
                                 const char *action_name,
                                 GVariant   *param)
 {
-  adw_tab_view_select_next_page (PROMPT_WINDOW (widget)->tab_view);
+  PromptWindow *self = PROMPT_WINDOW (widget);
+  guint n_pages = adw_tab_view_get_n_pages (self->tab_view);
+
+  if (n_pages == 0)
+    return;
+
+  if (!adw_tab_view_select_next_page (self->tab_view))
+    adw_tab_view_set_selected_page (self->tab_view,
+                                    adw_tab_view_get_nth_page (self->tab_view, 0));
 }
 
 static void
