@@ -399,6 +399,10 @@ prompt_window_apply_current_settings (PromptWindow *self,
         prompt_tab_set_previous_working_directory_uri (tab, current_directory_uri);
 
       prompt_tab_set_zoom (tab, zoom);
+
+      vte_terminal_set_size (VTE_TERMINAL (prompt_tab_get_terminal (tab)),
+                             vte_terminal_get_column_count (VTE_TERMINAL (terminal)),
+                             vte_terminal_get_row_count (VTE_TERMINAL (terminal)));
     }
 }
 
