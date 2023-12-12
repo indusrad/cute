@@ -97,8 +97,6 @@ prompt_user_palettes_load_file (PromptUserPalettes *self,
               g_list_model_items_changed (G_LIST_MODEL (self), pos, 1, 1);
               return;
             }
-
-          g_assert_not_reached ();
         }
 
       g_hash_table_insert (self->file_to_palette,
