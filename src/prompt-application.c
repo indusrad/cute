@@ -141,32 +141,89 @@ prompt_application_activate (GApplication *app)
     }
 }
 
+static PromptWindow *
+get_current_window (PromptApplication *self)
+{
+  GtkWindow *active_window;
+
+  g_assert (PROMPT_IS_APPLICATION (self));
+
+  if ((active_window = gtk_application_get_active_window (GTK_APPLICATION (self))) &&
+      PROMPT_IS_WINDOW (active_window))
+    return PROMPT_WINDOW (active_window);
+
+  for (const GList *iter = gtk_application_get_windows (GTK_APPLICATION (self));
+       iter != NULL;
+       iter = iter->next)
+    {
+      if (PROMPT_IS_WINDOW (iter->data))
+        return PROMPT_WINDOW (iter->data);
+    }
+
+  return NULL;
+}
+
 static int
 prompt_application_command_line (GApplication            *app,
                                  GApplicationCommandLine *cmdline)
 {
   PromptApplication *self = (PromptApplication *)app;
+  g_autofree char *new_tab_with_profile = NULL;
+  g_autofree char *working_directory = NULL;
   g_autofree char *command = NULL;
   g_auto(GStrv) argv = NULL;
   GVariantDict *dict;
+  gboolean new_tab = FALSE;
+  gboolean new_window = FALSE;
   int argc;
 
   g_assert (PROMPT_IS_APPLICATION (self));
   g_assert (G_IS_APPLICATION_COMMAND_LINE (cmdline));
 
+  /* NOTE: This looks complex, because it is.
+   *
+   * The primary idea is that we want to allow all of --tab, --new-window,
+   * --tab-with-profile to work with --working-dir and -x/--. But additionally
+   * it needs to do the right thing in the case we're running in
+   * single-instance-mode (such as for Terminal=true .desktop file) as well as
+   * guessing that the user wants things in the previous session (if --tab,
+   * --tab-with-profile, or --new-window is specified).
+   */
+
   dict = g_application_command_line_get_options_dict (cmdline);
 
   argv = g_application_command_line_get_arguments (cmdline, &argc);
 
+  if (!g_variant_dict_lookup (dict, "tab", "b", &new_tab))
+    new_tab = FALSE;
+
+  if (!g_variant_dict_lookup (dict, "tab-with-profile", "s", &new_tab_with_profile))
+    new_tab_with_profile = NULL;
+
+  if (!g_variant_dict_lookup (dict, "new-window", "b", &new_window))
+    new_window = FALSE;
+
+  if (new_tab && new_window)
+    {
+      g_application_command_line_printerr (cmdline,
+                                           "%s\n",
+                                           _("--tab, --tab-with-profile, or --new-window may not be used together"));
+      return EXIT_FAILURE;
+    }
+
+  if (!g_variant_dict_lookup (dict, "working-directory", "^ay", &working_directory))
+    working_directory = NULL;
+
   if (g_variant_dict_contains (dict, "preferences"))
-    g_action_group_activate_action (G_ACTION_GROUP (self), "preferences", NULL);
+    {
+      g_action_group_activate_action (G_ACTION_GROUP (self), "preferences", NULL);
+    }
   else if (g_variant_dict_contains (dict, "execute") &&
            g_variant_dict_lookup (dict, "execute", "s", &command))
     {
       const char *cwd = g_application_command_line_get_cwd (cmdline);
       g_autoptr(GError) error = NULL;
       g_autofree char *cwd_uri = NULL;
-      PromptWindow *window;
 
       if (!g_shell_parse_argv (command, &argc, &argv, &error))
         {
@@ -176,17 +233,88 @@ prompt_application_command_line (GApplication            *app,
           return EXIT_FAILURE;
         }
 
-      if (cwd != NULL && g_path_is_absolute (cwd))
-        cwd_uri = g_strdup_printf ("file://%s", cwd);
+      if (working_directory == NULL)
+        working_directory = g_strdup (cwd);
 
-      window = prompt_window_new_for_command ((const char * const *)argv, cwd_uri);
-      gtk_application_add_window (GTK_APPLICATION (self), GTK_WINDOW (window));
-      gtk_window_present (GTK_WINDOW (window));
+      if (working_directory != NULL)
+        {
+          if (g_uri_peek_scheme (working_directory) != NULL)
+            cwd_uri = g_strdup (working_directory);
+          else
+            cwd_uri = g_strdup_printf ("file://%s", working_directory);
+        }
+
+      if (new_tab)
+        {
+          PromptWindow *window = get_current_window (self);
+
+          if (window == NULL)
+            window = prompt_window_new_empty ();
+          prompt_window_add_tab_for_command (window, NULL, (const char * const *)argv, cwd_uri);
+          gtk_window_present (GTK_WINDOW (window));
+        }
+      else if (new_tab_with_profile)
+        {
+          g_autoptr(PromptProfile) profile = prompt_application_dup_profile (self, new_tab_with_profile);
+          PromptWindow *window = get_current_window (self);
+
+          if (window == NULL)
+            window = prompt_window_new_empty ();
+          prompt_window_add_tab_for_command (window, profile, (const char * const *)argv, cwd_uri);
+          gtk_window_present (GTK_WINDOW (window));
+        }
+      else if (new_window)
+        {
+          PromptWindow *window;
+
+          window = prompt_window_new_empty ();
+          prompt_window_add_tab_for_command (window, NULL, (const char * const *)argv, cwd_uri);
+          gtk_window_present (GTK_WINDOW (window));
+        }
+      else
+        {
+          PromptWindow *window;
+
+          window = prompt_window_new_for_command (NULL, (const char * const *)argv, cwd_uri);
+          gtk_application_add_window (GTK_APPLICATION (self), GTK_WINDOW (window));
+          gtk_window_present (GTK_WINDOW (window));
+        }
+
     }
   else if (g_variant_dict_contains (dict, "new-window"))
-    prompt_application_new_window_action (NULL, NULL, self);
+    {
+      prompt_application_new_window_action (NULL, NULL, self);
+    }
+  else if (g_variant_dict_contains (dict, "tab"))
+    {
+      g_autoptr(PromptProfile) profile = prompt_application_dup_default_profile (self);
+      PromptWindow *window = get_current_window (self);
+      PromptTab *tab = prompt_tab_new (profile);
+
+      if (window == NULL)
+        window = prompt_window_new_empty ();
+
+      prompt_window_add_tab (window, tab);
+      prompt_window_set_active_tab (window, tab);
+      gtk_window_present (GTK_WINDOW (window));
+    }
+  else if (new_tab_with_profile)
+    {
+      g_autoptr(PromptProfile) profile = prompt_application_dup_profile (self, new_tab_with_profile);
+      PromptWindow *window = get_current_window (self);
+      PromptTab *tab = prompt_tab_new (profile);
+
+      if (window == NULL)
+        window = prompt_window_new_empty ();
+
+      prompt_window_add_tab (window, tab);
+      prompt_window_set_active_tab (window, tab);
+      gtk_window_present (GTK_WINDOW (window));
+    }
   else
-    g_application_activate (G_APPLICATION (self));
+    {
+      g_application_activate (G_APPLICATION (self));
+    }
 
   return G_APPLICATION_CLASS (prompt_application_parent_class)->command_line (app, cmdline);
 }
@@ -482,9 +610,24 @@ prompt_application_init (PromptApplication *self)
 {
   g_autoptr(GString) summary = g_string_new (_("Examples:"));
   static const GOptionEntry main_entries[] = {
-    { "new-window", 'n', 0, G_OPTION_ARG_NONE, NULL, N_("New terminal window") },
     { "preferences", 0, 0, G_OPTION_ARG_NONE, NULL, N_("Show the application preferences") },
+
+    /* Used for new tabs/windows/etc when specified */
+    { "working-directory", 'd', 0, G_OPTION_ARG_FILENAME, NULL, N_("Use DIR for new terminal tab"), N_("DIR") },
+
+    /* By default, this implies a new prompt instance unless the options
+     * below are provided to override that.
+     */
     { "execute", 'x', 0, G_OPTION_ARG_STRING, NULL, N_("Command to execute in new window") },
+
+    /* These options all imply we're using a shared Prompt instance. We do not support
+     * short command options for these to make it easier to sniff them in early args
+     * checking from `main.c`.
+     */
+    { "new-window", 0, 0, G_OPTION_ARG_NONE, NULL, N_("New terminal window") },
+    { "tab", 0, 0, G_OPTION_ARG_NONE, NULL, N_("New terminal tab in active window") },
+    { "tab-with-profile", 0, 0, G_OPTION_ARG_STRING, NULL, N_("New terminal tab in active window using PROFILE"), N_("PROFILE") },
+
     { NULL }
   };
 

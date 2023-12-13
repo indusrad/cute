@@ -1482,6 +1482,34 @@ prompt_window_init (PromptWindow *self)
   adw_tab_view_set_shortcuts (self->tab_view, 0);
 }
 
+void
+prompt_window_add_tab_for_command (PromptWindow       *self,
+                                   PromptProfile      *profile,
+                                   const char * const *argv,
+                                   const char         *cwd_uri)
+{
+  g_autoptr(PromptProfile) default_profile = NULL;
+  PromptTab *tab;
+
+  g_return_if_fail (PROMPT_IS_WINDOW (self));
+  g_return_if_fail (!profile || PROMPT_IS_PROFILE (profile));
+  g_return_if_fail (argv != NULL && argv[0] != NULL);
+
+  if (profile == NULL)
+    {
+      default_profile = prompt_application_dup_default_profile (PROMPT_APPLICATION_DEFAULT);
+      profile = default_profile;
+    }
+
+  tab = prompt_tab_new (profile);
+  prompt_tab_set_command (tab, argv);
+
+  if (!prompt_str_empty0 (cwd_uri))
+    prompt_tab_set_previous_working_directory_uri (tab, cwd_uri);
+
+  prompt_window_append_tab (self, tab);
+}
+
 static PromptWindow *
 prompt_window_new_for_profile_and_command (PromptProfile      *profile,
                                            const char * const *argv,
@@ -1562,19 +1590,24 @@ prompt_window_new_empty (void)
 }
 
 PromptWindow *
-prompt_window_new_for_command (const char * const *argv,
+prompt_window_new_for_command (PromptProfile      *profile,
+                               const char * const *argv,
                                const char         *cwd_uri)
 {
   PromptWindow *self;
 
+  g_return_val_if_fail (!profile || PROMPT_IS_PROFILE (profile), NULL);
   g_return_val_if_fail (argv != NULL, NULL);
   g_return_val_if_fail (argv[0] != NULL, NULL);
 
-  self = prompt_window_new_for_profile_and_command (NULL, argv, cwd_uri);
+  self = prompt_window_new_for_profile_and_command (profile, argv, cwd_uri);
 
   if (self != NULL)
     {
-      self->single_terminal_mode = TRUE;
+      GApplication *app = G_APPLICATION (PROMPT_APPLICATION_DEFAULT);
+      GApplicationFlags flags = g_application_get_flags (app);
+
+      self->single_terminal_mode = !!(flags & G_APPLICATION_NON_UNIQUE);
 
       gtk_widget_action_set_enabled (GTK_WIDGET (self), "win.new-tab", FALSE);
       gtk_widget_action_set_enabled (GTK_WIDGET (self), "win.new-window", FALSE);

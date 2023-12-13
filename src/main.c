@@ -31,6 +31,7 @@ check_early_opts (int        *argc,
 {
   g_autoptr(GOptionContext) context = NULL;
   gboolean version = FALSE;
+  gboolean ignore_standalone = FALSE;
   GOptionEntry entries[] = {
     { "standalone", 's', 0, G_OPTION_ARG_NONE, standalone },
     { "version", 0, 0, G_OPTION_ARG_NONE, &version },
@@ -40,9 +41,19 @@ check_early_opts (int        *argc,
   /* If we see a -- then take all of the arguments after that and
    * replace it into an escaped string suitable to pass as the value
    * for `-c 'command ...'.
+   *
+   * However, if we see --tab, --new-window, or --tab-with-profile,
+   * then we will not use standalone mode.
    */
   for (int i = 0; i < *argc; i++)
     {
+      const char *arg = (*argv)[i];
+
+      if (g_str_equal (arg, "--tab") ||
+          g_str_equal (arg , "--new-window") ||
+          (g_str_equal (arg, "--tab-with-profile") || g_str_has_prefix (arg, "--tab-with-profile=")))
+        ignore_standalone = TRUE;
+
       if (g_str_equal ((*argv)[i], "--") && (*argv)[i+1] != NULL)
         {
           GString *str = g_string_new (NULL);
@@ -60,8 +71,8 @@ check_early_opts (int        *argc,
           (*argv)[i] = g_strdup ("-x");
           (*argv)[i+1] = g_string_free (str, FALSE);
 
-          /* Always use new instance when executing command */
-          *standalone = TRUE;
+          if (!ignore_standalone)
+            *standalone = TRUE;
 
           break;
         }
