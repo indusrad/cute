@@ -51,6 +51,7 @@ struct _PromptApplication
   GDBusProxy          *portal;
   PromptClient        *client;
   GVariant            *session;
+  guint                has_restored_session : 1;
 };
 
 static void prompt_application_about             (GSimpleAction *action,
@@ -114,6 +115,28 @@ get_session_file (void)
                                     NULL);
 }
 
+static gboolean
+is_standalone (PromptApplication *self)
+{
+  return !!(g_application_get_flags (G_APPLICATION (self)) & G_APPLICATION_NON_UNIQUE);
+}
+
+static gboolean
+prompt_application_restore (PromptApplication *self)
+{
+  g_assert (PROMPT_IS_APPLICATION (self));
+
+  if (self->has_restored_session)
+    return FALSE;
+
+  if (self->session == NULL)
+    return FALSE;
+
+  self->has_restored_session = TRUE;
+
+  return prompt_session_restore (self, self->session);
+}
+
 static void
 prompt_application_activate (GApplication *app)
 {
@@ -133,8 +156,7 @@ prompt_application_activate (GApplication *app)
         }
     }
 
-  if (self->session == NULL ||
-      !prompt_session_restore (self, self->session))
+  if (!prompt_application_restore (self))
     {
       PromptWindow *window = prompt_window_new ();
       gtk_window_present (GTK_WINDOW (window));
@@ -213,6 +235,13 @@ prompt_application_command_line (GApplication            *app,
 
   if (!g_variant_dict_lookup (dict, "working-directory", "^ay", &working_directory))
     working_directory = NULL;
+
+  /* First restore our session state so it won't be lost when closing the
+   * application down. No matter what the options, if we're not single instance
+   * mode then we need to restore state.
+   */
+  if (!is_standalone (self))
+    prompt_application_restore (self);
 
   if (g_variant_dict_contains (dict, "preferences"))
     {
