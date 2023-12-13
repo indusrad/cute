@@ -21,9 +21,11 @@
 #include "config.h"
 
 #include "prompt-agent-util.h"
+#include "prompt-distrobox-container.h"
 #include "prompt-podman-container.h"
 #include "prompt-process-impl.h"
 #include "prompt-run-context.h"
+#include "prompt-toolbox-container.h"
 
 typedef struct
 {
@@ -292,15 +294,21 @@ prompt_podman_container_run_context_cb (PromptRunContext    *run_context,
   prompt_run_context_append_argv (run_context, "exec");
   prompt_run_context_append_argv (run_context, "--privileged");
   prompt_run_context_append_argv (run_context, "--interactive");
-  prompt_run_context_append_formatted (run_context, "--user=%s", g_get_user_name ());
 
   /* Make sure that we request TTY ioctls if necessary */
   if (has_tty)
     prompt_run_context_append_argv (run_context, "--tty");
 
-  /* If there is a CWD specified, then apply it */
-  if (cwd != NULL)
-    prompt_run_context_append_formatted (run_context, "--workdir=%s", cwd);
+  /* If there is a CWD specified, then apply it. However, podman containers
+   * wont necessarily have the user home directory in them except for when
+   * using toolbox/distrobox. So only apply in those cases.
+   */
+  if (PROMPT_IS_TOOLBOX_CONTAINER (self) || PROMPT_IS_DISTROBOX_CONTAINER (self))
+    {
+      prompt_run_context_append_formatted (run_context, "--user=%s", g_get_user_name ());
+      if (cwd != NULL)
+        prompt_run_context_append_formatted (run_context, "--workdir=%s", cwd);
+    }
 
   /* From podman-exec(1):
    *
