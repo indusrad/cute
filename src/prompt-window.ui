@@ -86,7 +86,7 @@
                 <lookup name="shortcuts">PromptWindow</lookup>
               </lookup>
             </binding>
-            <property name="action">action(app.preferences)</property>
+            <property name="action">action(win.preferences)</property>
           </object>
         </child>
         <child>
