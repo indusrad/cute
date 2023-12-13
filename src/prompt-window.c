@@ -391,7 +391,8 @@ prompt_window_apply_current_settings (PromptWindow *self,
         {
           if ((current_container = prompt_application_find_container_by_name (app,
                                                                               current_container_runtime,
-                                                                              current_container_name)))
+                                                                              current_container_name)) ||
+              (current_container = prompt_tab_dup_container (active_tab)))
             prompt_tab_set_container (tab, current_container);
         }
 
