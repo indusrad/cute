@@ -26,6 +26,7 @@
 #include "prompt-close-dialog.h"
 #include "prompt-find-bar.h"
 #include "prompt-parking-lot.h"
+#include "prompt-preferences-window.h"
 #include "prompt-settings.h"
 #include "prompt-tab-monitor.h"
 #include "prompt-theme-selector.h"
@@ -969,6 +970,37 @@ prompt_window_undo_close_tab_action (GtkWidget  *widget,
 }
 
 static void
+prompt_window_preferences_action (GtkWidget  *widget,
+                                  const char *action_name,
+                                  GVariant   *param)
+{
+  PromptWindow *self = (PromptWindow *)widget;
+  PromptApplication *app;
+  const GList *windows;
+  GtkWindow *window;
+
+  g_assert (PROMPT_IS_WINDOW (self));
+
+  app = PROMPT_APPLICATION_DEFAULT;
+  windows = gtk_application_get_windows (GTK_APPLICATION (app));
+
+  for (const GList *iter = windows; iter != NULL; iter = iter->next)
+    {
+      if (PROMPT_IS_PREFERENCES_WINDOW (iter->data))
+        {
+          gtk_window_present (GTK_WINDOW (iter->data));
+          return;
+        }
+    }
+
+  window = prompt_preferences_window_new (GTK_APPLICATION (app));
+  gtk_application_add_window (GTK_APPLICATION (app), GTK_WINDOW (window));
+  gtk_window_set_transient_for (window, GTK_WINDOW (self));
+  gtk_window_set_modal (window, FALSE);
+  gtk_window_present (window);
+}
+
+static void
 prompt_window_close_request_cb (GObject      *object,
                                 GAsyncResult *result,
                                 gpointer      user_data)
@@ -1420,6 +1452,7 @@ prompt_window_class_init (PromptWindowClass *klass)
   gtk_widget_class_install_action (widget_class, "win.search", NULL, prompt_window_search_action);
   gtk_widget_class_install_action (widget_class, "win.undo-close-tab", NULL, prompt_window_undo_close_tab_action);
   gtk_widget_class_install_action (widget_class, "my-computer", NULL, prompt_window_my_computer_action);
+  gtk_widget_class_install_action (widget_class, "win.preferences", NULL, prompt_window_preferences_action);
 
   g_type_ensure (PROMPT_TYPE_FIND_BAR);
 }
