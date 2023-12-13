@@ -39,7 +39,7 @@ PromptWindow  *prompt_window_new_for_command     (PromptProfile      *profile,
 PromptWindow  *prompt_window_new_for_profile     (PromptProfile      *profile);
 void           prompt_window_add_tab             (PromptWindow       *self,
                                                   PromptTab          *tab);
-void           prompt_window_add_tab_for_command (PromptWindow       *self,
+PromptTab     *prompt_window_add_tab_for_command (PromptWindow       *self,
                                                   PromptProfile      *profile,
                                                   const char * const *argv,
                                                   const char         *cwd_uri);

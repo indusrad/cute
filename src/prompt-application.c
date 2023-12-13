@@ -276,28 +276,34 @@ prompt_application_command_line (GApplication            *app,
       if (new_tab)
         {
           PromptWindow *window = get_current_window (self);
+          PromptTab *tab;
 
           if (window == NULL)
             window = prompt_window_new_empty ();
-          prompt_window_add_tab_for_command (window, NULL, (const char * const *)argv, cwd_uri);
+          tab = prompt_window_add_tab_for_command (window, NULL, (const char * const *)argv, cwd_uri);
+          prompt_window_set_active_tab (window, tab);
           gtk_window_present (GTK_WINDOW (window));
         }
       else if (new_tab_with_profile)
         {
           g_autoptr(PromptProfile) profile = prompt_application_dup_profile (self, new_tab_with_profile);
           PromptWindow *window = get_current_window (self);
+          PromptTab *tab;
 
           if (window == NULL)
             window = prompt_window_new_empty ();
-          prompt_window_add_tab_for_command (window, profile, (const char * const *)argv, cwd_uri);
+          tab = prompt_window_add_tab_for_command (window, profile, (const char * const *)argv, cwd_uri);
+          prompt_window_set_active_tab (window, tab);
           gtk_window_present (GTK_WINDOW (window));
         }
       else if (new_window)
         {
           PromptWindow *window;
+          PromptTab *tab;
 
           window = prompt_window_new_empty ();
-          prompt_window_add_tab_for_command (window, NULL, (const char * const *)argv, cwd_uri);
+          tab = prompt_window_add_tab_for_command (window, NULL, (const char * const *)argv, cwd_uri);
+          prompt_window_set_active_tab (window, tab);
           gtk_window_present (GTK_WINDOW (window));
         }
       else

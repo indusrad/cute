@@ -1482,7 +1482,7 @@ prompt_window_init (PromptWindow *self)
   adw_tab_view_set_shortcuts (self->tab_view, 0);
 }
 
-void
+PromptTab *
 prompt_window_add_tab_for_command (PromptWindow       *self,
                                    PromptProfile      *profile,
                                    const char * const *argv,
@@ -1491,9 +1491,9 @@ prompt_window_add_tab_for_command (PromptWindow       *self,
   g_autoptr(PromptProfile) default_profile = NULL;
   PromptTab *tab;
 
-  g_return_if_fail (PROMPT_IS_WINDOW (self));
-  g_return_if_fail (!profile || PROMPT_IS_PROFILE (profile));
-  g_return_if_fail (argv != NULL && argv[0] != NULL);
+  g_return_val_if_fail (PROMPT_IS_WINDOW (self), NULL);
+  g_return_val_if_fail (!profile || PROMPT_IS_PROFILE (profile), NULL);
+  g_return_val_if_fail (argv != NULL && argv[0] != NULL, NULL);
 
   if (profile == NULL)
     {
@@ -1508,6 +1508,8 @@ prompt_window_add_tab_for_command (PromptWindow       *self,
     prompt_tab_set_previous_working_directory_uri (tab, cwd_uri);
 
   prompt_window_append_tab (self, tab);
+
+  return tab;
 }
 
 static PromptWindow *
