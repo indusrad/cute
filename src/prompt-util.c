@@ -304,6 +304,17 @@ prompt_parse_shells (const char *etc_shells)
   return G_LIST_MODEL (gtk_string_list_new ((const char * const *)split));
 }
 
+static void
+prompt_util_open_cb (GObject      *object,
+                     GAsyncResult *result,
+                     gpointer      user_data)
+{
+  g_autoptr(GError) error = NULL;
+
+  if (!xdp_portal_open_uri_finish (XDP_PORTAL (object), result, &error))
+    g_warning ("Failed to open URI: %s", error->message);
+}
+
 void
 prompt_uri_open (const char *uri,
                  GtkWindow  *window)
@@ -326,7 +337,9 @@ prompt_uri_open (const char *uri,
                            parent,
                            uri,
                            XDP_OPEN_URI_FLAG_ASK,
-                           NULL, NULL, NULL);
+                           NULL,
+                           prompt_util_open_cb,
+                           NULL);
       xdp_parent_free (parent);
 
     }
