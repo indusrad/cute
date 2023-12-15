@@ -569,7 +569,8 @@ prompt_window_tab_overview_action (GtkWidget  *widget,
 
   g_assert (PROMPT_IS_WINDOW (self));
 
-  adw_tab_overview_set_open (self->tab_overview, TRUE);
+  adw_tab_overview_set_open (self->tab_overview,
+                             !adw_tab_overview_get_open (self->tab_overview));
 }
 
 static void
