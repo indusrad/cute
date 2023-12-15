@@ -193,8 +193,10 @@ prompt_application_command_line (GApplication            *app,
   g_autofree char *new_tab_with_profile = NULL;
   g_autofree char *working_directory = NULL;
   g_autofree char *command = NULL;
+  g_autofree char *cwd_uri = NULL;
   g_auto(GStrv) argv = NULL;
   GVariantDict *dict;
+  const char *cwd;
   gboolean new_tab = FALSE;
   gboolean new_window = FALSE;
   gboolean did_restore = FALSE;
@@ -213,8 +215,8 @@ prompt_application_command_line (GApplication            *app,
    * --tab-with-profile, or --new-window is specified).
    */
 
+  cwd = g_application_command_line_get_cwd (cmdline);
   dict = g_application_command_line_get_options_dict (cmdline);
-
   argv = g_application_command_line_get_arguments (cmdline, &argc);
 
   if (!g_variant_dict_lookup (dict, "tab", "b", &new_tab))
@@ -237,6 +239,17 @@ prompt_application_command_line (GApplication            *app,
   if (!g_variant_dict_lookup (dict, "working-directory", "^ay", &working_directory))
     working_directory = NULL;
 
+  if (working_directory == NULL)
+    working_directory = g_strdup (cwd);
+
+  if (working_directory != NULL)
+    {
+      if (g_uri_peek_scheme (working_directory) != NULL)
+        cwd_uri = g_strdup (working_directory);
+      else
+        cwd_uri = g_strdup_printf ("file://%s", working_directory);
+    }
+
   /* First restore our session state so it won't be lost when closing the
    * application down. No matter what the options, if we're not single instance
    * mode then we need to restore state.
@@ -251,9 +264,7 @@ prompt_application_command_line (GApplication            *app,
   else if (g_variant_dict_contains (dict, "execute") &&
            g_variant_dict_lookup (dict, "execute", "s", &command))
     {
-      const char *cwd = g_application_command_line_get_cwd (cmdline);
       g_autoptr(GError) error = NULL;
-      g_autofree char *cwd_uri = NULL;
 
       if (!g_shell_parse_argv (command, &argc, &argv, &error))
         {
@@ -261,17 +272,6 @@ prompt_application_command_line (GApplication            *app,
                                                _("Cannot parse command: %s"),
                                                error->message);
           return EXIT_FAILURE;
-        }
-
-      if (working_directory == NULL)
-        working_directory = g_strdup (cwd);
-
-      if (working_directory != NULL)
-        {
-          if (g_uri_peek_scheme (working_directory) != NULL)
-            cwd_uri = g_strdup (working_directory);
-          else
-            cwd_uri = g_strdup_printf ("file://%s", working_directory);
         }
 
       if (new_tab)
@@ -282,6 +282,7 @@ prompt_application_command_line (GApplication            *app,
           if (window == NULL)
             window = prompt_window_new_empty ();
           tab = prompt_window_add_tab_for_command (window, NULL, (const char * const *)argv, cwd_uri);
+          prompt_tab_set_previous_working_directory_uri (tab, cwd_uri);
           prompt_window_set_active_tab (window, tab);
           gtk_window_present (GTK_WINDOW (window));
         }
@@ -294,6 +295,7 @@ prompt_application_command_line (GApplication            *app,
           if (window == NULL)
             window = prompt_window_new_empty ();
           tab = prompt_window_add_tab_for_command (window, profile, (const char * const *)argv, cwd_uri);
+          prompt_tab_set_previous_working_directory_uri (tab, cwd_uri);
           prompt_window_set_active_tab (window, tab);
           gtk_window_present (GTK_WINDOW (window));
         }
@@ -304,6 +306,7 @@ prompt_application_command_line (GApplication            *app,
 
           window = prompt_window_new_empty ();
           tab = prompt_window_add_tab_for_command (window, NULL, (const char * const *)argv, cwd_uri);
+          prompt_tab_set_previous_working_directory_uri (tab, cwd_uri);
           prompt_window_set_active_tab (window, tab);
           gtk_window_present (GTK_WINDOW (window));
         }
@@ -319,8 +322,19 @@ prompt_application_command_line (GApplication            *app,
     }
   else if (g_variant_dict_contains (dict, "new-window"))
     {
-      if (!did_restore)
-        prompt_application_new_window_action (NULL, NULL, self);
+      g_autoptr(PromptProfile) profile = prompt_application_dup_default_profile (self);
+      PromptWindow *window = get_current_window (self);
+      PromptTab *tab;
+
+      if (window == NULL || !did_restore)
+        window = prompt_window_new_empty ();
+
+      tab = prompt_tab_new (profile);
+      prompt_tab_set_previous_working_directory_uri (tab, cwd_uri);
+      prompt_window_add_tab (window, tab);
+      prompt_window_set_active_tab (window, tab);
+
+      gtk_window_present (GTK_WINDOW (window));
     }
   else if (g_variant_dict_contains (dict, "tab"))
     {
@@ -330,6 +344,8 @@ prompt_application_command_line (GApplication            *app,
 
       if (window == NULL)
         window = prompt_window_new_empty ();
+
+      prompt_tab_set_previous_working_directory_uri (tab, cwd_uri);
 
       prompt_window_add_tab (window, tab);
       prompt_window_set_active_tab (window, tab);
@@ -343,6 +359,8 @@ prompt_application_command_line (GApplication            *app,
 
       if (window == NULL)
         window = prompt_window_new_empty ();
+
+      prompt_tab_set_previous_working_directory_uri (tab, cwd_uri);
 
       prompt_window_add_tab (window, tab);
       prompt_window_set_active_tab (window, tab);
@@ -650,7 +668,7 @@ prompt_application_init (PromptApplication *self)
     { "preferences", 0, 0, G_OPTION_ARG_NONE, NULL, N_("Show the application preferences") },
 
     /* Used for new tabs/windows/etc when specified */
-    { "working-directory", 'd', 0, G_OPTION_ARG_FILENAME, NULL, N_("Use DIR for new terminal tab"), N_("DIR") },
+    { "working-directory", 'd', 0, G_OPTION_ARG_FILENAME, NULL, N_("Use DIR for --tab, --tab-with-profile, --new-window, or -x"), N_("DIR") },
 
     /* By default, this implies a new prompt instance unless the options
      * below are provided to override that.
