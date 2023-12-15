@@ -197,6 +197,7 @@ prompt_application_command_line (GApplication            *app,
   GVariantDict *dict;
   gboolean new_tab = FALSE;
   gboolean new_window = FALSE;
+  gboolean did_restore = FALSE;
   int argc;
 
   g_assert (PROMPT_IS_APPLICATION (self));
@@ -241,7 +242,7 @@ prompt_application_command_line (GApplication            *app,
    * mode then we need to restore state.
    */
   if (!is_standalone (self))
-    prompt_application_restore (self);
+    did_restore = prompt_application_restore (self);
 
   if (g_variant_dict_contains (dict, "preferences"))
     {
@@ -318,7 +319,8 @@ prompt_application_command_line (GApplication            *app,
     }
   else if (g_variant_dict_contains (dict, "new-window"))
     {
-      prompt_application_new_window_action (NULL, NULL, self);
+      if (!did_restore)
+        prompt_application_new_window_action (NULL, NULL, self);
     }
   else if (g_variant_dict_contains (dict, "tab"))
     {
