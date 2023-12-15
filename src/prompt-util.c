@@ -325,6 +325,8 @@ prompt_uri_open (const char *uri,
   g_return_if_fail (uri != NULL);
   g_return_if_fail (GTK_IS_WINDOW (window));
 
+  g_debug ("Requested URI: %s\n", uri);
+
   if (g_str_has_prefix (uri, "file://"))
     {
       XdpParent *parent;
