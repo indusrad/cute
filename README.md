@@ -2,16 +2,22 @@
 
 Prompt is a terminal for GNOME with first-class support for containers.
 
+Flatpak is the intended and preferred distribution mechanism.
+
 
 ## Authors Note
 
-Prompt came out of my work to make VTE much faster on modern Linux desktops
-which run GTK 4 and a Wayland-based compositor such as GNOME Shell. It is
-competitively fast in this area, although unlikely the fastest. It supports a
-number of features due to VTE in exchange. Some of those include robust
-clipboard support, drag-n-drop integration, scrollbars, kinetic scrolling, tabs
-with overviews, a modern interface, configurable color palettes, menus, you get
-the idea.
+Prompt is a combination of work I've done across multiple projects. The
+container abstractions came from a prototype I did many years ago for GNOME
+Builder around a "Terminal Workspace". The motivation to finally push this
+over the line was some recent (Fall '23) on making VTE feel fast/low-latency
+on GTK 4 with GNOME Shell as a Wayland compositor.
+
+It's probably not the fastest thing out there, but it should be close enough
+that other features are of more value.  Some of those include robust
+clipboard support, drag-n-drop integration, scrollbars, kinetic scrolling,
+tabs with overviews, a modern interface, configurable color palettes, menus,
+you get the idea.
 
 
 ## Installation
