@@ -301,6 +301,22 @@ prompt_window_page_detached_cb (PromptWindow *self,
     gtk_widget_set_visible (GTK_WIDGET (self->tab_bar), n_pages > 1);
 }
 
+static gboolean
+bind_title_cb (GBinding     *binding,
+               const GValue *from_value,
+               GValue       *to_value,
+               gpointer      user_data)
+{
+  const char *str = g_value_get_string (from_value);
+
+  if (prompt_str_empty0 (str))
+    g_value_set_static_string (to_value, _("Prompt"));
+  else
+    g_value_take_string (to_value, g_strdup_printf (_("%s — Prompt"), str));
+
+  return TRUE;
+}
+
 static void
 prompt_window_notify_selected_page_cb (PromptWindow *self,
                                        GParamSpec   *pspec,
@@ -338,6 +354,10 @@ prompt_window_notify_selected_page_cb (PromptWindow *self,
       g_object_bind_property (profile, "opacity",
                               self->dressing, "opacity",
                               G_BINDING_SYNC_CREATE);
+      g_object_bind_property_full (terminal, "window-title",
+                                   self, "title",
+                                   G_BINDING_SYNC_CREATE,
+                                   bind_title_cb, NULL, NULL, NULL);
 
       read_only = g_property_action_new ("tab.read-only", tab, "read-only");
 
@@ -347,7 +367,10 @@ prompt_window_notify_selected_page_cb (PromptWindow *self,
     }
 
   if (terminal == NULL)
-    gtk_revealer_set_reveal_child (self->find_bar_revealer, FALSE);
+    {
+      gtk_revealer_set_reveal_child (self->find_bar_revealer, FALSE);
+      gtk_window_set_title (GTK_WINDOW (self), _("Prompt"));
+    }
 
   prompt_find_bar_set_terminal (self->find_bar, terminal);
 
