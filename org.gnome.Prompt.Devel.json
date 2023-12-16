@@ -51,8 +51,12 @@
             "name" : "vte",
             "buildsystem" : "meson",
             "config-opts" : [
-                "-Dgtk3=true",
-                "-Dgtk4=true"
+                "--buildtype=release",
+                "-Dgtk3=false",
+                "-Dgtk4=true",
+                "-Dglade=false",
+                "-Dgir=false",
+                "-Dvapi=false"
             ],
             "sources" : [
                 {
