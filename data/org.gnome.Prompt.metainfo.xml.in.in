@@ -24,13 +24,18 @@
       <li>Seperate process mode for terminal-based applications</li>
       <li>Support for pinned tabs and saved sessions</li>
       <li>Terminal tabs are run within separate cgroups</li>
-      <li>Terminal inspector to help when writing terminal-based applicatiosn</li>
+      <li>Terminal inspector to help when writing terminal-based applications</li>
     </ul>
   </description>
   <project_group>GNOME</project_group>
+  <url type="homepage">https://gitlab.gnome.org/chergert/prompt</url>
+  <url type="bugtracker">https://gitlab.gnome.org/chergert/prompt/issues</url>
+  <url type="translate">https://gitlab.gnome.org/chergert/prompt/-/tree/main/po</url>
+  <url type="vcs-browser">https://gitlab.gnome.org/chergert/prompt</url>
 
   <update_contact>chergert@gnome.org</update_contact>
   <translation type="gettext">prompt</translation>
+  <launchable type="desktop-id">@APP_ID@.desktop</launchable>
 
   <releases>
     <release version="0.1.0" date="2023-11-20"/>
