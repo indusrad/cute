@@ -40,6 +40,7 @@ const char         *prompt_application_get_os_name                (PromptApplica
 PromptSettings     *prompt_application_get_settings               (PromptApplication    *self);
 PromptShortcuts    *prompt_application_get_shortcuts              (PromptApplication    *self);
 const char         *prompt_application_get_system_font_name       (PromptApplication    *self);
+gboolean            prompt_application_get_overlay_scrollbars     (PromptApplication    *self);
 gboolean            prompt_application_control_is_pressed         (PromptApplication    *self);
 void                prompt_application_add_profile                (PromptApplication    *self,
                                                                    PromptProfile        *profile);

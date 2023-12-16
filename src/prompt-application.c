@@ -52,6 +52,7 @@ struct _PromptApplication
   PromptClient        *client;
   GVariant            *session;
   guint                has_restored_session : 1;
+  guint                overlay_scrollbars : 1;
 };
 
 static void prompt_application_about             (GSimpleAction *action,
@@ -88,6 +89,7 @@ enum {
   PROP_0,
   PROP_DEFAULT_PROFILE,
   PROP_OS_NAME,
+  PROP_OVERLAY_SCROLLBARS,
   PROP_SYSTEM_FONT_NAME,
   N_PROPS
 };
@@ -394,12 +396,25 @@ on_portal_settings_changed_cb (PromptApplication *self,
 
   g_variant_get (parameters, "(&s&sv)", &schema_id, &key, &value);
 
-  if (g_strcmp0 (schema_id, "org.gnome.desktop.interface") == 0 &&
-      g_strcmp0 (key, "monospace-font-name") == 0 &&
-      g_strcmp0 (g_variant_get_string (value, NULL), "") != 0)
+  if (g_strcmp0 (schema_id, "org.gnome.desktop.interface") == 0)
     {
-      if (g_set_str (&self->system_font_name, g_variant_get_string (value, NULL)))
-        g_object_notify_by_pspec (G_OBJECT (self), properties [PROP_SYSTEM_FONT_NAME]);
+      if (g_strcmp0 (key, "monospace-font-name") == 0)
+        {
+          const char *s = g_variant_get_string (value, NULL);
+
+          if (g_set_str (&self->system_font_name, s))
+            g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_SYSTEM_FONT_NAME]);
+        }
+      else if (g_strcmp0 (key, "overlay-scrolling") == 0)
+        {
+          gboolean b = g_variant_get_boolean (value);
+
+          if (b != self->overlay_scrollbars)
+            {
+              self->overlay_scrollbars = b;
+              g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_OVERLAY_SCROLLBARS]);
+            }
+        }
     }
 }
 
@@ -426,10 +441,17 @@ parse_portal_settings (PromptApplication *self,
 
       while (g_variant_iter_loop (iter2, "{sv}", &key, &v))
         {
-          if (g_strcmp0 (schema_str, "org.gnome.desktop.interface") == 0 &&
-              g_strcmp0 (key, "monospace-font-name") == 0 &&
-              g_strcmp0 (g_variant_get_string (v, NULL), "") != 0)
-            g_set_str (&self->system_font_name, g_variant_get_string (v, NULL));
+          if (g_strcmp0 (schema_str, "org.gnome.desktop.interface") == 0)
+            {
+              const char *str;
+
+              if (g_strcmp0 (key, "monospace-font-name") == 0 &&
+                  (str = g_variant_get_string (v, NULL)) &&
+                  str[0] != 0)
+                g_set_str (&self->system_font_name, str);
+              else if (g_strcmp0 (key, "overlay-scrolling") == 0)
+                self->overlay_scrollbars = g_variant_get_boolean (v);
+            }
         }
 
       g_variant_iter_free (iter2);
@@ -616,6 +638,10 @@ prompt_application_get_property (GObject    *object,
       g_value_set_string (value, prompt_application_get_os_name (self));
       break;
 
+    case PROP_OVERLAY_SCROLLBARS:
+      g_value_set_boolean (value, self->overlay_scrollbars);
+      break;
+
     case PROP_SYSTEM_FONT_NAME:
       g_value_set_string (value, self->system_font_name);
       break;
@@ -649,6 +675,11 @@ prompt_application_class_init (PromptApplicationClass *klass)
                          NULL,
                          (G_PARAM_READABLE |
                           G_PARAM_STATIC_STRINGS));
+
+  properties [PROP_OVERLAY_SCROLLBARS] =
+    g_param_spec_boolean ("overlay-scrollbars", NULL, NULL,
+                          FALSE,
+                         (G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
   properties [PROP_SYSTEM_FONT_NAME] =
     g_param_spec_string ("system-font-name",
@@ -1512,4 +1543,12 @@ prompt_application_save_session (PromptApplication *self)
                                            prompt_application_save_session_cb,
                                            g_object_ref (self));
     }
+}
+
+gboolean
+prompt_application_get_overlay_scrollbars (PromptApplication *self)
+{
+  g_return_val_if_fail (PROMPT_IS_APPLICATION (self), FALSE);
+
+  return self->overlay_scrollbars;
 }
