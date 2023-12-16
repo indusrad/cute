@@ -536,61 +536,6 @@ prompt_tab_bell_cb (PromptTab      *self,
   g_signal_emit (self, signals[BELL], 0);
 }
 
-static gboolean
-scrollbar_policy_to_overlay_scrolling (GBinding     *binding,
-                                       const GValue *from_value,
-                                       GValue       *to_value,
-                                       gpointer      user_data)
-{
-  PromptScrollbarPolicy policy = g_value_get_enum (from_value);
-
-  switch (policy)
-    {
-    case PROMPT_SCROLLBAR_POLICY_NEVER:
-    case PROMPT_SCROLLBAR_POLICY_ALWAYS:
-      g_value_set_boolean (to_value, FALSE);
-      break;
-
-    case PROMPT_SCROLLBAR_POLICY_SYSTEM:
-      g_value_set_boolean (to_value, TRUE);
-      break;
-
-    default:
-      g_assert_not_reached ();
-    }
-
-  return TRUE;
-}
-
-static gboolean
-scrollbar_policy_to_vscroll_policy (GBinding     *binding,
-                                    const GValue *from_value,
-                                    GValue       *to_value,
-                                    gpointer      user_data)
-{
-  PromptScrollbarPolicy policy = g_value_get_enum (from_value);
-
-  switch (policy)
-    {
-    case PROMPT_SCROLLBAR_POLICY_NEVER:
-      g_value_set_enum (to_value, GTK_POLICY_NEVER);
-      break;
-
-    case PROMPT_SCROLLBAR_POLICY_SYSTEM:
-      g_value_set_enum (to_value, GTK_POLICY_AUTOMATIC);
-      break;
-
-    case PROMPT_SCROLLBAR_POLICY_ALWAYS:
-      g_value_set_enum (to_value, GTK_POLICY_ALWAYS);
-      break;
-
-    default:
-      g_assert_not_reached ();
-    }
-
-  return TRUE;
-}
-
 static void
 prompt_tab_notify_process_leader_kind_cb (PromptTab        *self,
                                           GParamSpec       *pspec,
@@ -681,11 +626,51 @@ prompt_tab_notify_palette_cb (PromptTab      *self,
 }
 
 static void
+prompt_tab_update_scrollbar_policy (PromptTab *self)
+{
+  PromptSettings *settings;
+  PromptScrollbarPolicy policy;
+
+  g_assert (PROMPT_IS_TAB (self));
+
+  settings = prompt_application_get_settings (PROMPT_APPLICATION_DEFAULT);
+  policy = prompt_settings_get_scrollbar_policy (settings);
+
+  switch (policy)
+    {
+    case PROMPT_SCROLLBAR_POLICY_NEVER:
+      gtk_scrolled_window_set_overlay_scrolling (self->scrolled_window, FALSE);
+      gtk_scrolled_window_set_policy (self->scrolled_window, GTK_POLICY_NEVER, GTK_POLICY_EXTERNAL);
+      break;
+
+    case PROMPT_SCROLLBAR_POLICY_ALWAYS:
+      gtk_scrolled_window_set_overlay_scrolling (self->scrolled_window, FALSE);
+      gtk_scrolled_window_set_policy (self->scrolled_window, GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
+      break;
+
+    case PROMPT_SCROLLBAR_POLICY_SYSTEM:
+      if (prompt_application_get_overlay_scrollbars (PROMPT_APPLICATION_DEFAULT))
+        {
+          gtk_scrolled_window_set_overlay_scrolling (self->scrolled_window, TRUE);
+          gtk_scrolled_window_set_policy (self->scrolled_window, GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+        }
+      else
+        {
+          gtk_scrolled_window_set_overlay_scrolling (self->scrolled_window, FALSE);
+          gtk_scrolled_window_set_policy (self->scrolled_window, GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
+        }
+
+      break;
+
+    default:
+      g_assert_not_reached ();
+    }
+}
+
+static void
 prompt_tab_constructed (GObject *object)
 {
   PromptTab *self = (PromptTab *)object;
-  g_autoptr(GError) error = NULL;
-  g_autoptr(VtePty) pty = NULL;
   PromptSettings *settings;
 
   G_OBJECT_CLASS (prompt_tab_parent_class)->constructed (object);
@@ -707,16 +692,17 @@ prompt_tab_constructed (GObject *object)
                           self->terminal, "text-blink-mode",
                           G_BINDING_SYNC_CREATE);
 
-  g_object_bind_property_full (settings, "scrollbar-policy",
-                               self->scrolled_window, "vscrollbar-policy",
-                               G_BINDING_SYNC_CREATE,
-                               scrollbar_policy_to_vscroll_policy,
-                               NULL, NULL, NULL);
-  g_object_bind_property_full (settings, "scrollbar-policy",
-                               self->scrolled_window, "overlay-scrolling",
-                               G_BINDING_SYNC_CREATE,
-                               scrollbar_policy_to_overlay_scrolling,
-                               NULL, NULL, NULL);
+  g_signal_connect_object (PROMPT_APPLICATION_DEFAULT,
+                           "notify::overlay-scrollbars",
+                           G_CALLBACK (prompt_tab_update_scrollbar_policy),
+                           self,
+                           G_CONNECT_SWAPPED);
+  g_signal_connect_object (settings,
+                           "notify::scrollbar-policy",
+                           G_CALLBACK (prompt_tab_update_scrollbar_policy),
+                           self,
+                           G_CONNECT_SWAPPED);
+  prompt_tab_update_scrollbar_policy (self);
 
   g_signal_connect_object (G_OBJECT (self->profile),
                            "notify::limit-scrollback",
