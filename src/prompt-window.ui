@@ -97,6 +97,7 @@
               </lookup>
             </binding>
             <property name="action">action(win.zoom-out)</property>
+            <property name="arguments">true</property>
           </object>
         </child>
         <child>
@@ -107,6 +108,7 @@
               </lookup>
             </binding>
             <property name="action">action(win.zoom-one)</property>
+            <property name="arguments">true</property>
           </object>
         </child>
         <child>
@@ -117,6 +119,7 @@
               </lookup>
             </binding>
             <property name="action">action(win.zoom-in)</property>
+            <property name="arguments">true</property>
           </object>
         </child>
         <child>

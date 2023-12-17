@@ -580,13 +580,20 @@ prompt_window_zoom_in_action (GtkWidget  *widget,
 {
   PromptWindow *self = (PromptWindow *)widget;
   PromptTab *active_tab;
+  gboolean maybe_resize;
 
   g_assert (PROMPT_IS_WINDOW (self));
+  g_assert (param != NULL);
+  g_assert (g_variant_is_of_type (param, G_VARIANT_TYPE_BOOLEAN));
+
+  maybe_resize = g_variant_get_boolean (param);
 
   if ((active_tab = prompt_window_get_active_tab (self)))
     {
       prompt_tab_zoom_in (active_tab);
-      gtk_window_set_default_size (GTK_WINDOW (self), -1, -1);
+
+      if (maybe_resize)
+        gtk_window_set_default_size (GTK_WINDOW (self), -1, -1);
     }
 }
 
@@ -597,13 +604,20 @@ prompt_window_zoom_out_action (GtkWidget  *widget,
 {
   PromptWindow *self = (PromptWindow *)widget;
   PromptTab *active_tab;
+  gboolean maybe_resize;
 
   g_assert (PROMPT_IS_WINDOW (self));
+  g_assert (param != NULL);
+  g_assert (g_variant_is_of_type (param, G_VARIANT_TYPE_BOOLEAN));
+
+  maybe_resize = g_variant_get_boolean (param);
 
   if ((active_tab = prompt_window_get_active_tab (self)))
     {
       prompt_tab_zoom_out (active_tab);
-      gtk_window_set_default_size (GTK_WINDOW (self), -1, -1);
+
+      if (maybe_resize)
+        gtk_window_set_default_size (GTK_WINDOW (self), -1, -1);
     }
 }
 
@@ -614,13 +628,20 @@ prompt_window_zoom_one_action (GtkWidget  *widget,
 {
   PromptWindow *self = (PromptWindow *)widget;
   PromptTab *active_tab;
+  gboolean maybe_resize;
 
   g_assert (PROMPT_IS_WINDOW (self));
+  g_assert (param != NULL);
+  g_assert (g_variant_is_of_type (param, G_VARIANT_TYPE_BOOLEAN));
+
+  maybe_resize = g_variant_get_boolean (param);
 
   if ((active_tab = prompt_window_get_active_tab (self)))
     {
       prompt_tab_set_zoom (active_tab, PROMPT_ZOOM_LEVEL_DEFAULT);
-      gtk_window_set_default_size (GTK_WINDOW (self), -1, -1);
+
+      if (maybe_resize)
+        gtk_window_set_default_size (GTK_WINDOW (self), -1, -1);
     }
 }
 
@@ -1153,6 +1174,7 @@ prompt_window_add_zoom_controls (PromptWindow *self)
                            NULL);
   zoom_in = g_object_new (GTK_TYPE_BUTTON,
                           "action-name", "win.zoom-in",
+                          "action-target", g_variant_new_boolean (FALSE),
                           "tooltip-text", _("Zoom In"),
                           "child", g_object_new (GTK_TYPE_IMAGE,
                                                  "icon-name", "zoom-in-symbolic",
@@ -1167,6 +1189,7 @@ prompt_window_add_zoom_controls (PromptWindow *self)
                                   _("Zoom in"), -1);
   zoom_out = g_object_new (GTK_TYPE_BUTTON,
                            "action-name", "win.zoom-out",
+                           "action-target", g_variant_new_boolean (FALSE),
                            "tooltip-text", _("Zoom Out"),
                            "child", g_object_new (GTK_TYPE_IMAGE,
                                                   "icon-name", "zoom-out-symbolic",
@@ -1182,6 +1205,7 @@ prompt_window_add_zoom_controls (PromptWindow *self)
   self->zoom_label = g_object_new (GTK_TYPE_BUTTON,
                                    "css-classes", (const char * const[]) {"flat", "pill", NULL},
                                    "action-name", "win.zoom-one",
+                                   "action-target", g_variant_new_boolean (FALSE),
                                    "hexpand", TRUE,
                                    "tooltip-text", _("Reset Zoom"),
                                    "label", "100%",
@@ -1458,9 +1482,9 @@ prompt_window_class_init (PromptWindowClass *klass)
   gtk_widget_class_install_action (widget_class, "win.unfullscreen", NULL, prompt_window_unfullscreen_action);
   gtk_widget_class_install_action (widget_class, "win.toggle-fullscreen", NULL, prompt_window_toggle_fullscreen);
   gtk_widget_class_install_action (widget_class, "win.tab-overview", NULL, prompt_window_tab_overview_action);
-  gtk_widget_class_install_action (widget_class, "win.zoom-in", NULL, prompt_window_zoom_in_action);
-  gtk_widget_class_install_action (widget_class, "win.zoom-out", NULL, prompt_window_zoom_out_action);
-  gtk_widget_class_install_action (widget_class, "win.zoom-one", NULL, prompt_window_zoom_one_action);
+  gtk_widget_class_install_action (widget_class, "win.zoom-in", "b", prompt_window_zoom_in_action);
+  gtk_widget_class_install_action (widget_class, "win.zoom-out", "b", prompt_window_zoom_out_action);
+  gtk_widget_class_install_action (widget_class, "win.zoom-one", "b", prompt_window_zoom_one_action);
   gtk_widget_class_install_action (widget_class, "page.move-left", NULL, prompt_window_move_left_action);
   gtk_widget_class_install_action (widget_class, "page.move-right", NULL, prompt_window_move_right_action);
   gtk_widget_class_install_action (widget_class, "page.close", NULL, prompt_window_close_action);
