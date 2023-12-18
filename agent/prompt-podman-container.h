@@ -23,6 +23,7 @@
 #include <json-glib/json-glib.h>
 
 #include "prompt-agent-ipc.h"
+#include "prompt-run-context.h"
 
 G_BEGIN_DECLS
 
@@ -34,9 +35,11 @@ struct _PromptPodmanContainerClass
 {
   PromptIpcContainerSkeletonClass parent_class;
 
-  gboolean (*deserialize) (PromptPodmanContainer  *self,
-                           JsonObject             *object,
-                           GError                **error);
+  gboolean (*deserialize)         (PromptPodmanContainer  *self,
+                                   JsonObject             *object,
+                                   GError                **error);
+  void     (*prepare_run_context) (PromptPodmanContainer  *self,
+                                   PromptRunContext       *run_context);
 };
 
 gboolean prompt_podman_container_deserialize (PromptPodmanContainer  *self,

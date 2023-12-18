@@ -202,61 +202,6 @@ prompt_podman_container_real_deserialize (PromptPodmanContainer  *self,
   return TRUE;
 }
 
-static void
-prompt_podman_container_dispose (GObject *object)
-{
-  PromptPodmanContainer *self = (PromptPodmanContainer *)object;
-  PromptPodmanContainerPrivate *priv = prompt_podman_container_get_instance_private (self);
-
-  g_hash_table_remove_all (priv->labels);
-
-  G_OBJECT_CLASS (prompt_podman_container_parent_class)->dispose (object);
-}
-
-static void
-prompt_podman_container_finalize (GObject *object)
-{
-  PromptPodmanContainer *self = (PromptPodmanContainer *)object;
-  PromptPodmanContainerPrivate *priv = prompt_podman_container_get_instance_private (self);
-
-  g_clear_pointer (&priv->labels, g_hash_table_unref);
-
-  G_OBJECT_CLASS (prompt_podman_container_parent_class)->finalize (object);
-}
-
-static void
-prompt_podman_container_class_init (PromptPodmanContainerClass *klass)
-{
-  GObjectClass *object_class = G_OBJECT_CLASS (klass);
-
-  object_class->dispose = prompt_podman_container_dispose;
-  object_class->finalize = prompt_podman_container_finalize;
-
-  klass->deserialize = prompt_podman_container_real_deserialize;
-}
-
-static void
-prompt_podman_container_init (PromptPodmanContainer *self)
-{
-  PromptPodmanContainerPrivate *priv = prompt_podman_container_get_instance_private (self);
-
-  priv->labels = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
-
-  prompt_ipc_container_set_icon_name (PROMPT_IPC_CONTAINER (self), "container-podman-symbolic");
-  prompt_ipc_container_set_provider (PROMPT_IPC_CONTAINER (self), "podman");
-}
-
-gboolean
-prompt_podman_container_deserialize (PromptPodmanContainer  *self,
-                                     JsonObject             *object,
-                                     GError                **error)
-{
-  g_return_val_if_fail (PROMPT_IS_PODMAN_CONTAINER (self), FALSE);
-  g_return_val_if_fail (object != NULL, FALSE);
-
-  return PROMPT_PODMAN_CONTAINER_GET_CLASS (self)->deserialize (self, object, error);
-}
-
 static gboolean
 prompt_podman_container_run_context_cb (PromptRunContext    *run_context,
                                         const char * const  *argv,
@@ -332,6 +277,85 @@ prompt_podman_container_run_context_cb (PromptRunContext    *run_context,
 }
 
 static void
+prompt_podman_container_real_prepare_run_context (PromptPodmanContainer *self,
+                                                  PromptRunContext      *run_context)
+{
+  g_assert (PROMPT_IS_PODMAN_CONTAINER (self));
+  g_assert (PROMPT_IS_RUN_CONTEXT (run_context));
+
+  prompt_run_context_push (run_context,
+                           prompt_podman_container_run_context_cb,
+                           g_object_ref (self),
+                           g_object_unref);
+
+  /* Give acces to some minimal state in the environment from
+   * our host system.
+   */
+  prompt_run_context_add_minimal_environment (run_context);
+
+  /* We don't want HOME propagated because it could be different
+   * inside the toolbox/distrobox and that can set it up for us.
+   */
+  prompt_run_context_setenv (run_context, "HOME", NULL);
+}
+
+static void
+prompt_podman_container_dispose (GObject *object)
+{
+  PromptPodmanContainer *self = (PromptPodmanContainer *)object;
+  PromptPodmanContainerPrivate *priv = prompt_podman_container_get_instance_private (self);
+
+  g_hash_table_remove_all (priv->labels);
+
+  G_OBJECT_CLASS (prompt_podman_container_parent_class)->dispose (object);
+}
+
+static void
+prompt_podman_container_finalize (GObject *object)
+{
+  PromptPodmanContainer *self = (PromptPodmanContainer *)object;
+  PromptPodmanContainerPrivate *priv = prompt_podman_container_get_instance_private (self);
+
+  g_clear_pointer (&priv->labels, g_hash_table_unref);
+
+  G_OBJECT_CLASS (prompt_podman_container_parent_class)->finalize (object);
+}
+
+static void
+prompt_podman_container_class_init (PromptPodmanContainerClass *klass)
+{
+  GObjectClass *object_class = G_OBJECT_CLASS (klass);
+
+  object_class->dispose = prompt_podman_container_dispose;
+  object_class->finalize = prompt_podman_container_finalize;
+
+  klass->deserialize = prompt_podman_container_real_deserialize;
+  klass->prepare_run_context = prompt_podman_container_real_prepare_run_context;
+}
+
+static void
+prompt_podman_container_init (PromptPodmanContainer *self)
+{
+  PromptPodmanContainerPrivate *priv = prompt_podman_container_get_instance_private (self);
+
+  priv->labels = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
+
+  prompt_ipc_container_set_icon_name (PROMPT_IPC_CONTAINER (self), "container-podman-symbolic");
+  prompt_ipc_container_set_provider (PROMPT_IPC_CONTAINER (self), "podman");
+}
+
+gboolean
+prompt_podman_container_deserialize (PromptPodmanContainer  *self,
+                                     JsonObject             *object,
+                                     GError                **error)
+{
+  g_return_val_if_fail (PROMPT_IS_PODMAN_CONTAINER (self), FALSE);
+  g_return_val_if_fail (object != NULL, FALSE);
+
+  return PROMPT_PODMAN_CONTAINER_GET_CLASS (self)->deserialize (self, object, error);
+}
+
+static void
 prompt_podman_container_handle_spawn_cb (GObject      *object,
                                          GAsyncResult *result,
                                          gpointer      user_data)
@@ -384,10 +408,11 @@ prompt_podman_container_handle_spawn (PromptIpcContainer    *container,
                                       GVariant              *in_fds,
                                       GVariant              *in_env)
 {
+  PromptPodmanContainer *self = (PromptPodmanContainer *)container;
   g_autoptr(PromptRunContext) run_context = NULL;
   g_autoptr(GError) error = NULL;
 
-  g_assert (PROMPT_IS_PODMAN_CONTAINER (container));
+  g_assert (PROMPT_IS_PODMAN_CONTAINER (self));
   g_assert (G_IS_DBUS_METHOD_INVOCATION (invocation));
   g_assert (G_IS_UNIX_FD_LIST (in_fd_list));
   g_assert (cwd != NULL);
@@ -396,20 +421,9 @@ prompt_podman_container_handle_spawn (PromptIpcContainer    *container,
   g_assert (in_env != NULL);
 
   run_context = prompt_run_context_new ();
-  prompt_run_context_push (run_context,
-                           prompt_podman_container_run_context_cb,
-                           g_object_ref (container),
-                           g_object_unref);
 
-  /* Give acces to some minimal state in the environment from
-   * our host system.
-   */
-  prompt_run_context_add_minimal_environment (run_context);
-
-  /* We don't want HOME propagated because it could be different
-   * inside the toolbox/distrobox and that can set it up for us.
-   */
-  prompt_run_context_setenv (run_context, "HOME", NULL);
+  /* Allow subclass to hook up different execution strategy */
+  PROMPT_PODMAN_CONTAINER_GET_CLASS (self)->prepare_run_context (self, run_context);
 
   /* Now do our normal handling of the layer requested by the user. */
   prompt_agent_push_spawn (run_context, in_fd_list, cwd, argv, in_fds, in_env);
