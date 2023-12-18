@@ -248,6 +248,15 @@ prompt_application_command_line (GApplication            *app,
     {
       if (g_uri_peek_scheme (working_directory) != NULL)
         cwd_uri = g_strdup (working_directory);
+      else if (!g_path_is_absolute (working_directory))
+        {
+          const char *base = prompt_str_empty0 (cwd) ? g_get_home_dir () : cwd;
+          g_autofree char *path = g_build_filename (base, working_directory, NULL);
+          g_autoptr(GFile) canonicalize = g_file_new_for_path (path);
+
+          if (canonicalize != NULL)
+            cwd_uri = g_file_get_uri (canonicalize);
+        }
       else
         cwd_uri = g_strdup_printf ("file://%s", working_directory);
     }
