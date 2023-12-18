@@ -28,7 +28,7 @@ struct _PromptFindBar
 {
   GtkWidget        parent_instance;
 
-  PromptTerminal *terminal;
+  PromptTerminal  *terminal;
 
   GtkEntry        *entry;
   GtkCheckButton  *use_regex;
@@ -102,21 +102,11 @@ prompt_find_bar_next (GtkWidget  *widget,
                       GVariant   *param)
 {
   PromptFindBar *self = (PromptFindBar *)widget;
-  g_autoptr(VteRegex) regex = NULL;
-  g_autoptr(GError) error = NULL;
-  g_autofree char *query = NULL;
-  guint flags = VTE_PCRE2_MULTILINE;
 
   g_assert (PROMPT_IS_FIND_BAR (self));
 
-  if (self->terminal == NULL)
-    return;
-
-  if ((query = prompt_find_bar_get_search (self, &flags)))
-    regex = vte_regex_new_for_search (query, -1, flags, &error);
-
-  vte_terminal_search_set_regex (VTE_TERMINAL (self->terminal), regex, 0);
-  vte_terminal_search_find_next (VTE_TERMINAL (self->terminal));
+  if (self->terminal != NULL)
+    vte_terminal_search_find_next (VTE_TERMINAL (self->terminal));
 }
 
 static void
@@ -125,21 +115,30 @@ prompt_find_bar_previous (GtkWidget  *widget,
                           GVariant   *param)
 {
   PromptFindBar *self = (PromptFindBar *)widget;
-  g_autoptr(VteRegex) regex = NULL;
-  g_autoptr(GError) error = NULL;
-  g_autofree char *query = NULL;
-  guint flags = VTE_PCRE2_MULTILINE;
 
   g_assert (PROMPT_IS_FIND_BAR (self));
 
-  if (self->terminal == NULL)
-    return;
+  if (self->terminal != NULL)
+    vte_terminal_search_find_previous (VTE_TERMINAL (self->terminal));
+}
+
+static void
+prompt_find_bar_entry_changed_cb (PromptFindBar *self,
+                                  GtkEntry      *entry)
+{
+  g_autofree char *query = NULL;
+  g_autoptr(VteRegex) regex = NULL;
+  g_autoptr(GError) error = NULL;
+  guint flags = VTE_PCRE2_MULTILINE;
+
+  g_assert (PROMPT_IS_FIND_BAR (self));
+  g_assert (GTK_IS_ENTRY (entry));
 
   if ((query = prompt_find_bar_get_search (self, &flags)))
     regex = vte_regex_new_for_search (query, -1, flags, &error);
 
   vte_terminal_search_set_regex (VTE_TERMINAL (self->terminal), regex, 0);
-  vte_terminal_search_find_previous (VTE_TERMINAL (self->terminal));
+  vte_terminal_search_set_wrap_around (VTE_TERMINAL (self->terminal), TRUE);
 }
 
 static void
@@ -226,6 +225,8 @@ prompt_find_bar_class_init (PromptFindBarClass *klass)
   gtk_widget_class_bind_template_child (widget_class, PromptFindBar, whole_words);
   gtk_widget_class_bind_template_child (widget_class, PromptFindBar, match_case);
 
+  gtk_widget_class_bind_template_callback (widget_class, prompt_find_bar_entry_changed_cb);
+
   gtk_widget_class_install_action (widget_class, "search.dismiss", NULL, prompt_find_bar_dismiss);
   gtk_widget_class_install_action (widget_class, "search.down", NULL, prompt_find_bar_next);
   gtk_widget_class_install_action (widget_class, "search.up", NULL, prompt_find_bar_previous);
@@ -251,11 +252,14 @@ prompt_find_bar_get_terminal (PromptFindBar *self)
 
 void
 prompt_find_bar_set_terminal (PromptFindBar  *self,
-                               PromptTerminal *terminal)
+                              PromptTerminal *terminal)
 {
   g_return_if_fail (PROMPT_IS_FIND_BAR (self));
   g_return_if_fail (!terminal || PROMPT_IS_TERMINAL (terminal));
 
   if (g_set_object (&self->terminal, terminal))
-    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_TERMINAL]);
+    {
+      gtk_editable_set_text (GTK_EDITABLE (self->entry), "");
+      g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_TERMINAL]);
+    }
 }
