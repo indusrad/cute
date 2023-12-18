@@ -144,6 +144,20 @@
       <arg name="env" direction="in" type="a{ss}"/>
       <arg name="process" direction="out" type="o"/>
     </method>
+
+    <!--
+      FindProgramInPath:
+      @program: the name of the program (e.g. "bash")
+
+      Locates the path of @program in the container if it is found.
+
+      This can be used to determine if a $SHELL is available in the
+      container and fallback to something more reasonable.
+    -->
+    <method name="FindProgramInPath">
+      <arg name="program" direction="in" type="s"/>
+      <arg name="path" direction="out" type="s"/>
+    </method>
   </interface>
 
   <interface name="org.gnome.Prompt.Process">

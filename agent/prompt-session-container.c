@@ -146,10 +146,34 @@ prompt_session_container_handle_spawn (PromptIpcContainer    *container,
   return TRUE;
 }
 
+static gboolean
+prompt_session_container_handle_find_program_in_path (PromptIpcContainer    *container,
+                                                      GDBusMethodInvocation *invocation,
+                                                      const char            *program)
+{
+  g_autofree char *path = NULL;
+
+  g_assert (PROMPT_IS_SESSION_CONTAINER (container));
+  g_assert (G_IS_DBUS_METHOD_INVOCATION (invocation));
+
+  if ((path = g_find_program_in_path (program)))
+    prompt_ipc_container_complete_find_program_in_path (container,
+                                                        g_steal_pointer (&invocation),
+                                                        path);
+  else
+    g_dbus_method_invocation_return_error_literal (g_steal_pointer (&invocation),
+                                                   G_IO_ERROR,
+                                                   G_IO_ERROR_NOT_FOUND,
+                                                   "Not Found");
+
+  return TRUE;
+}
+
 static void
 container_iface_init (PromptIpcContainerIface *iface)
 {
   iface->handle_spawn = prompt_session_container_handle_spawn;
+  iface->handle_find_program_in_path = prompt_session_container_handle_find_program_in_path;
 }
 
 void
