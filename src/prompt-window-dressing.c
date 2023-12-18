@@ -152,6 +152,9 @@ prompt_window_dressing_update (PromptWindowDressing *self)
                               self->css_class, self->css_class, dark ? "dark" : "light",
                               self->css_class, dark ? "dark" : "light", bell_bg, bell_fg);
       g_string_append_printf (string,
+                              "window.%s banner > revealer > widget { background: %s; color: %s; }\n",
+                              self->css_class, bell_bg, bell_fg);
+      g_string_append_printf (string,
                               "window.%s headerbar { background: %s; color: %s; }\n",
                               self->css_class, titlebar_bg, titlebar_fg);
       g_string_append_printf (string,
