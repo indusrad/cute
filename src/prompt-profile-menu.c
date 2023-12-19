@@ -26,7 +26,7 @@
 
 struct _PromptProfileMenu
 {
-  GMenuModel        parent_instance;
+  GMenuModel       parent_instance;
   PromptSettings  *settings;
   char            **uuids;
 };
@@ -62,24 +62,24 @@ prompt_profile_menu_is_mutable (GMenuModel *model)
 
 static GMenuModel *
 prompt_profile_menu_get_item_link (GMenuModel *model,
-                                    int         position,
-                                    const char *link)
+                                   int         position,
+                                   const char *link)
 {
   return NULL;
 }
 
 static void
 prompt_profile_menu_get_item_links (GMenuModel  *model,
-                                     int          position,
-                                     GHashTable **links)
+                                    int          position,
+                                    GHashTable **links)
 {
   *links = NULL;
 }
 
 static void
 prompt_profile_menu_get_item_attributes (GMenuModel  *model,
-                                          int          position,
-                                          GHashTable **attributes)
+                                         int          position,
+                                         GHashTable **attributes)
 {
   PromptProfileMenu *self = PROMPT_PROFILE_MENU (model);
   g_autoptr(PromptProfile) profile = NULL;
@@ -233,4 +233,15 @@ prompt_profile_menu_new (PromptSettings *settings)
   return g_object_new (PROMPT_TYPE_PROFILE_MENU,
                        "settings", settings,
                        NULL);
+}
+
+void
+prompt_profile_menu_invalidate (PromptProfileMenu *self)
+{
+  g_return_if_fail (PROMPT_IS_PROFILE_MENU (self));
+
+  g_menu_model_items_changed (G_MENU_MODEL (self),
+                              0,
+                              g_menu_model_get_n_items (G_MENU_MODEL (self)),
+                              g_menu_model_get_n_items (G_MENU_MODEL (self)));
 }

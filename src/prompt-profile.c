@@ -28,6 +28,7 @@
 #include "prompt-application.h"
 #include "prompt-enums.h"
 #include "prompt-profile.h"
+#include "prompt-profile-menu.h"
 #include "prompt-util.h"
 
 struct _PromptProfile
@@ -546,12 +547,18 @@ void
 prompt_profile_set_label (PromptProfile *self,
                           const char    *label)
 {
+  g_autoptr(GMenuModel) menu = NULL;
+
   g_return_if_fail (PROMPT_IS_PROFILE (self));
 
   if (label == NULL)
     label = "";
 
   g_settings_set_string (self->settings, PROMPT_PROFILE_KEY_LABEL, label);
+
+  /* So menu titles get updated */
+  if ((menu = prompt_application_dup_profile_menu PROMPT_APPLICATION_DEFAULT))
+    prompt_profile_menu_invalidate (PROMPT_PROFILE_MENU (menu));
 }
 
 gboolean

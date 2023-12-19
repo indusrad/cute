@@ -31,6 +31,7 @@ G_BEGIN_DECLS
 
 G_DECLARE_FINAL_TYPE (PromptProfileMenu, prompt_profile_menu, PROMPT, PROFILE_MENU, GMenuModel)
 
-PromptProfileMenu *prompt_profile_menu_new (PromptSettings *settings);
+PromptProfileMenu *prompt_profile_menu_new        (PromptSettings    *settings);
+void               prompt_profile_menu_invalidate (PromptProfileMenu *self);
 
 G_END_DECLS
