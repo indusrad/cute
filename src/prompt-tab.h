@@ -67,8 +67,6 @@ PromptProfile      *prompt_tab_get_profile                        (PromptTab    
 PromptIpcProcess   *prompt_tab_get_process                        (PromptTab           *self);
 const char         *prompt_tab_get_uuid                           (PromptTab           *self);
 const char         *prompt_tab_get_command_line                   (PromptTab           *self);
-void                prompt_tab_set_command_line                   (PromptTab           *self,
-                                                                   const char          *command_line);
 void                prompt_tab_set_command                        (PromptTab           *self,
                                                                    const char * const  *command);
 char               *prompt_tab_dup_subtitle                       (PromptTab           *self);

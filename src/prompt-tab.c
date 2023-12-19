@@ -1573,13 +1573,3 @@ prompt_tab_get_command_line (PromptTab *self)
 
   return self->command_line;
 }
-
-void
-prompt_tab_set_command_line (PromptTab  *self,
-                             const char *command_line)
-{
-  g_return_if_fail (PROMPT_IS_TAB (self));
-
-  if (g_set_str (&self->command_line, command_line))
-    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_COMMAND_LINE]);
-}
