@@ -1487,6 +1487,12 @@ prompt_tab_poll_agent (PromptTab *self)
                                                             NULL, NULL, NULL))
     has_foreground_process = FALSE;
 
+  if (self->pid != the_pid)
+    {
+      changed = TRUE;
+      self->pid = the_pid;
+    }
+
   if (self->has_foreground_process != has_foreground_process)
     {
       changed = TRUE;
