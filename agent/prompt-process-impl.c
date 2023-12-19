@@ -181,77 +181,40 @@ get_cmdline_for_pid (GPid pid)
   return g_steal_pointer (&cmdline);
 }
 
-static gboolean
-prompt_process_impl_handle_get_leader_kind (PromptIpcProcess      *process,
-                                            GDBusMethodInvocation *invocation,
-                                            GUnixFDList           *in_fd_list,
-                                            GVariant              *in_pty_fd)
+static const char *
+get_leader_kind (GPid pid)
 {
+  g_autofree char *path = g_strdup_printf ("/proc/%d/", pid);
+  g_autofree char *exe = g_strdup_printf ("/proc/%d/exe", pid);
+  g_autoptr(GFile) file = g_file_new_for_path (path);
+  g_autoptr(GFileInfo) info = NULL;
   const char *leader_kind = NULL;
-  g_autofree char *cmdline = NULL;
-  _g_autofd int pty_fd = -1;
-  int pty_fd_handle;
+  char execpath[512];
+  gssize len;
 
-  g_assert (PROMPT_IS_PROCESS_IMPL (process));
-  g_assert (G_IS_DBUS_METHOD_INVOCATION (invocation));
-  g_assert (g_variant_is_of_type (in_pty_fd, G_VARIANT_TYPE_HANDLE));
+  /* We use GFile API so that we can avoid linking against
+   * stat64 which is different on older glibc versions.
+   */
+  info = g_file_query_info (file, G_FILE_ATTRIBUTE_UNIX_UID, G_FILE_QUERY_INFO_NONE, NULL, NULL);
+  if (info && g_file_info_get_attribute_uint32 (info, G_FILE_ATTRIBUTE_UNIX_UID) == 0)
+    return "superuser";
 
-  pty_fd_handle = g_variant_get_handle (in_pty_fd);
+  len = readlink (exe, execpath, sizeof execpath-1);
 
-  if (in_fd_list != NULL)
-    pty_fd = g_unix_fd_list_get (in_fd_list, pty_fd_handle, NULL);
-
-  if (pty_fd != -1)
+  if (len > 0)
     {
-      GPid pid = tcgetpgrp (pty_fd);
+      const char *end;
 
-      if (pid > 0)
-        {
-          g_autofree char *path = g_strdup_printf ("/proc/%d/", pid);
-          g_autofree char *exe = g_strdup_printf ("/proc/%d/exe", pid);
-          g_autoptr(GFile) file = NULL;
-          g_autoptr(GFileInfo) info = NULL;
-          char execpath[512];
-          gssize len;
+      execpath[len] = 0;
 
-          cmdline = get_cmdline_for_pid (pid);
-
-          /* We use GFile API so that we can avoid linking against
-           * stat64 which is different on older glibc versions.
-           */
-          file = g_file_new_for_path (path);
-          info = g_file_query_info (file, G_FILE_ATTRIBUTE_UNIX_UID, G_FILE_QUERY_INFO_NONE, NULL, NULL);
-          if (info && g_file_info_get_attribute_uint32 (info, G_FILE_ATTRIBUTE_UNIX_UID) == 0)
-            {
-              leader_kind = "superuser";
-              goto complete;
-            }
-
-          len = readlink (exe, execpath, sizeof execpath-1);
-
-          if (len > 0)
-            {
-              const char *end;
-
-              execpath[len] = 0;
-
-              if ((end = strrchr (execpath, '/')))
-                leader_kind = g_hash_table_lookup (exec_to_kind, end+1);
-            }
-        }
+      if ((end = strrchr (execpath, '/')))
+        leader_kind = g_hash_table_lookup (exec_to_kind, end+1);
     }
 
-complete:
   if (leader_kind == NULL)
     leader_kind = "unknown";
 
-  prompt_ipc_process_complete_get_leader_kind (process,
-                                               g_steal_pointer (&invocation),
-                                               NULL,
-                                               leader_kind,
-                                               cmdline ? cmdline : "");
-
-  return TRUE;
+  return leader_kind;
 }
 
 static gboolean
@@ -289,7 +252,8 @@ prompt_process_impl_handle_has_foreground_process (PromptIpcProcess      *proces
                                                       NULL,
                                                       has_foreground_process,
                                                       pid,
-                                                      cmdline ? cmdline : "");
+                                                      cmdline ? cmdline : "",
+                                                      get_leader_kind (pid));
 
   return TRUE;
 }
@@ -298,6 +262,5 @@ static void
 process_iface_init (PromptIpcProcessIface *iface)
 {
   iface->handle_send_signal = prompt_process_impl_handle_send_signal;
-  iface->handle_get_leader_kind = prompt_process_impl_handle_get_leader_kind;
   iface->handle_has_foreground_process = prompt_process_impl_handle_has_foreground_process;
 }

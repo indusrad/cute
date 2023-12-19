@@ -27,19 +27,10 @@
 
 G_BEGIN_DECLS
 
-typedef enum _PromptProcessLeader
-{
-  PROMPT_PROCESS_LEADER_KIND_UNKNOWN,
-  PROMPT_PROCESS_LEADER_KIND_SUPERUSER,
-  PROMPT_PROCESS_LEADER_KIND_REMOTE,
-  PROMPT_PROCESS_LEADER_KIND_CONTAINER,
-} PromptProcessLeaderKind;
-
 #define PROMPT_TYPE_TAB_MONITOR (prompt_tab_monitor_get_type())
 
 G_DECLARE_FINAL_TYPE (PromptTabMonitor, prompt_tab_monitor, PROMPT, TAB_MONITOR, GObject)
 
-PromptTabMonitor        *prompt_tab_monitor_new                     (PromptTab        *tab);
-PromptProcessLeaderKind  prompt_tab_monitor_get_process_leader_kind (PromptTabMonitor *self);
+PromptTabMonitor *prompt_tab_monitor_new (PromptTab *tab);
 
 G_END_DECLS

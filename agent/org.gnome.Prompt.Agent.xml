@@ -162,23 +162,6 @@
 
   <interface name="org.gnome.Prompt.Process">
     <!--
-      GetLeaderKind:
-
-      Gets the kind of process the TTY leader is.
-
-       - "unknown"
-       - "superuser"
-       - "remote"
-       - "container"
-    -->
-    <method name="GetLeaderKind">
-      <annotation name="org.gtk.GDBus.C.UnixFD" value="true"/>
-      <arg name="pty_fd" direction="in" type="h"/>
-      <arg name="leader_kind" direction="out" type="s"/>
-      <arg name="cmdline" direction="out" type="s"/>
-    </method>
-
-    <!--
       HasForegroundProcess:
 
       Checks to see if there is a foreground process other than the process
@@ -190,6 +173,7 @@
       <arg name="has_foreground_process" direction="out" type="b"/>
       <arg name="pid" direction="out" type="i"/>
       <arg name="cmdline" direction="out" type="s"/>
+      <arg name="leader_kind" direction="out" type="s"/>
     </method>
 
     <!--

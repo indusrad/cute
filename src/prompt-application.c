@@ -1355,20 +1355,19 @@ prompt_application_process_signaled_cb (PromptIpcProcess *process,
 }
 
 static void
-prompt_application_get_leader_kind_cb (GObject      *object,
-                                       GAsyncResult *result,
-                                       gpointer      user_data)
+prompt_application_has_foreground_process_cb (GObject      *object,
+                                              GAsyncResult *result,
+                                              gpointer      user_data)
 {
   PromptIpcProcess *process = (PromptIpcProcess *)object;
   g_autoptr(GError) error = NULL;
   g_autoptr(GTask) task = user_data;
-  g_autofree char *leader_kind = NULL;
 
   g_assert (PROMPT_IPC_IS_PROCESS (process));
   g_assert (G_IS_ASYNC_RESULT (result));
   g_assert (G_IS_TASK (task));
 
-  if (!prompt_ipc_process_call_get_leader_kind_finish (process, &leader_kind, NULL, NULL, result, &error))
+  if (!prompt_ipc_process_call_has_foreground_process_finish (process, NULL, NULL, NULL, NULL, NULL, result, &error))
     wait_complete (task, 0, 0, g_steal_pointer (&error));
 }
 
@@ -1409,12 +1408,12 @@ prompt_application_wait_async (PromptApplication   *self,
                            0);
 
   /* Now query to ensure the process is still there */
-  prompt_ipc_process_call_get_leader_kind (process,
-                                           g_variant_new_handle (-1),
-                                           NULL,
-                                           cancellable,
-                                           prompt_application_get_leader_kind_cb,
-                                           g_steal_pointer (&task));
+  prompt_ipc_process_call_has_foreground_process (process,
+                                                  g_variant_new_handle (-1),
+                                                  NULL,
+                                                  cancellable,
+                                                  prompt_application_has_foreground_process_cb,
+                                                  g_steal_pointer (&task));
 }
 
 int

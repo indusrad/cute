@@ -45,32 +45,31 @@ typedef enum _PromptTabState
 
 struct _PromptTab
 {
-  GtkWidget           parent_instance;
+  GtkWidget                parent_instance;
 
-  char                *previous_working_directory_uri;
-  PromptProfile       *profile;
-  PromptIpcProcess    *process;
-  char                *title_prefix;
-  PromptTabMonitor    *monitor;
-  char                *uuid;
-  PromptIpcContainer  *container_at_creation;
-  char               **command;
-  char                *initial_title;
+  char                    *previous_working_directory_uri;
+  PromptProfile           *profile;
+  PromptIpcProcess        *process;
+  char                    *title_prefix;
+  PromptTabMonitor        *monitor;
+  char                    *uuid;
+  PromptIpcContainer      *container_at_creation;
+  char                   **command;
+  char                    *initial_title;
+  GdkTexture              *cached_texture;
+  AdwBanner               *banner;
+  GtkScrolledWindow       *scrolled_window;
+  PromptTerminal          *terminal;
+  char                    *command_line;
+  PromptTabNotify          notify;
 
-  GdkTexture          *cached_texture;
+  PromptTabState           state;
+  GPid                     pid;
 
-  PromptTabNotify      notify;
-
-  AdwBanner           *banner;
-  GtkScrolledWindow   *scrolled_window;
-  PromptTerminal      *terminal;
-
-  char                *command_line;
-
-  PromptZoomLevel      zoom;
-  PromptTabState       state;
-
-  guint                forced_exit : 1;
+  PromptZoomLevel          zoom : 5;
+  PromptProcessLeaderKind  leader_kind : 3;
+  guint                    has_foreground_process : 1;
+  guint                    forced_exit : 1;
 };
 
 enum {
@@ -536,29 +535,6 @@ prompt_tab_bell_cb (PromptTab      *self,
   g_signal_emit (self, signals[BELL], 0);
 }
 
-static void
-prompt_tab_notify_process_leader_kind_cb (PromptTab        *self,
-                                          GParamSpec       *pspec,
-                                          PromptTabMonitor *monitor)
-{
-  PromptProcessLeaderKind kind;
-
-  g_assert (PROMPT_IS_TAB (self));
-  g_assert (PROMPT_IS_TAB_MONITOR (monitor));
-
-  g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_ICON]);
-  g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_PROCESS_LEADER_KIND]);
-
-  /* If the process leader is superuser and our tab is not currently
-   * the active tab, then let the user know by setting the attention
-   * bit on the AdwTabPage.
-   */
-  kind = prompt_tab_monitor_get_process_leader_kind (monitor);
-  if (kind == PROMPT_PROCESS_LEADER_KIND_SUPERUSER &&
-      !prompt_tab_is_active (self))
-    prompt_tab_set_needs_attention (self, TRUE);
-}
-
 static PromptIpcContainer *
 prompt_tab_discover_container (PromptTab *self)
 {
@@ -578,7 +554,7 @@ prompt_tab_dup_icon (PromptTab *self)
 
   g_assert (PROMPT_IS_TAB (self));
 
-  kind = prompt_tab_monitor_get_process_leader_kind (self->monitor);
+  kind = self->leader_kind;
 
   switch (kind)
     {
@@ -717,12 +693,6 @@ prompt_tab_constructed (GObject *object)
   prompt_tab_update_scrollback_lines (self);
 
   self->monitor = prompt_tab_monitor_new (self);
-
-  g_signal_connect_object (self->monitor,
-                           "notify::process-leader-kind",
-                           G_CALLBACK (prompt_tab_notify_process_leader_kind_cb),
-                           self,
-                           G_CONNECT_SWAPPED);
 }
 
 static void
@@ -903,8 +873,7 @@ prompt_tab_get_property (GObject    *object,
       break;
 
     case PROP_PROCESS_LEADER_KIND:
-      g_value_set_enum (value,
-                        prompt_tab_monitor_get_process_leader_kind (self->monitor));
+      g_value_set_enum (value, self->leader_kind);
       break;
 
     case PROP_PROFILE:
@@ -1202,6 +1171,9 @@ prompt_tab_dup_title (PromptTab *self)
     g_string_append_printf (gstr, " (%s)", _("Exited"));
   else if (self->state == PROMPT_TAB_STATE_FAILED)
     g_string_append_printf (gstr, " (%s)", _("Failed"));
+  else if (self->has_foreground_process &&
+           !prompt_str_empty0 (self->command_line))
+    g_string_append_printf (gstr, " — %s", self->command_line);
 
   return g_string_free (gstr, FALSE);
 }
@@ -1469,28 +1441,34 @@ prompt_tab_set_container (PromptTab          *self,
 }
 
 gboolean
-prompt_tab_has_foreground_process (PromptTab  *self,
-                                   GPid       *pid,
-                                   char      **cmdline)
+prompt_tab_poll_agent (PromptTab *self)
 {
   gboolean has_foreground_process;
   g_autoptr(GUnixFDList) fd_list = NULL;
   g_autofree char *the_cmdline = NULL;
+  g_autofree char *the_leader_kind = NULL;
+  PromptProcessLeaderKind leader_kind;
+  gboolean changed = FALSE;
   VtePty *pty;
   GPid the_pid;
   int handle;
   int pty_fd;
 
-  g_return_val_if_fail (PROMPT_IS_TAB (self), 0);
-
-  if (pid)
-    *pid = -1;
-
-  if (cmdline)
-    *cmdline = NULL;
+  g_assert (PROMPT_IS_TAB (self));
 
   if (self->process == NULL)
-    return FALSE;
+    {
+      if (g_set_str (&self->command_line, NULL))
+        g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_COMMAND_LINE]);
+
+      if (self->leader_kind != PROMPT_PROCESS_LEADER_KIND_UNKNOWN)
+        {
+          self->leader_kind = PROMPT_PROCESS_LEADER_KIND_UNKNOWN;
+          g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_PROCESS_LEADER_KIND]);
+        }
+
+      return FALSE;
+    }
 
   pty = vte_terminal_get_pty (VTE_TERMINAL (self->terminal));
   pty_fd = vte_pty_get_fd (pty);
@@ -1503,19 +1481,64 @@ prompt_tab_has_foreground_process (PromptTab  *self,
                                                             &has_foreground_process,
                                                             &the_pid,
                                                             &the_cmdline,
+                                                            &the_leader_kind,
                                                             NULL, NULL, NULL))
     has_foreground_process = FALSE;
 
+  if (self->has_foreground_process != has_foreground_process)
+    {
+      changed = TRUE;
+      self->has_foreground_process = has_foreground_process;
+    }
+
+  if (g_strcmp0 (the_leader_kind, "superuser") == 0)
+    leader_kind = PROMPT_PROCESS_LEADER_KIND_SUPERUSER;
+  else if (g_strcmp0 (the_leader_kind, "container") == 0)
+    leader_kind = PROMPT_PROCESS_LEADER_KIND_CONTAINER;
+  else if (g_strcmp0 (the_leader_kind, "remote") == 0)
+    leader_kind = PROMPT_PROCESS_LEADER_KIND_REMOTE;
+  else
+    leader_kind = PROMPT_PROCESS_LEADER_KIND_UNKNOWN;
+
+  if (self->leader_kind != leader_kind)
+    {
+      changed = TRUE;
+      self->leader_kind = leader_kind;
+
+      if (!prompt_tab_is_active (self))
+        prompt_tab_set_needs_attention (self, TRUE);
+
+      g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_PROCESS_LEADER_KIND]);
+    }
+
   if (g_set_str (&self->command_line, the_cmdline))
-    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_COMMAND_LINE]);
+    {
+      changed = TRUE;
+      g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_COMMAND_LINE]);
+    }
 
-  if (cmdline)
-    *cmdline = g_steal_pointer (&the_cmdline);
+  if (changed)
+    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_TITLE]);
 
-  if (pid)
-    *pid = the_pid;
+  return changed;
+}
 
-  return has_foreground_process;
+gboolean
+prompt_tab_has_foreground_process (PromptTab  *self,
+                                   GPid       *pid,
+                                   char      **cmdline)
+{
+  g_return_val_if_fail (PROMPT_IS_TAB (self), FALSE);
+
+  prompt_tab_poll_agent (self);
+
+  if (pid != NULL)
+    *pid = self->pid;
+
+  if (cmdline != NULL)
+    *cmdline = g_strdup (self->command_line);
+
+  return self->has_foreground_process;
 }
 
 void

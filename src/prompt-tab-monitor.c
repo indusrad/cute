@@ -30,23 +30,21 @@
 
 struct _PromptTabMonitor
 {
-  GObject                  parent_instance;
-  GWeakRef                 tab_wr;
-  GSource                 *update_source;
-  PromptProcessLeaderKind  process_leader_kind;
-  int                      current_delay_msec;
+  GObject   parent_instance;
+  GWeakRef  tab_wr;
+  GSource  *update_source;
+  int       current_delay_msec;
 };
 
 enum {
   PROP_0,
-  PROP_PROCESS_LEADER_KIND,
   PROP_TAB,
   N_PROPS
 };
 
 G_DEFINE_FINAL_TYPE (PromptTabMonitor, prompt_tab_monitor, G_TYPE_OBJECT)
 
-static GParamSpec *properties [N_PROPS];
+static GParamSpec *properties[N_PROPS];
 
 static gint64
 prompt_tab_monitor_get_ready_time (PromptTabMonitor *self)
@@ -88,64 +86,23 @@ prompt_tab_monitor_backoff_delay (PromptTabMonitor *self)
 static gboolean
 prompt_tab_monitor_update_source_func (gpointer user_data)
 {
-  PromptProcessLeaderKind process_leader_kind;
   PromptTabMonitor *self = user_data;
   g_autoptr(PromptTab) tab = NULL;
-  g_autoptr(GUnixFDList) in_fd_list = NULL;
-  g_autofree char *process_leader_kind_str = NULL;
-  g_autofree char *cmdline = NULL;
   PromptIpcProcess *process;
-  PromptTerminal *terminal;
-  VtePty *pty;
-  int in_pty_handle;
-  int pty_fd;
 
   g_assert (PROMPT_IS_TAB_MONITOR (self));
 
-  if (!(tab = g_weak_ref_get (&self->tab_wr)))
-    goto remove_source;
-
-  if (!(process = prompt_tab_get_process (tab)))
-    goto remove_source;
-
-  terminal = prompt_tab_get_terminal (tab);
-  pty = vte_terminal_get_pty (VTE_TERMINAL (terminal));
-  pty_fd = vte_pty_get_fd (pty);
-
-  in_fd_list = g_unix_fd_list_new ();
-  in_pty_handle = g_unix_fd_list_append (in_fd_list, pty_fd, NULL);
-
-  prompt_ipc_process_call_get_leader_kind_sync (process,
-                                                g_variant_new_handle (in_pty_handle),
-                                                in_fd_list,
-                                                &process_leader_kind_str,
-                                                &cmdline,
-                                                NULL, NULL, NULL);
-
-  prompt_tab_set_command_line (tab, cmdline);
-
-  if (process_leader_kind_str == NULL || strcmp (process_leader_kind_str, "unknown") == 0)
-    process_leader_kind = PROMPT_PROCESS_LEADER_KIND_UNKNOWN;
-  else if (strcmp (process_leader_kind_str, "remote") == 0)
-    process_leader_kind = PROMPT_PROCESS_LEADER_KIND_REMOTE;
-  else if (strcmp (process_leader_kind_str, "superuser") == 0)
-    process_leader_kind = PROMPT_PROCESS_LEADER_KIND_SUPERUSER;
-  else if (strcmp (process_leader_kind_str, "container") == 0)
-    process_leader_kind = PROMPT_PROCESS_LEADER_KIND_CONTAINER;
-  else
-    process_leader_kind = PROMPT_PROCESS_LEADER_KIND_UNKNOWN;
-
-  if (process_leader_kind != self->process_leader_kind)
+  if ((tab = g_weak_ref_get (&self->tab_wr)) &&
+      (process = prompt_tab_get_process (tab)))
     {
-      self->process_leader_kind = process_leader_kind;
-      prompt_tab_monitor_reset_delay (self);
-      g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_PROCESS_LEADER_KIND]);
+      if (prompt_tab_poll_agent (tab))
+        prompt_tab_monitor_reset_delay (self);
+      else
+        prompt_tab_monitor_backoff_delay (self);
+
+      return G_SOURCE_CONTINUE;
     }
-  else prompt_tab_monitor_backoff_delay (self);
 
-  return G_SOURCE_CONTINUE;
-
-remove_source:
   g_clear_pointer (&self->update_source, g_source_unref);
 
   return G_SOURCE_REMOVE;
@@ -302,10 +259,6 @@ prompt_tab_monitor_get_property (GObject    *object,
 
   switch (prop_id)
     {
-    case PROP_PROCESS_LEADER_KIND:
-      g_value_set_enum (value, self->process_leader_kind);
-      break;
-
     case PROP_TAB:
       g_value_take_object (value, g_weak_ref_get (&self->tab_wr));
       break;
@@ -343,13 +296,6 @@ prompt_tab_monitor_class_init (PromptTabMonitorClass *klass)
   object_class->get_property = prompt_tab_monitor_get_property;
   object_class->set_property = prompt_tab_monitor_set_property;
 
-  properties[PROP_PROCESS_LEADER_KIND] =
-    g_param_spec_enum ("process-leader-kind", NULL, NULL,
-                       PROMPT_TYPE_PROCESS_LEADER_KIND,
-                       PROMPT_PROCESS_LEADER_KIND_UNKNOWN,
-                       (G_PARAM_READABLE |
-                        G_PARAM_STATIC_STRINGS));
-
   properties[PROP_TAB] =
     g_param_spec_object ("tab", NULL, NULL,
                          PROMPT_TYPE_TAB,
@@ -376,12 +322,4 @@ prompt_tab_monitor_new (PromptTab *tab)
   return g_object_new (PROMPT_TYPE_TAB_MONITOR,
                        "tab", tab,
                        NULL);
-}
-
-PromptProcessLeaderKind
-prompt_tab_monitor_get_process_leader_kind (PromptTabMonitor *self)
-{
-  g_return_val_if_fail (PROMPT_IS_TAB_MONITOR (self), 0);
-
-  return self->process_leader_kind;
 }

@@ -29,6 +29,14 @@
 
 G_BEGIN_DECLS
 
+typedef enum _PromptProcessLeader
+{
+  PROMPT_PROCESS_LEADER_KIND_UNKNOWN,
+  PROMPT_PROCESS_LEADER_KIND_SUPERUSER,
+  PROMPT_PROCESS_LEADER_KIND_REMOTE,
+  PROMPT_PROCESS_LEADER_KIND_CONTAINER,
+} PromptProcessLeaderKind;
+
 typedef enum _PromptZoomLevel
 {
   PROMPT_ZOOM_LEVEL_MINUS_7 = 1,
@@ -92,5 +100,6 @@ gboolean            prompt_tab_has_foreground_process             (PromptTab    
                                                                    char               **cmdline);
 void                prompt_tab_set_initial_title                  (PromptTab           *self,
                                                                    const char          *initial_title);
+gboolean            prompt_tab_poll_agent                         (PromptTab           *self);
 
 G_END_DECLS
