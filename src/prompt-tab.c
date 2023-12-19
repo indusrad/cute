@@ -1174,7 +1174,9 @@ prompt_tab_dup_title (PromptTab *self)
   else if (self->state == PROMPT_TAB_STATE_FAILED)
     g_string_append_printf (gstr, " (%s)", _("Failed"));
   else if (self->has_foreground_process &&
-           !prompt_str_empty0 (self->command_line))
+           !prompt_str_empty0 (self->command_line) &&
+           !prompt_str_empty0 (self->program_name) &&
+           !prompt_is_shell (self->program_name))
     g_string_append_printf (gstr, " — %s", self->command_line);
 
   return g_string_free (gstr, FALSE);
