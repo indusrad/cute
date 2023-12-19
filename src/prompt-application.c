@@ -293,7 +293,7 @@ prompt_application_command_line (GApplication            *app,
           if (window == NULL)
             window = prompt_window_new_empty ();
           tab = prompt_window_add_tab_for_command (window, NULL, (const char * const *)argv, cwd_uri);
-          prompt_tab_set_previous_working_directory_uri (tab, cwd_uri);
+          prompt_tab_set_initial_working_directory_uri (tab, cwd_uri);
           prompt_window_set_active_tab (window, tab);
           gtk_window_present (GTK_WINDOW (window));
         }
@@ -306,7 +306,7 @@ prompt_application_command_line (GApplication            *app,
           if (window == NULL)
             window = prompt_window_new_empty ();
           tab = prompt_window_add_tab_for_command (window, profile, (const char * const *)argv, cwd_uri);
-          prompt_tab_set_previous_working_directory_uri (tab, cwd_uri);
+          prompt_tab_set_initial_working_directory_uri (tab, cwd_uri);
           prompt_window_set_active_tab (window, tab);
           gtk_window_present (GTK_WINDOW (window));
         }
@@ -317,7 +317,7 @@ prompt_application_command_line (GApplication            *app,
 
           window = prompt_window_new_empty ();
           tab = prompt_window_add_tab_for_command (window, NULL, (const char * const *)argv, cwd_uri);
-          prompt_tab_set_previous_working_directory_uri (tab, cwd_uri);
+          prompt_tab_set_initial_working_directory_uri (tab, cwd_uri);
           prompt_window_set_active_tab (window, tab);
           gtk_window_present (GTK_WINDOW (window));
         }
@@ -341,7 +341,7 @@ prompt_application_command_line (GApplication            *app,
         window = prompt_window_new_empty ();
 
       tab = prompt_tab_new (profile);
-      prompt_tab_set_previous_working_directory_uri (tab, cwd_uri);
+      prompt_tab_set_initial_working_directory_uri (tab, cwd_uri);
       prompt_window_add_tab (window, tab);
       prompt_window_set_active_tab (window, tab);
 
@@ -356,7 +356,7 @@ prompt_application_command_line (GApplication            *app,
       if (window == NULL)
         window = prompt_window_new_empty ();
 
-      prompt_tab_set_previous_working_directory_uri (tab, cwd_uri);
+      prompt_tab_set_initial_working_directory_uri (tab, cwd_uri);
 
       prompt_window_add_tab (window, tab);
       prompt_window_set_active_tab (window, tab);
@@ -371,7 +371,7 @@ prompt_application_command_line (GApplication            *app,
       if (window == NULL)
         window = prompt_window_new_empty ();
 
-      prompt_tab_set_previous_working_directory_uri (tab, cwd_uri);
+      prompt_tab_set_initial_working_directory_uri (tab, cwd_uri);
 
       prompt_window_add_tab (window, tab);
       prompt_window_set_active_tab (window, tab);

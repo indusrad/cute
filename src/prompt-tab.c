@@ -47,6 +47,7 @@ struct _PromptTab
 {
   GtkWidget                parent_instance;
 
+  char                    *initial_working_directory_uri;
   char                    *previous_working_directory_uri;
   PromptProfile           *profile;
   PromptIpcProcess        *process;
@@ -349,6 +350,7 @@ prompt_tab_respawn (PromptTab *self)
   g_autoptr(VtePty) new_pty = NULL;
   PromptApplication *app;
   const char *profile_uuid;
+  const char *cwd;
   VtePty *pty;
 
   g_assert (PROMPT_IS_TAB (self));
@@ -410,10 +412,14 @@ prompt_tab_respawn (PromptTab *self)
       pty = new_pty;
     }
 
+  cwd = self->previous_working_directory_uri;
+  if (self->initial_working_directory_uri)
+    cwd = self->initial_working_directory_uri;
+
   prompt_application_spawn_async (PROMPT_APPLICATION_DEFAULT,
                                   container,
                                   self->profile,
-                                  self->previous_working_directory_uri,
+                                  cwd,
                                   pty,
                                   (const char * const *)self->command,
                                   NULL,
@@ -836,6 +842,7 @@ prompt_tab_dispose (GObject *object)
   g_clear_object (&self->monitor);
   g_clear_object (&self->container_at_creation);
 
+  g_clear_pointer (&self->initial_working_directory_uri, g_free);
   g_clear_pointer (&self->previous_working_directory_uri, g_free);
   g_clear_pointer (&self->title_prefix, g_free);
   g_clear_pointer (&self->initial_title, g_free);
@@ -1224,6 +1231,15 @@ prompt_tab_get_current_directory_uri (PromptTab *self)
   g_return_val_if_fail (PROMPT_IS_TAB (self), NULL);
 
   return vte_terminal_get_current_directory_uri (VTE_TERMINAL (self->terminal));
+}
+
+void
+prompt_tab_set_initial_working_directory_uri (PromptTab  *self,
+                                              const char *initial_working_directory_uri)
+{
+  g_return_if_fail (PROMPT_IS_TAB (self));
+
+  g_set_str (&self->initial_working_directory_uri, initial_working_directory_uri);
 }
 
 void
