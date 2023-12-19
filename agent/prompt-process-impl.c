@@ -170,10 +170,26 @@ get_cmdline_for_pid (GPid pid)
 
   if (g_file_get_contents (path, &cmdline, &len, NULL))
     {
+      g_autofree char *sanitized = NULL;
+
+      if (len > 1024)
+        {
+          len = 1024;
+          cmdline[len] = 0;
+        }
+
       for (gsize i = 0; i < len; i++)
         {
           if (cmdline[i] == 0 || g_ascii_iscntrl (cmdline[i]))
             cmdline[i] = ' ';
+        }
+
+      sanitized = g_utf8_make_valid (cmdline, len);
+
+      if (sanitized != NULL)
+        {
+          g_free (cmdline);
+          cmdline = g_steal_pointer (&sanitized);
         }
     }
 #endif
