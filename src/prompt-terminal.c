@@ -1,6 +1,8 @@
 /*
  * prompt-terminal.c
  *
+ * Copyright © 2001 Havoc Pennington
+ * Copyright © 2007, 2008, 2010, 2011 Christian Persch
  * Copyright 2023 Christian Hergert <chergert@redhat.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -21,6 +23,9 @@
 
 #include "config.h"
 
+#define PCRE2_CODE_UNIT_WIDTH 0
+#include <pcre2.h>
+
 #include <adwaita.h>
 
 #include <glib/gi18n.h>
@@ -31,6 +36,8 @@
 #include "prompt-terminal.h"
 #include "prompt-util.h"
 #include "prompt-window.h"
+
+#include "terminal-regex.h"
 
 #define SIZE_DISMISS_TIMEOUT_MSEC 1000
 #define URL_MATCH_CURSOR_NAME "pointer"
@@ -80,11 +87,12 @@ G_DEFINE_FINAL_TYPE (PromptTerminal, prompt_terminal, VTE_TYPE_TERMINAL)
 
 static GParamSpec *properties [N_PROPS];
 static guint signals[N_SIGNALS];
-static VteRegex *builtin_dingus_regex[2];
-static const char * const builtin_dingus[] = {
-  "(((gopher|news|telnet|nntp|file|http|ftp|https)://)|(www|ftp)[-A-Za-z0-9]*\\.)[-A-Za-z0-9\\.]+(:[0-9]*)?",
-  "(((gopher|news|telnet|nntp|file|http|ftp|https)://)|(www|ftp)[-A-Za-z0-9]*\\.)[-A-Za-z0-9\\.]+(:[0-9]*)?/[-A-Za-z0-9_\\$\\.\\+\\!\\*\\(\\),;:@&=\\?/~\\#\\%]*[^]'\\.}>\\) ,\\\"]",
+static const char * const url_regexes_str[] = {
+  REGEX_URL_AS_IS,
+  REGEX_URL_HTTP,
+  REGEX_URL_FILE,
 };
+static VteRegex *url_regexes[G_N_ELEMENTS(url_regexes_str)];
 
 static void
 prompt_terminal_update_colors (PromptTerminal *self)
@@ -1214,19 +1222,22 @@ prompt_terminal_class_init (PromptTerminalClass *klass)
   gtk_widget_class_install_action (widget_class, "terminal.open-link", NULL, open_link_action);
   gtk_widget_class_install_action (widget_class, "terminal.select-all", "b", select_all_action);
 
-  for (guint i = 0; i < G_N_ELEMENTS (builtin_dingus); i++)
+  for (guint i = 0; i < G_N_ELEMENTS (url_regexes); i++)
     {
       g_autoptr(GError) error = NULL;
 
-      builtin_dingus_regex[i] = vte_regex_new_for_match (builtin_dingus[i],
-                                                         strlen (builtin_dingus[i]),
-                                                         VTE_REGEX_FLAGS_DEFAULT | VTE_PCRE2_MULTILINE | VTE_PCRE2_UCP,
-                                                         NULL);
+      url_regexes[i] = vte_regex_new_for_match (url_regexes_str[i],
+                                                strlen (url_regexes_str[i]),
+                                                PCRE2_UTF | PCRE2_NO_UTF_CHECK | PCRE2_UCP | PCRE2_MULTILINE,
+                                                &error);
+      g_assert_no_error (error);
+      g_assert_nonnull (url_regexes[i]);
 
-      if (!vte_regex_jit (builtin_dingus_regex[i], 0, &error))
+      if (!vte_regex_jit (url_regexes[i], PCRE2_JIT_COMPLETE, &error) ||
+          !vte_regex_jit (url_regexes[i], PCRE2_JIT_PARTIAL_SOFT, &error))
         g_warning ("Failed to JIT regex: %s: Regex was: %s",
                    error->message,
-                   builtin_dingus[i]);
+                   url_regexes_str[i]);
     }
 }
 
@@ -1249,10 +1260,10 @@ prompt_terminal_init (PromptTerminal *self)
                            G_CONNECT_SWAPPED);
   prompt_terminal_shortcuts_notify_cb (self, NULL, shortcuts);
 
-  for (guint i = 0; i < G_N_ELEMENTS (builtin_dingus_regex); i++)
+  for (guint i = 0; i < G_N_ELEMENTS (url_regexes); i++)
     {
       int tag = vte_terminal_match_add_regex (VTE_TERMINAL (self),
-                                              builtin_dingus_regex[i],
+                                              url_regexes[i],
                                               0);
       vte_terminal_match_set_cursor_name (VTE_TERMINAL (self),
                                           tag,
