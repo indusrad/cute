@@ -45,8 +45,8 @@ struct _PromptTerminal
 {
   VteTerminal        parent_instance;
 
-  PromptShortcuts   *shortcuts;
-  PromptPalette     *palette;
+  PromptShortcuts    *shortcuts;
+  PromptPalette      *palette;
   char               *url;
 
   GtkPopover         *popover;
@@ -189,7 +189,8 @@ prompt_terminal_update_url_actions (PromptTerminal *self,
 
   g_assert (PROMPT_IS_TERMINAL (self));
 
-  pattern = vte_terminal_check_match_at (VTE_TERMINAL (self), x, y, &tag);
+  if (!(pattern = vte_terminal_check_hyperlink_at (VTE_TERMINAL (self), x, y)))
+    pattern = vte_terminal_check_match_at (VTE_TERMINAL (self), x, y, &tag);
 
   gtk_widget_action_set_enabled (GTK_WIDGET (self), "clipboard.copy-link", pattern != NULL);
   gtk_widget_action_set_enabled (GTK_WIDGET (self), "terminal.open-link", pattern != NULL);
