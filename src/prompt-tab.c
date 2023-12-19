@@ -1317,40 +1317,17 @@ gboolean
 prompt_tab_is_running (PromptTab  *self,
                        char      **cmdline)
 {
-  g_autofree char *local_cmdline = NULL;
-  gboolean is_running;
-
   g_return_val_if_fail (PROMPT_IS_TAB (self), FALSE);
 
-  is_running = prompt_tab_has_foreground_process (self, NULL, &local_cmdline);
-
-  if (is_running && local_cmdline != NULL)
-    {
-      g_auto(GStrv) argv = NULL;
-      int argc;
-
-      if (!g_shell_parse_argv (local_cmdline, &argc, &argv, NULL))
-        {
-          const char *space;
-
-          if ((space = strchr (local_cmdline, ' ')))
-            {
-              argc = 1;
-              argv = g_new0 (char *, 2);
-              argv[0] = g_strndup (local_cmdline, space - local_cmdline);
-              argv[1] = NULL;
-            }
-        }
-
-      /* Ignore foreground if it's a shell */
-      if (argv != NULL && prompt_is_shell (argv[0]))
-        is_running = FALSE;
-    }
+  prompt_tab_poll_agent (self);
 
   if (cmdline != NULL)
-    *cmdline = g_steal_pointer (&local_cmdline);
+    *cmdline = g_strdup (self->command_line);
 
-  return is_running;
+  if (self->has_foreground_process && self->program_name != NULL)
+    return !prompt_is_shell (self->program_name);
+
+  return FALSE;
 }
 
 void
