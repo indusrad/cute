@@ -61,6 +61,7 @@ struct _PromptTab
   GtkScrolledWindow       *scrolled_window;
   PromptTerminal          *terminal;
   char                    *command_line;
+  char                    *program_name;
   PromptTabNotify          notify;
 
   PromptTabState           state;
@@ -840,6 +841,7 @@ prompt_tab_dispose (GObject *object)
   g_clear_pointer (&self->initial_title, g_free);
   g_clear_pointer (&self->command, g_strfreev);
   g_clear_pointer (&self->command_line, g_free);
+  g_clear_pointer (&self->program_name, g_free);
 
   G_OBJECT_CLASS (prompt_tab_parent_class)->dispose (object);
 }
@@ -1513,7 +1515,16 @@ prompt_tab_poll_agent (PromptTab *self)
 
   if (g_set_str (&self->command_line, the_cmdline))
     {
+      g_autofree char *program_name = NULL;
+      const char *space;
+
       changed = TRUE;
+
+      if ((space = strchr (the_cmdline, ' ')))
+        program_name = g_strndup (the_cmdline, space - the_cmdline);
+
+      g_set_str (&self->program_name, program_name);
+
       g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_COMMAND_LINE]);
     }
 
