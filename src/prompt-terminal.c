@@ -474,17 +474,13 @@ open_link_action (GtkWidget  *widget,
                   GVariant   *param)
 {
   PromptTerminal *self = (PromptTerminal *)widget;
-  g_autoptr(GtkUriLauncher) launcher = NULL;
 
   g_assert (PROMPT_IS_TERMINAL (self));
 
   if (prompt_str_empty0 (self->url))
     return;
 
-  launcher = gtk_uri_launcher_new (self->url);
-  gtk_uri_launcher_launch (launcher,
-                           GTK_WINDOW (gtk_widget_get_root (widget)),
-                           NULL, NULL, NULL);
+  prompt_uri_open (self->url, GTK_WINDOW (gtk_widget_get_root (widget)));
 }
 
 typedef struct {
