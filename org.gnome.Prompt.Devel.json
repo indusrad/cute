@@ -6,10 +6,12 @@
     "command" : "prompt",
     "finish-args" : [
         "--allow=devel",
-        "--share=network",
-        "--share=ipc",
-        "--socket=fallback-x11",
         "--device=dri",
+        "--filesystem=home",
+        "--filesystem=host",
+        "--share=ipc",
+        "--share=network",
+        "--socket=fallback-x11",
         "--socket=wayland",
         "--talk-name=org.freedesktop.Flatpak"
     ],

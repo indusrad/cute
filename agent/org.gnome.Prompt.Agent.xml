@@ -158,6 +158,19 @@
       <arg name="program" direction="in" type="s"/>
       <arg name="path" direction="out" type="s"/>
     </method>
+
+    <!--
+      TranslateURI:
+      @uri: the URI to translate
+
+      Translates a URI from the container to something that is available from
+      the host. The receiver is still responsible for translating a second
+      pass if they are inside a container as well (say Flatpak).
+    -->
+    <method name="TranslateURI">
+      <arg name="uri" direction="in" type="s"/>
+      <arg name="translated" direction="out" type="s"/>
+    </method>
   </interface>
 
   <interface name="org.gnome.Prompt.Process">

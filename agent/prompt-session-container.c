@@ -169,11 +169,27 @@ prompt_session_container_handle_find_program_in_path (PromptIpcContainer    *con
   return TRUE;
 }
 
+static gboolean
+prompt_session_container_handle_translate_uri (PromptIpcContainer    *container,
+                                               GDBusMethodInvocation *invocation,
+                                               const char            *uri)
+{
+  g_assert (PROMPT_IS_SESSION_CONTAINER (container));
+  g_assert (G_IS_DBUS_METHOD_INVOCATION (invocation));
+
+  prompt_ipc_container_complete_translate_uri (container,
+                                               g_steal_pointer (&invocation),
+                                               uri);
+
+  return TRUE;
+}
+
 static void
 container_iface_init (PromptIpcContainerIface *iface)
 {
-  iface->handle_spawn = prompt_session_container_handle_spawn;
   iface->handle_find_program_in_path = prompt_session_container_handle_find_program_in_path;
+  iface->handle_spawn = prompt_session_container_handle_spawn;
+  iface->handle_translate_uri = prompt_session_container_handle_translate_uri;
 }
 
 void
