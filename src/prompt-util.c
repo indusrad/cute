@@ -37,14 +37,10 @@
 
 #include <gio/gio.h>
 
-#include <libportal/portal.h>
-#include <libportal-gtk4/portal-gtk4.h>
-
 #include "gconstructor.h"
 
 #include "prompt-util.h"
 
-static XdpPortal *portal;
 static PromptProcessKind kind = PROMPT_PROCESS_KIND_HOST;
 
 G_DEFINE_CONSTRUCTOR(prompt_init_ctor)
@@ -302,55 +298,4 @@ prompt_parse_shells (const char *etc_shells)
   split = g_strsplit (etc_shells, "\n", 0);
 
   return G_LIST_MODEL (gtk_string_list_new ((const char * const *)split));
-}
-
-static void
-prompt_util_open_cb (GObject      *object,
-                     GAsyncResult *result,
-                     gpointer      user_data)
-{
-  g_autoptr(GError) error = NULL;
-
-  if (!xdp_portal_open_uri_finish (XDP_PORTAL (object), result, &error))
-    g_warning ("Failed to open URI: %s", error->message);
-}
-
-void
-prompt_uri_open (const char *uri,
-                 GtkWindow  *window)
-{
-  g_autofree char *file_host = NULL;
-  g_autofree char *alt_uri = NULL;
-  const char *scheme;
-
-  g_return_if_fail (uri != NULL);
-  g_return_if_fail (GTK_IS_WINDOW (window));
-
-  g_debug ("Requested URI: %s\n", uri);
-
-  scheme = g_uri_peek_scheme (uri);
-
-  if (g_strcmp0 (scheme, "file") == 0)
-    {
-      XdpParent *parent;
-
-      if (portal == NULL)
-        portal = xdp_portal_new ();
-
-      parent = xdp_parent_new_gtk (window);
-      xdp_portal_open_uri (portal,
-                           parent,
-                           uri,
-                           XDP_OPEN_URI_FLAG_ASK,
-                           NULL,
-                           prompt_util_open_cb,
-                           NULL);
-      xdp_parent_free (parent);
-
-    }
-  else
-    {
-      g_autoptr(GtkUriLauncher) launcher = gtk_uri_launcher_new (uri);
-      gtk_uri_launcher_launch (launcher, window, NULL, NULL, NULL);
-    }
 }

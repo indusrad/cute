@@ -474,13 +474,16 @@ open_link_action (GtkWidget  *widget,
                   GVariant   *param)
 {
   PromptTerminal *self = (PromptTerminal *)widget;
+  PromptTab *tab;
 
   g_assert (PROMPT_IS_TERMINAL (self));
 
   if (prompt_str_empty0 (self->url))
     return;
 
-  prompt_uri_open (self->url, GTK_WINDOW (gtk_widget_get_root (widget)));
+  tab = PROMPT_TAB (gtk_widget_get_ancestor (widget, PROMPT_TYPE_TAB));
+
+  prompt_tab_open_uri (tab, self->url);
 }
 
 typedef struct {

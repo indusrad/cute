@@ -101,5 +101,7 @@ void                prompt_tab_set_initial_title                  (PromptTab    
 void                prompt_tab_set_initial_working_directory_uri  (PromptTab           *self,
                                                                    const char          *initial_working_directory_uri);
 gboolean            prompt_tab_poll_agent                         (PromptTab           *self);
+void                prompt_tab_open_uri                           (PromptTab           *self,
+                                                                   const char          *uri);
 
 G_END_DECLS

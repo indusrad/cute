@@ -23,6 +23,9 @@
 
 #include <glib/gi18n.h>
 
+#include <libportal/portal.h>
+#include <libportal-gtk4/portal-gtk4.h>
+
 #include "prompt-agent-ipc.h"
 #include "prompt-application.h"
 #include "prompt-enums.h"
@@ -101,6 +104,7 @@ G_DEFINE_FINAL_TYPE (PromptTab, prompt_tab, GTK_TYPE_WIDGET)
 
 static GParamSpec *properties[N_PROPS];
 static guint signals[N_SIGNALS];
+static XdpPortal *portal;
 static double zoom_font_scales[] = {
   0,
   1.0 / (1.2 * 1.2 * 1.2 * 1.2 * 1.2 * 1.2 * 1.2),
@@ -812,12 +816,13 @@ prompt_tab_match_clicked_cb (PromptTab       *self,
   g_assert (match != NULL);
   g_assert (PROMPT_IS_TERMINAL (terminal));
 
-  if (prompt_str_empty0 (match))
-    return FALSE;
+  if (!prompt_str_empty0 (match))
+    {
+      prompt_tab_open_uri (self, match);
+      return TRUE;
+    }
 
-  prompt_uri_open (match, GTK_WINDOW (gtk_widget_get_root (GTK_WIDGET (self))));
-
-  return TRUE;
+  return FALSE;
 }
 
 static void
@@ -1584,4 +1589,104 @@ prompt_tab_get_command_line (PromptTab *self)
   g_return_val_if_fail (PROMPT_IS_TAB (self), NULL);
 
   return self->command_line;
+}
+
+static void
+prompt_tab_toast (PromptTab  *self,
+                  int         timeout,
+                  const char *title)
+{
+  GtkWidget *overlay = gtk_widget_get_ancestor (GTK_WIDGET (self), ADW_TYPE_TOAST_OVERLAY);
+  AdwToast *toast;
+
+  if (overlay == NULL)
+    return;
+
+  toast = g_object_new (ADW_TYPE_TOAST,
+                        "title", title,
+                        "timeout", timeout,
+                        NULL);
+  adw_toast_overlay_add_toast (ADW_TOAST_OVERLAY (overlay), toast);
+}
+
+static void
+prompt_tab_open_uri_cb (GObject      *object,
+                        GAsyncResult *result,
+                        gpointer      user_data)
+{
+  g_autoptr(PromptTab) self = user_data;
+  g_autoptr(GError) error = NULL;
+
+  g_assert (XDP_IS_PORTAL (object));
+  g_assert (G_IS_ASYNC_RESULT (result));
+  g_assert (PROMPT_IS_TAB (self));
+
+  if (!xdp_portal_open_uri_finish (XDP_PORTAL (object), result, &error))
+    prompt_tab_toast (self, 3, _("Failed to open link"));
+}
+
+void
+prompt_tab_open_uri (PromptTab  *self,
+                     const char *uri)
+{
+  g_autofree char *translated = NULL;
+  GtkWindow *window;
+  XdpParent *parent;
+
+  g_return_if_fail (PROMPT_IS_TAB (self));
+  g_return_if_fail (uri != NULL);
+
+  window = GTK_WINDOW (gtk_widget_get_root (GTK_WIDGET (self)));
+
+  if (g_str_has_prefix (uri, "file://"))
+    {
+      g_autoptr(PromptIpcContainer) container = prompt_tab_dup_container (self);
+      g_autoptr(GUri) guri = NULL;
+
+      if (container == NULL)
+        {
+          g_autofree char *default_container = prompt_profile_dup_default_container (self->profile);
+          container = prompt_application_lookup_container (PROMPT_APPLICATION_DEFAULT, default_container);
+        }
+
+      if (container != NULL)
+        {
+          if (prompt_ipc_container_call_translate_uri_sync (container, uri, &translated, NULL, NULL))
+            uri = translated;
+        }
+
+      if (prompt_get_process_kind () == PROMPT_PROCESS_KIND_FLATPAK &&
+          (guri = g_uri_parse (uri, 0, NULL)) &&
+          !g_str_has_prefix (g_uri_get_path (guri), g_get_home_dir ()))
+        {
+          const char *path = g_uri_get_path (guri);
+          g_autofree char *new_path = g_build_filename ("/var/run/host", path, NULL);
+          g_autoptr(GUri) rewritten = NULL;
+
+          rewritten = g_uri_build (0,
+                                   "file",
+                                   g_uri_get_userinfo (guri),
+                                   g_uri_get_host (guri),
+                                   g_uri_get_port (guri),
+                                   new_path,
+                                   g_uri_get_query (guri),
+                                   g_uri_get_fragment (guri));
+
+          g_clear_pointer (&translated, g_free);
+          uri = translated = g_uri_to_string (rewritten);
+        }
+    }
+
+  if (portal == NULL)
+    portal = xdp_portal_new ();
+
+  parent = xdp_parent_new_gtk (window);
+  xdp_portal_open_uri (portal,
+                       parent,
+                       uri,
+                       XDP_OPEN_URI_FLAG_NONE,
+                       NULL,
+                       prompt_tab_open_uri_cb,
+                       g_object_ref (self));
+  xdp_parent_free (parent);
 }
