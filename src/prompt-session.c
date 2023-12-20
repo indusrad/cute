@@ -251,7 +251,9 @@ prompt_session_restore (PromptApplication *app,
             prompt_tab_set_initial_title (the_tab, window_title);
 
           terminal = prompt_tab_get_terminal (the_tab);
-          vte_terminal_set_size (VTE_TERMINAL (terminal), columns, rows);
+
+          if (!maximized)
+            vte_terminal_set_size (VTE_TERMINAL (terminal), columns, rows);
 
           if (zoom != PROMPT_ZOOM_LEVEL_DEFAULT)
             prompt_tab_set_zoom (the_tab, zoom);
