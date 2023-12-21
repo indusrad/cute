@@ -345,6 +345,27 @@ prompt_terminal_capture_click_pressed_cb (PromptTerminal  *self,
     gtk_gesture_set_state (GTK_GESTURE (click), GTK_EVENT_SEQUENCE_DENIED);
 }
 
+static void
+prompt_terminal_scroll_to_bottom (PromptTerminal *self)
+{
+  GtkAdjustment *adjustment;
+  GtkWidget *scroller;
+  double upper;
+  double value;
+  double page_size;
+
+  g_assert (PROMPT_IS_TERMINAL (self));
+
+  scroller = gtk_widget_get_ancestor (GTK_WIDGET (self), GTK_TYPE_SCROLLED_WINDOW);
+  adjustment = gtk_scrolled_window_get_vadjustment (GTK_SCROLLED_WINDOW (scroller));
+  upper = gtk_adjustment_get_upper (adjustment);
+  value = gtk_adjustment_get_value (adjustment);
+  page_size = gtk_adjustment_get_page_size (adjustment);
+
+  if (upper - page_size > value)
+    gtk_adjustment_set_value (adjustment, upper - page_size);
+}
+
 static gboolean
 prompt_terminal_capture_key_pressed_cb (PromptTerminal     *self,
                                         guint               keyval,
@@ -444,6 +465,9 @@ paste_clipboard_action (GtkWidget  *widget,
   g_assert (VTE_IS_TERMINAL (widget));
 
   vte_terminal_paste_clipboard (VTE_TERMINAL (widget));
+
+  if (vte_terminal_get_scroll_on_keystroke (VTE_TERMINAL (widget)))
+    prompt_terminal_scroll_to_bottom (PROMPT_TERMINAL (widget));
 }
 
 static void
