@@ -20,6 +20,10 @@
 
 #include "config.h"
 
+#include <unistd.h>
+
+#include <glib/gstdio.h>
+
 #include "prompt-agent-util.h"
 #include "prompt-distrobox-container.h"
 #include "prompt-podman-container.h"
@@ -442,7 +446,93 @@ prompt_podman_container_handle_spawn (PromptIpcContainer    *container,
 }
 
 static void
+prompt_podman_container_which_cb (GObject      *object,
+                                  GAsyncResult *result,
+                                  gpointer      user_data)
+{
+  GSubprocess *subprocess = (GSubprocess *)object;
+  g_autoptr(GDBusMethodInvocation) invocation = user_data;
+  g_autoptr(GError) error = NULL;
+  g_autofree char *stdout_buf = NULL;
+  PromptIpcContainer *container;
+
+  g_assert (G_IS_SUBPROCESS (subprocess));
+  g_assert (G_IS_ASYNC_RESULT (result));
+  g_assert (G_IS_DBUS_METHOD_INVOCATION (invocation));
+
+  container = g_object_get_data (G_OBJECT (invocation), "CONTAINER");
+
+  g_assert (PROMPT_IPC_IS_CONTAINER (container));
+
+  if (!g_subprocess_communicate_utf8_finish (subprocess, result, &stdout_buf, NULL, &error))
+    g_dbus_method_invocation_return_gerror (g_steal_pointer (&invocation),
+                                            g_steal_pointer (&error));
+  else
+    prompt_ipc_container_complete_find_program_in_path (container,
+                                                        g_steal_pointer (&invocation),
+                                                        g_strstrip (stdout_buf));
+}
+
+static void
+do_unlink (const char *path)
+{
+  /* Avoid using glibc API directly */
+  g_autoptr(GFile) file = g_file_new_for_path (path);
+  g_file_delete (file, NULL, NULL);
+}
+
+static gboolean
+prompt_podman_container_handle_find_program_in_path (PromptIpcContainer    *container,
+                                                     GDBusMethodInvocation *invocation,
+                                                     const char            *program)
+{
+  g_autoptr(GSubprocess) subprocess = NULL;
+  g_autoptr(PromptRunContext) run_context = NULL;
+  g_autofree char *name_used = NULL;
+  g_autoptr(GError) error = NULL;
+  int fd;
+
+  g_assert (PROMPT_IS_PODMAN_CONTAINER (container));
+  g_assert (G_IS_DBUS_METHOD_INVOCATION (invocation));
+
+  run_context = prompt_run_context_new ();
+  prompt_podman_container_real_prepare_run_context (PROMPT_PODMAN_CONTAINER (container), run_context);
+  prompt_run_context_append_argv (run_context, "which");
+  prompt_run_context_append_argv (run_context, program);
+
+  if (-1 == (fd = g_file_open_tmp (".prompt-podman-XXXXXX", &name_used, &error)))
+    goto handle_gerror;
+
+  do_unlink (name_used);
+
+  prompt_run_context_take_fd (run_context, fd, STDOUT_FILENO);
+
+  g_object_set_data_full (G_OBJECT (run_context),
+                          "CONTAINER",
+                          g_object_ref (container),
+                          g_object_unref);
+
+  if (!(subprocess = prompt_run_context_spawn (run_context, &error)))
+    goto handle_gerror;
+
+  g_subprocess_communicate_utf8_async (subprocess,
+                                       NULL,
+                                       NULL,
+                                       prompt_podman_container_which_cb,
+                                       g_steal_pointer (&invocation));
+
+  return TRUE;
+
+handle_gerror:
+  g_dbus_method_invocation_return_gerror (g_steal_pointer (&invocation),
+                                          g_steal_pointer (&error));
+
+  return TRUE;
+}
+
+static void
 container_iface_init (PromptIpcContainerIface *iface)
 {
   iface->handle_spawn = prompt_podman_container_handle_spawn;
+  iface->handle_find_program_in_path = prompt_podman_container_handle_find_program_in_path;
 }
