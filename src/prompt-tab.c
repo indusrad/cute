@@ -1526,7 +1526,7 @@ prompt_tab_poll_agent (PromptTab *self)
 
       changed = TRUE;
 
-      if ((space = strchr (the_cmdline, ' ')))
+      if (the_cmdline != NULL && (space = strchr (the_cmdline, ' ')))
         program_name = g_strndup (the_cmdline, space - the_cmdline);
 
       g_set_str (&self->program_name, program_name);
