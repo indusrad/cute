@@ -33,7 +33,6 @@
 
 typedef struct
 {
-  char *id;
   GHashTable *labels;
   gboolean has_started;
 } PromptPodmanContainerPrivate;
@@ -477,14 +476,18 @@ prompt_podman_container_handle_find_program_in_path (PromptIpcContainer    *cont
                                                      GDBusMethodInvocation *invocation,
                                                      const char            *program)
 {
-  PromptPodmanContainer *self = (PromptPodmanContainer *)container;
-  PromptPodmanContainerPrivate *priv = prompt_podman_container_get_instance_private (self);
   g_autoptr(GSubprocessLauncher) launcher = NULL;
   g_autoptr(GSubprocess) subprocess = NULL;
   g_autoptr(GError) error = NULL;
+  const char *id;
 
-  g_assert (PROMPT_IS_PODMAN_CONTAINER (self));
+  g_assert (PROMPT_IS_PODMAN_CONTAINER (container));
   g_assert (G_IS_DBUS_METHOD_INVOCATION (invocation));
+
+  id = prompt_ipc_container_get_id (container);
+
+  g_assert (id != NULL);
+  g_assert (id[0] != 0);
 
   g_object_set_data_full (G_OBJECT (invocation),
                           "CONTAINER",
@@ -495,7 +498,7 @@ prompt_podman_container_handle_find_program_in_path (PromptIpcContainer    *cont
 
   launcher = g_subprocess_launcher_new (G_SUBPROCESS_FLAGS_STDOUT_PIPE | G_SUBPROCESS_FLAGS_STDERR_SILENCE);
   subprocess = g_subprocess_launcher_spawn (launcher, &error,
-                                            "podman", "exec", "-i", priv->id,
+                                            "podman", "exec", id,
                                             "which", program,
                                             NULL);
 
