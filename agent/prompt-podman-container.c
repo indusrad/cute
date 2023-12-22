@@ -443,32 +443,95 @@ prompt_podman_container_handle_spawn (PromptIpcContainer    *container,
   return TRUE;
 }
 
+typedef struct
+{
+  GDBusMethodInvocation *invocation;
+  PromptPodmanContainer *container;
+  char *id;
+  char *program;
+} FindContainerInPath;
+
+static void
+find_container_in_path_free (FindContainerInPath *state)
+{
+  g_clear_object (&state->container);
+  g_clear_object (&state->invocation);
+  g_clear_pointer (&state->id, g_free);
+  g_clear_pointer (&state->program, g_free);
+  g_free (state);
+}
+
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (FindContainerInPath, find_container_in_path_free)
+
 static void
 prompt_podman_container_which_cb (GObject      *object,
                                   GAsyncResult *result,
                                   gpointer      user_data)
 {
   GSubprocess *subprocess = (GSubprocess *)object;
-  g_autoptr(GDBusMethodInvocation) invocation = user_data;
+  g_autoptr(FindContainerInPath) state = user_data;
   g_autoptr(GError) error = NULL;
   g_autofree char *stdout_buf = NULL;
-  PromptIpcContainer *container;
 
   g_assert (G_IS_SUBPROCESS (subprocess));
   g_assert (G_IS_ASYNC_RESULT (result));
-  g_assert (G_IS_DBUS_METHOD_INVOCATION (invocation));
-
-  container = g_object_get_data (G_OBJECT (invocation), "CONTAINER");
-
-  g_assert (PROMPT_IPC_IS_CONTAINER (container));
+  g_assert (state != NULL);
+  g_assert (PROMPT_IS_PODMAN_CONTAINER (state->container));
+  g_assert (G_IS_DBUS_METHOD_INVOCATION (state->invocation));
+  g_assert (state->id != NULL);
+  g_assert (state->program != NULL);
 
   if (!g_subprocess_communicate_utf8_finish (subprocess, result, &stdout_buf, NULL, &error))
-    g_dbus_method_invocation_return_gerror (g_steal_pointer (&invocation),
+    g_dbus_method_invocation_return_gerror (g_steal_pointer (&state->invocation),
                                             g_steal_pointer (&error));
   else
-    prompt_ipc_container_complete_find_program_in_path (container,
-                                                        g_steal_pointer (&invocation),
+    prompt_ipc_container_complete_find_program_in_path (PROMPT_IPC_CONTAINER (state->container),
+                                                        g_steal_pointer (&state->invocation),
                                                         g_strstrip (stdout_buf));
+}
+
+static void
+prompt_podman_container_find_program_in_path_start_cb (GObject      *object,
+                                                       GAsyncResult *result,
+                                                       gpointer      user_data)
+{
+  PromptPodmanContainer *self = (PromptPodmanContainer *)object;
+  g_autoptr(FindContainerInPath) state = user_data;
+  g_autoptr(GSubprocessLauncher) launcher = NULL;
+  g_autoptr(GSubprocess) subprocess = NULL;
+  g_autoptr(GError) error = NULL;
+
+  g_assert (PROMPT_IS_PODMAN_CONTAINER (self));
+  g_assert (G_IS_ASYNC_RESULT (result));
+  g_assert (state != NULL);
+  g_assert (PROMPT_IS_PODMAN_CONTAINER (state->container));
+  g_assert (state->container == self);
+  g_assert (G_IS_DBUS_METHOD_INVOCATION (state->invocation));
+  g_assert (state->id != NULL);
+  g_assert (state->program != NULL);
+
+  if (!maybe_start_finish (self, result, &error))
+    {
+      g_dbus_method_invocation_return_gerror (g_steal_pointer (&state->invocation),
+                                              g_steal_pointer (&error));
+      return;
+    }
+
+  launcher = g_subprocess_launcher_new (G_SUBPROCESS_FLAGS_STDOUT_PIPE | G_SUBPROCESS_FLAGS_STDERR_SILENCE);
+  subprocess = g_subprocess_launcher_spawn (launcher, &error,
+                                            "podman", "exec", state->id,
+                                            "which", state->program,
+                                            NULL);
+
+  if (subprocess == NULL)
+    g_dbus_method_invocation_return_gerror (g_steal_pointer (&state->invocation),
+                                            g_steal_pointer (&error));
+  else
+    g_subprocess_communicate_utf8_async (subprocess,
+                                         NULL,
+                                         NULL,
+                                         prompt_podman_container_which_cb,
+                                         g_steal_pointer (&state));
 }
 
 static gboolean
@@ -476,8 +539,8 @@ prompt_podman_container_handle_find_program_in_path (PromptIpcContainer    *cont
                                                      GDBusMethodInvocation *invocation,
                                                      const char            *program)
 {
-  g_autoptr(GSubprocessLauncher) launcher = NULL;
-  g_autoptr(GSubprocess) subprocess = NULL;
+  FindContainerInPath *state;
+
   g_autoptr(GError) error = NULL;
   const char *id;
 
@@ -489,28 +552,16 @@ prompt_podman_container_handle_find_program_in_path (PromptIpcContainer    *cont
   g_assert (id != NULL);
   g_assert (id[0] != 0);
 
-  g_object_set_data_full (G_OBJECT (invocation),
-                          "CONTAINER",
-                          g_object_ref (container),
-                          g_object_unref);
+  state = g_new0 (FindContainerInPath, 1);
+  state->invocation = g_steal_pointer (&invocation);
+  state->id = g_strdup (prompt_ipc_container_get_id (container));
+  state->program = g_strdup (program);
+  state->container = g_object_ref (PROMPT_PODMAN_CONTAINER (container));
 
-  /* TODO: We might have to start the container to do this */
-
-  launcher = g_subprocess_launcher_new (G_SUBPROCESS_FLAGS_STDOUT_PIPE | G_SUBPROCESS_FLAGS_STDERR_SILENCE);
-  subprocess = g_subprocess_launcher_spawn (launcher, &error,
-                                            "podman", "exec", id,
-                                            "which", program,
-                                            NULL);
-
-  if (subprocess == NULL)
-    g_dbus_method_invocation_return_gerror (g_steal_pointer (&invocation),
-                                            g_steal_pointer (&error));
-  else
-    g_subprocess_communicate_utf8_async (subprocess,
-                                         NULL,
-                                         NULL,
-                                         prompt_podman_container_which_cb,
-                                         g_steal_pointer (&invocation));
+  maybe_start (PROMPT_PODMAN_CONTAINER (container),
+               NULL,
+               prompt_podman_container_find_program_in_path_start_cb,
+               state);
 
   return TRUE;
 }
