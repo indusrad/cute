@@ -1222,12 +1222,56 @@ prompt_application_spawn_cb (GObject      *object,
 }
 
 static void
+prompt_application_check_shell_cb (GObject      *object,
+                                   GAsyncResult *result,
+                                   gpointer      user_data)
+{
+  PromptIpcContainer *container = (PromptIpcContainer *)object;
+  g_autofree char *default_shell_path = NULL;
+  g_autoptr(GError) error = NULL;
+  g_autoptr(GTask) task = user_data;
+  PromptApplication *self;
+  Spawn *spawn;
+
+  g_assert (PROMPT_IPC_IS_CONTAINER (container));
+  g_assert (G_IS_ASYNC_RESULT (result));
+  g_assert (G_IS_TASK (task));
+
+  self = g_task_get_source_object (task);
+  spawn = g_task_get_task_data (task);
+
+  g_assert (PROMPT_IS_APPLICATION (self));
+  g_assert (spawn != NULL);
+  g_assert (VTE_IS_PTY (spawn->pty));
+  g_assert (PROMPT_IPC_IS_CONTAINER (spawn->container));
+  g_assert (PROMPT_IS_PROFILE (spawn->profile));
+  g_assert (PROMPT_IS_CLIENT (self->client));
+
+  prompt_ipc_container_call_find_program_in_path_finish (container,
+                                                         &default_shell_path,
+                                                         result,
+                                                         NULL);
+
+  prompt_client_spawn_async (self->client,
+                             spawn->container,
+                             spawn->profile,
+                             default_shell_path ? default_shell_path : "/bin/sh",
+                             spawn->last_working_directory_uri,
+                             spawn->pty,
+                             (const char * const *)spawn->argv,
+                             g_task_get_cancellable (task),
+                             prompt_application_spawn_cb,
+                             g_object_ref (task));
+}
+
+static void
 prompt_application_get_preferred_shell_cb (GObject      *object,
                                            GAsyncResult *result,
                                            gpointer      user_data)
 {
   PromptClient *client = (PromptClient *)object;
   g_autofree char *default_shell = NULL;
+  g_autofree char *default_shell_base = NULL;
   g_autoptr(GError) error = NULL;
   g_autoptr(GTask) task = user_data;
   PromptApplication *self;
@@ -1252,16 +1296,14 @@ prompt_application_get_preferred_shell_cb (GObject      *object,
   if (default_shell && !default_shell[0])
     g_clear_pointer (&default_shell, g_free);
 
-  prompt_client_spawn_async (self->client,
-                             spawn->container,
-                             spawn->profile,
-                             default_shell,
-                             spawn->last_working_directory_uri,
-                             spawn->pty,
-                             (const char * const *)spawn->argv,
-                             g_task_get_cancellable (task),
-                             prompt_application_spawn_cb,
-                             g_object_ref (task));
+  default_shell_base = g_path_get_basename (default_shell ? default_shell : "bash");
+
+  /* Now make sure the preferred shell is available */
+  prompt_ipc_container_call_find_program_in_path (spawn->container,
+                                                  default_shell_base,
+                                                  g_task_get_cancellable (task),
+                                                  prompt_application_check_shell_cb,
+                                                  g_object_ref (task));
 }
 
 void
