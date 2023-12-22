@@ -159,7 +159,6 @@ prompt_podman_container_deserialize_name (PromptPodmanContainer *self,
         prompt_ipc_container_set_display_name (PROMPT_IPC_CONTAINER (self),
                                                json_node_get_string (element));
     }
-
 }
 
 static gboolean
@@ -473,59 +472,42 @@ prompt_podman_container_which_cb (GObject      *object,
                                                         g_strstrip (stdout_buf));
 }
 
-static void
-do_unlink (const char *path)
-{
-  /* Avoid using glibc API directly */
-  g_autoptr(GFile) file = g_file_new_for_path (path);
-  g_file_delete (file, NULL, NULL);
-}
-
 static gboolean
 prompt_podman_container_handle_find_program_in_path (PromptIpcContainer    *container,
                                                      GDBusMethodInvocation *invocation,
                                                      const char            *program)
 {
+  PromptPodmanContainer *self = (PromptPodmanContainer *)container;
+  PromptPodmanContainerPrivate *priv = prompt_podman_container_get_instance_private (self);
+  g_autoptr(GSubprocessLauncher) launcher = NULL;
   g_autoptr(GSubprocess) subprocess = NULL;
-  g_autoptr(PromptRunContext) run_context = NULL;
-  g_autofree char *name_used = NULL;
   g_autoptr(GError) error = NULL;
-  int fd;
 
-  g_assert (PROMPT_IS_PODMAN_CONTAINER (container));
+  g_assert (PROMPT_IS_PODMAN_CONTAINER (self));
   g_assert (G_IS_DBUS_METHOD_INVOCATION (invocation));
 
-  run_context = prompt_run_context_new ();
-  prompt_podman_container_real_prepare_run_context (PROMPT_PODMAN_CONTAINER (container), run_context);
-  prompt_run_context_append_argv (run_context, "which");
-  prompt_run_context_append_argv (run_context, program);
-
-  if (-1 == (fd = g_file_open_tmp (".prompt-podman-XXXXXX", &name_used, &error)))
-    goto handle_gerror;
-
-  do_unlink (name_used);
-
-  prompt_run_context_take_fd (run_context, fd, STDOUT_FILENO);
-
-  g_object_set_data_full (G_OBJECT (run_context),
+  g_object_set_data_full (G_OBJECT (invocation),
                           "CONTAINER",
                           g_object_ref (container),
                           g_object_unref);
 
-  if (!(subprocess = prompt_run_context_spawn (run_context, &error)))
-    goto handle_gerror;
+  /* TODO: We might have to start the container to do this */
 
-  g_subprocess_communicate_utf8_async (subprocess,
-                                       NULL,
-                                       NULL,
-                                       prompt_podman_container_which_cb,
-                                       g_steal_pointer (&invocation));
+  launcher = g_subprocess_launcher_new (G_SUBPROCESS_FLAGS_STDOUT_PIPE | G_SUBPROCESS_FLAGS_STDERR_SILENCE);
+  subprocess = g_subprocess_launcher_spawn (launcher, &error,
+                                            "podman", "exec", "-i", priv->id,
+                                            "which", program,
+                                            NULL);
 
-  return TRUE;
-
-handle_gerror:
-  g_dbus_method_invocation_return_gerror (g_steal_pointer (&invocation),
-                                          g_steal_pointer (&error));
+  if (subprocess == NULL)
+    g_dbus_method_invocation_return_gerror (g_steal_pointer (&invocation),
+                                            g_steal_pointer (&error));
+  else
+    g_subprocess_communicate_utf8_async (subprocess,
+                                         NULL,
+                                         NULL,
+                                         prompt_podman_container_which_cb,
+                                         g_steal_pointer (&invocation));
 
   return TRUE;
 }
