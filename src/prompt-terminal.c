@@ -159,17 +159,6 @@ prompt_terminal_is_active (PromptTerminal *self)
   return active_terminal == self;
 }
 
-static gboolean
-clear_url_actions_cb (gpointer data)
-{
-  PromptTerminal *self = data;
-
-  gtk_widget_action_set_enabled (GTK_WIDGET (self), "clipboard.copy-link", FALSE);
-  gtk_widget_action_set_enabled (GTK_WIDGET (self), "terminal.open-link", FALSE);
-
-  return G_SOURCE_REMOVE;
-}
-
 static void
 prompt_terminal_update_clipboard_actions (PromptTerminal *self)
 {
@@ -206,19 +195,6 @@ prompt_terminal_update_url_actions (PromptTerminal *self,
   g_set_str (&self->url, pattern);
 }
 
-static void
-prompt_terminal_popover_closed_cb (PromptTerminal *self,
-                                   GtkPopover     *popover)
-{
-  g_assert (PROMPT_IS_TERMINAL (self));
-  g_assert (GTK_IS_POPOVER (popover));
-
-  g_idle_add_full (G_PRIORITY_LOW,
-                   clear_url_actions_cb,
-                   g_object_ref (self),
-                   g_object_unref);
-}
-
 static gboolean
 prompt_terminal_match_clicked (PromptTerminal  *self,
                                double           x,
@@ -238,69 +214,38 @@ prompt_terminal_match_clicked (PromptTerminal  *self,
 }
 
 static void
-prompt_terminal_popup (PromptTerminal *self,
-                       double          x,
-                       double          y)
+prompt_terminal_setup_context_menu (VteTerminal           *terminal,
+                                    const VteEventContext *context)
 {
+  PromptTerminal *self = (PromptTerminal *)terminal;
+  double x, y;
+
   g_assert (PROMPT_IS_TERMINAL (self));
+
+  /* Workaround GNOME/VTE#2716 */
+  if (context == NULL)
+    gtk_widget_set_parent (GTK_WIDGET (self->popover), GTK_WIDGET (self));
+  else if (gtk_widget_get_parent (GTK_WIDGET (self->popover)))
+    gtk_widget_unparent (GTK_WIDGET (self->popover));
+
+  if (context == NULL)
+    {
+      gtk_widget_action_set_enabled (GTK_WIDGET (self), "clipboard.copy-link", FALSE);
+      gtk_widget_action_set_enabled (GTK_WIDGET (self), "terminal.open-link", FALSE);
+      return;
+    }
 
   prompt_terminal_update_clipboard_actions (self);
+
+  vte_event_context_get_coordinates (context, &x, &y);
+
   prompt_terminal_update_url_actions (self, x, y);
+  gtk_popover_set_pointing_to (self->popover, &(GdkRectangle) {x, y, 1, 1});
 
-  if (self->popover == NULL)
-    {
-      self->popover = GTK_POPOVER (gtk_popover_menu_new_from_model (G_MENU_MODEL (self->terminal_menu)));
-
-      gtk_popover_set_has_arrow (self->popover, FALSE);
-
-      if (gtk_widget_get_direction (GTK_WIDGET (self)) == GTK_TEXT_DIR_RTL)
-        gtk_widget_set_halign (GTK_WIDGET (self->popover), GTK_ALIGN_END);
-      else
-        gtk_widget_set_halign (GTK_WIDGET (self->popover), GTK_ALIGN_START);
-
-      gtk_widget_set_parent (GTK_WIDGET (self->popover), GTK_WIDGET (self));
-
-      g_signal_connect_object (self->popover,
-                               "closed",
-                               G_CALLBACK (prompt_terminal_popover_closed_cb),
-                               self,
-                               G_CONNECT_SWAPPED);
-    }
-
-  gtk_popover_set_pointing_to (self->popover,
-                               &(GdkRectangle) { x, y, 1, 1 });
-
-  gtk_popover_popup (self->popover);
-}
-
-static void
-prompt_terminal_bubble_click_pressed_cb (PromptTerminal  *self,
-                                         int              n_press,
-                                         double           x,
-                                         double           y,
-                                         GtkGestureClick *click)
-{
-  g_assert (PROMPT_IS_TERMINAL (self));
-  g_assert (GTK_IS_GESTURE_CLICK (click));
-
-  if (n_press == 1)
-    {
-      GdkModifierType state = gtk_event_controller_get_current_event_state (GTK_EVENT_CONTROLLER (click));
-      int button = gtk_gesture_single_get_current_button (GTK_GESTURE_SINGLE (click));
-
-      if (button == 3)
-        {
-          if (!(state & (GDK_SHIFT_MASK | GDK_CONTROL_MASK | GDK_ALT_MASK)) ||
-              !(state & (GDK_CONTROL_MASK | GDK_ALT_MASK)))
-            {
-              prompt_terminal_popup (self, x, y);
-              gtk_gesture_set_state (GTK_GESTURE (click), GTK_EVENT_SEQUENCE_CLAIMED);
-              return;
-            }
-        }
-    }
-
-  gtk_gesture_set_state (GTK_GESTURE (click), GTK_EVENT_SEQUENCE_DENIED);
+  if (gtk_widget_get_direction (GTK_WIDGET (self)) == GTK_TEXT_DIR_RTL)
+    gtk_widget_set_halign (GTK_WIDGET (self->popover), GTK_ALIGN_END);
+  else
+    gtk_widget_set_halign (GTK_WIDGET (self->popover), GTK_ALIGN_START);
 }
 
 static void
@@ -976,9 +921,6 @@ prompt_terminal_size_allocate (GtkWidget *widget,
   dnd_alloc.height = height - 2;
   gtk_widget_size_allocate (GTK_WIDGET (self->drop_highlight), &dnd_alloc, -1);
 
-  if (self->popover)
-    gtk_popover_present (self->popover);
-
   if (emit_size_changed)
     g_signal_emit (self, signals[GRID_SIZE_CHANGED], 0, column_count, row_count);
 }
@@ -1113,8 +1055,6 @@ prompt_terminal_dispose (GObject *object)
 {
   PromptTerminal *self = (PromptTerminal *)object;
 
-  g_clear_pointer ((GtkWidget **)&self->popover, gtk_widget_unparent);
-
   gtk_widget_dispose_template (GTK_WIDGET (self), PROMPT_TYPE_TERMINAL);
 
   g_clear_object (&self->palette);
@@ -1184,6 +1124,7 @@ prompt_terminal_class_init (PromptTerminalClass *klass)
   widget_class->snapshot = prompt_terminal_snapshot;
 
   terminal_class->selection_changed = prompt_terminal_selection_changed;
+  terminal_class->setup_context_menu = prompt_terminal_setup_context_menu;
 
   properties[PROP_PALETTE] =
     g_param_spec_object ("palette", NULL, NULL,
@@ -1228,11 +1169,11 @@ prompt_terminal_class_init (PromptTerminalClass *klass)
 
   gtk_widget_class_bind_template_child (widget_class, PromptTerminal, drop_highlight);
   gtk_widget_class_bind_template_child (widget_class, PromptTerminal, drop_target);
+  gtk_widget_class_bind_template_child (widget_class, PromptTerminal, popover);
   gtk_widget_class_bind_template_child (widget_class, PromptTerminal, size_label);
   gtk_widget_class_bind_template_child (widget_class, PromptTerminal, size_revealer);
   gtk_widget_class_bind_template_child (widget_class, PromptTerminal, terminal_menu);
 
-  gtk_widget_class_bind_template_callback (widget_class, prompt_terminal_bubble_click_pressed_cb);
   gtk_widget_class_bind_template_callback (widget_class, prompt_terminal_capture_click_pressed_cb);
   gtk_widget_class_bind_template_callback (widget_class, prompt_terminal_capture_key_pressed_cb);
   gtk_widget_class_bind_template_callback (widget_class, prompt_terminal_drop_target_drag_enter);

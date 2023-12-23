@@ -94,13 +94,6 @@
       </object>
     </child>
     <child>
-      <object class="GtkGestureClick" id="click_bubble">
-        <signal name="pressed" handler="prompt_terminal_bubble_click_pressed_cb" swapped="1" object="PromptTerminal"/>
-        <property name="button">0</property>
-        <property name="propagation-phase">bubble</property>
-      </object>
-    </child>
-    <child>
       <object class="GtkEventControllerKey" id="key_controller">
         <signal name="key-pressed" handler="prompt_terminal_capture_key_pressed_cb" swapped="1" object="PromptTerminal"/>
         <property name="propagation-phase">capture</property>
@@ -113,6 +106,12 @@
         <signal name="drag-leave" handler="prompt_terminal_drop_target_drag_leave" swapped="1" object="PromptTerminal"/>
       </object>
     </child>
+    <property name="context-menu">
+      <object class="GtkPopoverMenu" id="popover">
+        <property name="has-arrow">false</property>
+        <property name="menu-model">terminal_menu</property>
+      </object>
+    </property>
     <child>
       <object class="GtkRevealer" id="size_revealer">
         <property name="transition-type">crossfade</property>
