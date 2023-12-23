@@ -1460,6 +1460,9 @@ prompt_tab_poll_agent (PromptTab *self)
 
   if (self->process == NULL)
     {
+      self->has_foreground_process = FALSE;
+      self->pid = -1;
+
       if (g_set_str (&self->command_line, NULL))
         g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_COMMAND_LINE]);
 
