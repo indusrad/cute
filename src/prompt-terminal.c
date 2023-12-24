@@ -222,12 +222,6 @@ prompt_terminal_setup_context_menu (VteTerminal           *terminal,
 
   g_assert (PROMPT_IS_TERMINAL (self));
 
-  /* Workaround GNOME/VTE#2716 */
-  if (context == NULL)
-    gtk_widget_set_parent (GTK_WIDGET (self->popover), GTK_WIDGET (self));
-  else if (gtk_widget_get_parent (GTK_WIDGET (self->popover)))
-    gtk_widget_unparent (GTK_WIDGET (self->popover));
-
   if (context == NULL)
     {
       gtk_widget_action_set_enabled (GTK_WIDGET (self), "clipboard.copy-link", FALSE);
