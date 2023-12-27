@@ -77,9 +77,10 @@ Otherwise, it is built as any other meson-based project.
  * Built-in support for profiles allows for many of those preferences to
    be tweaked on a more fine-grained basis.
  * You can specify a default container per-profile or to inherit the current
-   terminal's container. At the moment of writing, this is only supported on
-   Fedora hosts, but will be extended to other host operating systems soon
-   once changes land in VTE, toolbox, and elsewhere.
+   terminal's container. Recently, toolbox gained support to always emit the
+   necessary escape sequence. But you'll need a very recent version of
+   toolbox for this. Podman does not inherently emit the escape sequence and
+   therefore discovery of current container may be limited.
  * Flatpak'able without losing features! This works through the use of a
    specialized `prompt-agent` that runs on the host to provide Prompt the
    ability to create PTY devices which integrate better with containers.
@@ -126,12 +127,16 @@ you're interested in and are aware of the mechanics to make that work.
 
 ### Toolbox/Podman/Distrobox
 
-Currently `toolbox` knows how to emit the appropriate escape sequence under
-certain conditions (namely being run on a Fedora host). But when the support
-for this uses new, more generic API in VTE we will switch to that.
+Until very recently `toolbox` would only emit the escape sequences notifying
+the terminal emulator of the current container when on certain Fedora hosts.
+This has been changed but is not available in all distributions yet.
 
-Until then, opening new tabs with the same container will only work if you are
-on a Fedora host such as Fedora Workstation or Silverblue.
+Podman inherently does not emit the specific escape sequence.
+
+Distrobox does not appear to emit the escape sequence.
+
+Of course, you can get a similar effect by doing something similar to what
+the `jhbuild` example below does.
 
 
 ### JHBuild
