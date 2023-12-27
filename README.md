@@ -5,6 +5,30 @@ Prompt is a terminal for GNOME with first-class support for containers.
 Flatpak is the intended and preferred distribution mechanism.
 
 
+## Feature Requests
+
+Prompt uses the issue tracker for tracking engineering defects only.
+
+Feature requests tend to be long, drawn out, and never fully solvable.
+Therefore we request that you file an issue with the
+[https://gitlab.gnome.org/Teams/Design/whiteboards/-/issues](Whiteboards project)
+and progress towards designing the feature you'd like to see. I will not design
+the feature for you.
+
+The outcome of the design process should be a specification which includes:
+
+ * How the feature should work
+ * How the feature should not work
+ * How the feature interacts with the existing features
+ * If any existing features should be changed or removed
+ * Any necessary migration strategies for existing users
+ * UI mock-ups (if necessary)
+ * How the feature should be tested
+ * Who is going to implement the feature
+
+After that process has completed, you may file an issue referencing it.
+
+
 ## Authors Note
 
 Prompt is a combination of work I've done across multiple projects. The
