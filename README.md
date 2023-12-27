@@ -24,6 +24,7 @@ The outcome of the design process should be a specification which includes:
  * Any necessary migration strategies for existing users
  * UI mock-ups (if necessary)
  * How the feature should be tested
+ * What are the risks and security gotchas involved?
  * Who is going to implement the feature
 
 After that process has completed, you may file an issue referencing it.
