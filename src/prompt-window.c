@@ -378,9 +378,13 @@ prompt_window_notify_selected_page_cb (PromptWindow *self,
 
   prompt_find_bar_set_terminal (self->find_bar, terminal);
 
-  gtk_widget_action_set_enabled (GTK_WIDGET (self), "win.zoom-in", has_page);
-  gtk_widget_action_set_enabled (GTK_WIDGET (self), "win.zoom-out", has_page);
-  gtk_widget_action_set_enabled (GTK_WIDGET (self), "win.zoom-one", has_page);
+  if (!has_page)
+    {
+      gtk_widget_action_set_enabled (GTK_WIDGET (self), "win.zoom-in", FALSE);
+      gtk_widget_action_set_enabled (GTK_WIDGET (self), "win.zoom-out", FALSE);
+      gtk_widget_action_set_enabled (GTK_WIDGET (self), "win.zoom-one", FALSE);
+    }
+
   gtk_widget_action_set_enabled (GTK_WIDGET (self), "win.search", has_page);
 
   g_action_map_remove_action (G_ACTION_MAP (self), "tab.read-only");
@@ -1147,6 +1151,30 @@ prompt_window_notify_process_leader_kind_cb (PromptWindow *self,
 }
 
 static void
+prompt_window_notify_zoom_cb (PromptWindow *self,
+                              GParamSpec   *pspec,
+                              PromptTab    *tab)
+{
+  PromptZoomLevel zoom;
+  gboolean can_zoom_in;
+  gboolean can_zoom_out;
+  gboolean can_zoom_one;
+
+  g_assert (PROMPT_IS_WINDOW (self));
+  g_assert (PROMPT_IS_TAB (tab));
+
+  zoom = prompt_tab_get_zoom (tab);
+
+  can_zoom_in = zoom != PROMPT_ZOOM_LEVEL_PLUS_7;
+  can_zoom_one = zoom != PROMPT_ZOOM_LEVEL_DEFAULT;
+  can_zoom_out = zoom != PROMPT_ZOOM_LEVEL_MINUS_7;
+
+  gtk_widget_action_set_enabled (GTK_WIDGET (self), "win.zoom-in", can_zoom_in);
+  gtk_widget_action_set_enabled (GTK_WIDGET (self), "win.zoom-one", can_zoom_one);
+  gtk_widget_action_set_enabled (GTK_WIDGET (self), "win.zoom-out", can_zoom_out);
+}
+
+static void
 prompt_window_active_tab_bind_cb (PromptWindow *self,
                                   PromptTab    *tab,
                                   GSignalGroup *signals)
@@ -1156,6 +1184,7 @@ prompt_window_active_tab_bind_cb (PromptWindow *self,
   g_assert (G_IS_SIGNAL_GROUP (signals));
 
   prompt_window_notify_process_leader_kind_cb (self, NULL, tab);
+  prompt_window_notify_zoom_cb (self, NULL, tab);
 }
 
 static void
@@ -1542,6 +1571,11 @@ prompt_window_init (PromptWindow *self)
   g_signal_group_connect_object (self->active_tab_signals,
                                  "notify::process-leader-kind",
                                  G_CALLBACK (prompt_window_notify_process_leader_kind_cb),
+                                 self,
+                                 G_CONNECT_SWAPPED);
+  g_signal_group_connect_object (self->active_tab_signals,
+                                 "notify::zoom",
+                                 G_CALLBACK (prompt_window_notify_zoom_cb),
                                  self,
                                  G_CONNECT_SWAPPED);
 
