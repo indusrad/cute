@@ -777,6 +777,7 @@ generate_debug_info (PromptApplication *self)
   g_autoptr(GListModel) containers = NULL;
   g_autofree char *flatpak_info = NULL;
   const char *os_name = prompt_application_get_os_name (self);
+  const char *vte_sh_path = "/etc/profile.d/vte.sh";
   guint n_items;
 
   g_string_append_printf (str, "Host: %s\n", os_name);
@@ -819,6 +820,13 @@ generate_debug_info (PromptApplication *self)
       g_string_append_printf (str, "App ID: %s\n", APP_ID);
     }
 
+  if (prompt_get_process_kind () == PROMPT_PROCESS_KIND_FLATPAK)
+    vte_sh_path = "/var/run/host/etc/profile.d/vte.sh";
+
+  g_string_append_c (str, '\n');
+  g_string_append_printf (str, "%s %s\n",
+                          vte_sh_path,
+                          g_file_test (vte_sh_path, G_FILE_TEST_EXISTS) ? "exists" : "missing");
 
   g_string_append_c (str, '\n');
   g_string_append (str, "Containers:\n");
