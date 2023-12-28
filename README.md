@@ -11,7 +11,7 @@ Prompt uses the issue tracker for tracking engineering defects only.
 
 Feature requests tend to be long, drawn out, and never fully solvable.
 Therefore we request that you file an issue with the
-[https://gitlab.gnome.org/Teams/Design/whiteboards/-/issues](Whiteboards project)
+[https://gitlab.gnome.org/Teams/Design/whiteboards/](Whiteboards project)
 and progress towards designing the feature you'd like to see. I will not design
 the feature for you.
 
