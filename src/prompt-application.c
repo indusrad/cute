@@ -335,12 +335,22 @@ prompt_application_command_line (GApplication            *app,
     {
       g_autoptr(PromptProfile) profile = prompt_application_dup_default_profile (self);
       PromptWindow *window = get_current_window (self);
-      PromptTab *tab;
+      PromptTab *tab = prompt_tab_new (profile);
 
       if (window == NULL || !did_restore)
-        window = prompt_window_new_empty ();
+        {
+          window = prompt_window_new_empty ();
 
-      tab = prompt_tab_new (profile);
+          if (prompt_settings_get_restore_window_size (self->settings))
+            {
+              PromptTerminal *terminal = prompt_tab_get_terminal (tab);
+              guint columns = 80, rows = 24;
+
+              prompt_settings_get_window_size (self->settings, &columns, &rows);
+              vte_terminal_set_size (VTE_TERMINAL (terminal), columns, rows);
+            }
+        }
+
       prompt_tab_set_initial_working_directory_uri (tab, cwd_uri);
       prompt_window_add_tab (window, tab);
       prompt_window_set_active_tab (window, tab);

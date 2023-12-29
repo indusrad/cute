@@ -1642,7 +1642,7 @@ prompt_window_new_for_profile_and_command (PromptProfile      *profile,
   PromptTerminal *terminal;
   PromptWindow *self;
   PromptTab *tab;
-  guint columns = 81;
+  guint columns = 80;
   guint rows = 24;
 
   g_return_val_if_fail (!profile || PROMPT_IS_PROFILE (profile), NULL);
