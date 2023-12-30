@@ -44,6 +44,16 @@ G_DEFINE_FINAL_TYPE (PromptTitleDialog, prompt_title_dialog, ADW_TYPE_WINDOW)
 static GParamSpec *properties [N_PROPS];
 
 static void
+prompt_title_dialog_activate_cb (PromptTitleDialog *self,
+                                 GtkEntry          *entry)
+{
+  g_assert (PROMPT_IS_TITLE_DIALOG (self));
+  g_assert (GTK_IS_ENTRY (entry));
+
+  gtk_window_destroy (GTK_WINDOW (self));
+}
+
+static void
 prompt_title_dialog_constructed (GObject *object)
 {
   PromptTitleDialog *self = (PromptTitleDialog *)object;
@@ -129,6 +139,7 @@ prompt_title_dialog_class_init (PromptTitleDialogClass *klass)
   gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/Prompt/prompt-title-dialog.ui");
 
   gtk_widget_class_bind_template_child (widget_class, PromptTitleDialog, entry);
+  gtk_widget_class_bind_template_callback (widget_class, prompt_title_dialog_activate_cb);
 
   gtk_widget_class_add_binding_action (widget_class, GDK_KEY_Escape, 0, "window.close", NULL);
 }
