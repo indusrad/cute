@@ -358,7 +358,7 @@ prompt_window_notify_selected_page_cb (PromptWindow *self,
       g_object_bind_property (profile, "opacity",
                               self->dressing, "opacity",
                               G_BINDING_SYNC_CREATE);
-      g_object_bind_property_full (terminal, "window-title",
+      g_object_bind_property_full (tab, "title",
                                    self, "title",
                                    G_BINDING_SYNC_CREATE,
                                    bind_title_cb, NULL, NULL, NULL);
