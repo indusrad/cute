@@ -66,6 +66,7 @@ prompt_agent_init (PromptAgent  *agent,
 {
   g_autoptr(PromptSessionContainer) session = NULL;
   g_autoptr(PromptContainerProvider) podman = NULL;
+  g_autoptr(GError) local_error = NULL;
   g_autoptr(GFile) jhbuildrc = NULL;
   g_autofree char *jhbuild_path = NULL;
 
@@ -133,7 +134,17 @@ prompt_agent_init (PromptAgent  *agent,
                                              "manager",
                                              "distrobox",
                                              PROMPT_TYPE_DISTROBOX_CONTAINER);
-  prompt_podman_provider_update_sync (PROMPT_PODMAN_PROVIDER (podman), NULL, NULL);
+
+  if (!prompt_podman_provider_update_sync (PROMPT_PODMAN_PROVIDER (podman), NULL, &local_error))
+    {
+      g_warning ("Failed to process podman containers: %s", local_error->message);
+
+      /* Sometimes podman seems to crap out on us. Try a second time and see
+       * if that works any better. See #62.
+       */
+      prompt_podman_provider_update_sync (PROMPT_PODMAN_PROVIDER (podman), NULL, NULL);
+    }
+
   prompt_agent_impl_add_provider (agent->impl, podman);
 
   g_dbus_connection_start_message_processing (agent->bus);
