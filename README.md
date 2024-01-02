@@ -5,7 +5,7 @@ Prompt is a terminal for GNOME with first-class support for containers.
 Flatpak is the intended and preferred distribution mechanism.
 
 
-## Feature Requests
+## Feature Requests and Design Changes
 
 Prompt uses the issue tracker for tracking engineering defects only.
 
