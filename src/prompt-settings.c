@@ -49,6 +49,7 @@ enum {
   PROP_RESTORE_WINDOW_SIZE,
   PROP_SCROLLBAR_POLICY,
   PROP_TEXT_BLINK_MODE,
+  PROP_TOAST_ON_COPY_CLIPBOARD,
   PROP_USE_SYSTEM_FONT,
   PROP_VISUAL_BELL,
   N_PROPS
@@ -97,6 +98,8 @@ prompt_settings_changed_cb (PromptSettings *self,
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_RESTORE_SESSION]);
   else if (g_str_equal (key, PROMPT_SETTING_KEY_RESTORE_WINDOW_SIZE))
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_RESTORE_WINDOW_SIZE]);
+  else if (g_str_equal (key, PROMPT_SETTING_KEY_TOAST_ON_COPY_CLIPBOARD))
+    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_TOAST_ON_COPY_CLIPBOARD]);
   else if (g_str_equal (key, PROMPT_SETTING_KEY_FONT_NAME))
     {
       g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_FONT_NAME]);
@@ -181,6 +184,10 @@ prompt_settings_get_property (GObject    *object,
       g_value_set_enum (value, prompt_settings_get_text_blink_mode (self));
       break;
 
+    case PROP_TOAST_ON_COPY_CLIPBOARD:
+      g_value_set_boolean (value, prompt_settings_get_toast_on_copy_clipboard (self));
+      break;
+
     case PROP_USE_SYSTEM_FONT:
       g_value_set_boolean (value, prompt_settings_get_use_system_font (self));
       break;
@@ -250,6 +257,10 @@ prompt_settings_set_property (GObject      *object,
 
     case PROP_TEXT_BLINK_MODE:
       prompt_settings_set_text_blink_mode (self, g_value_get_enum (value));
+      break;
+
+    case PROP_TOAST_ON_COPY_CLIPBOARD:
+      prompt_settings_set_toast_on_copy_clipboard (self, g_value_get_boolean (value));
       break;
 
     case PROP_USE_SYSTEM_FONT:
@@ -369,6 +380,13 @@ prompt_settings_class_init (PromptSettingsClass *klass)
                        (G_PARAM_READWRITE |
                         G_PARAM_EXPLICIT_NOTIFY |
                         G_PARAM_STATIC_STRINGS));
+
+  properties[PROP_TOAST_ON_COPY_CLIPBOARD] =
+    g_param_spec_boolean ("toast-on-copy-clipboard", NULL, NULL,
+                          TRUE,
+                          (G_PARAM_READWRITE |
+                           G_PARAM_EXPLICIT_NOTIFY |
+                           G_PARAM_STATIC_STRINGS));
 
   properties[PROP_USE_SYSTEM_FONT] =
     g_param_spec_boolean ("use-system-font", NULL, NULL,
@@ -886,4 +904,23 @@ prompt_settings_get_proxy_environment (PromptSettings *self)
     }
 
   return g_strv_builder_end (builder);
+}
+
+gboolean
+prompt_settings_get_toast_on_copy_clipboard (PromptSettings *self)
+{
+  g_return_val_if_fail (PROMPT_IS_SETTINGS (self), FALSE);
+
+  return g_settings_get_boolean (self->settings, PROMPT_SETTING_KEY_TOAST_ON_COPY_CLIPBOARD);
+}
+
+void
+prompt_settings_set_toast_on_copy_clipboard (PromptSettings *self,
+                                             gboolean        toast_on_copy_clipboard)
+{
+  g_return_if_fail (PROMPT_IS_SETTINGS (self));
+
+  g_settings_set_boolean (self->settings,
+                          PROMPT_SETTING_KEY_TOAST_ON_COPY_CLIPBOARD,
+                          toast_on_copy_clipboard);
 }

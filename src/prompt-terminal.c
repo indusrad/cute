@@ -391,8 +391,12 @@ copy_clipboard_action (GtkWidget  *widget,
 
   if (text && text[0] != 0)
     {
+      PromptSettings *settings = prompt_application_get_settings (PROMPT_APPLICATION_DEFAULT);
+
       gdk_clipboard_set_text (clipboard, text);
-      prompt_terminal_toast (self, 1, _("Copied to clipboard"));
+
+      if (prompt_settings_get_toast_on_copy_clipboard (settings))
+        prompt_terminal_toast (self, 1, _("Copied to clipboard"));
     }
 }
 

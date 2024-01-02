@@ -26,20 +26,21 @@
 
 G_BEGIN_DECLS
 
-#define PROMPT_SETTING_KEY_AUDIBLE_BELL         "audible-bell"
-#define PROMPT_SETTING_KEY_CURSOR_BLINK_MODE    "cursor-blink-mode"
-#define PROMPT_SETTING_KEY_CURSOR_SHAPE         "cursor-shape"
-#define PROMPT_SETTING_KEY_DEFAULT_PROFILE_UUID "default-profile-uuid"
-#define PROMPT_SETTING_KEY_FONT_NAME            "font-name"
-#define PROMPT_SETTING_KEY_INTERFACE_STYLE      "interface-style"
-#define PROMPT_SETTING_KEY_NEW_TAB_POSITION     "new-tab-position"
-#define PROMPT_SETTING_KEY_PROFILE_UUIDS        "profile-uuids"
-#define PROMPT_SETTING_KEY_RESTORE_SESSION      "restore-session"
-#define PROMPT_SETTING_KEY_RESTORE_WINDOW_SIZE  "restore-window-size"
-#define PROMPT_SETTING_KEY_SCROLLBAR_POLICY     "scrollbar-policy"
-#define PROMPT_SETTING_KEY_TEXT_BLINK_MODE      "text-blink-mode"
-#define PROMPT_SETTING_KEY_USE_SYSTEM_FONT      "use-system-font"
-#define PROMPT_SETTING_KEY_VISUAL_BELL          "visual-bell"
+#define PROMPT_SETTING_KEY_AUDIBLE_BELL            "audible-bell"
+#define PROMPT_SETTING_KEY_CURSOR_BLINK_MODE       "cursor-blink-mode"
+#define PROMPT_SETTING_KEY_CURSOR_SHAPE            "cursor-shape"
+#define PROMPT_SETTING_KEY_DEFAULT_PROFILE_UUID    "default-profile-uuid"
+#define PROMPT_SETTING_KEY_FONT_NAME               "font-name"
+#define PROMPT_SETTING_KEY_INTERFACE_STYLE         "interface-style"
+#define PROMPT_SETTING_KEY_NEW_TAB_POSITION        "new-tab-position"
+#define PROMPT_SETTING_KEY_PROFILE_UUIDS           "profile-uuids"
+#define PROMPT_SETTING_KEY_RESTORE_SESSION         "restore-session"
+#define PROMPT_SETTING_KEY_RESTORE_WINDOW_SIZE     "restore-window-size"
+#define PROMPT_SETTING_KEY_SCROLLBAR_POLICY        "scrollbar-policy"
+#define PROMPT_SETTING_KEY_TEXT_BLINK_MODE         "text-blink-mode"
+#define PROMPT_SETTING_KEY_TOAST_ON_COPY_CLIPBOARD "toast-on-copy-clipboard"
+#define PROMPT_SETTING_KEY_USE_SYSTEM_FONT         "use-system-font"
+#define PROMPT_SETTING_KEY_VISUAL_BELL             "visual-bell"
 
 typedef enum _PromptNewTabPosition
 {
@@ -58,61 +59,64 @@ typedef enum _PromptScrollbarPolicy
 
 G_DECLARE_FINAL_TYPE (PromptSettings, prompt_settings, PROMPT, SETTINGS, GObject)
 
-PromptSettings         *prompt_settings_new                      (void);
-GSettings              *prompt_settings_get_settings             (PromptSettings             *self);
-char                   *prompt_settings_dup_default_profile_uuid (PromptSettings             *self);
-void                    prompt_settings_set_default_profile_uuid (PromptSettings             *self,
-                                                                  const char                 *uuid);
-char                  **prompt_settings_dup_profile_uuids        (PromptSettings             *self);
-void                    prompt_settings_add_profile_uuid         (PromptSettings             *self,
-                                                                  const char                 *uuid);
-void                    prompt_settings_remove_profile_uuid      (PromptSettings             *self,
-                                                                  const char                 *uuid);
-PromptNewTabPosition    prompt_settings_get_new_tab_position     (PromptSettings             *self);
-void                    prompt_settings_set_new_tab_position     (PromptSettings             *self,
-                                                                  PromptNewTabPosition        new_tab_position);
-gboolean                prompt_settings_get_audible_bell         (PromptSettings             *self);
-void                    prompt_settings_set_audible_bell         (PromptSettings             *self,
-                                                                  gboolean                    audible_bell);
-gboolean                prompt_settings_get_visual_bell          (PromptSettings             *self);
-void                    prompt_settings_set_visual_bell          (PromptSettings             *self,
-                                                                  gboolean                    visual_bell);
-VteCursorBlinkMode      prompt_settings_get_cursor_blink_mode    (PromptSettings             *self);
-void                    prompt_settings_set_cursor_blink_mode    (PromptSettings             *self,
-                                                                  VteCursorBlinkMode          blink_mode);
-VteCursorShape          prompt_settings_get_cursor_shape         (PromptSettings             *self);
-void                    prompt_settings_set_cursor_shape         (PromptSettings             *self,
-                                                                  VteCursorShape              cursor_shape);
-PangoFontDescription   *prompt_settings_dup_font_desc            (PromptSettings             *self);
-void                    prompt_settings_set_font_desc            (PromptSettings             *self,
-                                                                  const PangoFontDescription *font_desc);
-char                   *prompt_settings_dup_font_name            (PromptSettings             *self);
-void                    prompt_settings_set_font_name            (PromptSettings             *self,
-                                                                  const char                 *font_name);
-gboolean                prompt_settings_get_use_system_font      (PromptSettings             *self);
-void                    prompt_settings_set_use_system_font      (PromptSettings             *self,
-                                                                  gboolean                    use_system_font);
-gboolean                prompt_settings_get_restore_session      (PromptSettings             *self);
-void                    prompt_settings_set_restore_session      (PromptSettings             *self,
-                                                                  gboolean                    restore_session);
-gboolean                prompt_settings_get_restore_window_size  (PromptSettings             *self);
-void                    prompt_settings_set_restore_window_size  (PromptSettings             *self,
-                                                                  gboolean                    restore_window_size);
-PromptScrollbarPolicy   prompt_settings_get_scrollbar_policy     (PromptSettings             *self);
-void                    prompt_settings_set_scrollbar_policy     (PromptSettings             *self,
-                                                                  PromptScrollbarPolicy       scrollbar_policy);
-VteTextBlinkMode        prompt_settings_get_text_blink_mode      (PromptSettings             *self);
-void                    prompt_settings_set_text_blink_mode      (PromptSettings             *self,
-                                                                  VteTextBlinkMode            text_blink_mode);
-void                    prompt_settings_get_window_size          (PromptSettings             *self,
-                                                                  guint                      *columns,
-                                                                  guint                      *rows);
-void                    prompt_settings_set_window_size          (PromptSettings             *self,
-                                                                  guint                       columns,
-                                                                  guint                       rows);
-AdwColorScheme          prompt_settings_get_interface_style      (PromptSettings             *self);
-void                    prompt_settings_set_interface_style      (PromptSettings             *self,
-                                                                  AdwColorScheme              color_scheme);
-char                  **prompt_settings_get_proxy_environment    (PromptSettings             *self);
+PromptSettings         *prompt_settings_new                         (void);
+GSettings              *prompt_settings_get_settings                (PromptSettings             *self);
+char                   *prompt_settings_dup_default_profile_uuid    (PromptSettings             *self);
+void                    prompt_settings_set_default_profile_uuid    (PromptSettings             *self,
+                                                                     const char                 *uuid);
+char                  **prompt_settings_dup_profile_uuids           (PromptSettings             *self);
+void                    prompt_settings_add_profile_uuid            (PromptSettings             *self,
+                                                                     const char                 *uuid);
+void                    prompt_settings_remove_profile_uuid         (PromptSettings             *self,
+                                                                     const char                 *uuid);
+PromptNewTabPosition    prompt_settings_get_new_tab_position        (PromptSettings             *self);
+void                    prompt_settings_set_new_tab_position        (PromptSettings             *self,
+                                                                     PromptNewTabPosition        new_tab_position);
+gboolean                prompt_settings_get_audible_bell            (PromptSettings             *self);
+void                    prompt_settings_set_audible_bell            (PromptSettings             *self,
+                                                                     gboolean                    audible_bell);
+gboolean                prompt_settings_get_visual_bell             (PromptSettings             *self);
+void                    prompt_settings_set_visual_bell             (PromptSettings             *self,
+                                                                     gboolean                    visual_bell);
+VteCursorBlinkMode      prompt_settings_get_cursor_blink_mode       (PromptSettings             *self);
+void                    prompt_settings_set_cursor_blink_mode       (PromptSettings             *self,
+                                                                     VteCursorBlinkMode          blink_mode);
+VteCursorShape          prompt_settings_get_cursor_shape            (PromptSettings             *self);
+void                    prompt_settings_set_cursor_shape            (PromptSettings             *self,
+                                                                     VteCursorShape              cursor_shape);
+PangoFontDescription   *prompt_settings_dup_font_desc               (PromptSettings             *self);
+void                    prompt_settings_set_font_desc               (PromptSettings             *self,
+                                                                     const PangoFontDescription *font_desc);
+char                   *prompt_settings_dup_font_name               (PromptSettings             *self);
+void                    prompt_settings_set_font_name               (PromptSettings             *self,
+                                                                     const char                 *font_name);
+gboolean                prompt_settings_get_use_system_font         (PromptSettings             *self);
+void                    prompt_settings_set_use_system_font         (PromptSettings             *self,
+                                                                     gboolean                    use_system_font);
+gboolean                prompt_settings_get_restore_session         (PromptSettings             *self);
+void                    prompt_settings_set_restore_session         (PromptSettings             *self,
+                                                                     gboolean                    restore_session);
+gboolean                prompt_settings_get_restore_window_size     (PromptSettings             *self);
+void                    prompt_settings_set_restore_window_size     (PromptSettings             *self,
+                                                                     gboolean                    restore_window_size);
+PromptScrollbarPolicy   prompt_settings_get_scrollbar_policy        (PromptSettings             *self);
+void                    prompt_settings_set_scrollbar_policy        (PromptSettings             *self,
+                                                                     PromptScrollbarPolicy       scrollbar_policy);
+VteTextBlinkMode        prompt_settings_get_text_blink_mode         (PromptSettings             *self);
+void                    prompt_settings_set_text_blink_mode         (PromptSettings             *self,
+                                                                     VteTextBlinkMode            text_blink_mode);
+void                    prompt_settings_get_window_size             (PromptSettings             *self,
+                                                                     guint                      *columns,
+                                                                     guint                      *rows);
+void                    prompt_settings_set_window_size             (PromptSettings             *self,
+                                                                     guint                       columns,
+                                                                     guint                       rows);
+AdwColorScheme          prompt_settings_get_interface_style         (PromptSettings             *self);
+void                    prompt_settings_set_interface_style         (PromptSettings             *self,
+                                                                     AdwColorScheme              color_scheme);
+char                  **prompt_settings_get_proxy_environment       (PromptSettings             *self);
+gboolean                prompt_settings_get_toast_on_copy_clipboard (PromptSettings             *self);
+void                    prompt_settings_set_toast_on_copy_clipboard (PromptSettings             *self,
+                                                                     gboolean                    toast_on_copy_clipboard);
 
 G_END_DECLS

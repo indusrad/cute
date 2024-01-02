@@ -178,6 +178,12 @@
       <default>(80,24)</default>
     </key>
 
+    <key name="toast-on-copy-clipboard" type="b">
+      <default>true</default>
+      <summary>Toast on Copy Clipboard</summary>
+      <description>Show the user when text has copied to the clipboard.</description>
+    </key>
+
   </schema>
 
   <schema id="@APP_SCHEMA_PROFILE_ID@">
