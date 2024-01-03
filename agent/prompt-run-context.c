@@ -1039,9 +1039,33 @@ has_systemd (void)
   if (!initialized)
     {
       g_autofree char *path = g_find_program_in_path ("systemd-run");
+      g_autofree char *stdout_str = NULL;
+      int wait_status = -1;
+
+      if (path != NULL &&
+          g_spawn_sync (NULL,
+                        (char **)(const char * const []) {path, "--version", NULL},
+                        NULL,
+                        G_SPAWN_STDERR_TO_DEV_NULL,
+                        NULL,
+                        NULL,
+                        &stdout_str,
+                        NULL,
+                        &wait_status,
+                        NULL) &&
+          stdout_str != NULL &&
+          g_str_has_prefix (stdout_str, "systemd "))
+        {
+          const char *str = stdout_str + strlen ("systemd ");
+          int systemd_version = atoi (str);
+
+          /* We require systemd-run 240 for --same-dir/--working-directory but also
+           * because it doesn't seem to work at all on CentOS 7 which is 219.
+           */
+          has_systemd = systemd_version >= 240;
+        }
 
       initialized = TRUE;
-      has_systemd = !!path;
     }
 
   return has_systemd;
