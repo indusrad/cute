@@ -198,6 +198,12 @@ prompt_window_dressing_update (PromptWindowDressing *self)
                                   self->css_class, su_bg, su_fg);
         }
 
+#if DEVELOPMENT_BUILD
+      g_string_append_printf (string,
+                              "window.%s headerbar.main-header-bar { background-image: cross-fade(5%% -gtk-recolor(url(\"resource:///org/gnome/Adwaita/styles/assets/devel-symbolic.svg\")), image(transparent)); background-repeat: repeat-x; }\n",
+                              self->css_class);
+#endif
+
       if (!prompt_palette_use_adwaita (self->palette))
         {
           new_tab_bg = face->indexed[4];
