@@ -117,13 +117,13 @@ prompt_window_dressing_update (PromptWindowDressing *self)
       g_ascii_dtostr (window_alpha_str, sizeof window_alpha_str, window_alpha);
 
       g_string_append_printf (string,
-                              "window.%s { color: %s; background: alpha(%s, %s); }\n",
+                              "window.%s { color: %s; background-color: alpha(%s, %s); }\n",
                               self->css_class, fg, bg, window_alpha_str);
       g_string_append_printf (string,
-                              "window.%s popover > contents { color: %s; background: alpha(%s, %s); }\n",
+                              "window.%s popover > contents { color: %s; background-color: alpha(%s, %s); }\n",
                               self->css_class, titlebar_fg, titlebar_bg, popover_alpha_str);
       g_string_append_printf (string,
-                              "window.%s popover > arrow { background: alpha(%s, %s); }\n",
+                              "window.%s popover > arrow { background-color: alpha(%s, %s); }\n",
                               self->css_class, titlebar_bg, popover_alpha_str);
       g_string_append_printf (string,
                               "window.%s vte-terminal > revealer.size label { color: %s; background-color: alpha(%s, %s); }\n",
@@ -132,35 +132,35 @@ prompt_window_dressing_update (PromptWindowDressing *self)
        * actual tab contents rather than the active tab profile.
        */
       g_string_append_printf (string,
-                              "window.%s toolbarview.overview overlay.card { background: %s; color: %s; }\n",
+                              "window.%s toolbarview.overview overlay.card { background-color: %s; color: %s; }\n",
                               self->css_class, bg, fg);
       g_string_append_printf (string,
                               "window.%s toolbarview.overview tabthumbnail .icon-title-box { color: %s; }\n",
                               self->css_class, fg);
       g_string_append_printf (string,
-                              "window.%s toolbarview.overview.background { background: shade(%s,%s); }\n",
+                              "window.%s toolbarview.overview.background { background-color: shade(%s,%s); }\n",
                               self->css_class, bg,
                               rgba_is_dark (&face->background) ? "1.2" : ".95");
       g_string_append_printf (string,
-                              "window.%s revealer.raised.top-bar { background: %s; color: %s; }\n",
+                              "window.%s revealer.raised.top-bar { background-color: %s; color: %s; }\n",
                               self->css_class, titlebar_bg, titlebar_fg);
       g_string_append_printf (string,
-                              "window.%s box.visual-bell headerbar { background: transparent; }\n"
+                              "window.%s box.visual-bell headerbar { background-color: transparent; }\n"
                               "window.%s box.visual-bell { animation: visual-bell-%s-%s 0.3s ease-out; }\n"
-                              "@keyframes visual-bell-%s-%s { 50%% { background: %s; color: %s; } }\n",
+                              "@keyframes visual-bell-%s-%s { 50%% { background-color: %s; color: %s; } }\n",
                               self->css_class,
                               self->css_class, self->css_class, dark ? "dark" : "light",
                               self->css_class, dark ? "dark" : "light", bell_bg, bell_fg);
       g_string_append_printf (string,
-                              "window.%s banner > revealer > widget { background: %s; color: %s; }\n",
+                              "window.%s banner > revealer > widget { background-color: %s; color: %s; }\n",
                               self->css_class, bell_bg, bell_fg);
       g_string_append_printf (string,
-                              "window.%s headerbar { background: %s; color: %s; }\n",
+                              "window.%s headerbar { background-color: %s; color: %s; }\n",
                               self->css_class, titlebar_bg, titlebar_fg);
       g_string_append_printf (string,
-                              "window.%s taboverview tabthumbnail button { background: alpha(%s,.15); color: %s; }\n"
-                              "window.%s taboverview tabthumbnail button:hover { background: alpha(%s,.25); }\n"
-                              "window.%s taboverview tabthumbnail button:active { background: alpha(%s,.55); }\n",
+                              "window.%s taboverview tabthumbnail button { background-color: alpha(%s,.15); color: %s; }\n"
+                              "window.%s taboverview tabthumbnail button:hover { background-color: alpha(%s,.25); }\n"
+                              "window.%s taboverview tabthumbnail button:active { background-color: alpha(%s,.55); }\n",
                               self->css_class, fg, fg,
                               self->css_class, fg,
                               self->css_class, fg);
@@ -168,32 +168,32 @@ prompt_window_dressing_update (PromptWindowDressing *self)
       if (rgba_is_dark (&face->background))
         {
           g_string_append_printf (string,
-                                  "window.%s toolbarview > revealer > windowhandle { color: %s; background: %s; }\n",
+                                  "window.%s toolbarview > revealer > windowhandle { color: %s; background-color: %s; }\n",
                                   self->css_class, titlebar_fg, titlebar_bg);
           g_string_append_printf (string,
-                                  "window.%s.remote headerbar { background: %s; color: %s; }\n"
-                                  "window.%s.remote toolbarview > revealer > windowhandle { background: %s; color: %s; }\n",
+                                  "window.%s.remote headerbar { background-color: %s; color: %s; }\n"
+                                  "window.%s.remote toolbarview > revealer > windowhandle { background-color: %s; color: %s; }\n",
                                   self->css_class, rm_bg, rm_fg,
                                   self->css_class, rm_bg, rm_fg);
           g_string_append_printf (string,
-                                  "window.%s.superuser headerbar { background: %s; color: %s; }\n"
-                                  "window.%s.superuser toolbarview > revealer > windowhandle { background: %s; color: %s; }\n",
+                                  "window.%s.superuser headerbar { background-color: %s; color: %s; }\n"
+                                  "window.%s.superuser toolbarview > revealer > windowhandle { background-color: %s; color: %s; }\n",
                                   self->css_class, su_bg, su_fg,
                                   self->css_class, su_bg, su_fg);
         }
       else
         {
           g_string_append_printf (string,
-                                  "window.%s toolbarview > revealer > windowhandle { color: %s; background: %s; }\n",
+                                  "window.%s toolbarview > revealer > windowhandle { color: %s; background-color: %s; }\n",
                                   self->css_class, titlebar_fg, titlebar_bg);
           g_string_append_printf (string,
-                                  "window.%s.remote headerbar { background: %s; color: %s; }\n"
-                                  "window.%s.remote toolbarview > revealer > windowhandle { background: %s; color: %s; }\n",
+                                  "window.%s.remote headerbar { background-color: %s; color: %s; }\n"
+                                  "window.%s.remote toolbarview > revealer > windowhandle { background-color: %s; color: %s; }\n",
                                   self->css_class, rm_bg, rm_fg,
                                   self->css_class, rm_bg, rm_fg);
           g_string_append_printf (string,
-                                  "window.%s.superuser headerbar { background: %s; color: %s; }\n"
-                                  "window.%s.superuser toolbarview > revealer > windowhandle { background: %s; color: %s; }\n",
+                                  "window.%s.superuser headerbar { background-color: %s; color: %s; }\n"
+                                  "window.%s.superuser toolbarview > revealer > windowhandle { background-color: %s; color: %s; }\n",
                                   self->css_class, su_bg, su_fg,
                                   self->css_class, su_bg, su_fg);
         }
@@ -206,9 +206,9 @@ prompt_window_dressing_update (PromptWindowDressing *self)
           new_tab_fg_str = gdk_rgba_to_string (&new_tab_fg);
 
           g_string_append_printf (string,
-                                  "window.%s taboverview button.new-tab-button { background: %s; color: %s; }\n"
-                                  "window.%s taboverview button.new-tab-button:hover { background: shade(%s,.95); }\n"
-                                  "window.%s taboverview button.new-tab-button:active { background: shade(%s,.90); }\n",
+                                  "window.%s taboverview button.new-tab-button { background-color: %s; color: %s; }\n"
+                                  "window.%s taboverview button.new-tab-button:hover { background-color: shade(%s,.95); }\n"
+                                  "window.%s taboverview button.new-tab-button:active { background-color: shade(%s,.90); }\n",
                                   self->css_class, new_tab_bg_str, new_tab_fg_str,
                                   self->css_class, new_tab_bg_str,
                                   self->css_class, new_tab_bg_str);
