@@ -545,6 +545,18 @@ prompt_window_new_window_action (GtkWidget  *widget,
         prompt_tab_set_container (tab, container);
     }
 
+  /* If the current window is maximized, don't maximize this window as
+   * it's most likely they're just doing a temporary thing or would like
+   * to move the window elsewhere.
+   */
+  if (gtk_window_is_maximized (GTK_WINDOW (self)) ||
+      gtk_window_is_fullscreen (GTK_WINDOW (self)))
+    {
+      PromptTerminal *terminal = prompt_tab_get_terminal (tab);
+
+      vte_terminal_set_size (VTE_TERMINAL (terminal), 80, 24);
+    }
+
   window = g_object_new (PROMPT_TYPE_WINDOW,
                          "application", PROMPT_APPLICATION_DEFAULT,
                          NULL);
