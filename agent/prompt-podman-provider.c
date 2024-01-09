@@ -206,25 +206,34 @@ prompt_podman_provider_deserialize (PromptPodmanProvider *self,
 }
 
 static void
-prompt_podman_provider_parse_cb (GObject      *object,
-                                 GAsyncResult *result,
-                                 gpointer      user_data)
+prompt_podman_provider_communicate_cb (GObject      *object,
+                                       GAsyncResult *result,
+                                       gpointer      user_data)
 {
-  JsonParser *parser = (JsonParser *)object;
+  GSubprocess *subprocess = (GSubprocess *)object;
   PromptPodmanProvider *self;
+  g_autoptr(JsonParser) parser = NULL;
   g_autoptr(GTask) task = user_data;
   g_autoptr(GPtrArray) containers = NULL;
   g_autoptr(GError) error = NULL;
+  g_autofree char *stdout_buf = NULL;
   JsonArray *root_array;
   JsonNode *root;
 
-  g_assert (JSON_IS_PARSER (parser));
+  g_assert (G_IS_SUBPROCESS (subprocess));
   g_assert (G_IS_ASYNC_RESULT (result));
   g_assert (G_IS_TASK (task));
 
-  self = g_task_get_source_object (task);
+  if (!g_subprocess_communicate_utf8_finish (subprocess, result, &stdout_buf, NULL, &error))
+    {
+      g_debug ("Failed to run podman ps: %s", error->message);
+      g_task_return_boolean (task, FALSE);
+    }
 
-  if (!json_parser_load_from_stream_finish (parser, result, &error))
+  self = g_task_get_source_object (task);
+  parser = json_parser_new ();
+
+  if (!json_parser_load_from_data (parser, stdout_buf, -1, &error))
     {
       g_critical ("Failed to load podman JSON: %s", error->message);
       g_task_return_boolean (task, FALSE);
@@ -261,56 +270,28 @@ static gboolean
 prompt_podman_provider_update_source_func (gpointer user_data)
 {
   PromptPodmanProvider *self = user_data;
-  g_autoptr(PromptRunContext) run_context = NULL;
+  g_autoptr(GSubprocessLauncher) launcher = NULL;
   g_autoptr(GSubprocess) subprocess = NULL;
-  g_autoptr(GIOStream) stream = NULL;
   g_autoptr(GError) error = NULL;
-  g_autoptr(JsonParser) parser = NULL;
   g_autoptr(GTask) task = NULL;
-  GOutputStream *stdin_stream;
-  GInputStream *stdout_stream;
 
   g_assert (PROMPT_IS_PODMAN_PROVIDER (self));
 
   self->queued_update = 0;
 
-  run_context = prompt_run_context_new ();
-  prompt_run_context_append_argv (run_context, "podman");
-  prompt_run_context_append_argv (run_context, "ps");
-  prompt_run_context_append_argv (run_context, "--all");
-  prompt_run_context_append_argv (run_context, "--format=json");
-
-#if 0
-  prompt_run_context_take_fd (run_context,
-                              open ("/dev/null", O_RDWR|O_CLOEXEC),
-                              STDERR_FILENO);
-#endif
-
-  if (!(stream = prompt_run_context_create_stdio_stream (run_context, &error)) ||
-      !(subprocess = prompt_run_context_spawn (run_context, &error)))
-    {
-      g_critical ("Failed to spawn subprocess: %s", error->message);
-      return G_SOURCE_REMOVE;
-    }
-
-  stdout_stream = g_io_stream_get_input_stream (stream);
-  stdin_stream = g_io_stream_get_output_stream (stream);
-
-  g_assert (!g_io_stream_is_closed (stream));
-  g_assert (!g_input_stream_is_closed (stdout_stream));
-  g_assert (!g_output_stream_is_closed (stdin_stream));
+  launcher = g_subprocess_launcher_new (G_SUBPROCESS_FLAGS_STDOUT_PIPE);
+  subprocess = g_subprocess_launcher_spawn (launcher, &error, "podman", "ps", "--all", "--format=json", NULL);
+  if (subprocess == NULL)
+    return G_SOURCE_REMOVE;
 
   task = g_task_new (self, NULL, NULL, NULL);
   g_task_set_source_tag (task, prompt_podman_provider_update_source_func);
-  g_task_set_task_data (task, g_object_ref (stream), g_object_unref);
 
-  parser = json_parser_new ();
-
-  json_parser_load_from_stream_async (parser,
-                                      stdout_stream,
-                                      NULL,
-                                      prompt_podman_provider_parse_cb,
-                                      g_steal_pointer (&task));
+  g_subprocess_communicate_utf8_async (subprocess,
+                                       NULL,
+                                       NULL,
+                                       prompt_podman_provider_communicate_cb,
+                                       g_steal_pointer (&task));
 
   return G_SOURCE_REMOVE;
 }
@@ -331,47 +312,29 @@ prompt_podman_provider_update_sync (PromptPodmanProvider  *self,
                                     GCancellable          *cancellable,
                                     GError               **error)
 {
-  g_autoptr(PromptRunContext) run_context = NULL;
+  g_autoptr(GSubprocessLauncher) launcher = NULL;
   g_autoptr(GSubprocess) subprocess = NULL;
-  g_autoptr(GIOStream) stream = NULL;
   g_autoptr(GPtrArray) containers = NULL;
   g_autoptr(JsonParser) parser = NULL;
+  g_autofree char *stdout_buf = NULL;
   JsonArray *root_array;
   JsonNode *root;
-  GOutputStream *stdin_stream;
-  GInputStream *stdout_stream;
 
   g_return_val_if_fail (PROMPT_IS_PODMAN_PROVIDER (self), FALSE);
   g_return_val_if_fail (!cancellable || G_IS_CANCELLABLE (cancellable), FALSE);
 
   g_clear_handle_id (&self->queued_update, g_source_remove);
 
-  run_context = prompt_run_context_new ();
-  prompt_run_context_append_argv (run_context, "podman");
-  prompt_run_context_append_argv (run_context, "ps");
-  prompt_run_context_append_argv (run_context, "--all");
-  prompt_run_context_append_argv (run_context, "--format=json");
-
-#if 0
-  prompt_run_context_take_fd (run_context,
-                              open ("/dev/null", O_RDWR|O_CLOEXEC),
-                              STDERR_FILENO);
-#endif
-
-  if (!(stream = prompt_run_context_create_stdio_stream (run_context, error)) ||
-      !(subprocess = prompt_run_context_spawn (run_context, error)))
+  launcher = g_subprocess_launcher_new (G_SUBPROCESS_FLAGS_STDOUT_PIPE);
+  subprocess = g_subprocess_launcher_spawn (launcher, error, "podman", "ps", "--all", "--format=json", NULL);
+  if (subprocess == NULL)
     return FALSE;
 
-  stdout_stream = g_io_stream_get_input_stream (stream);
-  stdin_stream = g_io_stream_get_output_stream (stream);
-
-  g_assert (!g_io_stream_is_closed (stream));
-  g_assert (!g_input_stream_is_closed (stdout_stream));
-  g_assert (!g_output_stream_is_closed (stdin_stream));
+  if (!g_subprocess_communicate_utf8 (subprocess, NULL, cancellable, &stdout_buf, NULL, error))
+    return FALSE;
 
   parser = json_parser_new ();
-
-  if (!json_parser_load_from_stream (parser, stdout_stream, cancellable, error))
+  if (!json_parser_load_from_data (parser, stdout_buf, -1, error))
     return FALSE;
 
   containers = g_ptr_array_new_with_free_func (g_object_unref);
