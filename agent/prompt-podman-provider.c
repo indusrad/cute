@@ -280,9 +280,11 @@ prompt_podman_provider_update_source_func (gpointer user_data)
   prompt_run_context_append_argv (run_context, "--all");
   prompt_run_context_append_argv (run_context, "--format=json");
 
+#if 0
   prompt_run_context_take_fd (run_context,
                               open ("/dev/null", O_RDWR|O_CLOEXEC),
                               STDERR_FILENO);
+#endif
 
   if (!(stream = prompt_run_context_create_stdio_stream (run_context, &error)) ||
       !(subprocess = prompt_run_context_spawn (run_context, &error)))
@@ -350,9 +352,11 @@ prompt_podman_provider_update_sync (PromptPodmanProvider  *self,
   prompt_run_context_append_argv (run_context, "--all");
   prompt_run_context_append_argv (run_context, "--format=json");
 
+#if 0
   prompt_run_context_take_fd (run_context,
                               open ("/dev/null", O_RDWR|O_CLOEXEC),
                               STDERR_FILENO);
+#endif
 
   if (!(stream = prompt_run_context_create_stdio_stream (run_context, error)) ||
       !(subprocess = prompt_run_context_spawn (run_context, error)))
