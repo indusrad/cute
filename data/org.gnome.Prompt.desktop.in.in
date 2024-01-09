@@ -13,6 +13,7 @@ Categories=GNOME;GTK;System;TerminalEmulator;
 Keywords=terminal;shell;prompt;command;commandline;cmd;
 Actions=new-window;new-tab;preferences;
 X-ExecArg=--
+X-KDE-AuthorizeAction=shell_access
 
 [Desktop Action new-window]
 Name=New Window
