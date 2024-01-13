@@ -161,6 +161,7 @@
 
     <!--
       TranslateURI:
+      @pid: the foreground process id
       @uri: the URI to translate
 
       Translates a URI from the container to something that is available from
@@ -168,12 +169,15 @@
       pass if they are inside a container as well (say Flatpak).
     -->
     <method name="TranslateURI">
+      <arg name="pid" direction="in" type="i"/>
       <arg name="uri" direction="in" type="s"/>
       <arg name="translated" direction="out" type="s"/>
     </method>
   </interface>
 
   <interface name="org.gnome.Prompt.Process">
+    <property name="Identifier" access="read" type="i"/>
+
     <!--
       HasForegroundProcess:
 

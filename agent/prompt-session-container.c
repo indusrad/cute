@@ -172,6 +172,7 @@ prompt_session_container_handle_find_program_in_path (PromptIpcContainer    *con
 static gboolean
 prompt_session_container_handle_translate_uri (PromptIpcContainer    *container,
                                                GDBusMethodInvocation *invocation,
+                                               int                    pid,
                                                const char            *uri)
 {
   g_assert (PROMPT_IS_SESSION_CONTAINER (container));

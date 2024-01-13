@@ -30,6 +30,7 @@
 #include "prompt-process-impl.h"
 #include "prompt-run-context.h"
 #include "prompt-toolbox-container.h"
+#include "prompt-translate-path.h"
 
 typedef struct
 {
@@ -566,9 +567,68 @@ prompt_podman_container_handle_find_program_in_path (PromptIpcContainer    *cont
   return TRUE;
 }
 
+static gboolean
+prompt_podman_container_handle_translate_uri (PromptIpcContainer    *container,
+                                              GDBusMethodInvocation *invocation,
+                                              int                    pid,
+                                              const char            *uri)
+{
+  g_autoptr(GFile) file = NULL;
+  g_autofree char *path = NULL;
+  g_autofree char *translated = NULL;
+
+  g_assert (PROMPT_IS_PODMAN_CONTAINER (container));
+  g_assert (G_IS_DBUS_METHOD_INVOCATION (invocation));
+
+  /* TODO:
+   *
+   * Currently this is still broken because Podman is the foreground
+   * process instead of bash. Once it removes the extra TTY this should
+   * be able to work better.
+   */
+
+  file = g_file_new_for_uri (uri);
+
+  if (!g_file_is_native (file))
+    {
+      g_dbus_method_invocation_return_error (g_steal_pointer (&invocation),
+                                             G_IO_ERROR,
+                                             G_IO_ERROR_INVAL,
+                                             "URI must be a local file");
+      return TRUE;
+    }
+
+  if (!(path = g_file_get_path (file)))
+    {
+      g_dbus_method_invocation_return_error (g_steal_pointer (&invocation),
+                                             G_IO_ERROR,
+                                             G_IO_ERROR_INVAL,
+                                             "Invalid path in URI");
+      return TRUE;
+    }
+
+  if ((translated = prompt_translate_path (pid, path)))
+    {
+      g_autoptr(GFile) translated_file = g_file_new_for_path (translated);
+      g_autofree char *translated_uri = g_file_get_uri (translated_file);
+
+      prompt_ipc_container_complete_translate_uri (container,
+                                                   g_steal_pointer (&invocation),
+                                                   translated_uri);
+      return TRUE;
+    }
+
+  prompt_ipc_container_complete_translate_uri (container,
+                                               g_steal_pointer (&invocation),
+                                               uri);
+
+  return TRUE;
+}
+
 static void
 container_iface_init (PromptIpcContainerIface *iface)
 {
   iface->handle_spawn = prompt_podman_container_handle_spawn;
   iface->handle_find_program_in_path = prompt_podman_container_handle_find_program_in_path;
+  iface->handle_translate_uri = prompt_podman_container_handle_translate_uri;
 }

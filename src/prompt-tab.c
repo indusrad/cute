@@ -1654,7 +1654,7 @@ prompt_tab_open_uri (PromptTab  *self,
 
       if (container != NULL)
         {
-          if (prompt_ipc_container_call_translate_uri_sync (container, uri, &translated, NULL, NULL))
+          if (prompt_ipc_container_call_translate_uri_sync (container, self->pid, uri, &translated, NULL, NULL))
             uri = translated;
         }
 

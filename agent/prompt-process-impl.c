@@ -116,16 +116,22 @@ prompt_process_impl_new (GDBusConnection  *connection,
 {
   g_autoptr(PromptProcessImpl) self = NULL;
   const char *ident;
+  GPid pid;
 
   g_return_val_if_fail (G_IS_DBUS_CONNECTION (connection), NULL);
   g_return_val_if_fail (G_IS_SUBPROCESS (subprocess), NULL);
   g_return_val_if_fail (object_path != NULL, NULL);
 
   ident = g_subprocess_get_identifier (subprocess);
+  pid = atoi (ident);
 
-  self = g_object_new (PROMPT_TYPE_PROCESS_IMPL, NULL);
-  self->pid = atoi (ident);
+  g_print ("IDENT: %d\n", pid);
+
+  self = g_object_new (PROMPT_TYPE_PROCESS_IMPL,
+                       "identifier", pid,
+                       NULL);
   g_set_object (&self->subprocess, subprocess);
+  self->pid = pid;
 
   g_subprocess_wait_async (subprocess,
                            NULL,
