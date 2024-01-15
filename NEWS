@@ -1,0 +1,25 @@
+# Prompt 46.alpha
+
+Prompt is a new container oriented terminal.
+
+It attempts to improve the experience on operating systems where users are
+commonly entering or working with terminals in containers different than
+the host. For example, "immutable" desktops.
+
+Prompt takes a practical approach to preferences including support for
+profiles. Users may set a default container per-profile as well as choose
+to inherit the currently entered container.
+
+Prompt does require patches on-top of VTE. These patches are similar to what
+has been shipped in Fedora for a number of years. They provide some basic
+container and notification abstractions on-top of VTE. In the future, we hope
+to not require additional VTE patches once new functionality lands in VTE.
+Packagers may find those patches in `build-aux/` which apply on top of git
+master at the time of writing.
+
+Performance and correctness of Prompt is critical upon using VTE with the
+performance work I've done in the 46 GNOME cycle. In fact, the patches above
+will only apply on a VTE tree which contains that work. The drawing of Prompt
+will be incorrect without the upstream work in VTE.
+
+This is an initial release, which should be considered alpha quality.
