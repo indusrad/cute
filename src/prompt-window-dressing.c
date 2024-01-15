@@ -25,6 +25,7 @@
 
 #include "gdkhslaprivate.h"
 
+#include "prompt-application.h"
 #include "prompt-window-dressing.h"
 
 struct _PromptWindowDressing
@@ -76,6 +77,7 @@ prompt_window_dressing_update (PromptWindowDressing *self)
 
   if (self->palette != NULL)
     {
+      PromptSettings *settings = prompt_application_get_settings (PROMPT_APPLICATION_DEFAULT);
       AdwStyleManager *style_manager = adw_style_manager_get_default ();
       gboolean dark = adw_style_manager_get_dark (style_manager);
       const PromptPaletteFace *face = prompt_palette_get_face (self->palette, dark);
@@ -94,6 +96,7 @@ prompt_window_dressing_update (PromptWindowDressing *self)
       g_autofree char *new_tab_fg_str = NULL;
       char window_alpha_str[G_ASCII_DTOSTR_BUF_SIZE];
       char popover_alpha_str[G_ASCII_DTOSTR_BUF_SIZE];
+      gboolean visual_process_leader;
       GdkRGBA new_tab_bg;
       GdkRGBA new_tab_fg;
       double window_alpha;
@@ -165,37 +168,47 @@ prompt_window_dressing_update (PromptWindowDressing *self)
                               self->css_class, fg,
                               self->css_class, fg);
 
+      visual_process_leader = prompt_settings_get_visual_process_leader (settings);
+
       if (rgba_is_dark (&face->background))
         {
           g_string_append_printf (string,
                                   "window.%s toolbarview > revealer > windowhandle { color: %s; background-color: %s; }\n",
                                   self->css_class, titlebar_fg, titlebar_bg);
-          g_string_append_printf (string,
-                                  "window.%s.remote headerbar { background-color: %s; color: %s; }\n"
-                                  "window.%s.remote toolbarview > revealer > windowhandle { background-color: %s; color: %s; }\n",
-                                  self->css_class, rm_bg, rm_fg,
-                                  self->css_class, rm_bg, rm_fg);
-          g_string_append_printf (string,
-                                  "window.%s.superuser headerbar { background-color: %s; color: %s; }\n"
-                                  "window.%s.superuser toolbarview > revealer > windowhandle { background-color: %s; color: %s; }\n",
-                                  self->css_class, su_bg, su_fg,
-                                  self->css_class, su_bg, su_fg);
+
+          if (visual_process_leader)
+            {
+              g_string_append_printf (string,
+                                      "window.%s.remote headerbar { background-color: %s; color: %s; }\n"
+                                      "window.%s.remote toolbarview > revealer > windowhandle { background-color: %s; color: %s; }\n",
+                                      self->css_class, rm_bg, rm_fg,
+                                      self->css_class, rm_bg, rm_fg);
+              g_string_append_printf (string,
+                                      "window.%s.superuser headerbar { background-color: %s; color: %s; }\n"
+                                      "window.%s.superuser toolbarview > revealer > windowhandle { background-color: %s; color: %s; }\n",
+                                      self->css_class, su_bg, su_fg,
+                                      self->css_class, su_bg, su_fg);
+            }
         }
       else
         {
           g_string_append_printf (string,
                                   "window.%s toolbarview > revealer > windowhandle { color: %s; background-color: %s; }\n",
                                   self->css_class, titlebar_fg, titlebar_bg);
-          g_string_append_printf (string,
-                                  "window.%s.remote headerbar { background-color: %s; color: %s; }\n"
-                                  "window.%s.remote toolbarview > revealer > windowhandle { background-color: %s; color: %s; }\n",
-                                  self->css_class, rm_bg, rm_fg,
-                                  self->css_class, rm_bg, rm_fg);
-          g_string_append_printf (string,
-                                  "window.%s.superuser headerbar { background-color: %s; color: %s; }\n"
-                                  "window.%s.superuser toolbarview > revealer > windowhandle { background-color: %s; color: %s; }\n",
-                                  self->css_class, su_bg, su_fg,
-                                  self->css_class, su_bg, su_fg);
+
+          if (visual_process_leader)
+            {
+              g_string_append_printf (string,
+                                      "window.%s.remote headerbar { background-color: %s; color: %s; }\n"
+                                      "window.%s.remote toolbarview > revealer > windowhandle { background-color: %s; color: %s; }\n",
+                                      self->css_class, rm_bg, rm_fg,
+                                      self->css_class, rm_bg, rm_fg);
+              g_string_append_printf (string,
+                                      "window.%s.superuser headerbar { background-color: %s; color: %s; }\n"
+                                      "window.%s.superuser toolbarview > revealer > windowhandle { background-color: %s; color: %s; }\n",
+                                      self->css_class, su_bg, su_fg,
+                                      self->css_class, su_bg, su_fg);
+            }
         }
 
 #if DEVELOPMENT_BUILD
@@ -264,8 +277,15 @@ prompt_window_dressing_constructed (GObject *object)
 {
   PromptWindowDressing *self = (PromptWindowDressing *)object;
   AdwStyleManager *style_manager = adw_style_manager_get_default ();
+  PromptSettings *settings = prompt_application_get_settings (PROMPT_APPLICATION_DEFAULT);
 
   G_OBJECT_CLASS (prompt_window_dressing_parent_class)->constructed (object);
+
+  g_signal_connect_object (settings,
+                           "notify::visual-process-leader",
+                           G_CALLBACK (prompt_window_dressing_queue_update),
+                           self,
+                           G_CONNECT_SWAPPED);
 
   gtk_style_context_add_provider_for_display (gdk_display_get_default (),
                                               GTK_STYLE_PROVIDER (self->css_provider),

@@ -52,6 +52,7 @@ enum {
   PROP_TOAST_ON_COPY_CLIPBOARD,
   PROP_USE_SYSTEM_FONT,
   PROP_VISUAL_BELL,
+  PROP_VISUAL_PROCESS_LEADER,
   N_PROPS
 };
 
@@ -84,6 +85,8 @@ prompt_settings_changed_cb (PromptSettings *self,
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_AUDIBLE_BELL]);
   else if (g_str_equal (key, PROMPT_SETTING_KEY_VISUAL_BELL))
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_VISUAL_BELL]);
+  else if (g_str_equal (key, PROMPT_SETTING_KEY_VISUAL_PROCESS_LEADER))
+    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_VISUAL_PROCESS_LEADER]);
   else if (g_str_equal (key, PROMPT_SETTING_KEY_CURSOR_SHAPE))
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_CURSOR_SHAPE]);
   else if (g_str_equal (key, PROMPT_SETTING_KEY_CURSOR_BLINK_MODE))
@@ -196,6 +199,10 @@ prompt_settings_get_property (GObject    *object,
       g_value_set_boolean (value, prompt_settings_get_visual_bell (self));
       break;
 
+    case PROP_VISUAL_PROCESS_LEADER:
+      g_value_set_boolean (value, prompt_settings_get_visual_process_leader (self));
+      break;
+
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
     }
@@ -269,6 +276,10 @@ prompt_settings_set_property (GObject      *object,
 
     case PROP_VISUAL_BELL:
       prompt_settings_set_visual_bell (self, g_value_get_boolean (value));
+      break;
+
+    case PROP_VISUAL_PROCESS_LEADER:
+      prompt_settings_set_visual_process_leader (self, g_value_get_boolean (value));
       break;
 
     default:
@@ -397,6 +408,13 @@ prompt_settings_class_init (PromptSettingsClass *klass)
 
   properties[PROP_VISUAL_BELL] =
     g_param_spec_boolean ("visual-bell", NULL, NULL,
+                          FALSE,
+                          (G_PARAM_READWRITE |
+                           G_PARAM_EXPLICIT_NOTIFY |
+                           G_PARAM_STATIC_STRINGS));
+
+  properties[PROP_VISUAL_PROCESS_LEADER] =
+    g_param_spec_boolean ("visual-process-leader", NULL, NULL,
                           FALSE,
                           (G_PARAM_READWRITE |
                            G_PARAM_EXPLICIT_NOTIFY |
@@ -586,6 +604,25 @@ prompt_settings_set_visual_bell (PromptSettings *self,
   g_settings_set_boolean (self->settings,
                           PROMPT_SETTING_KEY_VISUAL_BELL,
                           visual_bell);
+}
+
+gboolean
+prompt_settings_get_visual_process_leader (PromptSettings *self)
+{
+  g_return_val_if_fail (PROMPT_IS_SETTINGS (self), FALSE);
+
+  return g_settings_get_boolean (self->settings, PROMPT_SETTING_KEY_VISUAL_PROCESS_LEADER);
+}
+
+void
+prompt_settings_set_visual_process_leader (PromptSettings *self,
+                                           gboolean        visual_process_leader)
+{
+  g_return_if_fail (PROMPT_IS_SETTINGS (self));
+
+  g_settings_set_boolean (self->settings,
+                          PROMPT_SETTING_KEY_VISUAL_PROCESS_LEADER,
+                          visual_process_leader);
 }
 
 VteCursorBlinkMode

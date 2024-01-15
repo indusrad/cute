@@ -120,6 +120,12 @@
       <description>If a visual bell should be used</description>
     </key>
 
+    <key name="visual-process-leader" type="b">
+      <default>true</default>
+      <summary>Visual Process Leader</summary>
+      <description>Display a visual window highlight when process leader is SSH, sudo, or other specialized tooling</description>
+    </key>
+
     <key name="use-system-font" type="b">
       <default>true</default>
       <summary>Use System Font</summary>

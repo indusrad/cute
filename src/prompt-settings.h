@@ -41,6 +41,7 @@ G_BEGIN_DECLS
 #define PROMPT_SETTING_KEY_TOAST_ON_COPY_CLIPBOARD "toast-on-copy-clipboard"
 #define PROMPT_SETTING_KEY_USE_SYSTEM_FONT         "use-system-font"
 #define PROMPT_SETTING_KEY_VISUAL_BELL             "visual-bell"
+#define PROMPT_SETTING_KEY_VISUAL_PROCESS_LEADER   "visual-process-leader"
 
 typedef enum _PromptNewTabPosition
 {
@@ -78,6 +79,9 @@ void                    prompt_settings_set_audible_bell            (PromptSetti
 gboolean                prompt_settings_get_visual_bell             (PromptSettings             *self);
 void                    prompt_settings_set_visual_bell             (PromptSettings             *self,
                                                                      gboolean                    visual_bell);
+gboolean                prompt_settings_get_visual_process_leader   (PromptSettings             *self);
+void                    prompt_settings_set_visual_process_leader   (PromptSettings             *self,
+                                                                     gboolean                    visual_process_leader);
 VteCursorBlinkMode      prompt_settings_get_cursor_blink_mode       (PromptSettings             *self);
 void                    prompt_settings_set_cursor_blink_mode       (PromptSettings             *self,
                                                                      VteCursorBlinkMode          blink_mode);
