@@ -1375,9 +1375,9 @@ prompt_application_spawn_finish (PromptApplication  *self,
 
 static void
 wait_complete (GTask  *task,
-                     int     exit_status,
-                     int     term_sig,
-                     GError *error)
+               int     exit_status,
+               int     term_sig,
+               GError *error)
 {
   if (!g_object_get_data (G_OBJECT (task), "DID_COMPLETE"))
     {
