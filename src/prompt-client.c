@@ -512,6 +512,9 @@ prompt_client_spawn_async (PromptClient        *self,
   g_return_if_fail (VTE_IS_PTY (pty));
   g_return_if_fail (!cancellable || G_IS_CANCELLABLE (cancellable));
 
+  if (default_shell != NULL && default_shell[0] == 0)
+    default_shell = NULL;
+
   task = g_task_new (self, cancellable, callback, user_data);
   g_task_set_source_tag (task, prompt_client_spawn_async);
 
@@ -538,9 +541,6 @@ prompt_client_spawn_async (PromptClient        *self,
   env = g_environ_setenv (env, "TERM", "xterm-256color", TRUE);
   env = g_environ_setenv (env, "VTE_VERSION", vte_version, TRUE);
 
-  if (default_shell == NULL)
-    default_shell = "/bin/sh";
-
   argv_builder = g_strv_builder_new ();
 
   if (alt_argv != NULL && alt_argv[0] != NULL)
@@ -563,10 +563,17 @@ prompt_client_spawn_async (PromptClient        *self,
       g_strv_builder_addv (argv_builder, (const char **)argv);
       arg0 = g_strdup (argv[0]);
     }
-  else
+  else if (default_shell != NULL)
     {
       arg0 = g_strdup (default_shell);
       g_strv_builder_add (argv_builder, arg0);
+    }
+  else
+    {
+      arg0 = g_strdup ("");
+      g_strv_builder_add (argv_builder, "sh");
+      g_strv_builder_add (argv_builder, "-c");
+      g_strv_builder_add (argv_builder, "$(getent passwd $USER | cut -d : -f 7)");
     }
 
   if (arg0 != NULL &&

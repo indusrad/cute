@@ -1270,10 +1270,13 @@ prompt_application_check_shell_cb (GObject      *object,
                                                          result,
                                                          NULL);
 
+  if (default_shell_path && default_shell_path[0] == 0)
+    g_clear_pointer (&default_shell_path, g_free);
+
   prompt_client_spawn_async (self->client,
                              spawn->container,
                              spawn->profile,
-                             default_shell_path ? default_shell_path : "/bin/sh",
+                             default_shell_path,
                              spawn->last_working_directory_uri,
                              spawn->pty,
                              (const char * const *)spawn->argv,
@@ -1311,7 +1314,7 @@ prompt_application_get_preferred_shell_cb (GObject      *object,
 
   default_shell = prompt_client_discover_shell_finish (client, result, NULL);
 
-  if (default_shell && !default_shell[0])
+  if (default_shell && default_shell[0] == 0)
     g_clear_pointer (&default_shell, g_free);
 
   default_shell_base = g_path_get_basename (default_shell ? default_shell : "bash");
