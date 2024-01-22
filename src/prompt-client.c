@@ -573,7 +573,7 @@ prompt_client_spawn_async (PromptClient        *self,
       arg0 = g_strdup ("");
       g_strv_builder_add (argv_builder, "sh");
       g_strv_builder_add (argv_builder, "-c");
-      g_strv_builder_add (argv_builder, "$(getent passwd $USER | cut -d : -f 7)");
+      g_strv_builder_add (argv_builder, "$(getent passwd $(whoami) | cut -d : -f 7)");
     }
 
   if (arg0 != NULL &&
