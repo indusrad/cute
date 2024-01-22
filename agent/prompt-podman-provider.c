@@ -205,6 +205,18 @@ prompt_podman_provider_deserialize (PromptPodmanProvider *self,
   return g_steal_pointer (&container);
 }
 
+static gboolean
+container_is_infra (JsonObject *object)
+{
+  JsonNode *is_infra;
+  g_assert (object != NULL);
+
+  return json_object_has_member (object, "IsInfra") &&
+      (is_infra = json_object_get_member (object, "IsInfra")) &&
+      json_node_get_value_type (is_infra) == G_TYPE_BOOLEAN &&
+      json_node_get_boolean (is_infra);
+}
+
 static void
 prompt_podman_provider_communicate_cb (GObject      *object,
                                        GAsyncResult *result,
@@ -256,6 +268,7 @@ prompt_podman_provider_communicate_cb (GObject      *object,
 
           if (JSON_NODE_HOLDS_OBJECT (element) &&
               (element_object = json_node_get_object (element)) &&
+              !container_is_infra (element_object) &&
               (container = prompt_podman_provider_deserialize (self, element_object)))
             g_ptr_array_add (containers, g_steal_pointer (&container));
         }
@@ -353,6 +366,7 @@ prompt_podman_provider_update_sync (PromptPodmanProvider  *self,
 
           if (JSON_NODE_HOLDS_OBJECT (element) &&
               (element_object = json_node_get_object (element)) &&
+              !container_is_infra (element_object) &&
               (container = prompt_podman_provider_deserialize (self, element_object)))
             g_ptr_array_add (containers, g_steal_pointer (&container));
         }
