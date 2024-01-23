@@ -96,6 +96,7 @@ struct _PromptPreferencesWindow
   PromptShortcutRow    *shortcut_paste_clipboard;
   PromptShortcutRow    *shortcut_popup_menu;
   PromptShortcutRow    *shortcut_preferences;
+  PromptShortcutRow    *shortcut_primary_menu;
   PromptShortcutRow    *shortcut_reset;
   PromptShortcutRow    *shortcut_reset_and_clear;
   PromptShortcutRow    *shortcut_search;
@@ -744,6 +745,9 @@ prompt_preferences_window_constructed (GObject *object)
   g_object_bind_property (shortcuts, "preferences",
                           self->shortcut_preferences, "accelerator",
                           G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
+  g_object_bind_property (shortcuts, "primary-menu",
+                          self->shortcut_primary_menu, "accelerator",
+                          G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
 
   g_object_bind_property (shortcuts, "copy-clipboard",
                           self->shortcut_copy_clipboard, "accelerator",
@@ -943,6 +947,7 @@ prompt_preferences_window_class_init (PromptPreferencesWindowClass *klass)
   gtk_widget_class_bind_template_child (widget_class, PromptPreferencesWindow, shortcut_paste_clipboard);
   gtk_widget_class_bind_template_child (widget_class, PromptPreferencesWindow, shortcut_popup_menu);
   gtk_widget_class_bind_template_child (widget_class, PromptPreferencesWindow, shortcut_preferences);
+  gtk_widget_class_bind_template_child (widget_class, PromptPreferencesWindow, shortcut_primary_menu);
   gtk_widget_class_bind_template_child (widget_class, PromptPreferencesWindow, shortcut_reset);
   gtk_widget_class_bind_template_child (widget_class, PromptPreferencesWindow, shortcut_reset_and_clear);
   gtk_widget_class_bind_template_child (widget_class, PromptPreferencesWindow, shortcut_search);

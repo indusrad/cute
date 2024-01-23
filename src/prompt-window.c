@@ -1066,6 +1066,18 @@ prompt_window_preferences_action (GtkWidget  *widget,
 }
 
 static void
+prompt_window_primary_menu_action (GtkWidget  *widget,
+                                   const char *action_name,
+                                   GVariant   *param)
+{
+  PromptWindow *self = (PromptWindow *)widget;
+
+  g_assert (PROMPT_IS_WINDOW (self));
+
+  gtk_menu_button_popup (self->primary_menu_button);
+}
+
+static void
 prompt_window_close_request_cb (GObject      *object,
                                 GAsyncResult *result,
                                 gpointer      user_data)
@@ -1520,6 +1532,7 @@ prompt_window_class_init (PromptWindowClass *klass)
   gtk_widget_class_bind_template_callback (widget_class, prompt_window_tab_overview_notify_open_cb);
   gtk_widget_class_bind_template_callback (widget_class, prompt_window_tab_overview_create_tab_cb);
 
+  gtk_widget_class_install_action (widget_class, "win.primary-menu", NULL, prompt_window_primary_menu_action);
   gtk_widget_class_install_action (widget_class, "win.new-tab", "(ss)", prompt_window_new_tab_action);
   gtk_widget_class_install_action (widget_class, "win.new-window", "(ss)", prompt_window_new_window_action);
   gtk_widget_class_install_action (widget_class, "win.new-terminal", "(ss)", prompt_window_new_terminal_action);

@@ -30,6 +30,16 @@
         <child>
           <object class="GtkShortcut">
             <binding name="trigger">
+              <lookup name="primary-menu" type="PromptShortcuts">
+                <lookup name="shortcuts">PromptWindow</lookup>
+              </lookup>
+            </binding>
+            <property name="action">action(win.primary-menu)</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkShortcut">
+            <binding name="trigger">
               <lookup name="search" type="PromptShortcuts">
                 <lookup name="shortcuts">PromptWindow</lookup>
               </lookup>
@@ -393,7 +403,6 @@
                     </child>
                     <child type="end">
                       <object class="GtkMenuButton" id="primary_menu_button">
-                        <property name="primary">true</property>
                         <property name="icon-name">open-menu-symbolic</property>
                         <property name="tooltip-text" translatable="yes">Menu</property>
                         <property name="menu-model">primary_menu</property>
