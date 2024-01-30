@@ -882,7 +882,7 @@ prompt_application_about (GSimpleAction *action,
   window = gtk_application_get_active_window (GTK_APPLICATION (self));
   debug_info = generate_debug_info (self);
 
-  adw_show_about_window (window,
+  adw_show_about_dialog (GTK_WIDGET (window),
                          "application-icon", PACKAGE_ICON_NAME,
                          "application-name", PACKAGE_NAME,
                          "artists", artists,
