@@ -779,7 +779,6 @@ prompt_client_discover_current_container (PromptClient *self,
 {
   g_autofree char *object_path = NULL;
   g_autoptr(GUnixFDList) in_fd_list = NULL;
-  g_autofd int fd = -1;
   int in_handle;
   int pty_fd;
 
