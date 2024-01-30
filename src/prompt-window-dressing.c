@@ -81,7 +81,6 @@ prompt_window_dressing_update (PromptWindowDressing *self)
       AdwStyleManager *style_manager = adw_style_manager_get_default ();
       gboolean dark = adw_style_manager_get_dark (style_manager);
       const PromptPaletteFace *face = prompt_palette_get_face (self->palette, dark);
-      g_autoptr(GString) gstring = g_string_new (NULL);
       g_autofree char *bg = NULL;
       g_autofree char *fg = NULL;
       g_autofree char *titlebar_bg = NULL;
@@ -123,47 +122,47 @@ prompt_window_dressing_update (PromptWindowDressing *self)
                               "window.%s { color: %s; background-color: alpha(%s, %s); }\n",
                               self->css_class, fg, bg, window_alpha_str);
       g_string_append_printf (string,
-                              "window.%s popover > contents { color: %s; background-color: alpha(%s, %s); }\n",
+                              "window.%s .window-contents popover > contents { color: %s; background-color: alpha(%s, %s); }\n",
                               self->css_class, titlebar_fg, titlebar_bg, popover_alpha_str);
       g_string_append_printf (string,
-                              "window.%s popover > arrow { background-color: alpha(%s, %s); }\n",
+                              "window.%s .window-contents popover > arrow { background-color: alpha(%s, %s); }\n",
                               self->css_class, titlebar_bg, popover_alpha_str);
       g_string_append_printf (string,
-                              "window.%s vte-terminal > revealer.size label { color: %s; background-color: alpha(%s, %s); }\n",
+                              "window.%s .window-contents vte-terminal > revealer.size label { color: %s; background-color: alpha(%s, %s); }\n",
                               self->css_class, titlebar_fg, titlebar_bg, popover_alpha_str);
       /* It would be super if we could make these match the color of the
        * actual tab contents rather than the active tab profile.
        */
       g_string_append_printf (string,
-                              "window.%s toolbarview.overview overlay.card { background-color: %s; color: %s; }\n",
+                              "window.%s .window-contents toolbarview.overview overlay.card { background-color: %s; color: %s; }\n",
                               self->css_class, bg, fg);
       g_string_append_printf (string,
-                              "window.%s toolbarview.overview tabthumbnail .icon-title-box { color: %s; }\n",
+                              "window.%s .window-contents toolbarview.overview tabthumbnail .icon-title-box { color: %s; }\n",
                               self->css_class, fg);
       g_string_append_printf (string,
-                              "window.%s toolbarview.overview.background { background-color: shade(%s,%s); }\n",
+                              "window.%s .window-contents toolbarview.overview.background { background-color: shade(%s,%s); }\n",
                               self->css_class, bg,
                               rgba_is_dark (&face->background) ? "1.2" : ".95");
       g_string_append_printf (string,
-                              "window.%s revealer.raised.top-bar { background-color: %s; color: %s; }\n",
+                              "window.%s .window-contents revealer.raised.top-bar { background-color: %s; color: %s; }\n",
                               self->css_class, titlebar_bg, titlebar_fg);
       g_string_append_printf (string,
-                              "window.%s box.visual-bell headerbar { background-color: transparent; }\n"
-                              "window.%s box.visual-bell { animation: visual-bell-%s-%s 0.3s ease-out; }\n"
+                              "window.%s .window-contents box.visual-bell headerbar { background-color: transparent; }\n"
+                              "window.%s .window-contents box.visual-bell { animation: visual-bell-%s-%s 0.3s ease-out; }\n"
                               "@keyframes visual-bell-%s-%s { 50%% { background-color: %s; color: %s; } }\n",
                               self->css_class,
                               self->css_class, self->css_class, dark ? "dark" : "light",
                               self->css_class, dark ? "dark" : "light", bell_bg, bell_fg);
       g_string_append_printf (string,
-                              "window.%s banner > revealer > widget { background-color: %s; color: %s; }\n",
+                              "window.%s .window-contents banner > revealer > widget { background-color: %s; color: %s; }\n",
                               self->css_class, bell_bg, bell_fg);
       g_string_append_printf (string,
-                              "window.%s headerbar { background-color: %s; color: %s; }\n",
+                              "window.%s .window-contents headerbar { background-color: %s; color: %s; }\n",
                               self->css_class, titlebar_bg, titlebar_fg);
       g_string_append_printf (string,
-                              "window.%s taboverview tabthumbnail button { background-color: alpha(%s,.15); color: %s; }\n"
-                              "window.%s taboverview tabthumbnail button:hover { background-color: alpha(%s,.25); }\n"
-                              "window.%s taboverview tabthumbnail button:active { background-color: alpha(%s,.55); }\n",
+                              "window.%s .window-contents taboverview tabthumbnail button { background-color: alpha(%s,.15); color: %s; }\n"
+                              "window.%s .window-contents taboverview tabthumbnail button:hover { background-color: alpha(%s,.25); }\n"
+                              "window.%s .window-contents taboverview tabthumbnail button:active { background-color: alpha(%s,.55); }\n",
                               self->css_class, fg, fg,
                               self->css_class, fg,
                               self->css_class, fg);
@@ -173,19 +172,19 @@ prompt_window_dressing_update (PromptWindowDressing *self)
       if (rgba_is_dark (&face->background))
         {
           g_string_append_printf (string,
-                                  "window.%s toolbarview > revealer > windowhandle { color: %s; background-color: %s; }\n",
+                                  "window.%s .window-contents > revealer > windowhandle { color: %s; background-color: %s; }\n",
                                   self->css_class, titlebar_fg, titlebar_bg);
 
           if (visual_process_leader)
             {
               g_string_append_printf (string,
-                                      "window.%s.remote headerbar { background-color: %s; color: %s; }\n"
-                                      "window.%s.remote toolbarview > revealer > windowhandle { background-color: %s; color: %s; }\n",
+                                      "window.%s.remote .window-contents headerbar { background-color: %s; color: %s; }\n"
+                                      "window.%s.remote .window-contents toolbarview > revealer > windowhandle { background-color: %s; color: %s; }\n",
                                       self->css_class, rm_bg, rm_fg,
                                       self->css_class, rm_bg, rm_fg);
               g_string_append_printf (string,
-                                      "window.%s.superuser headerbar { background-color: %s; color: %s; }\n"
-                                      "window.%s.superuser toolbarview > revealer > windowhandle { background-color: %s; color: %s; }\n",
+                                      "window.%s.superuser .window-contents headerbar { background-color: %s; color: %s; }\n"
+                                      "window.%s.superuser .window-contents toolbarview > revealer > windowhandle { background-color: %s; color: %s; }\n",
                                       self->css_class, su_bg, su_fg,
                                       self->css_class, su_bg, su_fg);
             }
@@ -193,19 +192,19 @@ prompt_window_dressing_update (PromptWindowDressing *self)
       else
         {
           g_string_append_printf (string,
-                                  "window.%s toolbarview > revealer > windowhandle { color: %s; background-color: %s; }\n",
+                                  "window.%s .window-contents > revealer > windowhandle { color: %s; background-color: %s; }\n",
                                   self->css_class, titlebar_fg, titlebar_bg);
 
           if (visual_process_leader)
             {
               g_string_append_printf (string,
-                                      "window.%s.remote headerbar { background-color: %s; color: %s; }\n"
-                                      "window.%s.remote toolbarview > revealer > windowhandle { background-color: %s; color: %s; }\n",
+                                      "window.%s.remote .window-contents headerbar { background-color: %s; color: %s; }\n"
+                                      "window.%s.remote .window-contents > revealer > windowhandle { background-color: %s; color: %s; }\n",
                                       self->css_class, rm_bg, rm_fg,
                                       self->css_class, rm_bg, rm_fg);
               g_string_append_printf (string,
-                                      "window.%s.superuser headerbar { background-color: %s; color: %s; }\n"
-                                      "window.%s.superuser toolbarview > revealer > windowhandle { background-color: %s; color: %s; }\n",
+                                      "window.%s.superuser .window-contents headerbar { background-color: %s; color: %s; }\n"
+                                      "window.%s.superuser .window-contents > revealer > windowhandle { background-color: %s; color: %s; }\n",
                                       self->css_class, su_bg, su_fg,
                                       self->css_class, su_bg, su_fg);
             }
@@ -213,7 +212,7 @@ prompt_window_dressing_update (PromptWindowDressing *self)
 
 #if DEVELOPMENT_BUILD
       g_string_append_printf (string,
-                              "window.%s headerbar.main-header-bar { background-image: cross-fade(5%% -gtk-recolor(url(\"resource:///org/gnome/Adwaita/styles/assets/devel-symbolic.svg\")), image(transparent)); background-repeat: repeat-x; }\n",
+                              "window.%s .window-contents headerbar.main-header-bar { background-image: cross-fade(5%% -gtk-recolor(url(\"resource:///org/gnome/Adwaita/styles/assets/devel-symbolic.svg\")), image(transparent)); background-repeat: repeat-x; }\n",
                               self->css_class);
 #endif
 
