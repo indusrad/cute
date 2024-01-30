@@ -34,6 +34,7 @@ struct _PromptTabMonitor
   GWeakRef  tab_wr;
   GSource  *update_source;
   int       current_delay_msec;
+  guint     has_pressed_key : 1;
 };
 
 enum {
@@ -166,6 +167,8 @@ prompt_tab_monitor_key_pressed_cb (PromptTabMonitor      *self,
 
   g_assert (PROMPT_IS_TAB_MONITOR (self));
   g_assert (GTK_IS_EVENT_CONTROLLER_KEY (key));
+
+  prompt_tab_monitor_set_has_pressed_key (self, TRUE);
 
   if (self->update_source == NULL)
     return GDK_EVENT_PROPAGATE;
@@ -322,4 +325,21 @@ prompt_tab_monitor_new (PromptTab *tab)
   return g_object_new (PROMPT_TYPE_TAB_MONITOR,
                        "tab", tab,
                        NULL);
+}
+
+gboolean
+prompt_tab_monitor_get_has_pressed_key (PromptTabMonitor *self)
+{
+  g_return_val_if_fail (PROMPT_IS_TAB_MONITOR (self), FALSE);
+
+  return self->has_pressed_key;
+}
+
+void
+prompt_tab_monitor_set_has_pressed_key (PromptTabMonitor *self,
+                                        gboolean          has_pressed_key)
+{
+  g_return_if_fail (PROMPT_IS_TAB_MONITOR (self));
+
+  self->has_pressed_key = has_pressed_key;
 }

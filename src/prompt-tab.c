@@ -71,6 +71,8 @@ struct _PromptTab
   PromptTabState           state;
   GPid                     pid;
 
+  gint64                   respawn_time;
+
   PromptZoomLevel          zoom : 5;
   PromptProcessLeaderKind  leader_kind : 3;
   guint                    has_foreground_process : 1;
@@ -276,6 +278,15 @@ prompt_tab_wait_cb (GObject      *object,
   adw_banner_set_button_label (self->banner, _("_Restart"));
   gtk_actionable_set_action_name (GTK_ACTIONABLE (self->banner), "tab.respawn");
 
+  /* If we took less than .5 a second to spawn and no key has been
+   * pressed in the terminal, then treat this as a failed spawn. Don't
+   * allow ourselves to auto-close in that case as it's likely an error
+   * the user would want to see.
+   */
+  if ((g_get_monotonic_time () - self->respawn_time) < (G_USEC_PER_SEC/2) &&
+      !prompt_tab_monitor_get_has_pressed_key (self->monitor))
+    exit_action = PROMPT_EXIT_ACTION_NONE;
+
   switch (exit_action)
     {
     case PROMPT_EXIT_ACTION_RESTART:
@@ -336,6 +347,7 @@ prompt_tab_spawn_cb (GObject      *object,
     }
 
   self->state = PROMPT_TAB_STATE_RUNNING;
+  self->respawn_time = g_get_monotonic_time ();
 
   g_set_object (&self->process, process);
 

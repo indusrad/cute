@@ -31,6 +31,9 @@ G_BEGIN_DECLS
 
 G_DECLARE_FINAL_TYPE (PromptTabMonitor, prompt_tab_monitor, PROMPT, TAB_MONITOR, GObject)
 
-PromptTabMonitor *prompt_tab_monitor_new (PromptTab *tab);
+PromptTabMonitor *prompt_tab_monitor_new                 (PromptTab        *tab);
+gboolean          prompt_tab_monitor_get_has_pressed_key (PromptTabMonitor *self);
+void              prompt_tab_monitor_set_has_pressed_key (PromptTabMonitor *self,
+                                                          gboolean          has_pressed_key);
 
 G_END_DECLS
