@@ -493,7 +493,7 @@
     <section>
       <item>
         <attribute name="id">tab-overview</attribute>
-        <attribute name="label" translatable="yes">View Open Tabs</attribute>
+        <attribute name="label" translatable="yes">Show Open Tabs</attribute>
         <attribute name="action">win.tab-overview</attribute>
         <attribute name="hidden-when">action-disabled</attribute>
       </item>
