@@ -24,6 +24,7 @@
     <style>
       <class name="prompt-window"/>
     </style>
+    <property name="width-request">360</property>
     <child>
       <object class="GtkShortcutController">
         <property name="propagation-phase">capture</property>
