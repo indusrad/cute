@@ -367,6 +367,7 @@
                         </child>
                         <child>
                           <object class="GtkMenuButton" id="new_terminal_menu_button">
+                            <property name="tooltip-text" translatable="yes">Show Profiles and Containers</property>
                             <child>
                               <object class="GtkImage">
                                 <property name="icon-name">pan-down-symbolic</property>
