@@ -1,3 +1,21 @@
+Changes since 46.alpha
+
+ * Ignore exit action if tab spuriously exited after spawning
+ * Allow disabling the process leader window decoration
+ * Make VS Code palette switch between light/dark theme
+ * Make Horizon palette switch between light/dark theme
+ * Demote rxvt style from primary palette set
+ * Fallback to getent to discover user shell
+ * Use whoami instead of $USER as it might not be correct
+   when transitioning into a container
+ * Allow disabing F10 in the shortcut preferences
+ * The VTE patches have been simplified to make it easier
+   to apply on top of VTE master.
+ * Avoid restyling AdwDialog
+ * Use AdwAboutDialog
+ * Podman infrastructure containers are now ignored
+ * A new italian translation
+
 # Prompt 46.alpha
 
 Prompt is a new container oriented terminal.
