@@ -30,6 +30,7 @@
         <style>
           <class name="flat"/>
         </style>
+        <property name="tooltip-text" translatable="yes">View More</property>
         <property name="icon-name">view-more-symbolic</property>
         <property name="valign">center</property>
         <property name="menu-model">profile_menu</property>
