@@ -43,7 +43,7 @@ struct _PromptPreferencesWindow
   GtkFilterListModel   *filter_palettes;
   guint                 filter_show_more : 1;
 
-  GtkListBoxRow        *add_profile_row;
+  GtkButton            *add_profile_button;
   AdwSwitchRow         *audible_bell;
   AdwComboRow          *backspace_binding;
   AdwSwitchRow         *bold_is_bright;
@@ -894,7 +894,7 @@ prompt_preferences_window_class_init (PromptPreferencesWindowClass *klass)
 
   gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/Prompt/prompt-preferences-window.ui");
 
-  gtk_widget_class_bind_template_child (widget_class, PromptPreferencesWindow, add_profile_row);
+  gtk_widget_class_bind_template_child (widget_class, PromptPreferencesWindow, add_profile_button);
   gtk_widget_class_bind_template_child (widget_class, PromptPreferencesWindow, audible_bell);
   gtk_widget_class_bind_template_child (widget_class, PromptPreferencesWindow, backspace_binding);
   gtk_widget_class_bind_template_child (widget_class, PromptPreferencesWindow, bold_is_bright);

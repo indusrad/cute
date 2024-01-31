@@ -813,6 +813,21 @@
         <child>
           <object class="AdwPreferencesGroup">
             <property name="title" translatable="yes">Profiles</property>
+            <child type="header-suffix">
+              <object class="GtkButton" id="add_profile_button">
+                <property name="action-name">profile.add</property>
+                <child>
+                  <object class="AdwButtonContent">
+                    <property name="icon-name">list-add-symbolic</property>
+                    <property name="label" translatable="yes">_Add Profile</property>
+                    <property name="use-underline">True</property>
+                  </object>
+                </child>
+                <style>
+                  <class name="flat"/>
+                </style>
+              </object>
+            </child>
             <child>
               <object class="GtkListBox" id="profiles_list_box">
                 <style>
@@ -820,22 +835,6 @@
                 </style>
                 <property name="selection-mode">none</property>
                 <signal name="row-activated" handler="prompt_preferences_window_profile_row_activated_cb" swapped="1"/>
-              </object>
-            </child>
-          </object>
-        </child>
-        <child>
-          <object class="AdwPreferencesGroup">
-            <child>
-              <object class="AdwPreferencesRow" id="add_profile_row">
-                <property name="action-name">profile.add</property>
-                <child>
-                  <object class="GtkImage">
-                    <property name="icon-name">list-add-symbolic</property>
-                    <property name="margin-top">14</property>
-                    <property name="margin-bottom">14</property>
-                  </object>
-                </child>
               </object>
             </child>
           </object>
