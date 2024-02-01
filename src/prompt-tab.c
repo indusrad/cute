@@ -1341,6 +1341,53 @@ prompt_tab_raise (PromptTab *self)
     adw_tab_view_set_selected_page (tab_view, tab_page);
 }
 
+typedef struct _Wait
+{
+  GMainContext *context;
+  gboolean completed;
+  gboolean success;
+} Wait;
+
+static void
+prompt_tab_poll_agent_sync_cb (GObject      *object,
+                               GAsyncResult *result,
+                               gpointer      user_data)
+{
+  PromptTab *self = (PromptTab *)object;
+  Wait *wait = user_data;
+
+  g_assert (PROMPT_IS_TAB (self));
+  g_assert (G_IS_ASYNC_RESULT (result));
+  g_assert (wait != NULL);
+
+  wait->completed = TRUE;
+  wait->success = prompt_tab_poll_agent_finish (self, result, NULL);
+
+  g_main_context_wakeup (wait->context);
+}
+
+static gboolean
+prompt_tab_poll_agent (PromptTab *self)
+{
+  Wait wait;
+
+  g_return_val_if_fail (PROMPT_IS_TAB (self), FALSE);
+
+  wait.context = g_main_context_get_thread_default ();
+  wait.completed = FALSE;
+  wait.success = FALSE;
+
+  prompt_tab_poll_agent_async (self,
+                               NULL,
+                               prompt_tab_poll_agent_sync_cb,
+                               &wait);
+
+  while (!wait.completed)
+    g_main_context_iteration (wait.context, TRUE);
+
+  return wait.success;
+}
+
 /**
  * prompt_tab_is_running:
  * @self: a #PromptTab
@@ -1599,53 +1646,6 @@ prompt_tab_poll_agent_finish (PromptTab     *self,
   g_return_val_if_fail (G_IS_TASK (result), FALSE);
 
   return g_task_propagate_boolean (G_TASK (result), error);
-}
-
-typedef struct _Wait
-{
-  GMainContext *context;
-  gboolean completed;
-  gboolean success;
-} Wait;
-
-static void
-prompt_tab_poll_agent_sync_cb (GObject      *object,
-                               GAsyncResult *result,
-                               gpointer      user_data)
-{
-  PromptTab *self = (PromptTab *)object;
-  Wait *wait = user_data;
-
-  g_assert (PROMPT_IS_TAB (self));
-  g_assert (G_IS_ASYNC_RESULT (result));
-  g_assert (wait != NULL);
-
-  wait->completed = TRUE;
-  wait->success = prompt_tab_poll_agent_finish (self, result, NULL);
-
-  g_main_context_wakeup (wait->context);
-}
-
-gboolean
-prompt_tab_poll_agent (PromptTab *self)
-{
-  Wait wait;
-
-  g_return_val_if_fail (PROMPT_IS_TAB (self), FALSE);
-
-  wait.context = g_main_context_get_thread_default ();
-  wait.completed = FALSE;
-  wait.success = FALSE;
-
-  prompt_tab_poll_agent_async (self,
-                               NULL,
-                               prompt_tab_poll_agent_sync_cb,
-                               &wait);
-
-  while (!wait.completed)
-    g_main_context_iteration (wait.context, TRUE);
-
-  return wait.success;
 }
 
 gboolean

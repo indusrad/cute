@@ -100,7 +100,6 @@ void                prompt_tab_set_initial_title                  (PromptTab    
                                                                    const char           *initial_title);
 void                prompt_tab_set_initial_working_directory_uri  (PromptTab            *self,
                                                                    const char           *initial_working_directory_uri);
-gboolean            prompt_tab_poll_agent                         (PromptTab            *self);
 void                prompt_tab_poll_agent_async                   (PromptTab            *self,
                                                                    GCancellable         *cancellable,
                                                                    GAsyncReadyCallback   callback,
