@@ -118,6 +118,24 @@ prompt_tab_notify_shell_precmd_cb (PromptTerminal  *terminal,
     }
 }
 
+static void
+prompt_tab_notify_shell_preexec_poll_cb (GObject      *object,
+                                         GAsyncResult *result,
+                                         gpointer      user_data)
+{
+  PromptTab *tab = (PromptTab *)object;
+  PromptTabNotify *notify = user_data;
+
+  g_assert (PROMPT_IS_TAB (tab));
+  g_assert (G_IS_ASYNC_RESULT (result));
+  g_assert (notify != NULL);
+
+  prompt_tab_poll_agent_finish (tab, result, NULL);
+
+  g_set_str (&notify->current_cmdline,
+             prompt_tab_get_command_line (tab));
+}
+
 static inline void
 prompt_tab_notify_shell_preexec_cb (PromptTerminal  *terminal,
                                     PromptTabNotify *notify)
@@ -129,9 +147,17 @@ prompt_tab_notify_shell_preexec_cb (PromptTerminal  *terminal,
 
   notify->between_preexec_and_precmd = TRUE;
 
-  prompt_tab_is_running (notify->tab, &cmdline);
+  g_set_str (&notify->current_cmdline, NULL);
 
-  g_set_str (&notify->current_cmdline, cmdline);
+  /* We will poll the agent for the updated command line. If we get
+   * precmd back in before this completes, we will ignore showing
+   * any notification as it's so quick it shouldn't matter. We
+   * can pass a borrowed notify as it's owned by @tab.
+   */
+  prompt_tab_poll_agent_async (notify->tab,
+                               NULL,
+                               prompt_tab_notify_shell_preexec_poll_cb,
+                               notify);
 }
 
 static inline void
