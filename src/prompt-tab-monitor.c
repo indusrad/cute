@@ -75,6 +75,15 @@ prompt_tab_monitor_reset_delay (PromptTabMonitor *self)
 }
 
 static void
+prompt_tab_monitor_same_delay (PromptTabMonitor *self)
+{
+  g_assert (PROMPT_IS_TAB_MONITOR (self));
+
+  g_source_set_ready_time (self->update_source,
+                           prompt_tab_monitor_get_ready_time (self));
+}
+
+static void
 prompt_tab_monitor_backoff_delay (PromptTabMonitor *self)
 {
   g_assert (PROMPT_IS_TAB_MONITOR (self));
@@ -120,21 +129,17 @@ prompt_tab_monitor_update_source_func (gpointer user_data)
   if ((tab = g_weak_ref_get (&self->tab_wr)) &&
       (process = prompt_tab_get_process (tab)))
     {
-      /* Backoff if we're still asynchronously polling to avoid
-       * overloading the agent. We'll catch things next go around.
-       */
-      if (self->is_polling)
+      prompt_tab_monitor_same_delay (self);
+
+      if (!self->is_polling)
         {
-          prompt_tab_monitor_backoff_delay (self);
-          return G_SOURCE_CONTINUE;
+          self->is_polling = TRUE;
+
+          prompt_tab_poll_agent_async (tab,
+                                       NULL,
+                                       prompt_tab_monitor_poll_agent_cb,
+                                       g_object_ref (self));
         }
-
-      self->is_polling = TRUE;
-
-      prompt_tab_poll_agent_async (tab,
-                                   NULL,
-                                   prompt_tab_monitor_poll_agent_cb,
-                                   g_object_ref (self));
 
       return G_SOURCE_CONTINUE;
     }
