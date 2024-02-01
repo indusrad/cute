@@ -60,7 +60,7 @@ prompt_tab_monitor_get_ready_time (PromptTabMonitor *self)
   /* A second or more, we want to try to align things with
    * other tabs so we just wake up once and poll them all.
    */
-  return ((g_get_monotonic_time () / G_USEC_PER_SEC) + (self->current_delay_msec * 1000)) * G_USEC_PER_SEC;
+  return (g_get_monotonic_time () / G_USEC_PER_SEC * G_USEC_PER_SEC) + (self->current_delay_msec * 1000);
 }
 
 static void
