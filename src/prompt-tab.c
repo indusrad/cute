@@ -1454,53 +1454,37 @@ prompt_tab_set_container (PromptTab          *self,
   g_set_object (&self->container_at_creation, container);
 }
 
-gboolean
-prompt_tab_poll_agent (PromptTab *self)
+static void
+prompt_tab_poll_agent_cb (GObject      *object,
+                          GAsyncResult *result,
+                          gpointer      user_data)
 {
-  gboolean has_foreground_process;
-  g_autoptr(GUnixFDList) fd_list = NULL;
+  PromptIpcProcess *process = (PromptIpcProcess *)object;
+  g_autoptr(GTask) task = user_data;
   g_autofree char *the_cmdline = NULL;
   g_autofree char *the_leader_kind = NULL;
   PromptProcessLeaderKind leader_kind;
+  gboolean has_foreground_process;
   gboolean changed = FALSE;
-  VtePty *pty;
+  PromptTab *self;
   GPid the_pid;
-  int handle;
-  int pty_fd;
+
+  g_assert (PROMPT_IPC_IS_PROCESS (process));
+  g_assert (G_IS_ASYNC_RESULT (result));
+  g_assert (G_IS_TASK (task));
+
+  self = g_task_get_source_object (task);
 
   g_assert (PROMPT_IS_TAB (self));
 
-  if (self->process == NULL)
-    {
-      self->has_foreground_process = FALSE;
-      self->pid = -1;
-
-      if (g_set_str (&self->command_line, NULL))
-        g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_COMMAND_LINE]);
-
-      if (self->leader_kind != PROMPT_PROCESS_LEADER_KIND_UNKNOWN)
-        {
-          self->leader_kind = PROMPT_PROCESS_LEADER_KIND_UNKNOWN;
-          g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_PROCESS_LEADER_KIND]);
-        }
-
-      return FALSE;
-    }
-
-  pty = vte_terminal_get_pty (VTE_TERMINAL (self->terminal));
-  pty_fd = vte_pty_get_fd (pty);
-  fd_list = g_unix_fd_list_new ();
-  handle = g_unix_fd_list_append (fd_list, pty_fd, NULL);
-
-  if (!prompt_ipc_process_call_has_foreground_process_sync (self->process,
-                                                            g_variant_new_handle (handle),
-                                                            fd_list,
-                                                            &has_foreground_process,
-                                                            &the_pid,
-                                                            &the_cmdline,
-                                                            &the_leader_kind,
-                                                            NULL, NULL, NULL))
-    has_foreground_process = FALSE;
+  prompt_ipc_process_call_has_foreground_process_finish (process,
+                                                         &has_foreground_process,
+                                                         &the_pid,
+                                                         &the_cmdline,
+                                                         &the_leader_kind,
+                                                         NULL,
+                                                         result,
+                                                         NULL);
 
   if (self->pid != the_pid)
     {
@@ -1552,7 +1536,116 @@ prompt_tab_poll_agent (PromptTab *self)
   if (changed)
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_TITLE]);
 
-  return changed;
+  g_task_return_boolean (task, changed);
+}
+
+void
+prompt_tab_poll_agent_async (PromptTab           *self,
+                             GCancellable        *cancellable,
+                             GAsyncReadyCallback  callback,
+                             gpointer             user_data)
+{
+  g_autoptr(GUnixFDList) fd_list = NULL;
+  g_autoptr(GTask) task = NULL;
+  VtePty *pty;
+  int handle;
+  int pty_fd;
+
+  g_assert (PROMPT_IS_TAB (self));
+
+  task = g_task_new (self, cancellable, callback, user_data);
+  g_task_set_source_tag (task, prompt_tab_poll_agent_async);
+
+  if (self->process == NULL)
+    {
+      self->has_foreground_process = FALSE;
+      self->pid = -1;
+
+      if (g_set_str (&self->command_line, NULL))
+        g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_COMMAND_LINE]);
+
+      if (self->leader_kind != PROMPT_PROCESS_LEADER_KIND_UNKNOWN)
+        {
+          self->leader_kind = PROMPT_PROCESS_LEADER_KIND_UNKNOWN;
+          g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_PROCESS_LEADER_KIND]);
+        }
+
+      g_task_return_boolean (task, FALSE);
+
+      return;
+    }
+
+  pty = vte_terminal_get_pty (VTE_TERMINAL (self->terminal));
+  pty_fd = vte_pty_get_fd (pty);
+  fd_list = g_unix_fd_list_new ();
+  handle = g_unix_fd_list_append (fd_list, pty_fd, NULL);
+
+  prompt_ipc_process_call_has_foreground_process (self->process,
+                                                  g_variant_new_handle (handle),
+                                                  fd_list,
+                                                  cancellable,
+                                                  prompt_tab_poll_agent_cb,
+                                                  g_steal_pointer (&task));
+
+
+}
+
+gboolean
+prompt_tab_poll_agent_finish (PromptTab     *self,
+                              GAsyncResult  *result,
+                              GError       **error)
+{
+  g_return_val_if_fail (PROMPT_IS_TAB (self), FALSE);
+  g_return_val_if_fail (G_IS_TASK (result), FALSE);
+
+  return g_task_propagate_boolean (G_TASK (result), error);
+}
+
+typedef struct _Wait
+{
+  GMainContext *context;
+  gboolean completed;
+  gboolean success;
+} Wait;
+
+static void
+prompt_tab_poll_agent_sync_cb (GObject      *object,
+                               GAsyncResult *result,
+                               gpointer      user_data)
+{
+  PromptTab *self = (PromptTab *)object;
+  Wait *wait = user_data;
+
+  g_assert (PROMPT_IS_TAB (self));
+  g_assert (G_IS_ASYNC_RESULT (result));
+  g_assert (wait != NULL);
+
+  wait->completed = TRUE;
+  wait->success = prompt_tab_poll_agent_finish (self, result, NULL);
+
+  g_main_context_wakeup (wait->context);
+}
+
+gboolean
+prompt_tab_poll_agent (PromptTab *self)
+{
+  Wait wait;
+
+  g_return_val_if_fail (PROMPT_IS_TAB (self), FALSE);
+
+  wait.context = g_main_context_get_thread_default ();
+  wait.completed = FALSE;
+  wait.success = FALSE;
+
+  prompt_tab_poll_agent_async (self,
+                               NULL,
+                               prompt_tab_poll_agent_sync_cb,
+                               &wait);
+
+  while (!wait.completed)
+    g_main_context_iteration (wait.context, TRUE);
+
+  return wait.success;
 }
 
 gboolean
