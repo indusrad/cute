@@ -35,6 +35,7 @@ struct _PromptTabMonitor
   GSource  *update_source;
   int       current_delay_msec;
   guint     has_pressed_key : 1;
+  guint     is_polling : 1;
 };
 
 enum {
@@ -84,6 +85,29 @@ prompt_tab_monitor_backoff_delay (PromptTabMonitor *self)
                            prompt_tab_monitor_get_ready_time (self));
 }
 
+static void
+prompt_tab_monitor_poll_agent_cb (GObject      *object,
+                                  GAsyncResult *result,
+                                  gpointer      user_data)
+{
+  PromptTab *tab = (PromptTab *)object;
+  g_autoptr(PromptTabMonitor) self = user_data;
+
+  g_assert (PROMPT_IS_TAB (tab));
+  g_assert (G_IS_ASYNC_RESULT (result));
+  g_assert (PROMPT_IS_TAB_MONITOR (self));
+
+  self->is_polling = FALSE;
+
+  if (self->update_source == NULL)
+    return;
+
+  if (prompt_tab_poll_agent_finish (tab, result, NULL))
+    prompt_tab_monitor_reset_delay (self);
+  else
+    prompt_tab_monitor_backoff_delay (self);
+}
+
 static gboolean
 prompt_tab_monitor_update_source_func (gpointer user_data)
 {
@@ -96,10 +120,21 @@ prompt_tab_monitor_update_source_func (gpointer user_data)
   if ((tab = g_weak_ref_get (&self->tab_wr)) &&
       (process = prompt_tab_get_process (tab)))
     {
-      if (prompt_tab_poll_agent (tab))
-        prompt_tab_monitor_reset_delay (self);
-      else
-        prompt_tab_monitor_backoff_delay (self);
+      /* Backoff if we're still asynchronously polling to avoid
+       * overloading the agent. We'll catch things next go around.
+       */
+      if (self->is_polling)
+        {
+          prompt_tab_monitor_backoff_delay (self);
+          return G_SOURCE_CONTINUE;
+        }
+
+      self->is_polling = TRUE;
+
+      prompt_tab_poll_agent_async (tab,
+                                   NULL,
+                                   prompt_tab_monitor_poll_agent_cb,
+                                   g_object_ref (self));
 
       return G_SOURCE_CONTINUE;
     }
