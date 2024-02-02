@@ -24,11 +24,11 @@
 #include <math.h>
 
 #include <glib/gi18n.h>
+#include <gtk/gtk.h>
 
 #include "gdkhslaprivate.h"
 
 #include "prompt-palette.h"
-#include "prompt-palettes-inline.h"
 #include "prompt-preferences-list-item.h"
 #include "prompt-user-palettes.h"
 
