@@ -169,45 +169,22 @@ prompt_window_dressing_update (PromptWindowDressing *self)
 
       visual_process_leader = prompt_settings_get_visual_process_leader (settings);
 
-      if (rgba_is_dark (&face->background))
+      g_string_append_printf (string,
+                              "window.%s .window-contents > revealer > windowhandle { color: %s; background-color: %s; }\n",
+                              self->css_class, titlebar_fg, titlebar_bg);
+
+      if (visual_process_leader)
         {
           g_string_append_printf (string,
-                                  "window.%s .window-contents > revealer > windowhandle { color: %s; background-color: %s; }\n",
-                                  self->css_class, titlebar_fg, titlebar_bg);
-
-          if (visual_process_leader)
-            {
-              g_string_append_printf (string,
-                                      "window.%s.remote .window-contents headerbar { background-color: %s; color: %s; }\n"
-                                      "window.%s.remote .window-contents toolbarview > revealer > windowhandle { background-color: %s; color: %s; }\n",
-                                      self->css_class, rm_bg, rm_fg,
-                                      self->css_class, rm_bg, rm_fg);
-              g_string_append_printf (string,
-                                      "window.%s.superuser .window-contents headerbar { background-color: %s; color: %s; }\n"
-                                      "window.%s.superuser .window-contents toolbarview > revealer > windowhandle { background-color: %s; color: %s; }\n",
-                                      self->css_class, su_bg, su_fg,
-                                      self->css_class, su_bg, su_fg);
-            }
-        }
-      else
-        {
+                                  "window.%s.remote .window-contents headerbar { background-color: %s; color: %s; }\n"
+                                  "window.%s.remote .window-contents toolbarview > revealer > windowhandle { background-color: %s; color: %s; }\n",
+                                  self->css_class, rm_bg, rm_fg,
+                                  self->css_class, rm_bg, rm_fg);
           g_string_append_printf (string,
-                                  "window.%s .window-contents > revealer > windowhandle { color: %s; background-color: %s; }\n",
-                                  self->css_class, titlebar_fg, titlebar_bg);
-
-          if (visual_process_leader)
-            {
-              g_string_append_printf (string,
-                                      "window.%s.remote .window-contents headerbar { background-color: %s; color: %s; }\n"
-                                      "window.%s.remote .window-contents > revealer > windowhandle { background-color: %s; color: %s; }\n",
-                                      self->css_class, rm_bg, rm_fg,
-                                      self->css_class, rm_bg, rm_fg);
-              g_string_append_printf (string,
-                                      "window.%s.superuser .window-contents headerbar { background-color: %s; color: %s; }\n"
-                                      "window.%s.superuser .window-contents > revealer > windowhandle { background-color: %s; color: %s; }\n",
-                                      self->css_class, su_bg, su_fg,
-                                      self->css_class, su_bg, su_fg);
-            }
+                                  "window.%s.superuser .window-contents headerbar { background-color: %s; color: %s; }\n"
+                                  "window.%s.superuser .window-contents toolbarview > revealer > windowhandle { background-color: %s; color: %s; }\n",
+                                  self->css_class, su_bg, su_fg,
+                                  self->css_class, su_bg, su_fg);
         }
 
 #if DEVELOPMENT_BUILD
