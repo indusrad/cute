@@ -253,6 +253,8 @@ prompt_agent_pty_new (GError **error)
     }
 #endif
 
+  g_unix_set_fd_nonblocking (pty_fd, TRUE, NULL);
+
   return pty_fd;
 }
 
