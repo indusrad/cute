@@ -244,7 +244,7 @@ prompt_agent_impl_handle_list_containers (PromptIpcAgent        *agent,
 
   prompt_ipc_agent_complete_list_containers (agent,
                                              g_steal_pointer (&invocation),
-                                             (const char * const *)strv->data);
+                                             (const char * const *)(gpointer)strv->data);
 
   self->has_listed_containers = TRUE;
 
@@ -324,7 +324,6 @@ static gboolean
 prompt_agent_impl_handle_get_preferred_shell (PromptIpcAgent        *agent,
                                               GDBusMethodInvocation *invocation)
 {
-  g_autoptr(GError) error = NULL;
   const char *default_shell = "/bin/sh";
   struct passwd *pw;
 

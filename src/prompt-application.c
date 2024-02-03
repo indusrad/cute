@@ -524,7 +524,6 @@ prompt_application_startup (GApplication *application)
 {
   static const char *patterns[] = { "org.gnome.*", NULL };
   PromptApplication *self = (PromptApplication *)application;
-  g_autoptr(PromptIpcContainer) host = NULL;
   g_autoptr(GtkFilterListModel) filter_model = NULL;
   g_autoptr(GtkCustomFilter) filter = NULL;
   g_autoptr(GFile) session_file = get_session_file ();
@@ -1246,7 +1245,6 @@ prompt_application_check_shell_cb (GObject      *object,
 {
   PromptIpcContainer *container = (PromptIpcContainer *)object;
   g_autofree char *default_shell_path = NULL;
-  g_autoptr(GError) error = NULL;
   g_autoptr(GTask) task = user_data;
   PromptApplication *self;
   Spawn *spawn;
@@ -1293,7 +1291,6 @@ prompt_application_get_preferred_shell_cb (GObject      *object,
   PromptClient *client = (PromptClient *)object;
   g_autofree char *default_shell = NULL;
   g_autofree char *default_shell_base = NULL;
-  g_autoptr(GError) error = NULL;
   g_autoptr(GTask) task = user_data;
   PromptApplication *self;
   Spawn *spawn;

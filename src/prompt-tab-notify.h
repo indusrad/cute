@@ -140,8 +140,6 @@ static inline void
 prompt_tab_notify_shell_preexec_cb (PromptTerminal  *terminal,
                                     PromptTabNotify *notify)
 {
-  g_autofree char *cmdline = NULL;
-
   g_assert (PROMPT_IS_TERMINAL (terminal));
   g_assert (PROMPT_IS_TAB (notify->tab));
 

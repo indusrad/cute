@@ -290,7 +290,19 @@ prompt_client_new (GError **error)
   g_ptr_array_add (argv, g_strdup ("--socket-fd=3"));
   g_ptr_array_add (argv, NULL);
 
+#if defined(SOCK_NONBLOCK) && defined(SOCK_CLOEXEC)
   res = socketpair (AF_UNIX, SOCK_STREAM|SOCK_NONBLOCK|SOCK_CLOEXEC, 0, pair);
+#else
+  res = socketpair (AF_UNIX, SOCK_STREAM, 0, pair);
+
+  if (res == 0)
+    {
+      fcntl (pair[0], F_SETFD, FD_CLOEXEC);
+      fcntl (pair[1], F_SETFD, FD_CLOEXEC);
+      g_unix_set_fd_nonblocking (pair[0], TRUE, NULL);
+      g_unix_set_fd_nonblocking (pair[1], TRUE, NULL);
+    }
+#endif
 
   if (res != 0)
     {

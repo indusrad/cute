@@ -136,7 +136,6 @@ _prompt_close_dialog_new (GtkWindow *parent,
   for (guint i = 0; i < tabs->len; i++)
     {
       PromptTab *tab = g_ptr_array_index (tabs, i);
-      g_autofree char *truncated = NULL;
       g_autofree char *cmdline = NULL;
       g_autofree char *title = NULL;
       g_autofree char *subtitle = NULL;
@@ -146,8 +145,6 @@ _prompt_close_dialog_new (GtkWindow *parent,
 
       if (prompt_tab_has_foreground_process (tab, &pid, &cmdline))
         {
-          g_autoptr(GString) subtitle_gstr = g_string_new (NULL);
-
           g_utf8_make_valid (cmdline, -1);
           title = g_steal_pointer (&cmdline);
           subtitle = g_strdup_printf (_("Process %d"), pid);

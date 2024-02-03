@@ -412,7 +412,6 @@ prompt_podman_container_handle_spawn (PromptIpcContainer    *container,
 {
   PromptPodmanContainer *self = (PromptPodmanContainer *)container;
   g_autoptr(PromptRunContext) run_context = NULL;
-  g_autoptr(GError) error = NULL;
 
   g_assert (PROMPT_IS_PODMAN_CONTAINER (self));
   g_assert (G_IS_DBUS_METHOD_INVOCATION (invocation));
@@ -540,8 +539,6 @@ prompt_podman_container_handle_find_program_in_path (PromptIpcContainer    *cont
                                                      const char            *program)
 {
   FindContainerInPath *state;
-
-  g_autoptr(GError) error = NULL;
   const char *id;
 
   g_assert (PROMPT_IS_PODMAN_CONTAINER (container));

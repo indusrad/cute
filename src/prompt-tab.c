@@ -23,8 +23,10 @@
 
 #include <glib/gi18n.h>
 
-#include <libportal/portal.h>
-#include <libportal-gtk4/portal-gtk4.h>
+#ifdef __linux__
+# include <libportal/portal.h>
+# include <libportal-gtk4/portal-gtk4.h>
+#endif
 
 #include "prompt-agent-ipc.h"
 #include "prompt-application.h"
@@ -104,9 +106,12 @@ static void prompt_tab_respawn (PromptTab *self);
 
 G_DEFINE_FINAL_TYPE (PromptTab, prompt_tab, GTK_TYPE_WIDGET)
 
+#ifdef __linux__
+static XdpPortal *portal;
+#endif
+
 static GParamSpec *properties[N_PROPS];
 static guint signals[N_SIGNALS];
-static XdpPortal *portal;
 static double zoom_font_scales[] = {
   0,
   1.0 / (1.2 * 1.2 * 1.2 * 1.2 * 1.2 * 1.2 * 1.2),
@@ -1699,6 +1704,7 @@ prompt_tab_get_command_line (PromptTab *self)
   return self->command_line;
 }
 
+#ifdef __linux__
 static void
 prompt_tab_toast (PromptTab  *self,
                   int         timeout,
@@ -1798,3 +1804,13 @@ prompt_tab_open_uri (PromptTab  *self,
                        g_object_ref (self));
   xdp_parent_free (parent);
 }
+#else
+void
+prompt_tab_open_uri (PromptTab  *self,
+                     const char *uri)
+{
+  G_GNUC_BEGIN_IGNORE_DEPRECATIONS
+  gtk_show_uri (GTK_WINDOW (gtk_widget_get_root (GTK_WIDGET (self))), uri, 0);
+  G_GNUC_END_IGNORE_DEPRECATIONS
+}
+#endif
