@@ -303,7 +303,7 @@ prompt_application_command_line (GApplication            *app,
           PromptWindow *window = get_current_window (self);
           PromptTab *tab;
 
-          if (window == NULL)
+          if (window == NULL || new_window)
             window = prompt_window_new_empty ();
           tab = prompt_window_add_tab_for_command (window, profile, (const char * const *)argv, cwd_uri);
           prompt_tab_set_initial_working_directory_uri (tab, cwd_uri);
@@ -331,6 +331,36 @@ prompt_application_command_line (GApplication            *app,
         }
 
     }
+  else if (g_variant_dict_contains (dict, "tab"))
+    {
+      g_autoptr(PromptProfile) profile = prompt_application_dup_default_profile (self);
+      PromptWindow *window = get_current_window (self);
+      PromptTab *tab = prompt_tab_new (profile);
+
+      if (window == NULL || new_window)
+        window = prompt_window_new_empty ();
+
+      prompt_tab_set_initial_working_directory_uri (tab, cwd_uri);
+
+      prompt_window_add_tab (window, tab);
+      prompt_window_set_active_tab (window, tab);
+      gtk_window_present (GTK_WINDOW (window));
+    }
+  else if (new_tab_with_profile)
+    {
+      g_autoptr(PromptProfile) profile = prompt_application_dup_profile (self, new_tab_with_profile);
+      PromptWindow *window = get_current_window (self);
+      PromptTab *tab = prompt_tab_new (profile);
+
+      if (window == NULL || new_window)
+        window = prompt_window_new_empty ();
+
+      prompt_tab_set_initial_working_directory_uri (tab, cwd_uri);
+
+      prompt_window_add_tab (window, tab);
+      prompt_window_set_active_tab (window, tab);
+      gtk_window_present (GTK_WINDOW (window));
+    }
   else if (g_variant_dict_contains (dict, "new-window"))
     {
       g_autoptr(PromptProfile) profile = prompt_application_dup_default_profile (self);
@@ -355,36 +385,6 @@ prompt_application_command_line (GApplication            *app,
       prompt_window_add_tab (window, tab);
       prompt_window_set_active_tab (window, tab);
 
-      gtk_window_present (GTK_WINDOW (window));
-    }
-  else if (g_variant_dict_contains (dict, "tab"))
-    {
-      g_autoptr(PromptProfile) profile = prompt_application_dup_default_profile (self);
-      PromptWindow *window = get_current_window (self);
-      PromptTab *tab = prompt_tab_new (profile);
-
-      if (window == NULL)
-        window = prompt_window_new_empty ();
-
-      prompt_tab_set_initial_working_directory_uri (tab, cwd_uri);
-
-      prompt_window_add_tab (window, tab);
-      prompt_window_set_active_tab (window, tab);
-      gtk_window_present (GTK_WINDOW (window));
-    }
-  else if (new_tab_with_profile)
-    {
-      g_autoptr(PromptProfile) profile = prompt_application_dup_profile (self, new_tab_with_profile);
-      PromptWindow *window = get_current_window (self);
-      PromptTab *tab = prompt_tab_new (profile);
-
-      if (window == NULL)
-        window = prompt_window_new_empty ();
-
-      prompt_tab_set_initial_working_directory_uri (tab, cwd_uri);
-
-      prompt_window_add_tab (window, tab);
-      prompt_window_set_active_tab (window, tab);
       gtk_window_present (GTK_WINDOW (window));
     }
   else
