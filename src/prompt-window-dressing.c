@@ -265,7 +265,7 @@ prompt_window_dressing_constructed (GObject *object)
 
   gtk_style_context_add_provider_for_display (gdk_display_get_default (),
                                               GTK_STYLE_PROVIDER (self->css_provider),
-                                              GTK_STYLE_PROVIDER_PRIORITY_APPLICATION+1);
+                                              G_MAXINT);
 
   g_signal_connect_object (style_manager,
                            "notify::dark",
