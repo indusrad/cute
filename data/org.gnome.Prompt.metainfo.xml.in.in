@@ -20,8 +20,8 @@
       <li>Integrated color palettes with light and dark support</li>
       <li>Tabbed interface with tab overviews</li>
       <li>Efficient foreground process tracking denoting sudo and SSH</li>
-      <li>Support for tansparent terminal backgrounds</li>
-      <li>Seperate process mode for terminal-based applications</li>
+      <li>Support for transparent terminal backgrounds</li>
+      <li>Separate process mode for terminal-based applications</li>
       <li>Support for pinned tabs and saved sessions</li>
       <li>Terminal tabs are run within separate cgroups</li>
       <li>Terminal inspector to help when writing terminal-based applications</li>
