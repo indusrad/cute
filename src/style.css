@@ -1,3 +1,15 @@
+/* This helps keep the overlay scrollbar away from the border a bit
+ * as far as damage areas are concerned. It doesn't actually move the
+ * slider at all. Doing so increases the chance that fractional scaling
+ * will not result in the damage overlapping a border pixel cascading
+ * into an alpha blend by the compositor.
+ *
+ * Remove this if/when libadwaita does the same.
+ */
+scrollbar.overlay-indicator.vertical range.vertical trough slider {
+  outline-width: 0;
+}
+
 vte-terminal {
   margin-left: 9px;
   margin-right: 9px;
