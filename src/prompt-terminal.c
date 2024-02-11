@@ -1005,11 +1005,22 @@ prompt_terminal_snapshot (GtkWidget   *widget,
                           GtkSnapshot *snapshot)
 {
   PromptTerminal *self = PROMPT_TERMINAL (widget);
+  GtkBorder padding;
 
   g_assert (PROMPT_IS_TERMINAL (self));
   g_assert (GTK_IS_SNAPSHOT (snapshot));
 
+  G_GNUC_BEGIN_IGNORE_DEPRECATIONS
+  gtk_style_context_get_padding (gtk_widget_get_style_context (widget), &padding);
+  G_GNUC_END_IGNORE_DEPRECATIONS
+
+  gtk_snapshot_push_clip (snapshot,
+                          &GRAPHENE_RECT_INIT (0,
+                                               -padding.top,
+                                               gtk_widget_get_width (widget),
+                                               padding.top + gtk_widget_get_height (widget) + padding.bottom));
   prompt_terminal_rewrite_snapshot (widget, snapshot);
+  gtk_snapshot_pop (snapshot);
 
   gtk_widget_snapshot_child (widget, GTK_WIDGET (self->size_revealer), snapshot);
   gtk_widget_snapshot_child (widget, GTK_WIDGET (self->drop_highlight), snapshot);
