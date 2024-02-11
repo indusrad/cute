@@ -5,6 +5,8 @@
  * into an alpha blend by the compositor.
  *
  * Remove this if/when libadwaita does the same.
+ *
+ * See GNOME/libadwaita#800
  */
 scrollbar.overlay-indicator.vertical range.vertical trough slider {
   outline-width: 0;
