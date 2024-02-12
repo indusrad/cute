@@ -67,6 +67,9 @@ static void prompt_application_help_overlay      (GSimpleAction *action,
 static void prompt_application_new_window_action (GSimpleAction *action,
                                                   GVariant      *param,
                                                   gpointer       user_data);
+static void prompt_application_new_tab_action    (GSimpleAction *action,
+                                                  GVariant      *param,
+                                                  gpointer       user_data);
 static void prompt_application_preferences       (GSimpleAction *action,
                                                   GVariant      *param,
                                                   gpointer       user_data);
@@ -81,6 +84,7 @@ static GActionEntry action_entries[] = {
   { "preferences", prompt_application_preferences },
   { "focus-tab-by-uuid", prompt_application_focus_tab_by_uuid, "s" },
   { "new-window", prompt_application_new_window_action },
+  { "new-tab", prompt_application_new_tab_action },
 };
 
 G_DEFINE_FINAL_TYPE (PromptApplication, prompt_application, ADW_TYPE_APPLICATION)
@@ -932,6 +936,33 @@ prompt_application_new_window_action (GSimpleAction *action,
 
   window = prompt_window_new ();
   gtk_application_add_window (GTK_APPLICATION (self), GTK_WINDOW (window));
+  gtk_window_present (GTK_WINDOW (window));
+}
+
+static void
+prompt_application_new_tab_action (GSimpleAction *action,
+                                   GVariant      *param,
+                                   gpointer       user_data)
+{
+  PromptApplication *self = user_data;
+  g_autoptr(PromptProfile) profile = NULL;
+  PromptWindow *window;
+  PromptTab *tab;
+
+  g_assert (!action || G_IS_SIMPLE_ACTION (action));
+  g_assert (PROMPT_IS_APPLICATION (self));
+
+  window = get_current_window (self);
+
+  if (window == NULL)
+    window = prompt_window_new_empty ();
+
+  profile = prompt_application_dup_default_profile (self);
+  tab = prompt_tab_new (profile);
+
+  prompt_window_add_tab (window, tab);
+  prompt_window_set_active_tab (window, tab);
+
   gtk_window_present (GTK_WINDOW (window));
 }
 
