@@ -1,0 +1,1660 @@
+/* ptyxis-application.c
+ *
+ * Copyright 2023 Christian Hergert
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
+#include "config.h"
+
+#include <glib/gi18n.h>
+
+#include <sys/wait.h>
+
+#include "ptyxis-action-group.h"
+#include "ptyxis-application.h"
+#include "ptyxis-client.h"
+#include "ptyxis-container-menu.h"
+#include "ptyxis-preferences-window.h"
+#include "ptyxis-profile-menu.h"
+#include "ptyxis-session.h"
+#include "ptyxis-settings.h"
+#include "ptyxis-util.h"
+#include "ptyxis-window.h"
+
+#define PORTAL_BUS_NAME "org.freedesktop.portal.Desktop"
+#define PORTAL_OBJECT_PATH "/org/freedesktop/portal/desktop"
+#define PORTAL_SETTINGS_INTERFACE "org.freedesktop.portal.Settings"
+
+struct _PtyxisApplication
+{
+  AdwApplication       parent_instance;
+  GListStore          *profiles;
+  PtyxisSettings      *settings;
+  PtyxisShortcuts     *shortcuts;
+  PtyxisContainerMenu *container_menu;
+  PtyxisProfileMenu   *profile_menu;
+  char                *system_font_name;
+  GDBusProxy          *portal;
+  PtyxisClient        *client;
+  GVariant            *session;
+  guint                has_restored_session : 1;
+  guint                overlay_scrollbars : 1;
+};
+
+static void ptyxis_application_about             (GSimpleAction *action,
+                                                  GVariant      *param,
+                                                  gpointer       user_data);
+static void ptyxis_application_edit_profile      (GSimpleAction *action,
+                                                  GVariant      *param,
+                                                  gpointer       user_data);
+static void ptyxis_application_help_overlay      (GSimpleAction *action,
+                                                  GVariant      *param,
+                                                  gpointer       user_data);
+static void ptyxis_application_new_window_action (GSimpleAction *action,
+                                                  GVariant      *param,
+                                                  gpointer       user_data);
+static void ptyxis_application_new_tab_action    (GSimpleAction *action,
+                                                  GVariant      *param,
+                                                  gpointer       user_data);
+static void ptyxis_application_preferences       (GSimpleAction *action,
+                                                  GVariant      *param,
+                                                  gpointer       user_data);
+static void ptyxis_application_focus_tab_by_uuid (GSimpleAction *action,
+                                                  GVariant      *param,
+                                                  gpointer       user_data);
+
+static GActionEntry action_entries[] = {
+  { "about", ptyxis_application_about },
+  { "edit-profile", ptyxis_application_edit_profile, "s" },
+  { "help-overlay", ptyxis_application_help_overlay },
+  { "preferences", ptyxis_application_preferences },
+  { "focus-tab-by-uuid", ptyxis_application_focus_tab_by_uuid, "s" },
+  { "new-window", ptyxis_application_new_window_action },
+  { "new-tab", ptyxis_application_new_tab_action },
+};
+
+G_DEFINE_FINAL_TYPE (PtyxisApplication, ptyxis_application, ADW_TYPE_APPLICATION)
+
+enum {
+  PROP_0,
+  PROP_DEFAULT_PROFILE,
+  PROP_OS_NAME,
+  PROP_OVERLAY_SCROLLBARS,
+  PROP_SYSTEM_FONT_NAME,
+  N_PROPS
+};
+
+static GParamSpec *properties[N_PROPS];
+
+PtyxisApplication *
+ptyxis_application_new (const char        *application_id,
+                        GApplicationFlags  flags)
+{
+  g_return_val_if_fail (application_id != NULL, NULL);
+
+  return g_object_new (PTYXIS_TYPE_APPLICATION,
+                       "application-id", application_id,
+                       "flags", flags,
+                       NULL);
+}
+
+static inline GFile *
+get_session_file (void)
+{
+  return g_file_new_build_filename (g_get_user_config_dir (),
+                                    APP_ID,
+                                    "session.gvariant",
+                                    NULL);
+}
+
+static gboolean
+is_standalone (PtyxisApplication *self)
+{
+  return !!(g_application_get_flags (G_APPLICATION (self)) & G_APPLICATION_NON_UNIQUE);
+}
+
+static gboolean
+ptyxis_application_restore (PtyxisApplication *self)
+{
+  g_assert (PTYXIS_IS_APPLICATION (self));
+
+  if (self->has_restored_session)
+    return FALSE;
+
+  if (self->session == NULL)
+    return FALSE;
+
+  self->has_restored_session = TRUE;
+
+  return ptyxis_session_restore (self, self->session);
+}
+
+static void
+ptyxis_application_activate (GApplication *app)
+{
+  PtyxisApplication *self = (PtyxisApplication *)app;
+
+  g_assert (PTYXIS_IS_APPLICATION (self));
+  g_assert (PTYXIS_IS_CLIENT (self->client));
+
+  for (const GList *windows = gtk_application_get_windows (GTK_APPLICATION (app));
+       windows != NULL;
+       windows = windows->next)
+    {
+      if (PTYXIS_IS_WINDOW (windows->data))
+        {
+          gtk_window_present (windows->data);
+          return;
+        }
+    }
+
+  if (!ptyxis_application_restore (self))
+    {
+      PtyxisWindow *window = ptyxis_window_new ();
+      gtk_window_present (GTK_WINDOW (window));
+    }
+}
+
+static PtyxisWindow *
+get_current_window (PtyxisApplication *self)
+{
+  GtkWindow *active_window;
+
+  g_assert (PTYXIS_IS_APPLICATION (self));
+
+  if ((active_window = gtk_application_get_active_window (GTK_APPLICATION (self))) &&
+      PTYXIS_IS_WINDOW (active_window))
+    return PTYXIS_WINDOW (active_window);
+
+  for (const GList *iter = gtk_application_get_windows (GTK_APPLICATION (self));
+       iter != NULL;
+       iter = iter->next)
+    {
+      if (PTYXIS_IS_WINDOW (iter->data))
+        return PTYXIS_WINDOW (iter->data);
+    }
+
+  return NULL;
+}
+
+static int
+ptyxis_application_command_line (GApplication            *app,
+                                 GApplicationCommandLine *cmdline)
+{
+  PtyxisApplication *self = (PtyxisApplication *)app;
+  g_autofree char *new_tab_with_profile = NULL;
+  g_autofree char *working_directory = NULL;
+  g_autofree char *command = NULL;
+  g_autofree char *cwd_uri = NULL;
+  g_auto(GStrv) argv = NULL;
+  GVariantDict *dict;
+  const char *cwd;
+  gboolean new_tab = FALSE;
+  gboolean new_window = FALSE;
+  gboolean did_restore = FALSE;
+  int argc;
+
+  g_assert (PTYXIS_IS_APPLICATION (self));
+  g_assert (G_IS_APPLICATION_COMMAND_LINE (cmdline));
+
+  /* NOTE: This looks complex, because it is.
+   *
+   * The primary idea is that we want to allow all of --tab, --new-window,
+   * --tab-with-profile to work with --working-dir and -x/--. But additionally
+   * it needs to do the right thing in the case we're running in
+   * single-instance-mode (such as for Terminal=true .desktop file) as well as
+   * guessing that the user wants things in the previous session (if --tab,
+   * --tab-with-profile, or --new-window is specified).
+   */
+
+  cwd = g_application_command_line_get_cwd (cmdline);
+  dict = g_application_command_line_get_options_dict (cmdline);
+  argv = g_application_command_line_get_arguments (cmdline, &argc);
+
+  if (!g_variant_dict_lookup (dict, "tab", "b", &new_tab))
+    new_tab = FALSE;
+
+  if (!g_variant_dict_lookup (dict, "tab-with-profile", "s", &new_tab_with_profile))
+    new_tab_with_profile = NULL;
+
+  if (!g_variant_dict_lookup (dict, "new-window", "b", &new_window))
+    new_window = FALSE;
+
+  if (new_tab && new_window)
+    {
+      g_application_command_line_printerr (cmdline,
+                                           "%s\n",
+                                           _("--tab, --tab-with-profile, or --new-window may not be used together"));
+      return EXIT_FAILURE;
+    }
+
+  if (!g_variant_dict_lookup (dict, "working-directory", "^ay", &working_directory))
+    working_directory = NULL;
+
+  if (working_directory == NULL)
+    working_directory = g_strdup (cwd);
+
+  if (working_directory != NULL)
+    {
+      if (g_uri_peek_scheme (working_directory) != NULL)
+        cwd_uri = g_strdup (working_directory);
+      else if (!g_path_is_absolute (working_directory))
+        {
+          const char *base = ptyxis_str_empty0 (cwd) ? g_get_home_dir () : cwd;
+          g_autofree char *path = g_build_filename (base, working_directory, NULL);
+          g_autoptr(GFile) canonicalize = g_file_new_for_path (path);
+
+          if (canonicalize != NULL)
+            cwd_uri = g_file_get_uri (canonicalize);
+        }
+      else
+        cwd_uri = g_strdup_printf ("file://%s", working_directory);
+    }
+
+  /* First restore our session state so it won't be lost when closing the
+   * application down. No matter what the options, if we're not single instance
+   * mode then we need to restore state.
+   */
+  if (!is_standalone (self))
+    did_restore = ptyxis_application_restore (self);
+
+  if (g_variant_dict_contains (dict, "preferences"))
+    {
+      g_action_group_activate_action (G_ACTION_GROUP (self), "preferences", NULL);
+    }
+  else if (g_variant_dict_contains (dict, "execute") &&
+           g_variant_dict_lookup (dict, "execute", "s", &command))
+    {
+      g_autoptr(GError) error = NULL;
+
+      if (!g_shell_parse_argv (command, &argc, &argv, &error))
+        {
+          g_application_command_line_printerr (cmdline,
+                                               _("Cannot parse command: %s"),
+                                               error->message);
+          return EXIT_FAILURE;
+        }
+
+      if (new_tab)
+        {
+          PtyxisWindow *window = get_current_window (self);
+          PtyxisTab *tab;
+
+          if (window == NULL)
+            window = ptyxis_window_new_empty ();
+          tab = ptyxis_window_add_tab_for_command (window, NULL, (const char * const *)argv, cwd_uri);
+          ptyxis_tab_set_initial_working_directory_uri (tab, cwd_uri);
+          ptyxis_window_set_active_tab (window, tab);
+          gtk_window_present (GTK_WINDOW (window));
+        }
+      else if (new_tab_with_profile)
+        {
+          g_autoptr(PtyxisProfile) profile = ptyxis_application_dup_profile (self, new_tab_with_profile);
+          PtyxisWindow *window = get_current_window (self);
+          PtyxisTab *tab;
+
+          if (window == NULL || new_window)
+            window = ptyxis_window_new_empty ();
+          tab = ptyxis_window_add_tab_for_command (window, profile, (const char * const *)argv, cwd_uri);
+          ptyxis_tab_set_initial_working_directory_uri (tab, cwd_uri);
+          ptyxis_window_set_active_tab (window, tab);
+          gtk_window_present (GTK_WINDOW (window));
+        }
+      else if (new_window)
+        {
+          PtyxisWindow *window;
+          PtyxisTab *tab;
+
+          window = ptyxis_window_new_empty ();
+          tab = ptyxis_window_add_tab_for_command (window, NULL, (const char * const *)argv, cwd_uri);
+          ptyxis_tab_set_initial_working_directory_uri (tab, cwd_uri);
+          ptyxis_window_set_active_tab (window, tab);
+          gtk_window_present (GTK_WINDOW (window));
+        }
+      else
+        {
+          PtyxisWindow *window;
+
+          window = ptyxis_window_new_for_command (NULL, (const char * const *)argv, cwd_uri);
+          gtk_application_add_window (GTK_APPLICATION (self), GTK_WINDOW (window));
+          gtk_window_present (GTK_WINDOW (window));
+        }
+
+    }
+  else if (g_variant_dict_contains (dict, "tab"))
+    {
+      g_autoptr(PtyxisProfile) profile = ptyxis_application_dup_default_profile (self);
+      PtyxisWindow *window = get_current_window (self);
+      PtyxisTab *tab = ptyxis_tab_new (profile);
+
+      if (window == NULL || new_window)
+        window = ptyxis_window_new_empty ();
+
+      ptyxis_tab_set_initial_working_directory_uri (tab, cwd_uri);
+
+      ptyxis_window_add_tab (window, tab);
+      ptyxis_window_set_active_tab (window, tab);
+      gtk_window_present (GTK_WINDOW (window));
+    }
+  else if (new_tab_with_profile)
+    {
+      g_autoptr(PtyxisProfile) profile = ptyxis_application_dup_profile (self, new_tab_with_profile);
+      PtyxisWindow *window = get_current_window (self);
+      PtyxisTab *tab = ptyxis_tab_new (profile);
+
+      if (window == NULL || new_window)
+        window = ptyxis_window_new_empty ();
+
+      ptyxis_tab_set_initial_working_directory_uri (tab, cwd_uri);
+
+      ptyxis_window_add_tab (window, tab);
+      ptyxis_window_set_active_tab (window, tab);
+      gtk_window_present (GTK_WINDOW (window));
+    }
+  else if (g_variant_dict_contains (dict, "new-window"))
+    {
+      g_autoptr(PtyxisProfile) profile = ptyxis_application_dup_default_profile (self);
+      PtyxisWindow *window = get_current_window (self);
+      PtyxisTab *tab = ptyxis_tab_new (profile);
+
+      if (window == NULL || !did_restore)
+        {
+          window = ptyxis_window_new_empty ();
+
+          if (ptyxis_settings_get_restore_window_size (self->settings))
+            {
+              PtyxisTerminal *terminal = ptyxis_tab_get_terminal (tab);
+              guint columns = 80, rows = 24;
+
+              ptyxis_settings_get_window_size (self->settings, &columns, &rows);
+              vte_terminal_set_size (VTE_TERMINAL (terminal), columns, rows);
+            }
+        }
+
+      ptyxis_tab_set_initial_working_directory_uri (tab, cwd_uri);
+      ptyxis_window_add_tab (window, tab);
+      ptyxis_window_set_active_tab (window, tab);
+
+      gtk_window_present (GTK_WINDOW (window));
+    }
+  else
+    {
+      g_application_activate (G_APPLICATION (self));
+    }
+
+  return G_APPLICATION_CLASS (ptyxis_application_parent_class)->command_line (app, cmdline);
+}
+
+static void
+on_portal_settings_changed_cb (PtyxisApplication *self,
+                               const char        *sender_name,
+                               const char        *signal_name,
+                               GVariant          *parameters,
+                               gpointer           user_data)
+{
+  g_autoptr(GVariant) value = NULL;
+  const char *schema_id;
+  const char *key;
+
+  g_assert (PTYXIS_IS_APPLICATION (self));
+  g_assert (sender_name != NULL);
+  g_assert (signal_name != NULL);
+
+  if (g_strcmp0 (signal_name, "SettingChanged") != 0)
+    return;
+
+  g_variant_get (parameters, "(&s&sv)", &schema_id, &key, &value);
+
+  if (g_strcmp0 (schema_id, "org.gnome.desktop.interface") == 0)
+    {
+      if (g_strcmp0 (key, "monospace-font-name") == 0)
+        {
+          const char *s = g_variant_get_string (value, NULL);
+
+          if (g_set_str (&self->system_font_name, s))
+            g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_SYSTEM_FONT_NAME]);
+        }
+      else if (g_strcmp0 (key, "overlay-scrolling") == 0)
+        {
+          gboolean b = g_variant_get_boolean (value);
+
+          if (b != self->overlay_scrollbars)
+            {
+              self->overlay_scrollbars = b;
+              g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_OVERLAY_SCROLLBARS]);
+            }
+        }
+    }
+}
+
+static void
+parse_portal_settings (PtyxisApplication *self,
+                       GVariant          *parameters)
+{
+  GVariantIter *iter = NULL;
+  const char *schema_str;
+  GVariant *val;
+
+  g_assert (PTYXIS_IS_APPLICATION (self));
+
+  if (parameters == NULL)
+    return;
+
+  g_variant_get (parameters, "(a{sa{sv}})", &iter);
+
+  while (g_variant_iter_loop (iter, "{s@a{sv}}", &schema_str, &val))
+    {
+      GVariantIter *iter2 = g_variant_iter_new (val);
+      const char *key;
+      GVariant *v;
+
+      while (g_variant_iter_loop (iter2, "{sv}", &key, &v))
+        {
+          if (g_strcmp0 (schema_str, "org.gnome.desktop.interface") == 0)
+            {
+              const char *str;
+
+              if (g_strcmp0 (key, "monospace-font-name") == 0 &&
+                  (str = g_variant_get_string (v, NULL)) &&
+                  str[0] != 0)
+                g_set_str (&self->system_font_name, str);
+              else if (g_strcmp0 (key, "overlay-scrolling") == 0)
+                self->overlay_scrollbars = g_variant_get_boolean (v);
+            }
+        }
+
+      g_variant_iter_free (iter2);
+    }
+
+  g_variant_iter_free (iter);
+}
+
+static void
+ptyxis_application_notify_default_profile_uuid_cb (PtyxisApplication *self,
+                                                   GParamSpec        *pspec,
+                                                   PtyxisSettings    *settings)
+{
+  g_assert (PTYXIS_IS_APPLICATION (self));
+  g_assert (PTYXIS_IS_SETTINGS (settings));
+
+  g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_DEFAULT_PROFILE]);
+}
+
+static void
+ptyxis_application_notify_profile_uuids_cb (PtyxisApplication *self,
+                                            GParamSpec        *pspec,
+                                            PtyxisSettings    *settings)
+{
+  g_auto(GStrv) profile_uuids = NULL;
+  g_autoptr(GPtrArray) array = NULL;
+  guint n_items;
+
+  g_assert (PTYXIS_IS_APPLICATION (self));
+  g_assert (PTYXIS_IS_SETTINGS (settings));
+
+  profile_uuids = ptyxis_settings_dup_profile_uuids (settings);
+  n_items = g_list_model_get_n_items (G_LIST_MODEL (self->profiles));
+  array = g_ptr_array_new_with_free_func (g_object_unref);
+
+  for (guint i = 0; profile_uuids[i]; i++)
+    g_ptr_array_add (array, ptyxis_profile_new (profile_uuids[i]));
+
+  g_list_store_splice (self->profiles, 0, n_items, array->pdata, array->len);
+}
+
+static gboolean
+filter_session_container (gpointer item,
+                          gpointer user_data)
+{
+  return g_strcmp0 ("session", ptyxis_ipc_container_get_id (item)) != 0;
+}
+
+static void
+ptyxis_application_startup (GApplication *application)
+{
+  static const char *patterns[] = { "org.gnome.*", NULL };
+  PtyxisApplication *self = (PtyxisApplication *)application;
+  g_autoptr(GtkFilterListModel) filter_model = NULL;
+  g_autoptr(GtkCustomFilter) filter = NULL;
+  g_autoptr(GFile) session_file = get_session_file ();
+  g_autoptr(GBytes) session_bytes = NULL;
+  g_autoptr(GError) error = NULL;
+  AdwStyleManager *style_manager;
+
+  g_assert (PTYXIS_IS_APPLICATION (self));
+
+  g_application_set_default (application);
+  g_application_set_resource_base_path (G_APPLICATION (self), "/org/gnome/Ptyxis");
+
+  self->profiles = g_list_store_new (PTYXIS_TYPE_PROFILE);
+  self->settings = ptyxis_settings_new ();
+  self->shortcuts = ptyxis_shortcuts_new (NULL);
+
+  /* Load the session state so it's available if we need it */
+  if ((session_bytes = g_file_load_bytes (session_file, NULL, NULL, NULL)))
+    {
+      g_autoptr(GVariant) variant = g_variant_new_from_bytes (G_VARIANT_TYPE_VARDICT, session_bytes, FALSE);
+
+      if (variant != NULL)
+        self->session = g_variant_take_ref (g_steal_pointer (&variant));
+    }
+
+  G_APPLICATION_CLASS (ptyxis_application_parent_class)->startup (application);
+
+  if (!(self->client = ptyxis_client_new (&error)))
+    g_error ("Failed to launch ptyxis-agent: %s", error->message);
+
+  self->profile_menu = ptyxis_profile_menu_new (self->settings);
+
+  filter = gtk_custom_filter_new (filter_session_container, NULL, NULL);
+  filter_model = gtk_filter_list_model_new (g_object_ref (G_LIST_MODEL (self->client)),
+                                            g_object_ref (GTK_FILTER (filter)));
+  self->container_menu = ptyxis_container_menu_new (G_LIST_MODEL (filter_model));
+
+  g_action_map_add_action_entries (G_ACTION_MAP (self),
+                                   action_entries,
+                                   G_N_ELEMENTS (action_entries),
+                                   self);
+
+  gtk_application_set_accels_for_action (GTK_APPLICATION (self),
+                                         "app.help-overlay",
+                                         (const char * const []) {"<ctrl>question", NULL});
+
+  /* Setup portal to get settings */
+  self->portal = g_dbus_proxy_new_for_bus_sync (G_BUS_TYPE_SESSION,
+                                                G_DBUS_PROXY_FLAGS_NONE,
+                                                NULL,
+                                                PORTAL_BUS_NAME,
+                                                PORTAL_OBJECT_PATH,
+                                                PORTAL_SETTINGS_INTERFACE,
+                                                NULL,
+                                                NULL);
+
+  if (self->portal != NULL)
+    {
+      g_autoptr(GVariant) all = NULL;
+
+      g_signal_connect_object (self->portal,
+                               "g-signal",
+                               G_CALLBACK (on_portal_settings_changed_cb),
+                               self,
+                               G_CONNECT_SWAPPED);
+      all = g_dbus_proxy_call_sync (self->portal,
+                                    "ReadAll",
+                                    g_variant_new ("(^as)", patterns),
+                                    G_DBUS_CALL_FLAGS_NONE,
+                                    G_MAXINT,
+                                    NULL,
+                                    NULL);
+      parse_portal_settings (self, all);
+    }
+
+  g_signal_connect_object (self->settings,
+                           "notify::profile-uuids",
+                           G_CALLBACK (ptyxis_application_notify_profile_uuids_cb),
+                           self,
+                           G_CONNECT_SWAPPED);
+  g_signal_connect_object (self->settings,
+                           "notify::default-profile-uuid",
+                           G_CALLBACK (ptyxis_application_notify_default_profile_uuid_cb),
+                           self,
+                           G_CONNECT_SWAPPED);
+
+  ptyxis_application_notify_profile_uuids_cb (self, NULL, self->settings);
+
+  style_manager = adw_style_manager_get_default ();
+
+  g_object_bind_property (self->settings, "interface-style",
+                          style_manager, "color-scheme",
+                          G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
+}
+
+static void
+ptyxis_application_shutdown (GApplication *application)
+{
+  PtyxisApplication *self = (PtyxisApplication *)application;
+
+  g_assert (PTYXIS_IS_APPLICATION (self));
+
+  G_APPLICATION_CLASS (ptyxis_application_parent_class)->shutdown (application);
+
+  g_clear_object (&self->profile_menu);
+  g_clear_object (&self->profiles);
+  g_clear_object (&self->portal);
+  g_clear_object (&self->shortcuts);
+  g_clear_object (&self->settings);
+  g_clear_object (&self->client);
+
+  g_clear_pointer (&self->system_font_name, g_free);
+}
+
+static void
+ptyxis_application_get_property (GObject    *object,
+                                 guint       prop_id,
+                                 GValue     *value,
+                                 GParamSpec *pspec)
+{
+  PtyxisApplication *self = PTYXIS_APPLICATION (object);
+
+  switch (prop_id)
+    {
+    case PROP_DEFAULT_PROFILE:
+      g_value_take_object (value, ptyxis_application_dup_default_profile (self));
+      break;
+
+    case PROP_OS_NAME:
+      g_value_set_string (value, ptyxis_application_get_os_name (self));
+      break;
+
+    case PROP_OVERLAY_SCROLLBARS:
+      g_value_set_boolean (value, self->overlay_scrollbars);
+      break;
+
+    case PROP_SYSTEM_FONT_NAME:
+      g_value_set_string (value, self->system_font_name);
+      break;
+
+    default:
+      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+    }
+}
+
+static void
+ptyxis_application_class_init (PtyxisApplicationClass *klass)
+{
+  GObjectClass *object_class = G_OBJECT_CLASS (klass);
+  GApplicationClass *app_class = G_APPLICATION_CLASS (klass);
+
+  object_class->get_property = ptyxis_application_get_property;
+
+  app_class->activate = ptyxis_application_activate;
+  app_class->startup = ptyxis_application_startup;
+  app_class->shutdown = ptyxis_application_shutdown;
+  app_class->command_line = ptyxis_application_command_line;
+
+  properties[PROP_DEFAULT_PROFILE] =
+    g_param_spec_object ("default-profile", NULL, NULL,
+                         PTYXIS_TYPE_PROFILE,
+                         (G_PARAM_READABLE |
+                          G_PARAM_STATIC_STRINGS));
+
+  properties[PROP_OS_NAME] =
+    g_param_spec_string ("os-name", NULL, NULL,
+                         NULL,
+                         (G_PARAM_READABLE |
+                          G_PARAM_STATIC_STRINGS));
+
+  properties [PROP_OVERLAY_SCROLLBARS] =
+    g_param_spec_boolean ("overlay-scrollbars", NULL, NULL,
+                          FALSE,
+                         (G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+
+  properties [PROP_SYSTEM_FONT_NAME] =
+    g_param_spec_string ("system-font-name",
+                         "System Font Name",
+                         "System Font Name",
+                         "Monospace 11",
+                         (G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+
+  g_object_class_install_properties (object_class, N_PROPS, properties);
+}
+
+static void
+ptyxis_application_init (PtyxisApplication *self)
+{
+  g_autoptr(GString) summary = g_string_new (_("Examples:"));
+  static const GOptionEntry main_entries[] = {
+    { "preferences", 0, 0, G_OPTION_ARG_NONE, NULL, N_("Show the application preferences") },
+
+    /* Used for new tabs/windows/etc when specified */
+    { "working-directory", 'd', 0, G_OPTION_ARG_FILENAME, NULL, N_("Use DIR for --tab, --tab-with-profile, --new-window, or -x"), N_("DIR") },
+
+    /* By default, this implies a new ptyxis instance unless the options
+     * below are provided to override that.
+     */
+    { "execute", 'x', 0, G_OPTION_ARG_STRING, NULL, N_("Command to execute in new window") },
+
+    /* These options all imply we're using a shared Ptyxis instance. We do not support
+     * short command options for these to make it easier to sniff them in early args
+     * checking from `main.c`.
+     */
+    { "new-window", 0, 0, G_OPTION_ARG_NONE, NULL, N_("New terminal window") },
+    { "tab", 0, 0, G_OPTION_ARG_NONE, NULL, N_("New terminal tab in active window") },
+    { "tab-with-profile", 0, 0, G_OPTION_ARG_STRING, NULL, N_("New terminal tab in active window using PROFILE"), N_("PROFILE") },
+
+    { NULL }
+  };
+
+  g_string_append_c (summary, '\n');
+  g_string_append_c (summary, '\n');
+  g_string_append_printf (summary, "  %s\n", _("Run Separate Instance"));
+  g_string_append (summary, "    ptyxis -s\n");
+
+  g_string_append_c (summary, '\n');
+  g_string_append_printf (summary, "  %s\n", _("Open Preferences"));
+  g_string_append (summary, "    ptyxis --preferences\n");
+
+  g_string_append_c (summary, '\n');
+  g_string_append_printf (summary, "  %s\n", _("Run Custom Command in New Window"));
+  g_string_append (summary, "    ptyxis -x \"bash -c 'sleep 3'\"\n");
+  g_string_append (summary, "    ptyxis -- bash -c 'sleep 3'");
+
+  g_application_set_option_context_parameter_string (G_APPLICATION (self), _("[-- COMMAND ARGUMENTS]"));
+  g_application_add_main_option_entries (G_APPLICATION (self), main_entries);
+  g_application_set_option_context_summary (G_APPLICATION (self), summary->str);
+
+  self->system_font_name = g_strdup ("Monospace 11");
+}
+
+static void
+ptyxis_application_edit_profile (GSimpleAction *action,
+                                 GVariant      *param,
+                                 gpointer       user_data)
+{
+  PtyxisApplication *self = user_data;
+  g_autoptr(PtyxisProfile) profile = NULL;
+  const char *profile_uuid;
+
+  g_assert (PTYXIS_IS_APPLICATION (self));
+  g_assert (param != NULL);
+  g_assert (g_variant_is_of_type (param, G_VARIANT_TYPE_STRING));
+
+  profile_uuid = g_variant_get_string (param, NULL);
+
+  if ((ptyxis_application_dup_profile (self, profile_uuid)))
+    {
+      PtyxisPreferencesWindow *window = ptyxis_preferences_window_get_default ();
+
+      ptyxis_preferences_window_edit_profile (window, profile);
+    }
+}
+
+static char *
+generate_debug_info (PtyxisApplication *self)
+{
+  GString *str = g_string_new (NULL);
+  g_autoptr(GListModel) containers = NULL;
+  g_autofree char *flatpak_info = NULL;
+  g_autofree char *gtk_theme_name= NULL;
+  GtkSettings *gtk_settings;
+  const char *os_name = ptyxis_application_get_os_name (self);
+  const char *vte_sh_path = "/etc/profile.d/vte.sh";
+  guint n_items;
+
+  g_string_append_printf (str, "Host: %s\n", os_name);
+  g_string_append_c (str, '\n');
+
+  g_string_append_printf (str,
+                          "GLib: %d.%d.%d (compiled against %d.%d.%d)\n",
+                          glib_major_version,
+                          glib_minor_version,
+                          glib_micro_version,
+                          GLIB_MAJOR_VERSION,
+                          GLIB_MINOR_VERSION,
+                          GLIB_MICRO_VERSION);
+  g_string_append_printf (str,
+                          "GTK: %d.%d.%d (compiled against %d.%d.%d)\n",
+                          gtk_get_major_version (),
+                          gtk_get_minor_version (),
+                          gtk_get_micro_version (),
+                          GTK_MAJOR_VERSION,
+                          GTK_MINOR_VERSION,
+                          GTK_MICRO_VERSION);
+  g_string_append_printf (str,
+                          "VTE: %d.%d.%d (compiled against %d.%d.%d) %s\n",
+                          vte_get_major_version (),
+                          vte_get_minor_version (),
+                          vte_get_micro_version (),
+                          VTE_MAJOR_VERSION,
+                          VTE_MINOR_VERSION,
+                          VTE_MICRO_VERSION,
+                          vte_get_features ());
+
+  gtk_settings = gtk_settings_get_default ();
+  g_object_get (gtk_settings, "gtk-theme-name", &gtk_theme_name, NULL);
+  g_string_append_c (str, '\n');
+  g_string_append_printf (str, "GTK Theme: %s\n", gtk_theme_name);
+
+#if DEVELOPMENT_BUILD
+  g_string_append_c (str, '\n');
+  g_string_append (str, "** DEVELOPMENT BUILD **\n");
+#endif
+
+  if (strstr (APP_ID, "Devel") != NULL)
+    {
+      g_string_append_c (str, '\n');
+      g_string_append_printf (str, "App ID: %s\n", APP_ID);
+    }
+
+  if (ptyxis_get_process_kind () == PTYXIS_PROCESS_KIND_FLATPAK)
+    vte_sh_path = "/var/run/host/etc/profile.d/vte.sh";
+
+  g_string_append_c (str, '\n');
+  g_string_append_printf (str, "%s %s\n",
+                          vte_sh_path,
+                          g_file_test (vte_sh_path, G_FILE_TEST_EXISTS) ? "exists" : "missing");
+
+  g_string_append_c (str, '\n');
+  g_string_append (str, "Containers:\n");
+
+  containers = ptyxis_application_list_containers (self);
+  n_items = g_list_model_get_n_items (containers);
+
+  for (guint i = 0; i < n_items; i++)
+    {
+      g_autoptr(PtyxisIpcContainer) container = g_list_model_get_item (containers, i);
+
+      if (g_strcmp0 ("session", ptyxis_ipc_container_get_id (container)) == 0)
+        continue;
+
+      g_string_append_printf (str,
+                              "  • %s (%s)\n",
+                              ptyxis_ipc_container_get_display_name (container),
+                              ptyxis_ipc_container_get_provider (container));
+    }
+
+  if (g_file_get_contents ("/.flatpak-info", &flatpak_info, NULL, NULL))
+    {
+      g_string_append_c (str, '\n');
+      g_string_append (str, flatpak_info);
+    }
+
+  return g_string_free (str, FALSE);
+}
+
+static void
+ptyxis_application_about (GSimpleAction *action,
+                          GVariant      *param,
+                          gpointer       user_data)
+{
+  static const char *developers[] = {"Christian Hergert", NULL};
+  static const char *artists[] = {"Jakub Steiner", NULL};
+  PtyxisApplication *self = user_data;
+  GtkWindow *window = NULL;
+  g_autofree char *debug_info = NULL;
+
+  g_assert (PTYXIS_IS_APPLICATION (self));
+
+  window = gtk_application_get_active_window (GTK_APPLICATION (self));
+  debug_info = generate_debug_info (self);
+
+  adw_show_about_dialog (GTK_WIDGET (window),
+                         "application-icon", PACKAGE_ICON_NAME,
+                         "application-name", PACKAGE_NAME,
+                         "artists", artists,
+                         "copyright", "© 2023 Christian Hergert, et al.",
+                         "debug-info", debug_info,
+                         "developer-name", "Christian Hergert",
+                         "developers", developers,
+                         "issue-url", "https://gitlab.gnome.org/chergert/ptyxis/issues",
+                         "license-type", GTK_LICENSE_GPL_3_0,
+                         "translator-credits", _("translator-credits"),
+                         "version", PACKAGE_VERSION,
+                         "website", "https://gitlab.gnome.org/chergert/ptyxis",
+                         NULL);
+}
+
+static void
+ptyxis_application_preferences (GSimpleAction *action,
+                                GVariant      *param,
+                                gpointer       user_data)
+{
+  PtyxisPreferencesWindow *window;
+  PtyxisApplication *self = user_data;
+
+  g_assert (PTYXIS_IS_APPLICATION (self));
+
+  window = ptyxis_preferences_window_get_default ();
+  gtk_application_add_window (GTK_APPLICATION (self), GTK_WINDOW (window));
+  gtk_window_present (GTK_WINDOW (window));
+}
+
+static void
+ptyxis_application_new_window_action (GSimpleAction *action,
+                                      GVariant      *param,
+                                      gpointer       user_data)
+{
+  PtyxisApplication *self = user_data;
+  PtyxisWindow *window;
+
+  g_assert (!action || G_IS_SIMPLE_ACTION (action));
+  g_assert (PTYXIS_IS_APPLICATION (self));
+
+  window = ptyxis_window_new ();
+  gtk_application_add_window (GTK_APPLICATION (self), GTK_WINDOW (window));
+  gtk_window_present (GTK_WINDOW (window));
+}
+
+static void
+ptyxis_application_new_tab_action (GSimpleAction *action,
+                                   GVariant      *param,
+                                   gpointer       user_data)
+{
+  PtyxisApplication *self = user_data;
+  g_autoptr(PtyxisProfile) profile = NULL;
+  PtyxisWindow *window;
+  PtyxisTab *tab;
+
+  g_assert (!action || G_IS_SIMPLE_ACTION (action));
+  g_assert (PTYXIS_IS_APPLICATION (self));
+
+  window = get_current_window (self);
+
+  if (window == NULL)
+    window = ptyxis_window_new_empty ();
+
+  profile = ptyxis_application_dup_default_profile (self);
+  tab = ptyxis_tab_new (profile);
+
+  ptyxis_window_add_tab (window, tab);
+  ptyxis_window_set_active_tab (window, tab);
+
+  gtk_window_present (GTK_WINDOW (window));
+}
+
+static void
+ptyxis_application_help_overlay (GSimpleAction *action,
+                                 GVariant      *param,
+                                 gpointer       user_data)
+{
+  PtyxisPreferencesWindow *window;
+  PtyxisApplication *self = user_data;
+
+  g_assert (PTYXIS_IS_APPLICATION (self));
+
+  window = ptyxis_preferences_window_get_default ();
+  ptyxis_preferences_window_edit_shortcuts (window);
+  gtk_window_present (GTK_WINDOW (window));
+}
+
+/**
+ * ptyxis_application_list_profiles:
+ * @self: a #PtyxisApplication
+ *
+ * Gets a #GListModel or profiles that are available to the application.
+ *
+ * The resulting #GListModel will update as profiles are created or deleted.
+ *
+ * Returns: (transfer full) (not nullable): a #GListModel
+ */
+GListModel *
+ptyxis_application_list_profiles (PtyxisApplication *self)
+{
+  g_return_val_if_fail (PTYXIS_IS_APPLICATION (self), NULL);
+
+  return g_object_ref (G_LIST_MODEL (self->profiles));
+}
+
+/**
+ * ptyxis_application_dup_default_profile:
+ * @self: a #PtyxisApplication
+ *
+ * Gets the default profile for the application.
+ *
+ * Returns: (transfer full): a #PtyxisProfile
+ */
+PtyxisProfile *
+ptyxis_application_dup_default_profile (PtyxisApplication *self)
+{
+  g_autoptr(PtyxisProfile) new_profile = NULL;
+  g_autoptr(GListModel) profiles = NULL;
+  g_autofree char *default_profile_uuid = NULL;
+  guint n_items;
+
+  g_return_val_if_fail (PTYXIS_IS_APPLICATION (self), NULL);
+
+  default_profile_uuid = ptyxis_settings_dup_default_profile_uuid (self->settings);
+  profiles = ptyxis_application_list_profiles (self);
+  n_items = g_list_model_get_n_items (profiles);
+
+  for (guint i = 0; i < n_items; i++)
+    {
+      g_autoptr(PtyxisProfile) profile = g_list_model_get_item (profiles, i);
+      const char *profile_uuid = ptyxis_profile_get_uuid (profile);
+
+      if (g_strcmp0 (profile_uuid, default_profile_uuid) == 0)
+        return g_steal_pointer (&profile);
+    }
+
+  if (n_items > 0)
+    return g_list_model_get_item (profiles, 0);
+
+  new_profile = ptyxis_profile_new (NULL);
+
+  g_assert (new_profile != NULL);
+  g_assert (PTYXIS_IS_PROFILE (new_profile));
+  g_assert (ptyxis_profile_get_uuid (new_profile) != NULL);
+
+  ptyxis_application_add_profile (self, new_profile);
+  ptyxis_application_set_default_profile (self, new_profile);
+
+  return g_steal_pointer (&new_profile);
+}
+
+void
+ptyxis_application_set_default_profile (PtyxisApplication *self,
+                                        PtyxisProfile     *profile)
+{
+  g_return_if_fail (PTYXIS_IS_APPLICATION (self));
+  g_return_if_fail (PTYXIS_IS_PROFILE (profile));
+
+  ptyxis_settings_set_default_profile_uuid (self->settings,
+                                            ptyxis_profile_get_uuid (profile));
+}
+
+void
+ptyxis_application_add_profile (PtyxisApplication *self,
+                                PtyxisProfile     *profile)
+{
+  g_return_if_fail (PTYXIS_IS_APPLICATION (self));
+
+  ptyxis_settings_add_profile_uuid (self->settings,
+                                    ptyxis_profile_get_uuid (profile));
+}
+
+void
+ptyxis_application_remove_profile (PtyxisApplication *self,
+                                   PtyxisProfile     *profile)
+{
+  g_return_if_fail (PTYXIS_IS_APPLICATION (self));
+  g_return_if_fail (PTYXIS_IS_PROFILE (profile));
+
+  ptyxis_settings_remove_profile_uuid (self->settings,
+                                       ptyxis_profile_get_uuid (profile));
+}
+
+PtyxisProfile *
+ptyxis_application_dup_profile (PtyxisApplication *self,
+                                const char        *profile_uuid)
+{
+  g_autoptr(GListModel) model = NULL;
+  guint n_items;
+
+  g_return_val_if_fail (PTYXIS_IS_APPLICATION (self), NULL);
+
+  if (ptyxis_str_empty0 (profile_uuid))
+    return ptyxis_application_dup_default_profile (self);
+
+  model = ptyxis_application_list_profiles (self);
+  n_items = g_list_model_get_n_items (model);
+
+  for (guint i = 0; i < n_items; i++)
+    {
+      g_autoptr(PtyxisProfile) profile = g_list_model_get_item (model, i);
+
+      if (g_strcmp0 (profile_uuid, ptyxis_profile_get_uuid (profile)) == 0)
+        return g_steal_pointer (&profile);
+    }
+
+  return ptyxis_profile_new (profile_uuid);
+}
+
+gboolean
+ptyxis_application_control_is_pressed (PtyxisApplication *self)
+{
+  GdkDisplay *display = gdk_display_get_default ();
+  GdkSeat *seat = gdk_display_get_default_seat (display);
+  GdkDevice *keyboard = gdk_seat_get_keyboard (seat);
+  GdkModifierType modifiers = gdk_device_get_modifier_state (keyboard) & gtk_accelerator_get_default_mod_mask ();
+
+  return !!(modifiers & GDK_CONTROL_MASK);
+}
+
+const char *
+ptyxis_application_get_system_font_name (PtyxisApplication *self)
+{
+  g_return_val_if_fail (PTYXIS_IS_APPLICATION (self), NULL);
+
+  return self->system_font_name;
+}
+
+GMenuModel *
+ptyxis_application_dup_profile_menu (PtyxisApplication *self)
+{
+  g_return_val_if_fail (PTYXIS_IS_APPLICATION (self), NULL);
+
+  return g_object_ref (G_MENU_MODEL (self->profile_menu));
+}
+
+GMenuModel *
+ptyxis_application_dup_container_menu (PtyxisApplication *self)
+{
+  g_return_val_if_fail (PTYXIS_IS_APPLICATION (self), NULL);
+
+  return g_object_ref (G_MENU_MODEL (self->container_menu));
+}
+
+/**
+ * ptyxis_application_list_containers:
+ * @self: a #PtyxisApplication
+ *
+ * Gets a #GListModel of #PtyxisIpcContainer.
+ *
+ * Returns: (transfer full) (not nullable): a #GListModel
+ */
+GListModel *
+ptyxis_application_list_containers (PtyxisApplication *self)
+{
+  g_return_val_if_fail (PTYXIS_IS_APPLICATION (self), NULL);
+
+  return g_object_ref (G_LIST_MODEL (self->client));
+}
+
+PtyxisIpcContainer *
+ptyxis_application_lookup_container (PtyxisApplication *self,
+                                     const char        *container_id)
+{
+  g_autoptr(GListModel) model = NULL;
+  guint n_items;
+
+  g_return_val_if_fail (PTYXIS_IS_APPLICATION (self), NULL);
+
+  if (ptyxis_str_empty0 (container_id))
+    return NULL;
+
+  model = ptyxis_application_list_containers (self);
+  n_items = g_list_model_get_n_items (model);
+
+  for (guint i = 0; i < n_items; i++)
+    {
+      g_autoptr(PtyxisIpcContainer) container = g_list_model_get_item (model, i);
+      const char *id = ptyxis_ipc_container_get_id (container);
+
+      if (g_strcmp0 (id, container_id) == 0)
+        return g_steal_pointer (&container);
+    }
+
+  return NULL;
+}
+
+PtyxisSettings *
+ptyxis_application_get_settings (PtyxisApplication *self)
+{
+  g_return_val_if_fail (PTYXIS_IS_APPLICATION (self), NULL);
+
+  return self->settings;
+}
+
+/**
+ * ptyxis_application_get_shortcuts:
+ * @self: a #PtyxisApplication
+ *
+ * Gets the shortcuts for the application.
+ *
+ * Returns: (transfer none) (not nullable): a #PtyxisShortcuts
+ */
+PtyxisShortcuts *
+ptyxis_application_get_shortcuts (PtyxisApplication *self)
+{
+  g_return_val_if_fail (PTYXIS_IS_APPLICATION (self), NULL);
+
+  return self->shortcuts;
+}
+
+void
+ptyxis_application_report_error (PtyxisApplication *self,
+                                 GType              subsystem,
+                                 const GError      *error)
+{
+  g_return_if_fail (PTYXIS_IS_APPLICATION (self));
+
+  /* TODO: We probably want to provide some feedback if we fail to
+   *       run in a number of scenarios. And this will also let us
+   *       do some deduplication of repeated error messages once
+   *       we start showing errors to users.
+   */
+
+  g_debug ("%s: %s[%u]: %s",
+           g_type_name (subsystem),
+           g_quark_to_string (error->domain),
+           error->code,
+           error->message);
+}
+
+VtePty *
+ptyxis_application_create_pty (PtyxisApplication  *self,
+                               GError            **error)
+{
+  g_return_val_if_fail (PTYXIS_IS_APPLICATION (self), NULL);
+
+  return ptyxis_client_create_pty (self->client, error);
+}
+
+typedef struct _Spawn
+{
+  PtyxisIpcContainer *container;
+  PtyxisProfile *profile;
+  char *last_working_directory_uri;
+  VtePty *pty;
+  char **argv;
+} Spawn;
+
+static void
+spawn_free (gpointer data)
+{
+  Spawn *spawn = data;
+
+  g_clear_object (&spawn->container);
+  g_clear_object (&spawn->profile);
+  g_clear_object (&spawn->pty);
+  g_clear_pointer (&spawn->last_working_directory_uri, g_free);
+  g_clear_pointer (&spawn->argv, g_strfreev);
+  g_free (spawn);
+}
+
+static void
+ptyxis_application_spawn_cb (GObject      *object,
+                             GAsyncResult *result,
+                             gpointer      user_data)
+{
+  PtyxisClient *client = (PtyxisClient *)object;
+  g_autoptr(PtyxisIpcProcess) process = NULL;
+  g_autoptr(GTask) task = user_data;
+  g_autoptr(GError) error = NULL;
+
+  g_assert (PTYXIS_IS_CLIENT (client));
+  g_assert (G_IS_ASYNC_RESULT (result));
+  g_assert (G_IS_TASK (task));
+
+  if (!(process = ptyxis_client_spawn_finish (client, result, &error)))
+    g_task_return_error (task, g_steal_pointer (&error));
+  else
+    g_task_return_pointer (task, g_steal_pointer (&process), g_object_unref);
+}
+
+static void
+ptyxis_application_check_shell_cb (GObject      *object,
+                                   GAsyncResult *result,
+                                   gpointer      user_data)
+{
+  PtyxisIpcContainer *container = (PtyxisIpcContainer *)object;
+  g_autofree char *default_shell_path = NULL;
+  g_autoptr(GTask) task = user_data;
+  PtyxisApplication *self;
+  Spawn *spawn;
+
+  g_assert (PTYXIS_IPC_IS_CONTAINER (container));
+  g_assert (G_IS_ASYNC_RESULT (result));
+  g_assert (G_IS_TASK (task));
+
+  self = g_task_get_source_object (task);
+  spawn = g_task_get_task_data (task);
+
+  g_assert (PTYXIS_IS_APPLICATION (self));
+  g_assert (spawn != NULL);
+  g_assert (VTE_IS_PTY (spawn->pty));
+  g_assert (PTYXIS_IPC_IS_CONTAINER (spawn->container));
+  g_assert (PTYXIS_IS_PROFILE (spawn->profile));
+  g_assert (PTYXIS_IS_CLIENT (self->client));
+
+  ptyxis_ipc_container_call_find_program_in_path_finish (container,
+                                                         &default_shell_path,
+                                                         result,
+                                                         NULL);
+
+  if (default_shell_path && default_shell_path[0] == 0)
+    g_clear_pointer (&default_shell_path, g_free);
+
+  ptyxis_client_spawn_async (self->client,
+                             spawn->container,
+                             spawn->profile,
+                             default_shell_path,
+                             spawn->last_working_directory_uri,
+                             spawn->pty,
+                             (const char * const *)spawn->argv,
+                             g_task_get_cancellable (task),
+                             ptyxis_application_spawn_cb,
+                             g_object_ref (task));
+}
+
+static void
+ptyxis_application_get_preferred_shell_cb (GObject      *object,
+                                           GAsyncResult *result,
+                                           gpointer      user_data)
+{
+  PtyxisClient *client = (PtyxisClient *)object;
+  g_autofree char *default_shell = NULL;
+  g_autofree char *default_shell_base = NULL;
+  g_autoptr(GTask) task = user_data;
+  PtyxisApplication *self;
+  Spawn *spawn;
+
+  g_assert (PTYXIS_IS_CLIENT (client));
+  g_assert (G_IS_ASYNC_RESULT (result));
+  g_assert (G_IS_TASK (task));
+
+  self = g_task_get_source_object (task);
+  spawn = g_task_get_task_data (task);
+
+  g_assert (PTYXIS_IS_APPLICATION (self));
+  g_assert (spawn != NULL);
+  g_assert (VTE_IS_PTY (spawn->pty));
+  g_assert (PTYXIS_IPC_IS_CONTAINER (spawn->container));
+  g_assert (PTYXIS_IS_PROFILE (spawn->profile));
+  g_assert (PTYXIS_IS_CLIENT (self->client));
+
+  default_shell = ptyxis_client_discover_shell_finish (client, result, NULL);
+
+  if (default_shell && default_shell[0] == 0)
+    g_clear_pointer (&default_shell, g_free);
+
+  default_shell_base = g_path_get_basename (default_shell ? default_shell : "bash");
+
+  /* Now make sure the preferred shell is available */
+  ptyxis_ipc_container_call_find_program_in_path (spawn->container,
+                                                  default_shell_base,
+                                                  g_task_get_cancellable (task),
+                                                  ptyxis_application_check_shell_cb,
+                                                  g_object_ref (task));
+}
+
+void
+ptyxis_application_spawn_async (PtyxisApplication   *self,
+                                PtyxisIpcContainer  *container,
+                                PtyxisProfile       *profile,
+                                const char          *last_working_directory_uri,
+                                VtePty              *pty,
+                                const char * const  *argv,
+                                GCancellable        *cancellable,
+                                GAsyncReadyCallback  callback,
+                                gpointer             user_data)
+{
+  g_autoptr(GTask) task = NULL;
+  Spawn *spawn;
+
+  g_return_if_fail (PTYXIS_IS_APPLICATION (self));
+  g_return_if_fail (PTYXIS_IPC_IS_CONTAINER (container));
+  g_return_if_fail (PTYXIS_IS_PROFILE (profile));
+  g_return_if_fail (VTE_IS_PTY (pty));
+  g_return_if_fail (!cancellable || G_IS_CANCELLABLE (cancellable));
+  g_return_if_fail (PTYXIS_IS_CLIENT (self->client));
+
+  task = g_task_new (self, cancellable, callback, user_data);
+  g_task_set_source_tag (task, ptyxis_application_spawn_async);
+
+  spawn = g_new0 (Spawn, 1);
+  g_set_object (&spawn->container, container);
+  g_set_object (&spawn->profile, profile);
+  g_set_object (&spawn->pty, pty);
+  g_set_str (&spawn->last_working_directory_uri, last_working_directory_uri);
+  spawn->argv = g_strdupv ((char **)argv);
+  g_task_set_task_data (task, spawn, spawn_free);
+
+  ptyxis_client_discover_shell_async (self->client,
+                                      NULL,
+                                      ptyxis_application_get_preferred_shell_cb,
+                                      g_steal_pointer (&task));
+}
+
+PtyxisIpcProcess *
+ptyxis_application_spawn_finish (PtyxisApplication  *self,
+                                 GAsyncResult       *result,
+                                 GError            **error)
+{
+  g_return_val_if_fail (PTYXIS_IS_APPLICATION (self), NULL);
+  g_return_val_if_fail (G_IS_TASK (result), NULL);
+
+  return g_task_propagate_pointer (G_TASK (result), error);
+}
+
+static void
+wait_complete (GTask  *task,
+               int     exit_status,
+               int     term_sig,
+               GError *error)
+{
+  if (!g_object_get_data (G_OBJECT (task), "DID_COMPLETE"))
+    {
+      g_object_set_data (G_OBJECT (task), "DID_COMPLETE", GINT_TO_POINTER (1));
+
+      if (error)
+        g_task_return_error (task, error);
+      else
+        g_task_return_int (task, W_EXITCODE (exit_status, term_sig));
+
+      g_object_unref (task);
+    }
+}
+
+static void
+ptyxis_application_process_exited_cb (PtyxisIpcProcess *process,
+                                      int               exit_status,
+                                      GTask            *task)
+{
+  g_assert (PTYXIS_IPC_IS_PROCESS (process));
+  g_assert (G_IS_TASK (task));
+
+  wait_complete (task, exit_status, 0, NULL);
+}
+
+static void
+ptyxis_application_process_signaled_cb (PtyxisIpcProcess *process,
+                                        int               term_sig,
+                                        GTask            *task)
+{
+  g_assert (PTYXIS_IPC_IS_PROCESS (process));
+  g_assert (G_IS_TASK (task));
+
+  wait_complete (task, 0, term_sig, NULL);
+}
+
+static void
+ptyxis_application_has_foreground_process_cb (GObject      *object,
+                                              GAsyncResult *result,
+                                              gpointer      user_data)
+{
+  PtyxisIpcProcess *process = (PtyxisIpcProcess *)object;
+  g_autoptr(GError) error = NULL;
+  g_autoptr(GTask) task = user_data;
+
+  g_assert (PTYXIS_IPC_IS_PROCESS (process));
+  g_assert (G_IS_ASYNC_RESULT (result));
+  g_assert (G_IS_TASK (task));
+
+  if (!ptyxis_ipc_process_call_has_foreground_process_finish (process, NULL, NULL, NULL, NULL, NULL, result, &error))
+    wait_complete (task, 0, 0, g_steal_pointer (&error));
+}
+
+void
+ptyxis_application_wait_async (PtyxisApplication   *self,
+                               PtyxisIpcProcess    *process,
+                               GCancellable        *cancellable,
+                               GAsyncReadyCallback  callback,
+                               gpointer             user_data)
+{
+  g_autoptr(GTask) task = NULL;
+
+  g_return_if_fail (PTYXIS_IS_APPLICATION (self));
+  g_return_if_fail (PTYXIS_IPC_IS_PROCESS (process));
+  g_return_if_fail (!cancellable || G_IS_CANCELLABLE (cancellable));
+
+  /* Because we only get signals/exit-status via signals (to avoid
+   * various race conditions in IPC), we use the RPC to get the leader
+   * kind as a sort of ping to determine if the process is still alive
+   * initially. It will be removed from the D-Bus connection once it
+   * exits or signals.
+   */
+
+  task = g_task_new (self, cancellable, callback, user_data);
+  g_task_set_source_tag (task, ptyxis_application_wait_async);
+
+  /* Keep alive until signal is received */
+  g_object_ref (task);
+  g_signal_connect_object (process,
+                           "exited",
+                           G_CALLBACK (ptyxis_application_process_exited_cb),
+                           task,
+                           0);
+  g_signal_connect_object (process,
+                           "signaled",
+                           G_CALLBACK (ptyxis_application_process_signaled_cb),
+                           task,
+                           0);
+
+  /* Now query to ensure the process is still there */
+  ptyxis_ipc_process_call_has_foreground_process (process,
+                                                  g_variant_new_handle (-1),
+                                                  NULL,
+                                                  cancellable,
+                                                  ptyxis_application_has_foreground_process_cb,
+                                                  g_steal_pointer (&task));
+}
+
+int
+ptyxis_application_wait_finish (PtyxisApplication  *self,
+                                GAsyncResult       *result,
+                                GError            **error)
+{
+  g_return_val_if_fail (PTYXIS_IS_APPLICATION (self), FALSE);
+  g_return_val_if_fail (G_IS_TASK (result), FALSE);
+
+  return g_task_propagate_int (G_TASK (result), error);
+}
+
+PtyxisIpcContainer *
+ptyxis_application_discover_current_container (PtyxisApplication *self,
+                                               VtePty            *pty)
+{
+  g_return_val_if_fail (PTYXIS_IS_APPLICATION (self), NULL);
+
+  return ptyxis_client_discover_current_container (self->client, pty);
+}
+
+static void
+ptyxis_application_focus_tab_by_uuid (GSimpleAction *action,
+                                      GVariant      *param,
+                                      gpointer       user_data)
+{
+  PtyxisApplication *self = user_data;
+  const char *uuid;
+
+  g_assert (PTYXIS_IS_APPLICATION (self));
+  g_assert (param != NULL);
+  g_assert (g_variant_is_of_type (param, G_VARIANT_TYPE_STRING));
+
+  uuid = g_variant_get_string (param, NULL);
+
+  for (const GList *windows = gtk_application_get_windows (GTK_APPLICATION (self));
+       windows != NULL;
+       windows = windows->next)
+    {
+      if (PTYXIS_IS_WINDOW (windows->data))
+        {
+          if (ptyxis_window_focus_tab_by_uuid (windows->data, uuid))
+            break;
+        }
+    }
+}
+
+/**
+ * ptyxis_application_find_container_by_name:
+ * @self: a #PtyxisApplication
+ *
+ * Locates the container by runtime/name.
+ *
+ * Returns: (transfer full) (nullable): a container or %NULL
+ */
+PtyxisIpcContainer *
+ptyxis_application_find_container_by_name (PtyxisApplication *self,
+                                           const char        *runtime,
+                                           const char        *name)
+{
+  g_autoptr(GListModel) model = NULL;
+  guint n_items;
+
+  g_return_val_if_fail (PTYXIS_IS_APPLICATION (self), NULL);
+
+  if (runtime == NULL || name == NULL)
+    return NULL;
+
+  model = ptyxis_application_list_containers (self);
+  n_items = g_list_model_get_n_items (model);
+
+  for (guint i = 0; i < n_items; i++)
+    {
+      g_autoptr(PtyxisIpcContainer) container = g_list_model_get_item (model, i);
+
+      if (g_strcmp0 (runtime, ptyxis_ipc_container_get_provider (container)) == 0 &&
+          g_strcmp0 (name, ptyxis_ipc_container_get_display_name (container)) == 0)
+        return g_steal_pointer (&container);
+    }
+
+  return NULL;
+}
+
+const char *
+ptyxis_application_get_os_name (PtyxisApplication *self)
+{
+  g_return_val_if_fail (PTYXIS_IS_APPLICATION (self), NULL);
+
+  return ptyxis_client_get_os_name (self->client);
+}
+
+static void
+ptyxis_application_save_session_cb (GObject      *object,
+                                    GAsyncResult *result,
+                                    gpointer      user_data)
+{
+  GFile *file = (GFile *)object;
+  g_autoptr(PtyxisApplication) self = user_data;
+  g_autoptr(GError) error = NULL;
+
+  g_assert (G_IS_FILE (file));
+  g_assert (G_IS_ASYNC_RESULT (result));
+  g_assert (PTYXIS_IS_APPLICATION (self));
+
+  g_application_release (G_APPLICATION (self));
+
+  if (!g_file_replace_contents_finish (file, result, NULL, &error))
+    g_warning ("Failed to save session state: %s", error->message);
+}
+
+void
+ptyxis_application_save_session (PtyxisApplication *self)
+{
+  g_autoptr(GVariant) state = NULL;
+  g_autoptr(GBytes) bytes = NULL;
+
+  g_return_if_fail (PTYXIS_IS_APPLICATION (self));
+
+  if ((state = ptyxis_session_save (self)) &&
+      (bytes = g_variant_get_data_as_bytes (state)))
+    {
+      g_autoptr(GFile) file = get_session_file ();
+      g_autoptr(GFile) directory = g_file_get_parent (file);
+
+      g_application_hold (G_APPLICATION (self));
+
+      g_file_make_directory_with_parents (directory, NULL, NULL);
+      g_file_replace_contents_bytes_async (file,
+                                           bytes,
+                                           NULL,
+                                           FALSE,
+                                           G_FILE_CREATE_REPLACE_DESTINATION,
+                                           NULL,
+                                           ptyxis_application_save_session_cb,
+                                           g_object_ref (self));
+    }
+}
+
+gboolean
+ptyxis_application_get_overlay_scrollbars (PtyxisApplication *self)
+{
+  g_return_val_if_fail (PTYXIS_IS_APPLICATION (self), FALSE);
+
+  return self->overlay_scrollbars;
+}

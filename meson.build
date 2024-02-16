@@ -1,4 +1,4 @@
-project('prompt', 'c',
+project('ptyxis', 'c',
           version: '46.alpha',
     meson_version: '>= 0.64.0',
   default_options: [ 'warning_level=2', 'werror=false', 'c_std=gnu11', ],
@@ -10,11 +10,11 @@ i18n = import('i18n')
 gnome = import('gnome')
 
 if get_option('development')
-  app_id = 'org.gnome.Prompt.Devel'
-  app_schema_path = '/org/gnome/Prompt/Devel/'
+  app_id = 'org.gnome.Ptyxis.Devel'
+  app_schema_path = '/org/gnome/Ptyxis/Devel/'
 else
-  app_id = 'org.gnome.Prompt'
-  app_schema_path = '/org/gnome/Prompt/'
+  app_id = 'org.gnome.Ptyxis'
+  app_schema_path = '/org/gnome/Ptyxis/'
 endif
 # Various optimizations for non-debug builds including disabling of
 # cast checks, asserts, and additional link options.
@@ -45,13 +45,13 @@ config_h.set_quoted('APP_SCHEMA_PROFILE_ID', app_schema_profile_id)
 config_h.set_quoted('APP_SCHEMA_SHORTCUTS_ID', app_schema_shortcuts_id)
 config_h.set_quoted('APP_SCHEMA_SHORTCUTS_PATH', app_schema_shortcuts_path)
 config_h.set_quoted('PACKAGE_VERSION', meson.project_version())
-config_h.set_quoted('GETTEXT_PACKAGE', 'prompt')
+config_h.set_quoted('GETTEXT_PACKAGE', 'ptyxis')
 config_h.set_quoted('LOCALEDIR', get_option('prefix') / get_option('localedir'))
 # LIBEXECDIR must be expanded in config.h
 config_h.set_quoted('LIBEXECDIR', get_option('prefix') / get_option('libexecdir'))
-config_h.set_quoted('PACKAGE_WEBSITE', 'https://gitlab.gnome.org/chergert/prompt')
+config_h.set_quoted('PACKAGE_WEBSITE', 'https://gitlab.gnome.org/chergert/ptyxis')
 config_h.set_quoted('PACKAGE_ICON_NAME', app_id)
-config_h.set_quoted('PACKAGE_NAME', 'Prompt')
+config_h.set_quoted('PACKAGE_NAME', 'Ptyxis')
 config_h.set10('DEVELOPMENT_BUILD', get_option('development'))
 
 check_functions = [

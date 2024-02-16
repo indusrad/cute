@@ -8,10 +8,10 @@ stages:
 
 .flatpak_vars:
   variables:
-    MANIFEST_PATH: "org.gnome.Prompt.Devel.json"
-    FLATPAK_MODULE: "prompt"
+    MANIFEST_PATH: "org.gnome.Ptyxis.Devel.json"
+    FLATPAK_MODULE: "ptyxis"
     RUNTIME_REPO: "https://nightly.gnome.org/gnome-nightly.flatpakrepo"
-    APP_ID: "org.gnome.Prompt.Devel"
+    APP_ID: "org.gnome.Ptyxis.Devel"
   extends: ".flatpak"
 
 flatpak@x86_64:
@@ -19,14 +19,14 @@ flatpak@x86_64:
     - '.flatpak_vars'
     - '.flatpak@x86_64'
   variables:
-    BUNDLE: "org.gnome.Prompt.Devel-x86_64.flatpak"
+    BUNDLE: "org.gnome.Ptyxis.Devel-x86_64.flatpak"
 
 flatpak@aarch64:
   extends:
     - '.flatpak_vars'
     - '.flatpak@aarch64'
   variables:
-    BUNDLE: "org.gnome.Prompt.Devel-aarch64.flatpak"
+    BUNDLE: "org.gnome.Ptyxis.Devel-aarch64.flatpak"
 
 nightly@x86_64:
   extends: ".publish_nightly"

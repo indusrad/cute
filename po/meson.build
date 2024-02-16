@@ -1,1 +1,1 @@
-i18n.gettext('prompt', preset: 'glib')
+i18n.gettext('ptyxis', preset: 'glib')

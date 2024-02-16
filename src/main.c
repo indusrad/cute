@@ -22,7 +22,7 @@
 
 #include <glib/gi18n.h>
 
-#include "prompt-application.h"
+#include "ptyxis-application.h"
 
 static void
 check_early_opts (int        *argc,
@@ -109,7 +109,7 @@ int
 main (int   argc,
       char *argv[])
 {
-  g_autoptr(PromptApplication) app = NULL;
+  g_autoptr(PtyxisApplication) app = NULL;
   GApplicationFlags flags = G_APPLICATION_HANDLES_COMMAND_LINE;
   gboolean standalone = FALSE;
   int ret;
@@ -118,15 +118,15 @@ main (int   argc,
   bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
   textdomain (GETTEXT_PACKAGE);
 
-  g_set_prgname ("prompt");
-  g_set_application_name (_("Prompt"));
+  g_set_prgname ("ptyxis");
+  g_set_application_name (_("Ptyxis"));
 
   check_early_opts (&argc, &argv, &standalone);
 
   if (standalone)
     flags |= G_APPLICATION_NON_UNIQUE;
 
-  app = prompt_application_new (APP_ID, flags);
+  app = ptyxis_application_new (APP_ID, flags);
   ret = g_application_run (G_APPLICATION (app), argc, argv);
 
   return ret;

@@ -1,55 +1,55 @@
-prompt_sources = [
+ptyxis_sources = [
   'gdkhsla.c',
   'main.c',
-  'prompt-application.c',
-  'prompt-client.c',
-  'prompt-close-dialog.c',
-  'prompt-container-menu.c',
-  'prompt-find-bar.c',
-  'prompt-inspector.c',
-  'prompt-palette.c',
-  'prompt-palette-preview.c',
-  'prompt-palette-preview-color.c',
-  'prompt-parking-lot.c',
-  'prompt-preferences-list-item.c',
-  'prompt-preferences-window.c',
-  'prompt-profile-editor.c',
-  'prompt-profile-menu.c',
-  'prompt-profile-row.c',
-  'prompt-profile.c',
-  'prompt-session.c',
-  'prompt-settings.c',
-  'prompt-shortcut-accel-dialog.c',
-  'prompt-shortcut-row.c',
-  'prompt-shortcuts.c',
-  'prompt-tab.c',
-  'prompt-tab-monitor.c',
-  'prompt-terminal.c',
-  'prompt-theme-selector.c',
-  'prompt-title-dialog.c',
-  'prompt-user-palettes.c',
-  'prompt-util.c',
-  'prompt-window-dressing.c',
-  'prompt-window.c',
+  'ptyxis-application.c',
+  'ptyxis-client.c',
+  'ptyxis-close-dialog.c',
+  'ptyxis-container-menu.c',
+  'ptyxis-find-bar.c',
+  'ptyxis-inspector.c',
+  'ptyxis-palette.c',
+  'ptyxis-palette-preview.c',
+  'ptyxis-palette-preview-color.c',
+  'ptyxis-parking-lot.c',
+  'ptyxis-preferences-list-item.c',
+  'ptyxis-preferences-window.c',
+  'ptyxis-profile-editor.c',
+  'ptyxis-profile-menu.c',
+  'ptyxis-profile-row.c',
+  'ptyxis-profile.c',
+  'ptyxis-session.c',
+  'ptyxis-settings.c',
+  'ptyxis-shortcut-accel-dialog.c',
+  'ptyxis-shortcut-row.c',
+  'ptyxis-shortcuts.c',
+  'ptyxis-tab.c',
+  'ptyxis-tab-monitor.c',
+  'ptyxis-terminal.c',
+  'ptyxis-theme-selector.c',
+  'ptyxis-title-dialog.c',
+  'ptyxis-user-palettes.c',
+  'ptyxis-util.c',
+  'ptyxis-window-dressing.c',
+  'ptyxis-window.c',
   'eggshell.c',
 ]
 
-prompt_enum_headers = [
-  'prompt-profile.h',
-  'prompt-settings.h',
-  'prompt-tab.h',
-  'prompt-tab-monitor.h',
+ptyxis_enum_headers = [
+  'ptyxis-profile.h',
+  'ptyxis-settings.h',
+  'ptyxis-tab.h',
+  'ptyxis-tab-monitor.h',
 ]
 
-prompt_sources += gnome.mkenums_simple('prompt-enums',
-            sources: prompt_enum_headers,
-  identifier_prefix: 'Prompt',
-      symbol_prefix: 'prompt',
+ptyxis_sources += gnome.mkenums_simple('ptyxis-enums',
+            sources: ptyxis_enum_headers,
+  identifier_prefix: 'Ptyxis',
+      symbol_prefix: 'ptyxis',
 )
 
-prompt_sources += gnome.compile_resources('prompt-resources',
-  'prompt.gresource.xml',
-  c_name: 'prompt'
+ptyxis_sources += gnome.compile_resources('ptyxis-resources',
+  'ptyxis.gresource.xml',
+  c_name: 'ptyxis'
 )
 
 schema_config = configuration_data()
@@ -59,13 +59,13 @@ schema_config.set('APP_SCHEMA_PROFILE_ID', app_schema_profile_id)
 schema_config.set('APP_SCHEMA_SHORTCUTS_ID', app_schema_shortcuts_id)
 schema_config.set('APP_SCHEMA_SHORTCUTS_PATH', app_schema_shortcuts_path)
 configure_file(
-          input: 'org.gnome.Prompt.gschema.xml.in',
+          input: 'org.gnome.Ptyxis.gschema.xml.in',
          output: '@0@.gschema.xml'.format(app_id),
   configuration: schema_config,
     install_dir: get_option('datadir') / 'glib-2.0' / 'schemas',
 )
 
-prompt_deps = [
+ptyxis_deps = [
   dependency('gio-unix-2.0'),
   dependency('gtk4', version: '>= 4.12'),
   dependency('libadwaita-1', version: '>= 1.5'),
@@ -75,22 +75,22 @@ prompt_deps = [
 ]
 
 if host_machine.system() == 'linux'
-  prompt_deps += [dependency('libportal-gtk4')]
+  ptyxis_deps += [dependency('libportal-gtk4')]
 endif
 
-prompt_c_args = [
+ptyxis_c_args = [
   release_link_args,
 ]
 
-prompt_include_directories = [
+ptyxis_include_directories = [
   include_directories('.'),
   include_directories('..'),
   include_directories('../agent'),
 ]
 
-executable('prompt', prompt_sources + prompt_agent_ipc,
-         dependencies: prompt_deps,
+executable('ptyxis', ptyxis_sources + ptyxis_agent_ipc,
+         dependencies: ptyxis_deps,
               install: true,
-               c_args: prompt_c_args,
-  include_directories: prompt_include_directories,
+               c_args: ptyxis_c_args,
+  include_directories: ptyxis_include_directories,
 )

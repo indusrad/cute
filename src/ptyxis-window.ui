@@ -1,0 +1,588 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright 2023 Christian Hergert
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+  SPDX-License-Identifier: GPL-3.0-or-later
+-->
+<interface>
+  <requires lib="gtk" version="4.0"/>
+  <requires lib="Adw" version="1.0"/>
+  <template class="PtyxisWindow" parent="AdwApplicationWindow">
+    <style>
+      <class name="ptyxis-window"/>
+    </style>
+    <property name="width-request">360</property>
+    <child>
+      <object class="GtkShortcutController">
+        <property name="propagation-phase">capture</property>
+        <child>
+          <object class="GtkShortcut">
+            <binding name="trigger">
+              <lookup name="primary-menu" type="PtyxisShortcuts">
+                <lookup name="shortcuts">PtyxisWindow</lookup>
+              </lookup>
+            </binding>
+            <property name="action">action(win.primary-menu)</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkShortcut">
+            <binding name="trigger">
+              <lookup name="search" type="PtyxisShortcuts">
+                <lookup name="shortcuts">PtyxisWindow</lookup>
+              </lookup>
+            </binding>
+            <property name="action">action(win.search)</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkShortcut">
+            <binding name="trigger">
+              <lookup name="new-window" type="PtyxisShortcuts">
+                <lookup name="shortcuts">PtyxisWindow</lookup>
+              </lookup>
+            </binding>
+            <property name="action">action(win.new-window)</property>
+            <property name="arguments">('','')</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkShortcut">
+            <binding name="trigger">
+              <lookup name="new-tab" type="PtyxisShortcuts">
+                <lookup name="shortcuts">PtyxisWindow</lookup>
+              </lookup>
+            </binding>
+            <property name="action">action(win.new-tab)</property>
+            <property name="arguments">('','')</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkShortcut">
+            <binding name="trigger">
+              <lookup name="undo-close-tab" type="PtyxisShortcuts">
+                <lookup name="shortcuts">PtyxisWindow</lookup>
+              </lookup>
+            </binding>
+            <property name="action">action(win.undo-close-tab)</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkShortcut">
+            <binding name="trigger">
+              <lookup name="tab-overview" type="PtyxisShortcuts">
+                <lookup name="shortcuts">PtyxisWindow</lookup>
+              </lookup>
+            </binding>
+            <property name="action">action(win.tab-overview)</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkShortcut">
+            <binding name="trigger">
+              <lookup name="preferences" type="PtyxisShortcuts">
+                <lookup name="shortcuts">PtyxisWindow</lookup>
+              </lookup>
+            </binding>
+            <property name="action">action(win.preferences)</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkShortcut">
+            <binding name="trigger">
+              <lookup name="zoom-out" type="PtyxisShortcuts">
+                <lookup name="shortcuts">PtyxisWindow</lookup>
+              </lookup>
+            </binding>
+            <property name="action">action(win.zoom-out)</property>
+            <property name="arguments">true</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkShortcut">
+            <binding name="trigger">
+              <lookup name="zoom-one" type="PtyxisShortcuts">
+                <lookup name="shortcuts">PtyxisWindow</lookup>
+              </lookup>
+            </binding>
+            <property name="action">action(win.zoom-one)</property>
+            <property name="arguments">true</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkShortcut">
+            <binding name="trigger">
+              <lookup name="zoom-in" type="PtyxisShortcuts">
+                <lookup name="shortcuts">PtyxisWindow</lookup>
+              </lookup>
+            </binding>
+            <property name="action">action(win.zoom-in)</property>
+            <property name="arguments">true</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkShortcut">
+            <binding name="trigger">
+              <lookup name="toggle-fullscreen" type="PtyxisShortcuts">
+                <lookup name="shortcuts">PtyxisWindow</lookup>
+              </lookup>
+            </binding>
+            <property name="action">action(win.toggle-fullscreen)</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkShortcut">
+            <binding name="trigger">
+              <lookup name="move-next-tab" type="PtyxisShortcuts">
+                <lookup name="shortcuts">PtyxisWindow</lookup>
+              </lookup>
+            </binding>
+            <property name="action">action(page.next)</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkShortcut">
+            <binding name="trigger">
+              <lookup name="move-previous-tab" type="PtyxisShortcuts">
+                <lookup name="shortcuts">PtyxisWindow</lookup>
+              </lookup>
+            </binding>
+            <property name="action">action(page.previous)</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkShortcut">
+            <binding name="trigger">
+              <lookup name="move-tab-left" type="PtyxisShortcuts">
+                <lookup name="shortcuts">PtyxisWindow</lookup>
+              </lookup>
+            </binding>
+            <property name="action">action(page.move-left)</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkShortcut">
+            <binding name="trigger">
+              <lookup name="move-tab-right" type="PtyxisShortcuts">
+                <lookup name="shortcuts">PtyxisWindow</lookup>
+              </lookup>
+            </binding>
+            <property name="action">action(page.move-right)</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkShortcut">
+            <binding name="trigger">
+              <lookup name="detach-tab" type="PtyxisShortcuts">
+                <lookup name="shortcuts">PtyxisWindow</lookup>
+              </lookup>
+            </binding>
+            <property name="action">action(win.new-tab)</property>
+            <property name="arguments">''</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkShortcut">
+            <binding name="trigger">
+              <lookup name="close-tab" type="PtyxisShortcuts">
+                <lookup name="shortcuts">PtyxisWindow</lookup>
+              </lookup>
+            </binding>
+            <property name="action">action(page.close)</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkShortcut">
+            <binding name="trigger">
+              <lookup name="close-other-tabs" type="PtyxisShortcuts">
+                <lookup name="shortcuts">PtyxisWindow</lookup>
+              </lookup>
+            </binding>
+            <property name="action">action(page.close-others)</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkShortcut">
+            <binding name="trigger">
+              <lookup name="focus-tab-1" type="PtyxisShortcuts">
+                <lookup name="shortcuts">PtyxisWindow</lookup>
+              </lookup>
+            </binding>
+            <property name="action">action(tab.focus)</property>
+            <property name="arguments">1</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkShortcut">
+            <binding name="trigger">
+              <lookup name="focus-tab-2" type="PtyxisShortcuts">
+                <lookup name="shortcuts">PtyxisWindow</lookup>
+              </lookup>
+            </binding>
+            <property name="action">action(tab.focus)</property>
+            <property name="arguments">2</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkShortcut">
+            <binding name="trigger">
+              <lookup name="focus-tab-3" type="PtyxisShortcuts">
+                <lookup name="shortcuts">PtyxisWindow</lookup>
+              </lookup>
+            </binding>
+            <property name="action">action(tab.focus)</property>
+            <property name="arguments">3</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkShortcut">
+            <binding name="trigger">
+              <lookup name="focus-tab-4" type="PtyxisShortcuts">
+                <lookup name="shortcuts">PtyxisWindow</lookup>
+              </lookup>
+            </binding>
+            <property name="action">action(tab.focus)</property>
+            <property name="arguments">4</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkShortcut">
+            <binding name="trigger">
+              <lookup name="focus-tab-5" type="PtyxisShortcuts">
+                <lookup name="shortcuts">PtyxisWindow</lookup>
+              </lookup>
+            </binding>
+            <property name="action">action(tab.focus)</property>
+            <property name="arguments">5</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkShortcut">
+            <binding name="trigger">
+              <lookup name="focus-tab-6" type="PtyxisShortcuts">
+                <lookup name="shortcuts">PtyxisWindow</lookup>
+              </lookup>
+            </binding>
+            <property name="action">action(tab.focus)</property>
+            <property name="arguments">6</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkShortcut">
+            <binding name="trigger">
+              <lookup name="focus-tab-7" type="PtyxisShortcuts">
+                <lookup name="shortcuts">PtyxisWindow</lookup>
+              </lookup>
+            </binding>
+            <property name="action">action(tab.focus)</property>
+            <property name="arguments">7</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkShortcut">
+            <binding name="trigger">
+              <lookup name="focus-tab-8" type="PtyxisShortcuts">
+                <lookup name="shortcuts">PtyxisWindow</lookup>
+              </lookup>
+            </binding>
+            <property name="action">action(tab.focus)</property>
+            <property name="arguments">8</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkShortcut">
+            <binding name="trigger">
+              <lookup name="focus-tab-9" type="PtyxisShortcuts">
+                <lookup name="shortcuts">PtyxisWindow</lookup>
+              </lookup>
+            </binding>
+            <property name="action">action(tab.focus)</property>
+            <property name="arguments">9</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkShortcut">
+            <binding name="trigger">
+              <lookup name="focus-tab-10" type="PtyxisShortcuts">
+                <lookup name="shortcuts">PtyxisWindow</lookup>
+              </lookup>
+            </binding>
+            <property name="action">action(tab.focus)</property>
+            <property name="arguments">10</property>
+          </object>
+        </child>
+      </object>
+    </child>
+    <property name="content">
+      <object class="AdwTabOverview" id="tab_overview">
+        <style>
+          <class name="window-contents"/>
+        </style>
+        <property name="enable-new-tab">true</property>
+        <signal name="notify::open" handler="ptyxis_window_tab_overview_notify_open_cb" swapped="1" after="1"/>
+        <signal name="create-tab" handler="ptyxis_window_tab_overview_create_tab_cb" swapped="1"/>
+        <property name="view">tab_view</property>
+        <property name="child">
+          <object class="AdwToolbarView">
+            <property name="top-bar-style">raised</property>
+            <child type="top">
+              <object class="GtkBox" id="visual_bell">
+                <property name="orientation">vertical</property>
+                <child>
+                  <object class="AdwHeaderBar" id="header_bar">
+                    <style>
+                      <class name="main-header-bar"/>
+                    </style>
+                    <child type="start">
+                      <object class="GtkBox" id="new_tab_box">
+                        <property name="css-name">splitbutton</property>
+                        <style>
+                          <class name="image-button"/>
+                        </style>
+                        <child>
+                          <object class="GtkButton" id="new_terminal_button">
+                            <property name="icon-name">tab-new-symbolic</property>
+                            <property name="tooltip-text" translatable="yes">New Terminal</property>
+                            <property name="action-name">win.new-terminal</property>
+                            <property name="action-target">('default','')</property>
+                            <property name="focus-on-click">false</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkSeparator" id="new_terminal_separator">
+                            <property name="orientation">vertical</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkMenuButton" id="new_terminal_menu_button">
+                            <property name="tooltip-text" translatable="yes">Show Profiles and Containers</property>
+                            <child>
+                              <object class="GtkImage">
+                                <property name="icon-name">pan-down-symbolic</property>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child type="title">
+                      <object class="GtkCenterBox">
+                        <child type="start">
+                          <object class="GtkImage">
+                            <property name="visible">false</property>
+                            <binding name="gicon">
+                              <lookup name="icon" type="PtyxisTab">
+                                <lookup name="active-tab">PtyxisWindow</lookup>
+                              </lookup>
+                            </binding>
+                          </object>
+                        </child>
+                        <child type="center">
+                          <object class="AdwWindowTitle">
+                            <binding name="subtitle">
+                              <lookup name="subtitle" type="PtyxisTab">
+                                <lookup name="active-tab">PtyxisWindow</lookup>
+                              </lookup>
+                            </binding>
+                            <binding name="title">
+                              <lookup name="title" type="PtyxisTab">
+                                <lookup name="active-tab">PtyxisWindow</lookup>
+                              </lookup>
+                            </binding>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child type="end">
+                      <object class="GtkMenuButton" id="primary_menu_button">
+                        <property name="icon-name">open-menu-symbolic</property>
+                        <property name="tooltip-text" translatable="yes">Main Menu</property>
+                        <property name="menu-model">primary_menu</property>
+                        <property name="focus-on-click">false</property>
+                      </object>
+                    </child>
+                    <child type="end">
+                      <object class="GtkToggleButton" id="tab_overview_button">
+                        <property name="icon-name">view-grid-symbolic</property>
+                        <property name="tooltip-text" translatable="yes">Show Open Tabs</property>
+                        <property name="active" bind-source="tab_overview" bind-property="open" bind-flags="bidirectional|sync-create"/>
+                        <property name="focus-on-click">false</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="AdwTabBar" id="tab_bar">
+                    <property name="autohide">false</property>
+                    <property name="visible">false</property>
+                    <property name="view">tab_view</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <property name="content">
+              <object class="AdwToastOverlay" id="toasts">
+                <child>
+                  <object class="AdwTabView" id="tab_view">
+                    <signal name="notify::selected-page" handler="ptyxis_window_notify_selected_page_cb" swapped="1" after="1"/>
+                    <signal name="page-attached" handler="ptyxis_window_page_attached_cb" swapped="1"/>
+                    <signal name="page-detached" handler="ptyxis_window_page_detached_cb" swapped="1"/>
+                    <signal name="create-window" handler="ptyxis_window_create_window_cb" swapped="1"/>
+                    <signal name="close-page" handler="ptyxis_window_close_page_cb" swapped="1"/>
+                    <signal name="setup-menu" handler="ptyxis_window_setup_menu_cb" swapped="1"/>
+                    <property name="menu-model">tab_menu</property>
+                  </object>
+                </child>
+              </object>
+            </property>
+            <child type="bottom">
+              <object class="GtkRevealer" id="find_bar_revealer">
+                <property name="reveal-child">false</property>
+                <!-- Disable for now because VteTerminal won't gracefully resize -->
+                <property name="transition-duration">0</property>
+                <child>
+                  <object class="PtyxisFindBar" id="find_bar">
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </property>
+      </object>
+    </property>
+  </template>
+  <menu id="primary_menu">
+    <section>
+      <item>
+        <attribute name="custom">interface-style</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="custom">zoom</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="id">new-tab</attribute>
+        <attribute name="label" translatable="yes">New _Tab</attribute>
+        <attribute name="action">win.new-tab</attribute>
+        <attribute name="target" type="(ss)">('default','')</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+      </item>
+      <item>
+        <attribute name="id">new-window</attribute>
+        <attribute name="label" translatable="yes">New _Window</attribute>
+        <attribute name="action">win.new-window</attribute>
+        <attribute name="target" type="(ss)">('default','')</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="id">tab-overview</attribute>
+        <attribute name="label" translatable="yes">Show Open Tabs</attribute>
+        <attribute name="action">win.tab-overview</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="id">toggle-fullscreen</attribute>
+        <attribute name="label" translatable="yes">Fullscreen</attribute>
+        <attribute name="action">win.fullscreen</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+      </item>
+      <item>
+        <attribute name="id">toggle-fullscreen</attribute>
+        <attribute name="label" translatable="yes">Leave Fullscreen</attribute>
+        <attribute name="action">win.unfullscreen</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="id">preferences</attribute>
+        <attribute name="label" translatable="yes">_Preferences</attribute>
+        <attribute name="action">win.preferences</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">_Keyboard Shortcuts</attribute>
+        <attribute name="action">app.help-overlay</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">_About Ptyxis</attribute>
+        <attribute name="action">app.about</attribute>
+      </item>
+    </section>
+  </menu>
+  <menu id="tab_menu">
+    <section>
+      <item>
+        <attribute name="id">move-tab-left</attribute>
+        <attribute name="label" translatable="yes">Move _Left</attribute>
+        <attribute name="action">page.move-left</attribute>
+      </item>
+      <item>
+        <attribute name="id">move-tab-right</attribute>
+        <attribute name="label" translatable="yes">Move _Right</attribute>
+        <attribute name="action">page.move-right</attribute>
+      </item>
+      <item>
+        <attribute name="id">detach-tab</attribute>
+        <attribute name="label" translatable="yes">Move to New _Window</attribute>
+        <attribute name="action">page.detach</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">_Pin Tab</attribute>
+        <attribute name="action">tab.pin</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Un_pin Tab</attribute>
+        <attribute name="action">tab.unpin</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">Set Title</attribute>
+        <attribute name="action">win.set-title</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="id">close-other-tabs</attribute>
+        <attribute name="label" translatable="yes">Close _Other Tabs</attribute>
+        <attribute name="action">page.close-others</attribute>
+      </item>
+      <item>
+        <attribute name="id">close-tab</attribute>
+        <attribute name="label" translatable="yes">_Close Tab</attribute>
+        <attribute name="action">page.close</attribute>
+      </item>
+    </section>
+  </menu>
+  <menu id="my_computer_menu">
+    <item>
+      <attribute name="label" translatable="yes">_My Computer</attribute>
+      <attribute name="action">my-computer</attribute>
+      <attribute name="hidden-when">action-disabled</attribute>
+    </item>
+  </menu>
+</interface>

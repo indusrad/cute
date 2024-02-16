@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg height="16px" viewBox="0 0 16 16" width="16px" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <defs>
+        <filter id="a" height="100%" width="100%" x="0%" y="0%">
+            <feColorMatrix color-interpolation-filters="sRGB" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 -1 1"/>
+        </filter>
+        <filter id="b" height="100%" width="100%" x="0%" y="0%">
+            <feImage height="19.2" result="source" width="19.2" xlink:href="#f"/>
+            <feImage height="19.2" result="destination" width="19.2" xlink:href="#g"/>
+            <feComposite color-interpolation-filters="sRGB" in="source" in2="destination" k1="0" k2="1" k3="1" k4="0" operator="arithmetic"/>
+        </filter>
+        <g id="c">
+            <rect fill="none" height="19.2" width="19.2"/>
+            <rect fill="#ffffff" height="19.2" width="19.2"/>
+        </g>
+        <mask id="d">
+            <use xlink:href="#c"/>
+        </mask>
+        <mask id="e">
+            <use filter="url(#a)" xlink:href="#c"/>
+        </mask>
+        <g id="f" mask="url(#d)">
+            <image height="67" transform="matrix(0.24 0 0 0.24 1.6 1.6)" width="67" xlink:href="data:image/png;base64,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"/>
+        </g>
+        <g id="g" mask="url(#e)">
+            <g transform="matrix(1 0 0 1 1.6 1.6)">
+                <path d="m 3.421875 9.03125 c -0.109375 0 -0.214844 0.042969 -0.289063 0.121094 c -0.160156 0.160156 -0.160156 0.417968 0 0.578125 l 1.34375 1.34375 l -1.34375 1.34375 c -0.160156 0.160156 -0.160156 0.417969 0 0.578125 c 0.15625 0.160156 0.417969 0.160156 0.578126 0 l 1.921874 -1.921875 l -1.921874 -1.921875 c -0.078126 -0.074219 -0.183594 -0.121094 -0.289063 -0.121094 z m 0 0" fill="#241f31"/>
+                <path d="m 3.082031 5.988281 c 3.984375 0.597657 8.539063 0.65625 9.019531 -4.441406 c -5.402343 -4.441406 -6.183593 2 -9.019531 4.441406 z m 0 0" fill="#241f31"/>
+                <path d="m 12.320312 8.226562 c 2.460938 -2.011718 3.652344 -6.074218 0.8125 -6.074218 c -4.097656 0 -0.429687 3.324218 -0.8125 6.074218 z m 0 0" fill="#241f31"/>
+            </g>
+        </g>
+    </defs>
+    <g filter="url(#b)" transform="matrix(1 0 0 1 -1.6 -1.6)">
+        <rect height="19.2" width="19.2"/>
+    </g>
+</svg>

@@ -1,11 +1,11 @@
-# Italian translation of Prompt
+# Italian translation of Ptyxis
 # Copyright (C) 2023 - Christian Hergert
-# This file is distributed under the same license as the Prompt package.
+# This file is distributed under the same license as the Ptyxis package.
 # Davide Ferracin <davide.ferracin@protonmail.com>, 2024.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: prompt main\n"
+"Project-Id-Version: ptyxis main\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-01-27 10:41+0200\n"
 "PO-Revision-Date: 2024-01-27 10:53+0200\n"
@@ -16,52 +16,52 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: data/org.gnome.Prompt.desktop.in.in:3
-#: data/org.gnome.Prompt.metainfo.xml.in.in:6
-msgid "Prompt"
-msgstr "Prompt"
+#: data/org.gnome.Ptyxis.desktop.in.in:3
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:6
+msgid "Ptyxis"
+msgstr "Ptyxis"
 
-#: data/org.gnome.Prompt.desktop.in.in:4
+#: data/org.gnome.Ptyxis.desktop.in.in:4
 msgid "A container-oriented terminal for GNOME"
 msgstr "Un terminale per GNOME rivolto ai container"
 
-#: data/org.gnome.Prompt.desktop.in.in:14
-msgid "terminal;shell;prompt;command;commandline;cmd;"
+#: data/org.gnome.Ptyxis.desktop.in.in:14
+msgid "terminal;shell;ptyxis;command;commandline;cmd;"
 msgstr ""
-"terminal;shell;prompt;comando;comandi;cmd;riga di comando;rigadicomando;"
+"terminal;shell;ptyxis;comando;comandi;cmd;riga di comando;rigadicomando;"
 
-#: data/org.gnome.Prompt.desktop.in.in:20
-#: src/org.gnome.Prompt.gschema.xml.in:331 src/prompt-preferences-window.ui:632
+#: data/org.gnome.Ptyxis.desktop.in.in:20
+#: src/org.gnome.Ptyxis.gschema.xml.in:331 src/ptyxis-preferences-window.ui:632
 msgid "New Window"
 msgstr "Nuova finestra"
 
-#: data/org.gnome.Prompt.desktop.in.in:24
-#: src/org.gnome.Prompt.gschema.xml.in:325 src/prompt-preferences-window.ui:626
+#: data/org.gnome.Ptyxis.desktop.in.in:24
+#: src/org.gnome.Ptyxis.gschema.xml.in:325 src/ptyxis-preferences-window.ui:626
 msgid "New Tab"
 msgstr "Nuova scheda"
 
-#: data/org.gnome.Prompt.desktop.in.in:28
-#: src/org.gnome.Prompt.gschema.xml.in:343 src/prompt-preferences-window.ui:801
+#: data/org.gnome.Ptyxis.desktop.in.in:28
+#: src/org.gnome.Ptyxis.gschema.xml.in:343 src/ptyxis-preferences-window.ui:801
 msgid "Preferences"
 msgstr "Preferenze"
 
-#: data/org.gnome.Prompt.metainfo.xml.in.in:7
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:7
 msgid "A container oriented terminal for GNOME"
 msgstr "Un terminale per GNOME rivolto ai container"
 
-#: data/org.gnome.Prompt.metainfo.xml.in.in:9
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:9
 msgid ""
-"Prompt is a terminal for GNOME that focuses on ease-of-use in a world of "
+"Ptyxis is a terminal for GNOME that focuses on ease-of-use in a world of "
 "containers."
 msgstr ""
-"Prompt è un terminale per GNOME che si concentra sulla facilità d'uso in un "
+"Ptyxis è un terminale per GNOME che si concentra sulla facilità d'uso in un "
 "mondo di container."
 
-#: data/org.gnome.Prompt.metainfo.xml.in.in:13
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:13
 msgid "Features:"
 msgstr "Funzionalità:"
 
-#: data/org.gnome.Prompt.metainfo.xml.in.in:15
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:15
 msgid ""
 "Remembers current container when opening a new tab with support for podman, "
 "toolbox, distrobox, and more"
@@ -69,163 +69,163 @@ msgstr ""
 "Ricorda il container in uso quando si apre una nuova scheda con supporto per "
 "podman, toolbox, distrobox e altri."
 
-#: data/org.gnome.Prompt.metainfo.xml.in.in:16
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:16
 msgid "Configurable keyboard shortcuts"
 msgstr "Scorciatoie da tastiera personalizzabili"
 
-#: data/org.gnome.Prompt.metainfo.xml.in.in:17
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:17
 msgid "Modern interface which integrates the palette with the window styling"
 msgstr ""
 "Interfaccia moderna che integra la tavolozza con lo schema di colori della "
 "finestra"
 
-#: data/org.gnome.Prompt.metainfo.xml.in.in:18
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:18
 msgid "User-installable color palettes"
 msgstr "Tavolozze di colori installabili dall'utente"
 
-#: data/org.gnome.Prompt.metainfo.xml.in.in:19
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:19
 msgid "Support for preferences profiles with container integration"
 msgstr "Supporto per profili di preferenze con integrazione per i container"
 
-#: data/org.gnome.Prompt.metainfo.xml.in.in:20
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:20
 msgid "Integrated color palettes with light and dark support"
 msgstr "Tavolozze di colori integrate con supporto per temi chiari e scuri"
 
-#: data/org.gnome.Prompt.metainfo.xml.in.in:21
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:21
 msgid "Tabbed interface with tab overviews"
 msgstr "Interfaccia a schede con panoramica"
 
-#: data/org.gnome.Prompt.metainfo.xml.in.in:22
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:22
 msgid "Efficient foreground process tracking denoting sudo and SSH"
 msgstr ""
 "Tracciamento efficiente dei processi in primo piano, con indicazione di sudo "
 "e SSH"
 
-#: data/org.gnome.Prompt.metainfo.xml.in.in:23
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:23
 msgid "Support for tansparent terminal backgrounds"
 msgstr "Supporto per sfondi trasparenti del terminale"
 
-#: data/org.gnome.Prompt.metainfo.xml.in.in:24
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:24
 msgid "Seperate process mode for terminal-based applications"
 msgstr "Modalità a processo separato per applicazioni basate sul terminale"
 
-#: data/org.gnome.Prompt.metainfo.xml.in.in:25
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:25
 msgid "Support for pinned tabs and saved sessions"
 msgstr "Supporto per fissare le schede e salvare le sessioni"
 
-#: data/org.gnome.Prompt.metainfo.xml.in.in:26
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:26
 msgid "Terminal tabs are run within separate cgroups"
 msgstr "Le schede del terminale sono eseguire all'interno di cgroup separati"
 
-#: data/org.gnome.Prompt.metainfo.xml.in.in:27
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:27
 msgid "Terminal inspector to help when writing terminal-based applications"
 msgstr ""
 "Ispettore del terminale per aiutare a scrivere applicazioni basate sul "
 "terminale"
 
 #. developer_name tag deprecated with Appstream 1.0
-#: data/org.gnome.Prompt.metainfo.xml.in.in:32
-#: data/org.gnome.Prompt.metainfo.xml.in.in:34
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:32
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:34
 msgid "Christian Hergert"
 msgstr "Christian Hergert"
 
-#: data/org.gnome.Prompt.metainfo.xml.in.in:52
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:52
 msgid "A column and row size indicator is displayed when resizing the window"
 msgstr ""
 "Quando si ridimensiona la finestra viene mostrato un indicatore della "
 "dimensione di righe e colonne"
 
-#: data/org.gnome.Prompt.metainfo.xml.in.in:57
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:57
 msgid "Containers are automatically discovered and displayed"
 msgstr "I container vengono scoperti e mostrati automaticamente"
 
-#: data/org.gnome.Prompt.metainfo.xml.in.in:62
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:62
 msgid "Many behaviors of the terminal may be tweaked to user preference"
 msgstr ""
 "Gran parte del comportamento del terminale può essere configurato secondo le "
 "preferenze dell'utente"
 
-#: data/org.gnome.Prompt.metainfo.xml.in.in:67
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:67
 msgid "You may rename a tab by providing a prefix to the title"
 msgstr "È possibile rinominare una scheda aggiungendo un prefisso al titolo"
 
-#: data/org.gnome.Prompt.metainfo.xml.in.in:72
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:72
 msgid "Palettes provide an integrated dark mode"
 msgstr "Le tavolozze forniscono una modalità scura integrata"
 
-#: data/org.gnome.Prompt.metainfo.xml.in.in:77
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:77
 msgid "You can see an overview of your tabs at any time"
 msgstr "È possibile vedere una panoramica delle proprie schede in ogni momento"
 
-#: data/org.gnome.Prompt.metainfo.xml.in.in:82
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:82
 msgid "Many shortcuts may be remapped to user preference"
 msgstr "Molte scorciatoie possono essere rimappate come preferisce l'utente"
 
-#: data/org.gnome.Prompt.metainfo.xml.in.in:87
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:87
 msgid "Built-in color palettes provide both dark and light mode variants"
 msgstr ""
 "Le tavolozze preconfezionate forniscono sia una variante scura che una chiara"
 
-#: data/org.gnome.Prompt.metainfo.xml.in.in:92
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:92
 msgid ""
 "Profiles allow for overriding a number of features such as default container"
 msgstr ""
 "I profili permettono di superare alcune funzionalità, come il container "
 "predefinito"
 
-#: data/org.gnome.Prompt.metainfo.xml.in.in:97
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:97
 msgid "The terminal will remind you when you're root on the local system"
 msgstr "Il terminale ricorda all'utente quando è root nel sistema locale"
 
-#: data/org.gnome.Prompt.metainfo.xml.in.in:102
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:102
 msgid "The terminal will remind you when you're on a remote system"
 msgstr "Il terminale ricorda all'utente quando è su un sistema remoto"
 
-#: src/org.gnome.Prompt.gschema.xml.in:95
+#: src/org.gnome.Ptyxis.gschema.xml.in:95
 msgid "Default Profile UUID"
 msgstr "UUID del profilo predefinito"
 
-#: src/org.gnome.Prompt.gschema.xml.in:96
+#: src/org.gnome.Ptyxis.gschema.xml.in:96
 msgid "The UUID of the default profile"
 msgstr "L'UUID del profilo predefinito"
 
-#: src/org.gnome.Prompt.gschema.xml.in:101
+#: src/org.gnome.Ptyxis.gschema.xml.in:101
 msgid "UUIDs of all Profiles"
 msgstr "UUID di tutti i profili"
 
-#: src/org.gnome.Prompt.gschema.xml.in:102
+#: src/org.gnome.Ptyxis.gschema.xml.in:102
 msgid "A list of UUID for every profile"
 msgstr "Una lista degli UUID per ciascun profilo"
 
-#: src/org.gnome.Prompt.gschema.xml.in:107 src/prompt-preferences-window.ui:289
+#: src/org.gnome.Ptyxis.gschema.xml.in:107 src/ptyxis-preferences-window.ui:289
 msgid "New Tab Position"
 msgstr "Posizione delle nuove schede"
 
-#: src/org.gnome.Prompt.gschema.xml.in:108
+#: src/org.gnome.Ptyxis.gschema.xml.in:108
 msgid "Where to place new tabs"
 msgstr "Dove posizionare le nuove schede"
 
-#: src/org.gnome.Prompt.gschema.xml.in:113 src/prompt-preferences-window.ui:335
+#: src/org.gnome.Ptyxis.gschema.xml.in:113 src/ptyxis-preferences-window.ui:335
 msgid "Audible Bell"
 msgstr "Campanella udibile"
 
-#: src/org.gnome.Prompt.gschema.xml.in:114
+#: src/org.gnome.Ptyxis.gschema.xml.in:114
 msgid "If an audible bell should be used"
 msgstr "Indica se si deve usare una campanella udibile"
 
-#: src/org.gnome.Prompt.gschema.xml.in:119
+#: src/org.gnome.Ptyxis.gschema.xml.in:119
 msgid "Visible Bell"
 msgstr "Campanella visibile"
 
-#: src/org.gnome.Prompt.gschema.xml.in:120
+#: src/org.gnome.Ptyxis.gschema.xml.in:120
 msgid "If a visual bell should be used"
 msgstr "Indica se si deve usare una campanella visibile"
 
-#: src/org.gnome.Prompt.gschema.xml.in:125
+#: src/org.gnome.Ptyxis.gschema.xml.in:125
 msgid "Visual Process Leader"
 msgstr "Icona per i processi"
 
-#: src/org.gnome.Prompt.gschema.xml.in:126
+#: src/org.gnome.Ptyxis.gschema.xml.in:126
 msgid ""
 "Display a visual window highlight when process leader is SSH, sudo, or other "
 "specialized tooling"
@@ -233,216 +233,216 @@ msgstr ""
 "Evidenzia la finestra con un determinato colore se il capoprocesso è SSH, "
 "sudo o altri strumenti specializzati"
 
-#: src/org.gnome.Prompt.gschema.xml.in:131
+#: src/org.gnome.Ptyxis.gschema.xml.in:131
 msgid "Use System Font"
 msgstr "Usa il tipo di carattere di sistema"
 
-#: src/org.gnome.Prompt.gschema.xml.in:132
+#: src/org.gnome.Ptyxis.gschema.xml.in:132
 msgid "If the default system monospace font should be used"
 msgstr ""
 "Indica se usare il tipo di carattere monospaziato predefinito del sistema"
 
-#: src/org.gnome.Prompt.gschema.xml.in:137
+#: src/org.gnome.Ptyxis.gschema.xml.in:137
 msgid "Font Name"
 msgstr "Nome del tipo di carattere"
 
-#: src/org.gnome.Prompt.gschema.xml.in:138
+#: src/org.gnome.Ptyxis.gschema.xml.in:138
 msgid "The font description to use if use-system-font is set to False"
 msgstr ""
 "La descrizione del tipo di carattere da usare se use-system-font è impostato "
 "su falso"
 
-#: src/org.gnome.Prompt.gschema.xml.in:143 src/prompt-preferences-window.ui:216
+#: src/org.gnome.Ptyxis.gschema.xml.in:143 src/ptyxis-preferences-window.ui:216
 msgid "Cursor Shape"
 msgstr "Forma del cursore"
 
-#: src/org.gnome.Prompt.gschema.xml.in:144
+#: src/org.gnome.Ptyxis.gschema.xml.in:144
 msgid "The default shape of the cursor"
 msgstr "La forma predefinita del cursore"
 
-#: src/org.gnome.Prompt.gschema.xml.in:149
+#: src/org.gnome.Ptyxis.gschema.xml.in:149
 msgid "Cursor Blink Mode"
 msgstr "Modalità di lampeggiamento del cursore"
 
-#: src/org.gnome.Prompt.gschema.xml.in:150
+#: src/org.gnome.Ptyxis.gschema.xml.in:150
 msgid "The default blink mode cursor"
 msgstr "La modalità di lampeggiamento predefinita del cursore"
 
-#: src/org.gnome.Prompt.gschema.xml.in:155
+#: src/org.gnome.Ptyxis.gschema.xml.in:155
 msgid "Scrollbar Policy"
 msgstr "Barre di scorrimento"
 
-#: src/org.gnome.Prompt.gschema.xml.in:156
+#: src/org.gnome.Ptyxis.gschema.xml.in:156
 msgid "If scrollbars should be displayed"
 msgstr "Indica se mostrare le barre di scorrimento"
 
-#: src/org.gnome.Prompt.gschema.xml.in:161
+#: src/org.gnome.Ptyxis.gschema.xml.in:161
 msgid "Text Blink Mode"
 msgstr "Modalità di lampeggiamento del testo"
 
-#: src/org.gnome.Prompt.gschema.xml.in:162
+#: src/org.gnome.Ptyxis.gschema.xml.in:162
 msgid "When text blinking is allowed"
 msgstr "Indica se permettere il lampeggiamento del testo"
 
-#: src/org.gnome.Prompt.gschema.xml.in:167
+#: src/org.gnome.Ptyxis.gschema.xml.in:167
 msgid "Interface Style"
 msgstr "Stile dell'interfaccia"
 
-#: src/org.gnome.Prompt.gschema.xml.in:168
+#: src/org.gnome.Ptyxis.gschema.xml.in:168
 msgid "If light or dark interface style should be used"
 msgstr "Indica se usare lo stile chiaro o scuro per l'interfaccia"
 
-#: src/org.gnome.Prompt.gschema.xml.in:173 src/prompt-preferences-window.ui:318
+#: src/org.gnome.Ptyxis.gschema.xml.in:173 src/ptyxis-preferences-window.ui:318
 msgid "Restore Session"
 msgstr "Ripristina la sessione"
 
-#: src/org.gnome.Prompt.gschema.xml.in:174
-msgid "Restore tabs from previous session when starting Prompt"
-msgstr "Ripristina le schede della sessione precedente all'avvio di Prompt"
+#: src/org.gnome.Ptyxis.gschema.xml.in:174
+msgid "Restore tabs from previous session when starting Ptyxis"
+msgstr "Ripristina le schede della sessione precedente all'avvio di Ptyxis"
 
-#: src/org.gnome.Prompt.gschema.xml.in:179 src/prompt-preferences-window.ui:324
+#: src/org.gnome.Ptyxis.gschema.xml.in:179 src/ptyxis-preferences-window.ui:324
 msgid "Restore Window Size"
 msgstr "Ripristina la dimensione della finestra"
 
-#: src/org.gnome.Prompt.gschema.xml.in:180
+#: src/org.gnome.Ptyxis.gschema.xml.in:180
 msgid "Restore the previous window size when creating new windows"
 msgstr "Crea nuove finestre ripristinando la dimensione di quelle precedenti"
 
-#: src/org.gnome.Prompt.gschema.xml.in:189
+#: src/org.gnome.Ptyxis.gschema.xml.in:189
 msgid "Toast on Copy Clipboard"
 msgstr "Avviso di avvenuta copia negli appunti"
 
-#: src/org.gnome.Prompt.gschema.xml.in:190
+#: src/org.gnome.Ptyxis.gschema.xml.in:190
 msgid "Show the user when text has copied to the clipboard."
 msgstr "Avvisa l'utente quando del testo viene copiato negli appunti."
 
-#: src/org.gnome.Prompt.gschema.xml.in:199
+#: src/org.gnome.Ptyxis.gschema.xml.in:199
 msgid "Label"
 msgstr "Etichetta"
 
-#: src/org.gnome.Prompt.gschema.xml.in:200
+#: src/org.gnome.Ptyxis.gschema.xml.in:200
 msgid "The label for the profile"
 msgstr "L'etichetta per il profilo"
 
-#: src/org.gnome.Prompt.gschema.xml.in:205
+#: src/org.gnome.Ptyxis.gschema.xml.in:205
 msgid "Login Shell"
 msgstr "Shell di login"
 
-#: src/org.gnome.Prompt.gschema.xml.in:206
+#: src/org.gnome.Ptyxis.gschema.xml.in:206
 msgid "Use a login shell"
 msgstr "Usa una shell di login"
 
-#: src/org.gnome.Prompt.gschema.xml.in:211 src/prompt-preferences-window.ui:403
-#: src/prompt-profile-editor.ui:294
+#: src/org.gnome.Ptyxis.gschema.xml.in:211 src/ptyxis-preferences-window.ui:403
+#: src/ptyxis-profile-editor.ui:294
 msgid "Limit Scrollback"
 msgstr "Limita scorrimento all'indietro"
 
-#: src/org.gnome.Prompt.gschema.xml.in:212
+#: src/org.gnome.Ptyxis.gschema.xml.in:212
 msgid "Limit the number of lines to keep for scrollback"
 msgstr "Limita il numero di righe da mantenere per lo scorrimento all'indietro"
 
-#: src/org.gnome.Prompt.gschema.xml.in:218 src/prompt-preferences-window.ui:412
-#: src/prompt-profile-editor.ui:303
+#: src/org.gnome.Ptyxis.gschema.xml.in:218 src/ptyxis-preferences-window.ui:412
+#: src/ptyxis-profile-editor.ui:303
 msgid "Scrollback Lines"
 msgstr "Righe per lo scorrimento all'indietro"
 
-#: src/org.gnome.Prompt.gschema.xml.in:219
+#: src/org.gnome.Ptyxis.gschema.xml.in:219
 msgid "The number of lines to keep in the scrollback, zero for no scrollback"
 msgstr ""
 "Numero di righe da mantenere per lo scorrimento all'indietro; zero indica "
 "che lo scorrimento all'indietro è disattivato"
 
-#: src/org.gnome.Prompt.gschema.xml.in:224 src/prompt-preferences-window.ui:393
-#: src/prompt-profile-editor.ui:284
+#: src/org.gnome.Ptyxis.gschema.xml.in:224 src/ptyxis-preferences-window.ui:393
+#: src/ptyxis-profile-editor.ui:284
 msgid "Scroll on Output"
 msgstr "Scorri in presenza di output"
 
-#: src/org.gnome.Prompt.gschema.xml.in:225
+#: src/org.gnome.Ptyxis.gschema.xml.in:225
 msgid "Scroll to the bottom upon new output"
 msgstr "Scorre fino al fondo in seguito ad un nuovo output"
 
-#: src/org.gnome.Prompt.gschema.xml.in:230 src/prompt-preferences-window.ui:387
-#: src/prompt-profile-editor.ui:278
+#: src/org.gnome.Ptyxis.gschema.xml.in:230 src/ptyxis-preferences-window.ui:387
+#: src/ptyxis-profile-editor.ui:278
 msgid "Scroll on Keystroke"
 msgstr "Scorri alla pressione dei tasti"
 
-#: src/org.gnome.Prompt.gschema.xml.in:231
+#: src/org.gnome.Ptyxis.gschema.xml.in:231
 msgid "Scroll to the bottom upon user keystroke"
 msgstr ""
 "Scorre fino al fondo in seguito alla pressione di un tasto da parte "
 "dell'utente"
 
-#: src/org.gnome.Prompt.gschema.xml.in:236 src/prompt-profile-editor.ui:148
+#: src/org.gnome.Ptyxis.gschema.xml.in:236 src/ptyxis-profile-editor.ui:148
 msgid "Use Custom Command"
 msgstr "Usa comando personalizzato"
 
-#: src/org.gnome.Prompt.gschema.xml.in:237
+#: src/org.gnome.Ptyxis.gschema.xml.in:237
 msgid "If a custom command should be used"
 msgstr "Indica se usare un comando personalizzato"
 
-#: src/org.gnome.Prompt.gschema.xml.in:242 src/prompt-profile-editor.ui:153
+#: src/org.gnome.Ptyxis.gschema.xml.in:242 src/ptyxis-profile-editor.ui:153
 msgid "Custom Command"
 msgstr "Comando personalizzato"
 
-#: src/org.gnome.Prompt.gschema.xml.in:243
+#: src/org.gnome.Ptyxis.gschema.xml.in:243
 msgid "A custom command for the shell"
 msgstr "Un comando personalizzato per la shell"
 
-#: src/org.gnome.Prompt.gschema.xml.in:248 src/prompt-profile-editor.ui:172
+#: src/org.gnome.Ptyxis.gschema.xml.in:248 src/ptyxis-profile-editor.ui:172
 msgid "Default Container"
 msgstr "Container predefinito"
 
-#: src/org.gnome.Prompt.gschema.xml.in:249
+#: src/org.gnome.Ptyxis.gschema.xml.in:249
 msgid "The default container to run the command in"
 msgstr "Il container predefinito in cui eseguire il comando"
 
-#: src/org.gnome.Prompt.gschema.xml.in:254 src/prompt-profile-editor.ui:181
+#: src/org.gnome.Ptyxis.gschema.xml.in:254 src/ptyxis-profile-editor.ui:181
 msgid "Preserve Container"
 msgstr "Preserva container"
 
-#: src/org.gnome.Prompt.gschema.xml.in:255
+#: src/org.gnome.Ptyxis.gschema.xml.in:255
 msgid "Preserve the active container when creating new tabs and windows"
 msgstr "Preserva il container attivo quando si creano nuove schede o finestre"
 
-#: src/org.gnome.Prompt.gschema.xml.in:260 src/prompt-preferences-window.ui:472
-#: src/prompt-profile-editor.ui:242
+#: src/org.gnome.Ptyxis.gschema.xml.in:260 src/ptyxis-preferences-window.ui:472
+#: src/ptyxis-profile-editor.ui:242
 msgid "Exit Action"
 msgstr "Azione all'uscita"
 
-#: src/org.gnome.Prompt.gschema.xml.in:261
+#: src/org.gnome.Ptyxis.gschema.xml.in:261
 msgid "The action to take when the shell exits"
 msgstr "L'azione da intraprendere all'uscita della shell"
 
-#: src/org.gnome.Prompt.gschema.xml.in:266
+#: src/org.gnome.Ptyxis.gschema.xml.in:266
 msgid "Preserve Directory"
 msgstr "Mantieni directory"
 
-#: src/org.gnome.Prompt.gschema.xml.in:267
+#: src/org.gnome.Ptyxis.gschema.xml.in:267
 msgid "If the directory should be preserved for new terminals"
 msgstr "Indica se mantenere la directory nei nuovi terminali"
 
-#: src/org.gnome.Prompt.gschema.xml.in:272 src/prompt-inspector.ui:102
-#: src/prompt-preferences-window.ui:38 src/prompt-profile-editor.ui:69
+#: src/org.gnome.Ptyxis.gschema.xml.in:272 src/ptyxis-inspector.ui:102
+#: src/ptyxis-preferences-window.ui:38 src/ptyxis-profile-editor.ui:69
 msgid "Palette"
 msgstr "Tavolozza"
 
-#: src/org.gnome.Prompt.gschema.xml.in:273
+#: src/org.gnome.Ptyxis.gschema.xml.in:273
 msgid "The color palette to use for the profile, by name"
 msgstr "La tavolozza di colori da usare per il profilo, per nome"
 
-#: src/org.gnome.Prompt.gschema.xml.in:279
+#: src/org.gnome.Ptyxis.gschema.xml.in:279
 msgid "Opacity"
 msgstr "Opacità"
 
-#: src/org.gnome.Prompt.gschema.xml.in:280
+#: src/org.gnome.Ptyxis.gschema.xml.in:280
 msgid "The opacity of the palette background"
 msgstr "L'opacità dello sfondo della tavolozza"
 
-#: src/org.gnome.Prompt.gschema.xml.in:285
+#: src/org.gnome.Ptyxis.gschema.xml.in:285
 msgid "Bold is Bright"
 msgstr "Grassetto è brillante"
 
-#: src/org.gnome.Prompt.gschema.xml.in:286
+#: src/org.gnome.Ptyxis.gschema.xml.in:286
 msgid ""
 "Setting bold on one of the lower 8 colors in the palette will use bright "
 "variant (upper 8 colors)"
@@ -450,971 +450,971 @@ msgstr ""
 "Impostare il grassetto su uno degli otto colori inferiori della tavolozza "
 "farà sì che venga usata la variante brillante (gli otto colori superiori)"
 
-#: src/org.gnome.Prompt.gschema.xml.in:291
+#: src/org.gnome.Ptyxis.gschema.xml.in:291
 msgid "CJK Ambiguous Width"
 msgstr "Larghezza CJK ambigua"
 
-#: src/org.gnome.Prompt.gschema.xml.in:292
+#: src/org.gnome.Ptyxis.gschema.xml.in:292
 msgid "The size to apply to ambiguous width characters"
 msgstr "La dimensione da usare per caratteri dalla larghezza ambigua"
 
-#: src/org.gnome.Prompt.gschema.xml.in:297
-#: src/org.gnome.Prompt.gschema.xml.in:303
+#: src/org.gnome.Ptyxis.gschema.xml.in:297
+#: src/org.gnome.Ptyxis.gschema.xml.in:303
 msgid "Backspace Binding"
 msgstr "Associazione a backspace"
 
-#: src/org.gnome.Prompt.gschema.xml.in:298
-#: src/org.gnome.Prompt.gschema.xml.in:304
+#: src/org.gnome.Ptyxis.gschema.xml.in:298
+#: src/org.gnome.Ptyxis.gschema.xml.in:304
 msgid "What to send to the PTY when a backspace is entered"
 msgstr "Cosa inviare al PTY quando viene inserito un backspace"
 
-#: src/org.gnome.Prompt.gschema.xml.in:313 src/prompt-preferences-window.ui:565
+#: src/org.gnome.Ptyxis.gschema.xml.in:313 src/ptyxis-preferences-window.ui:565
 msgid "Copy to Clipboard"
 msgstr "Copia negli appunti"
 
-#: src/org.gnome.Prompt.gschema.xml.in:314
+#: src/org.gnome.Ptyxis.gschema.xml.in:314
 msgid "The shortcut to copy to clipboard"
 msgstr "La scorciatoia per copiare negli appunti"
 
-#: src/org.gnome.Prompt.gschema.xml.in:319 src/prompt-preferences-window.ui:570
+#: src/org.gnome.Ptyxis.gschema.xml.in:319 src/ptyxis-preferences-window.ui:570
 msgid "Paste from Clipboard"
 msgstr "Incolla dagli appunti"
 
-#: src/org.gnome.Prompt.gschema.xml.in:320
+#: src/org.gnome.Ptyxis.gschema.xml.in:320
 msgid "The shortcut to paste from the clipboard"
 msgstr "La scorciatoia per incollare dagli appunti"
 
-#: src/org.gnome.Prompt.gschema.xml.in:326
+#: src/org.gnome.Ptyxis.gschema.xml.in:326
 msgid "The shortcut to create a new tab in the current window"
 msgstr "La scorciatoia per creare una nuova scheda nella finestra corrente"
 
-#: src/org.gnome.Prompt.gschema.xml.in:332
+#: src/org.gnome.Ptyxis.gschema.xml.in:332
 msgid "The shortcut to create a new tab in a new window"
 msgstr "La scorciatoia per creare una nuova scheda in una nuova finestra"
 
-#: src/org.gnome.Prompt.gschema.xml.in:337
+#: src/org.gnome.Ptyxis.gschema.xml.in:337
 msgid "Tab Overview"
 msgstr "Panoramica delle schede"
 
-#: src/org.gnome.Prompt.gschema.xml.in:338
+#: src/org.gnome.Ptyxis.gschema.xml.in:338
 msgid "The shortcut to show the tab overview"
 msgstr "La scorciatoia per entrare nella panoramica delle schede"
 
-#: src/org.gnome.Prompt.gschema.xml.in:344
+#: src/org.gnome.Ptyxis.gschema.xml.in:344
 msgid "The shortcut to show application preferences"
 msgstr "La scorciatoia per mostrare le preferenze dell'applicazione"
 
-#: src/org.gnome.Prompt.gschema.xml.in:349 src/prompt-preferences-window.ui:770
+#: src/org.gnome.Ptyxis.gschema.xml.in:349 src/ptyxis-preferences-window.ui:770
 msgid "Zoom Out"
 msgstr "Riduci ingrandimento"
 
-#: src/org.gnome.Prompt.gschema.xml.in:350
+#: src/org.gnome.Ptyxis.gschema.xml.in:350
 msgid "The shortcut to zoom out"
 msgstr "La scorciatoia per ridurre l'ingrandimento"
 
-#: src/org.gnome.Prompt.gschema.xml.in:355 src/prompt-preferences-window.ui:775
+#: src/org.gnome.Ptyxis.gschema.xml.in:355 src/ptyxis-preferences-window.ui:775
 msgid "Reset Zoom"
 msgstr "Reimposta ingrandimento"
 
-#: src/org.gnome.Prompt.gschema.xml.in:356
+#: src/org.gnome.Ptyxis.gschema.xml.in:356
 msgid "The shortcut to reset zoom"
 msgstr "La scorciatoia per reimpostare l'ingrandimento"
 
-#: src/org.gnome.Prompt.gschema.xml.in:361 src/prompt-preferences-window.ui:765
+#: src/org.gnome.Ptyxis.gschema.xml.in:361 src/ptyxis-preferences-window.ui:765
 msgid "Zoom In"
 msgstr "Aumenta ingrandimento"
 
-#: src/org.gnome.Prompt.gschema.xml.in:362
+#: src/org.gnome.Ptyxis.gschema.xml.in:362
 msgid "The shortcut to zoom in"
 msgstr "La scorciatoia per aumentare l'ingrandimento"
 
-#: src/org.gnome.Prompt.gschema.xml.in:367 src/prompt-preferences-window.ui:785
+#: src/org.gnome.Ptyxis.gschema.xml.in:367 src/ptyxis-preferences-window.ui:785
 msgid "Toggle Fullscreen"
 msgstr "Schermo intero"
 
-#: src/org.gnome.Prompt.gschema.xml.in:368
+#: src/org.gnome.Ptyxis.gschema.xml.in:368
 msgid "The shortcut to toggle fullscreen"
 msgstr "La scorciatoia per attivare/disattivare lo schermo intero"
 
-#: src/org.gnome.Prompt.gschema.xml.in:373
+#: src/org.gnome.Ptyxis.gschema.xml.in:373
 msgid "Reset Terminal"
 msgstr "Reimposta terminale"
 
-#: src/org.gnome.Prompt.gschema.xml.in:374
+#: src/org.gnome.Ptyxis.gschema.xml.in:374
 msgid "Reset the terminal state for misbehaving clients"
 msgstr "Reimposta lo stato del terminale, per client che si comportano male"
 
-#: src/org.gnome.Prompt.gschema.xml.in:379
+#: src/org.gnome.Ptyxis.gschema.xml.in:379
 msgid "Reset Terminal and Clear History"
 msgstr "Reimposta terminale e azzera cronologia"
 
-#: src/org.gnome.Prompt.gschema.xml.in:380
+#: src/org.gnome.Ptyxis.gschema.xml.in:380
 msgid "Reset the terminal state and clear history for misbehaving clients"
 msgstr ""
 "Reimposta lo stato del terminale e azzera la cronologia, per client che si "
 "comportano male"
 
-#: src/org.gnome.Prompt.gschema.xml.in:385 src/prompt-preferences-window.ui:607
+#: src/org.gnome.Ptyxis.gschema.xml.in:385 src/ptyxis-preferences-window.ui:607
 msgid "Search History"
 msgstr "Cerca nella cronologia"
 
-#: src/org.gnome.Prompt.gschema.xml.in:386
+#: src/org.gnome.Ptyxis.gschema.xml.in:386
 msgid "Shortcut to begin searching the terminal history"
 msgstr "Scorciatoia per iniziare una ricerca nella cronologia del terminale"
 
-#: src/org.gnome.Prompt.gschema.xml.in:391 src/prompt-preferences-window.ui:579
+#: src/org.gnome.Ptyxis.gschema.xml.in:391 src/ptyxis-preferences-window.ui:579
 msgid "Select All"
 msgstr "Seleziona tutto"
 
-#: src/org.gnome.Prompt.gschema.xml.in:392
+#: src/org.gnome.Ptyxis.gschema.xml.in:392
 msgid "Shortcut to select all the entire terminal scrollback"
 msgstr "Scorciatoia per selezionare tutto il testo nel terminale"
 
-#: src/org.gnome.Prompt.gschema.xml.in:397
+#: src/org.gnome.Ptyxis.gschema.xml.in:397
 msgid "Select None"
 msgstr "Deseleziona tutto"
 
-#: src/org.gnome.Prompt.gschema.xml.in:398
+#: src/org.gnome.Ptyxis.gschema.xml.in:398
 msgid "Shortcut to clear the terminal selection"
 msgstr "Scorciatoia per annullare la selezione nel terminale"
 
-#: src/org.gnome.Prompt.gschema.xml.in:403
+#: src/org.gnome.Ptyxis.gschema.xml.in:403
 msgid "Popup Menu"
 msgstr "Menù a comparsa"
 
-#: src/org.gnome.Prompt.gschema.xml.in:404
+#: src/org.gnome.Ptyxis.gschema.xml.in:404
 msgid "Shortcut to show the popup menu for the terminal"
 msgstr "Scorciatoia per mostrare il menù a comparsa del terminale"
 
-#: src/org.gnome.Prompt.gschema.xml.in:409
+#: src/org.gnome.Ptyxis.gschema.xml.in:409
 msgid "Primary Menu"
 msgstr "Menù principale"
 
-#: src/org.gnome.Prompt.gschema.xml.in:410
+#: src/org.gnome.Ptyxis.gschema.xml.in:410
 msgid "Shortcut to show the primary menu for the window"
 msgstr "Scorciatoia per mostrare il menù principale della finestra"
 
-#: src/org.gnome.Prompt.gschema.xml.in:415 src/prompt-preferences-window.ui:674
+#: src/org.gnome.Ptyxis.gschema.xml.in:415 src/ptyxis-preferences-window.ui:674
 msgid "Move to Previous Tab"
 msgstr "Passa alla scheda precedente"
 
-#: src/org.gnome.Prompt.gschema.xml.in:416
+#: src/org.gnome.Ptyxis.gschema.xml.in:416
 msgid "Shortcut to move to the previous tab"
 msgstr "Scorciatoia per spostarsi alla scheda precedente"
 
-#: src/org.gnome.Prompt.gschema.xml.in:421 src/prompt-preferences-window.ui:679
+#: src/org.gnome.Ptyxis.gschema.xml.in:421 src/ptyxis-preferences-window.ui:679
 msgid "Move to Next Tab"
 msgstr "Passa alla scheda successiva"
 
-#: src/org.gnome.Prompt.gschema.xml.in:422
+#: src/org.gnome.Ptyxis.gschema.xml.in:422
 msgid "Shortcut to move to the next tab"
 msgstr "Scorciatoia per spostarsi alla scheda successiva"
 
-#: src/org.gnome.Prompt.gschema.xml.in:427 src/prompt-preferences-window.ui:688
+#: src/org.gnome.Ptyxis.gschema.xml.in:427 src/ptyxis-preferences-window.ui:688
 msgid "Move Tab Left"
 msgstr "Sposta scheda a sinistra"
 
-#: src/org.gnome.Prompt.gschema.xml.in:428
+#: src/org.gnome.Ptyxis.gschema.xml.in:428
 msgid "Shortcut to move the current tab to the left one position"
 msgstr "Scorciatoia per spostare la scheda corrente un posto a sinistra"
 
-#: src/org.gnome.Prompt.gschema.xml.in:433 src/prompt-preferences-window.ui:694
+#: src/org.gnome.Ptyxis.gschema.xml.in:433 src/ptyxis-preferences-window.ui:694
 msgid "Move Tab Right"
 msgstr "Sposta scheda a destra"
 
-#: src/org.gnome.Prompt.gschema.xml.in:434
+#: src/org.gnome.Ptyxis.gschema.xml.in:434
 msgid "Shortcut to move the current tab to the right one position"
 msgstr "Scorciatoia per spostare la scheda corrente un posto a destra"
 
-#: src/org.gnome.Prompt.gschema.xml.in:439 src/prompt-preferences-window.ui:700
+#: src/org.gnome.Ptyxis.gschema.xml.in:439 src/ptyxis-preferences-window.ui:700
 msgid "Move Tab to New Window"
 msgstr "Sposta scheda in nuova finestra"
 
-#: src/org.gnome.Prompt.gschema.xml.in:440
+#: src/org.gnome.Ptyxis.gschema.xml.in:440
 msgid "Shortcut to move the current tab into a new window"
 msgstr "Scorciatoia per spostare la scheda corrente in una nuova finestra"
 
-#: src/org.gnome.Prompt.gschema.xml.in:445 src/prompt-preferences-window.ui:652
+#: src/org.gnome.Ptyxis.gschema.xml.in:445 src/ptyxis-preferences-window.ui:652
 msgid "Close Tab"
 msgstr "Chiudi scheda"
 
-#: src/org.gnome.Prompt.gschema.xml.in:446
+#: src/org.gnome.Ptyxis.gschema.xml.in:446
 msgid "Shortcut to close the current tab"
 msgstr "Scorciatoia per chiudere la scheda corrente"
 
-#: src/org.gnome.Prompt.gschema.xml.in:451 src/prompt-preferences-window.ui:658
+#: src/org.gnome.Ptyxis.gschema.xml.in:451 src/ptyxis-preferences-window.ui:658
 msgid "Close Other Tabs"
 msgstr "Chiudi le altre schede"
 
-#: src/org.gnome.Prompt.gschema.xml.in:452
+#: src/org.gnome.Ptyxis.gschema.xml.in:452
 msgid "Shortcut to close all tabs in the window but the current one"
 msgstr ""
 "Scorciatoia per chiudere tutte le schede della finestra tranne quella "
 "corrente"
 
-#: src/org.gnome.Prompt.gschema.xml.in:457
+#: src/org.gnome.Ptyxis.gschema.xml.in:457
 msgid "Focus Tab 1"
 msgstr "Attiva la scheda 1"
 
-#: src/org.gnome.Prompt.gschema.xml.in:458
+#: src/org.gnome.Ptyxis.gschema.xml.in:458
 msgid "Shortcut to focus tab 1"
 msgstr "Scorciatoia per attivare la scheda 1"
 
-#: src/org.gnome.Prompt.gschema.xml.in:463
+#: src/org.gnome.Ptyxis.gschema.xml.in:463
 msgid "Focus Tab 2"
 msgstr "Attiva la scheda 2"
 
-#: src/org.gnome.Prompt.gschema.xml.in:464
+#: src/org.gnome.Ptyxis.gschema.xml.in:464
 msgid "Shortcut to focus tab 2"
 msgstr "Scorciatoia per attivare la scheda 2"
 
-#: src/org.gnome.Prompt.gschema.xml.in:469
+#: src/org.gnome.Ptyxis.gschema.xml.in:469
 msgid "Focus Tab 3"
 msgstr "Attiva la scheda 3"
 
-#: src/org.gnome.Prompt.gschema.xml.in:470
+#: src/org.gnome.Ptyxis.gschema.xml.in:470
 msgid "Shortcut to focus tab 3"
 msgstr "Scorciatoia per attivare la scheda 3"
 
-#: src/org.gnome.Prompt.gschema.xml.in:475
+#: src/org.gnome.Ptyxis.gschema.xml.in:475
 msgid "Focus Tab 4"
 msgstr "Attiva la scheda 4"
 
-#: src/org.gnome.Prompt.gschema.xml.in:476
+#: src/org.gnome.Ptyxis.gschema.xml.in:476
 msgid "Shortcut to focus tab 4"
 msgstr "Scorciatoia per attivare la scheda 4"
 
-#: src/org.gnome.Prompt.gschema.xml.in:481
+#: src/org.gnome.Ptyxis.gschema.xml.in:481
 msgid "Focus Tab 5"
 msgstr "Attiva la scheda 5"
 
-#: src/org.gnome.Prompt.gschema.xml.in:482
+#: src/org.gnome.Ptyxis.gschema.xml.in:482
 msgid "Shortcut to focus tab 5"
 msgstr "Scorciatoia per attivare la scheda 5"
 
-#: src/org.gnome.Prompt.gschema.xml.in:487
+#: src/org.gnome.Ptyxis.gschema.xml.in:487
 msgid "Focus Tab 6"
 msgstr "Attiva la scheda 6"
 
-#: src/org.gnome.Prompt.gschema.xml.in:488
+#: src/org.gnome.Ptyxis.gschema.xml.in:488
 msgid "Shortcut to focus tab 6"
 msgstr "Scorciatoia per attivare la scheda 6"
 
-#: src/org.gnome.Prompt.gschema.xml.in:493
+#: src/org.gnome.Ptyxis.gschema.xml.in:493
 msgid "Focus Tab 7"
 msgstr "Attiva la scheda 7"
 
-#: src/org.gnome.Prompt.gschema.xml.in:494
+#: src/org.gnome.Ptyxis.gschema.xml.in:494
 msgid "Shortcut to focus tab 7"
 msgstr "Scorciatoia per attivare la scheda 7"
 
-#: src/org.gnome.Prompt.gschema.xml.in:499
+#: src/org.gnome.Ptyxis.gschema.xml.in:499
 msgid "Focus Tab 8"
 msgstr "Attiva la scheda 8"
 
-#: src/org.gnome.Prompt.gschema.xml.in:500
+#: src/org.gnome.Ptyxis.gschema.xml.in:500
 msgid "Shortcut to focus tab 8"
 msgstr "Scorciatoia per attivare la scheda 8"
 
-#: src/org.gnome.Prompt.gschema.xml.in:505
+#: src/org.gnome.Ptyxis.gschema.xml.in:505
 msgid "Focus Tab 9"
 msgstr "Attiva la scheda 9"
 
-#: src/org.gnome.Prompt.gschema.xml.in:506
+#: src/org.gnome.Ptyxis.gschema.xml.in:506
 msgid "Shortcut to focus tab 9"
 msgstr "Scorciatoia per attivare la scheda 9"
 
-#: src/org.gnome.Prompt.gschema.xml.in:511
+#: src/org.gnome.Ptyxis.gschema.xml.in:511
 msgid "Focus Tab 10"
 msgstr "Attiva la scheda 10"
 
-#: src/org.gnome.Prompt.gschema.xml.in:512
+#: src/org.gnome.Ptyxis.gschema.xml.in:512
 msgid "Shortcut to focus tab 10"
 msgstr "Scorciatoia per attivare la scheda 10"
 
-#: src/org.gnome.Prompt.gschema.xml.in:517 src/prompt-preferences-window.ui:664
+#: src/org.gnome.Ptyxis.gschema.xml.in:517 src/ptyxis-preferences-window.ui:664
 msgid "Undo Close Tab"
 msgstr "Annulla chiusura scheda"
 
-#: src/org.gnome.Prompt.gschema.xml.in:518
+#: src/org.gnome.Ptyxis.gschema.xml.in:518
 msgid "Undo closing of last tab"
 msgstr "Annulla la chiusura dell'ultima scheda"
 
-#: src/prompt-find-bar.ui:68
+#: src/ptyxis-find-bar.ui:68
 msgid "Search up to next result"
 msgstr "Cerca all'indietro"
 
-#: src/prompt-find-bar.ui:75
+#: src/ptyxis-find-bar.ui:75
 msgid "Search down to next result"
 msgstr "Cerca in avanti"
 
-#: src/prompt-find-bar.ui:84
+#: src/ptyxis-find-bar.ui:84
 msgid "Search Options"
 msgstr "Opzioni di ricerca"
 
-#: src/prompt-find-bar.ui:95
+#: src/ptyxis-find-bar.ui:95
 msgid "Match _Case"
 msgstr "Sensibile alle _maiuscole"
 
-#: src/prompt-find-bar.ui:101
+#: src/ptyxis-find-bar.ui:101
 msgid "Whole _Words"
 msgstr "Solo parole _intere"
 
-#: src/prompt-find-bar.ui:107
+#: src/ptyxis-find-bar.ui:107
 msgid "Use _Regular Expressions"
 msgstr "Usa espressioni _regolari"
 
-#: src/prompt-find-bar.ui:127 src/prompt-preferences-window.ui:493
-#: src/prompt-profile-editor.ui:263
+#: src/ptyxis-find-bar.ui:127 src/ptyxis-preferences-window.ui:493
+#: src/ptyxis-profile-editor.ui:263
 msgid "Close"
 msgstr "Chiudi"
 
-#: src/prompt-find-bar.ui:128
+#: src/ptyxis-find-bar.ui:128
 msgid "Close the search bar"
 msgstr "Chiude la barra di ricerca"
 
-#: src/prompt-inspector.ui:4
+#: src/ptyxis-inspector.ui:4
 msgid "Inspector"
 msgstr "Ispettore"
 
-#: src/prompt-inspector.ui:7
+#: src/ptyxis-inspector.ui:7
 msgid "Process"
 msgstr "Processo"
 
-#: src/prompt-inspector.ui:13
+#: src/ptyxis-inspector.ui:13
 msgid "Foreground Process"
 msgstr "Processo in primo piano"
 
-#: src/prompt-inspector.ui:33
+#: src/ptyxis-inspector.ui:33
 msgid "Window Title"
 msgstr "Titolo della finestra"
 
-#: src/prompt-inspector.ui:45
+#: src/ptyxis-inspector.ui:45
 msgid "Current Directory"
 msgstr "Directory corrente"
 
-#: src/prompt-inspector.ui:53
+#: src/ptyxis-inspector.ui:53
 msgid "Current File"
 msgstr "File corrente"
 
-#: src/prompt-inspector.ui:63
+#: src/ptyxis-inspector.ui:63
 msgid "Container"
 msgstr "Container"
 
-#: src/prompt-inspector.ui:66
+#: src/ptyxis-inspector.ui:66
 msgid "Runtime"
 msgstr "Runtime"
 
-#: src/prompt-inspector.ui:74 src/prompt-inspector.ui:228
-#: src/prompt-profile-editor.ui:38
+#: src/ptyxis-inspector.ui:74 src/ptyxis-inspector.ui:228
+#: src/ptyxis-profile-editor.ui:38
 msgid "Name"
 msgstr "Nome"
 
-#: src/prompt-inspector.ui:86 src/prompt-preferences-window.ui:34
+#: src/ptyxis-inspector.ui:86 src/ptyxis-preferences-window.ui:34
 msgid "Appearance"
 msgstr "Aspetto"
 
-#: src/prompt-inspector.ui:92
+#: src/ptyxis-inspector.ui:92
 msgid "Grid Size"
 msgstr "Dimensione della griglia"
 
-#: src/prompt-inspector.ui:105
+#: src/ptyxis-inspector.ui:105
 msgid "Colors"
 msgstr "Colori"
 
-#: src/prompt-inspector.ui:225 src/prompt-preferences-window.ui:120
+#: src/ptyxis-inspector.ui:225 src/ptyxis-preferences-window.ui:120
 msgid "Font"
 msgstr "Tipo di carattere"
 
-#: src/prompt-inspector.ui:233
+#: src/ptyxis-inspector.ui:233
 msgid "Cell Size"
 msgstr "Dimensione della casella"
 
-#: src/prompt-inspector.ui:242
+#: src/ptyxis-inspector.ui:242
 msgid "Input"
 msgstr "Input"
 
-#: src/prompt-inspector.ui:246 src/prompt-preferences-window.ui:213
+#: src/ptyxis-inspector.ui:246 src/ptyxis-preferences-window.ui:213
 msgid "Cursor"
 msgstr "Cursore"
 
-#: src/prompt-inspector.ui:249 src/prompt-inspector.ui:262
+#: src/ptyxis-inspector.ui:249 src/ptyxis-inspector.ui:262
 msgid "Position"
 msgstr "Posizione"
 
-#: src/prompt-inspector.ui:259
+#: src/ptyxis-inspector.ui:259
 msgid "Mouse"
 msgstr "Mouse"
 
-#: src/prompt-inspector.ui:270
+#: src/ptyxis-inspector.ui:270
 msgid "Hyperlink"
 msgstr "Collegamento ipertestuale"
 
-#: src/prompt-palette-preview.ui:12
+#: src/ptyxis-palette-preview.ui:12
 msgid "The quick brown fox jumps over the lazy dog"
 msgstr "Ma la volpe, col suo balzo, ha raggiunto il quieto Fido"
 
-#: src/prompt-preferences-window.ui:41
+#: src/ptyxis-preferences-window.ui:41
 msgid "Show more…"
 msgstr "Mostrane di più…"
 
-#: src/prompt-preferences-window.ui:62 src/prompt-profile-editor.ui:78
+#: src/ptyxis-preferences-window.ui:62 src/ptyxis-profile-editor.ui:78
 msgid "Transparency"
 msgstr "Trasparenza"
 
-#: src/prompt-preferences-window.ui:63 src/prompt-profile-editor.ui:79
+#: src/ptyxis-preferences-window.ui:63 src/ptyxis-profile-editor.ui:79
 msgid "Reduces the opacity of the background window"
 msgstr "Riduce l'opacità della finestra di sfondo"
 
-#: src/prompt-preferences-window.ui:124
+#: src/ptyxis-preferences-window.ui:124
 msgid "Use System _Font"
 msgstr "Usa tipo di carattere di sistema"
 
-#: src/prompt-preferences-window.ui:136
+#: src/ptyxis-preferences-window.ui:136
 msgid "Custom Font"
 msgstr "Tipo di carattere personalizzato"
 
-#: src/prompt-preferences-window.ui:165 src/prompt-profile-editor.ui:138
+#: src/ptyxis-preferences-window.ui:165 src/ptyxis-profile-editor.ui:138
 msgid "Use Bright Colors for Bold"
 msgstr "Usa colori brillanti per il grassetto"
 
-#: src/prompt-preferences-window.ui:174
+#: src/ptyxis-preferences-window.ui:174
 msgid "Blinking Text"
 msgstr "Testo lampeggiante"
 
-#: src/prompt-preferences-window.ui:183 src/prompt-preferences-window.ui:361
-#: src/prompt-preferences-window.ui:450 src/prompt-profile-editor.ui:191
-#: src/prompt-profile-editor.ui:220
+#: src/ptyxis-preferences-window.ui:183 src/ptyxis-preferences-window.ui:361
+#: src/ptyxis-preferences-window.ui:450 src/ptyxis-profile-editor.ui:191
+#: src/ptyxis-profile-editor.ui:220
 msgid "Never"
 msgstr "Mai"
 
-#: src/prompt-preferences-window.ui:189
+#: src/ptyxis-preferences-window.ui:189
 msgid "Focused"
 msgstr "Con finestra attiva"
 
-#: src/prompt-preferences-window.ui:195
+#: src/ptyxis-preferences-window.ui:195
 msgid "Unfocused"
 msgstr "Con finestra inattiva"
 
-#: src/prompt-preferences-window.ui:201 src/prompt-preferences-window.ui:373
-#: src/prompt-preferences-window.ui:462 src/prompt-profile-editor.ui:197
-#: src/prompt-profile-editor.ui:232
+#: src/ptyxis-preferences-window.ui:201 src/ptyxis-preferences-window.ui:373
+#: src/ptyxis-preferences-window.ui:462 src/ptyxis-profile-editor.ui:197
+#: src/ptyxis-profile-editor.ui:232
 msgid "Always"
 msgstr "Sempre"
 
-#: src/prompt-preferences-window.ui:225
+#: src/ptyxis-preferences-window.ui:225
 msgid "Block"
 msgstr "Blocco"
 
-#: src/prompt-preferences-window.ui:231
+#: src/ptyxis-preferences-window.ui:231
 msgid "I-Beam"
 msgstr "Linea verticale"
 
-#: src/prompt-preferences-window.ui:237
+#: src/ptyxis-preferences-window.ui:237
 msgid "Underline"
 msgstr "Trattino basso"
 
-#: src/prompt-preferences-window.ui:247
+#: src/ptyxis-preferences-window.ui:247
 msgid "Cursor Blinking"
 msgstr "Lampeggiamento del cursore"
 
-#: src/prompt-preferences-window.ui:256 src/prompt-preferences-window.ui:367
+#: src/ptyxis-preferences-window.ui:256 src/ptyxis-preferences-window.ui:367
 msgid "Follow System"
 msgstr "Segui il sistema"
 
-#: src/prompt-preferences-window.ui:262
+#: src/ptyxis-preferences-window.ui:262
 msgid "Enabled"
 msgstr "Attivato"
 
-#: src/prompt-preferences-window.ui:268
+#: src/ptyxis-preferences-window.ui:268
 msgid "Disabled"
 msgstr "Disattivato"
 
-#: src/prompt-preferences-window.ui:282
+#: src/ptyxis-preferences-window.ui:282
 msgid "Behavior"
 msgstr "Comportamento"
 
-#: src/prompt-preferences-window.ui:286
+#: src/ptyxis-preferences-window.ui:286
 msgid "Interface"
 msgstr "Interfaccia"
 
 # [DF] contesto: posizione di apertura della nuova scheda
-#: src/prompt-preferences-window.ui:298
+#: src/ptyxis-preferences-window.ui:298
 msgid "Next"
 msgstr "Subito dopo"
 
-#: src/prompt-preferences-window.ui:304
+#: src/ptyxis-preferences-window.ui:304
 msgid "Last"
 msgstr "Per ultima"
 
-#: src/prompt-preferences-window.ui:319
-msgid "Attempt to restore previous tabs when Prompt starts"
-msgstr "Prova a ripristinare le schede precedenti all'avvio di Prompt"
+#: src/ptyxis-preferences-window.ui:319
+msgid "Attempt to restore previous tabs when Ptyxis starts"
+msgstr "Prova a ripristinare le schede precedenti all'avvio di Ptyxis"
 
-#: src/prompt-preferences-window.ui:325
+#: src/ptyxis-preferences-window.ui:325
 msgid "Restore the previous window size when creating a new window"
 msgstr ""
 "Alla creazione di una nuova finestra, ripristina la dimensione della precedente"
 
-#: src/prompt-preferences-window.ui:332
+#: src/ptyxis-preferences-window.ui:332
 msgid "Bell"
 msgstr "Campanella"
 
-#: src/prompt-preferences-window.ui:336
+#: src/ptyxis-preferences-window.ui:336
 msgid "Emit an audible bell when requested by active tab"
 msgstr "Emette il suono di una campanella se richiesto da una scheda attiva"
 
-#: src/prompt-preferences-window.ui:341
+#: src/ptyxis-preferences-window.ui:341
 msgid "Visual Bell"
 msgstr "Campanella visiva"
 
-#: src/prompt-preferences-window.ui:342
+#: src/ptyxis-preferences-window.ui:342
 msgid "Emit a visual bell when requested by active tab"
 msgstr "Emette una campanella visiva se richiesto da una scheda attiva"
 
-#: src/prompt-preferences-window.ui:349 src/prompt-profile-editor.ui:275
+#: src/ptyxis-preferences-window.ui:349 src/ptyxis-profile-editor.ui:275
 msgid "Scrolling"
 msgstr "Scorrimento"
 
-#: src/prompt-preferences-window.ui:352
+#: src/ptyxis-preferences-window.ui:352
 msgid "Use Scrollbars"
 msgstr "Usa barre di scorrimento"
 
-#: src/prompt-preferences-window.ui:388 src/prompt-profile-editor.ui:279
+#: src/ptyxis-preferences-window.ui:388 src/ptyxis-profile-editor.ui:279
 msgid "Scroll to the bottom upon input keystroke"
 msgstr "Scorre fino al fondo in seguito alla pressione dei tasti"
 
-#: src/prompt-preferences-window.ui:394 src/prompt-profile-editor.ui:285
+#: src/ptyxis-preferences-window.ui:394 src/ptyxis-profile-editor.ui:285
 msgid "Scroll to the bottom when new content is available"
 msgstr "Scorre fino al fondo in seguito alla comparsa di nuovi contenuti"
 
-#: src/prompt-preferences-window.ui:404 src/prompt-profile-editor.ui:295
+#: src/ptyxis-preferences-window.ui:404 src/ptyxis-profile-editor.ui:295
 msgid "Restrict the number of lines saved for scrollback"
 msgstr "Limita il numero di righe salvate per lo scorrimento all'indietro"
 
-#: src/prompt-preferences-window.ui:413 src/prompt-profile-editor.ui:304
+#: src/ptyxis-preferences-window.ui:413 src/ptyxis-profile-editor.ui:304
 msgid "The number of lines to keep for scrollback"
 msgstr "Il numero di righe da mantenere per lo scorrimento all'indietro"
 
-#: src/prompt-preferences-window.ui:429 src/prompt-profile-editor.ui:145
+#: src/ptyxis-preferences-window.ui:429 src/ptyxis-profile-editor.ui:145
 msgid "Shell"
 msgstr "Shell"
 
-#: src/prompt-preferences-window.ui:432 src/prompt-profile-editor.ui:163
+#: src/ptyxis-preferences-window.ui:432 src/ptyxis-profile-editor.ui:163
 msgid "Use Login Shell"
 msgstr "Usa shell di login"
 
-#: src/prompt-preferences-window.ui:441 src/prompt-profile-editor.ui:211
+#: src/ptyxis-preferences-window.ui:441 src/ptyxis-profile-editor.ui:211
 msgid "Preserve Working Directory"
 msgstr "Mantieni directory di lavoro"
 
-#: src/prompt-preferences-window.ui:456 src/prompt-profile-editor.ui:226
+#: src/ptyxis-preferences-window.ui:456 src/ptyxis-profile-editor.ui:226
 msgid "Safe"
 msgstr "Sicura"
 
-#: src/prompt-preferences-window.ui:481 src/prompt-profile-editor.ui:251
+#: src/ptyxis-preferences-window.ui:481 src/ptyxis-profile-editor.ui:251
 msgid "No Action"
 msgstr "Nessuna azione"
 
-#: src/prompt-preferences-window.ui:487 src/prompt-profile-editor.ui:257
+#: src/ptyxis-preferences-window.ui:487 src/ptyxis-profile-editor.ui:257
 msgid "Restart"
 msgstr "Riavvia"
 
-#: src/prompt-preferences-window.ui:505 src/prompt-profile-editor.ui:320
+#: src/ptyxis-preferences-window.ui:505 src/ptyxis-profile-editor.ui:320
 msgid "Compatibility"
 msgstr "Compatibilità"
 
-#: src/prompt-preferences-window.ui:508 src/prompt-profile-editor.ui:323
+#: src/ptyxis-preferences-window.ui:508 src/ptyxis-profile-editor.ui:323
 msgid "Backspace Key"
 msgstr "Tasto Backspace"
 
-#: src/prompt-preferences-window.ui:509 src/prompt-profile-editor.ui:324
+#: src/ptyxis-preferences-window.ui:509 src/ptyxis-profile-editor.ui:324
 msgid "Sequence to send for Backspace key"
 msgstr "Sequenza da inviare per il tasto Backspace"
 
-#: src/prompt-preferences-window.ui:518 src/prompt-profile-editor.ui:333
+#: src/ptyxis-preferences-window.ui:518 src/ptyxis-profile-editor.ui:333
 msgid "Delete Key"
 msgstr "Tasto Canc"
 
-#: src/prompt-preferences-window.ui:519 src/prompt-profile-editor.ui:334
+#: src/ptyxis-preferences-window.ui:519 src/ptyxis-profile-editor.ui:334
 msgid "Sequence to send for Delete key"
 msgstr "Sequenza da inviare per il tasto Canc"
 
-#: src/prompt-preferences-window.ui:528 src/prompt-profile-editor.ui:343
+#: src/ptyxis-preferences-window.ui:528 src/ptyxis-profile-editor.ui:343
 msgid "Ambiguous-width Characters"
 msgstr "Caratteri con larghezza ambigua"
 
-#: src/prompt-preferences-window.ui:537 src/prompt-profile-editor.ui:352
+#: src/ptyxis-preferences-window.ui:537 src/ptyxis-profile-editor.ui:352
 msgid "Narrow"
 msgstr "Stretti"
 
-#: src/prompt-preferences-window.ui:543 src/prompt-profile-editor.ui:358
+#: src/ptyxis-preferences-window.ui:543 src/ptyxis-profile-editor.ui:358
 msgid "Wide"
 msgstr "Larghi"
 
-#: src/prompt-preferences-window.ui:558
+#: src/ptyxis-preferences-window.ui:558
 msgid "Shortcuts"
 msgstr "Scorciatoie"
 
-#: src/prompt-preferences-window.ui:562
+#: src/ptyxis-preferences-window.ui:562
 msgid "Terminal"
 msgstr "Terminale"
 
-#: src/prompt-preferences-window.ui:584
+#: src/ptyxis-preferences-window.ui:584
 msgid "Clear Selection"
 msgstr "Azzera selezione"
 
-#: src/prompt-preferences-window.ui:593 src/prompt-terminal.ui:201
+#: src/ptyxis-preferences-window.ui:593 src/ptyxis-terminal.ui:201
 msgid "Reset"
 msgstr "Reimposta"
 
-#: src/prompt-preferences-window.ui:598 src/prompt-terminal.ui:207
+#: src/ptyxis-preferences-window.ui:598 src/ptyxis-terminal.ui:207
 msgid "Reset and Clear"
 msgstr "Reimposta e azzera"
 
-#: src/prompt-preferences-window.ui:616
+#: src/ptyxis-preferences-window.ui:616
 msgid "Show Context Menu"
 msgstr "Mostra menù contestuale"
 
-#: src/prompt-preferences-window.ui:623
+#: src/ptyxis-preferences-window.ui:623
 msgid "Tabs"
 msgstr "Schede"
 
-#: src/prompt-preferences-window.ui:627
+#: src/ptyxis-preferences-window.ui:627
 msgid "Open a new tab in the current window"
 msgstr "Apre una nuova scheda nella finestra corrente"
 
-#: src/prompt-preferences-window.ui:633
+#: src/ptyxis-preferences-window.ui:633
 msgid "Open a new tab in a new window"
 msgstr "Apre una nuova scheda in una nuova finestra"
 
-#: src/prompt-preferences-window.ui:642
+#: src/ptyxis-preferences-window.ui:642
 msgid "View Tab Overview"
 msgstr "Mostra panoramica schede"
 
-#: src/prompt-preferences-window.ui:643
+#: src/ptyxis-preferences-window.ui:643
 msgid "Show an overview of all tabs within the window"
 msgstr "Mostra una panoramica di tutte le schede della finestra"
 
-#: src/prompt-preferences-window.ui:653
+#: src/ptyxis-preferences-window.ui:653
 msgid "Close the current tab"
 msgstr "Chiude la scheda corrente"
 
-#: src/prompt-preferences-window.ui:659
+#: src/ptyxis-preferences-window.ui:659
 msgid "Close all tabs except the active tab"
 msgstr "Chiude tutte le schede tranne quella attiva"
 
-#: src/prompt-preferences-window.ui:665
+#: src/ptyxis-preferences-window.ui:665
 msgid "Undo closing the last tab"
 msgstr "Annulla la chiusura dell'ultima scheda"
 
-#: src/prompt-preferences-window.ui:689
+#: src/ptyxis-preferences-window.ui:689
 msgid "Move the tab one position to the left"
 msgstr "Muove la scheda di una posizione a sinistra"
 
-#: src/prompt-preferences-window.ui:695
+#: src/ptyxis-preferences-window.ui:695
 msgid "Move the tab one position to the right"
 msgstr "Muove la scheda di una posizione a destra"
 
-#: src/prompt-preferences-window.ui:701
+#: src/ptyxis-preferences-window.ui:701
 msgid "Detach the current tab and move it to a new window"
 msgstr "Stacca la scheda corrente e la sposta in una nuova finestra"
 
-#: src/prompt-preferences-window.ui:710
+#: src/ptyxis-preferences-window.ui:710
 msgid "Switch to Tab 1"
 msgstr "Passa alla scheda 1"
 
-#: src/prompt-preferences-window.ui:715
+#: src/ptyxis-preferences-window.ui:715
 msgid "Switch to Tab 2"
 msgstr "Passa alla scheda 2"
 
-#: src/prompt-preferences-window.ui:720
+#: src/ptyxis-preferences-window.ui:720
 msgid "Switch to Tab 3"
 msgstr "Passa alla scheda 3"
 
-#: src/prompt-preferences-window.ui:725
+#: src/ptyxis-preferences-window.ui:725
 msgid "Switch to Tab 4"
 msgstr "Passa alla scheda 4"
 
-#: src/prompt-preferences-window.ui:730
+#: src/ptyxis-preferences-window.ui:730
 msgid "Switch to Tab 5"
 msgstr "Passa alla scheda 5"
 
-#: src/prompt-preferences-window.ui:735
+#: src/ptyxis-preferences-window.ui:735
 msgid "Switch to Tab 6"
 msgstr "Passa alla scheda 6"
 
-#: src/prompt-preferences-window.ui:740
+#: src/ptyxis-preferences-window.ui:740
 msgid "Switch to Tab 7"
 msgstr "Passa alla scheda 7"
 
-#: src/prompt-preferences-window.ui:745
+#: src/ptyxis-preferences-window.ui:745
 msgid "Switch to Tab 8"
 msgstr "Passa alla scheda 8"
 
-#: src/prompt-preferences-window.ui:750
+#: src/ptyxis-preferences-window.ui:750
 msgid "Switch to Tab 9"
 msgstr "Passa alla scheda 9"
 
-#: src/prompt-preferences-window.ui:755
+#: src/ptyxis-preferences-window.ui:755
 msgid "Switch to Tab 10"
 msgstr "Passa alla scheda 10"
 
-#: src/prompt-preferences-window.ui:762
+#: src/ptyxis-preferences-window.ui:762
 msgid "Zoom"
 msgstr "Ingrandimento"
 
-#: src/prompt-preferences-window.ui:782
+#: src/ptyxis-preferences-window.ui:782
 msgid "Application"
 msgstr "Applicazione"
 
-#: src/prompt-preferences-window.ui:786
+#: src/ptyxis-preferences-window.ui:786
 msgid "Toggle in and out of fullscreen"
 msgstr "Attiva e disattiva lo schermo intero"
 
-#: src/prompt-preferences-window.ui:795
+#: src/ptyxis-preferences-window.ui:795
 msgid "Show Primary Menu"
 msgstr "Mostra menù principale"
 
-#: src/prompt-preferences-window.ui:796
+#: src/ptyxis-preferences-window.ui:796
 msgid "Displays the primary menu for the terminal window"
 msgstr "Mostra il menù principale della finestra del terminale"
 
-#: src/prompt-preferences-window.ui:802
+#: src/ptyxis-preferences-window.ui:802
 msgid "Show this preferences window"
 msgstr "Mostra questa finestra delle preferenze"
 
-#: src/prompt-preferences-window.ui:811 src/prompt-preferences-window.ui:815
+#: src/ptyxis-preferences-window.ui:811 src/ptyxis-preferences-window.ui:815
 msgid "Profiles"
 msgstr "Profili"
 
-#: src/prompt-preferences-window.ui:850 src/prompt-profile-editor.ui:379
+#: src/ptyxis-preferences-window.ui:850 src/ptyxis-profile-editor.ui:379
 msgid "Automatic"
 msgstr "Automatico"
 
-#: src/prompt-preferences-window.ui:856 src/prompt-profile-editor.ui:385
+#: src/ptyxis-preferences-window.ui:856 src/ptyxis-profile-editor.ui:385
 msgid "Control-H"
 msgstr "Ctrl-H"
 
-#: src/prompt-preferences-window.ui:862 src/prompt-profile-editor.ui:391
+#: src/ptyxis-preferences-window.ui:862 src/ptyxis-profile-editor.ui:391
 msgid "ASCII DEL"
 msgstr "ASCII DEL"
 
-#: src/prompt-preferences-window.ui:868 src/prompt-profile-editor.ui:397
+#: src/ptyxis-preferences-window.ui:868 src/ptyxis-profile-editor.ui:397
 msgid "Escape Sequence"
 msgstr "Sequenza di escape"
 
-#: src/prompt-preferences-window.ui:874 src/prompt-profile-editor.ui:403
+#: src/ptyxis-preferences-window.ui:874 src/ptyxis-profile-editor.ui:403
 msgid "TTY Erase"
 msgstr "TTY erase"
 
-#: src/prompt-profile-editor.ui:22
+#: src/ptyxis-profile-editor.ui:22
 msgid "Edit Profile"
 msgstr "Modifica profilo"
 
-#: src/prompt-profile-editor.ui:33
+#: src/ptyxis-profile-editor.ui:33
 msgid "Profile"
 msgstr "Profilo"
 
-#: src/prompt-profile-editor.ui:43
+#: src/ptyxis-profile-editor.ui:43
 msgid "Identifier"
 msgstr "Identificativo"
 
-#: src/prompt-profile-editor.ui:54
+#: src/ptyxis-profile-editor.ui:54
 msgid "Copy"
 msgstr "Copia"
 
-#: src/prompt-profile-editor.ui:66
+#: src/ptyxis-profile-editor.ui:66
 msgid "Color"
 msgstr "Colore"
 
-#: src/prompt-profile-editor.ui:173
+#: src/ptyxis-profile-editor.ui:173
 msgid "The default container to use with this profile"
 msgstr "Il container predefinito da usare con questo profilo"
 
-#: src/prompt-profile-editor.ui:182
+#: src/ptyxis-profile-editor.ui:182
 msgid "Preserve the current container when opening new tabs and windows"
 msgstr "Mantieni il container corrente all'apertura di nuove schede e finestre"
 
-#: src/prompt-profile-row.ui:42
+#: src/ptyxis-profile-row.ui:42
 msgid "_Make Default"
 msgstr "Rendi _predefinito"
 
-#: src/prompt-profile-row.ui:48
+#: src/ptyxis-profile-row.ui:48
 msgid "_Duplicate…"
 msgstr "_Duplica…"
 
-#: src/prompt-profile-row.ui:52
+#: src/ptyxis-profile-row.ui:52
 msgid "_Edit…"
 msgstr "_Modifica…"
 
-#: src/prompt-profile-row.ui:58
+#: src/ptyxis-profile-row.ui:58
 msgid "_Remove"
 msgstr "_Rimuovi"
 
-#: src/prompt-shortcut-accel-dialog.ui:42
+#: src/ptyxis-shortcut-accel-dialog.ui:42
 msgid "_Cancel"
 msgstr "_Annulla"
 
-#: src/prompt-shortcut-accel-dialog.ui:49
+#: src/ptyxis-shortcut-accel-dialog.ui:49
 msgid "_Set"
 msgstr "_Imposta"
 
-#: src/prompt-shortcut-accel-dialog.ui:90
+#: src/ptyxis-shortcut-accel-dialog.ui:90
 msgid "Press Escape to cancel or Backspace to disable."
 msgstr "Premere Esc per annullare o Backspace per disabilitare."
 
-#: src/prompt-terminal.ui:147
+#: src/ptyxis-terminal.ui:147
 msgid "Search…"
 msgstr "Cerca…"
 
-#: src/prompt-terminal.ui:153
+#: src/ptyxis-terminal.ui:153
 msgid "_Open Link"
 msgstr "_Apri collegamento"
 
-#: src/prompt-terminal.ui:161
+#: src/ptyxis-terminal.ui:161
 msgid "_Copy"
 msgstr "_Copia"
 
-#: src/prompt-terminal.ui:162
+#: src/ptyxis-terminal.ui:162
 msgid "Copy selection from terminal to clipboard"
 msgstr "Copia la selezione dal terminale agli appunti"
 
-#: src/prompt-terminal.ui:166
+#: src/ptyxis-terminal.ui:166
 msgid "_Copy Link"
 msgstr "_Copia collegamento"
 
-#: src/prompt-terminal.ui:172
+#: src/ptyxis-terminal.ui:172
 msgid "_Paste"
 msgstr "_Incolla"
 
-#: src/prompt-terminal.ui:173
+#: src/ptyxis-terminal.ui:173
 msgid "Paste from clipboard into the terminal"
 msgstr "Incolla dagli appunti al terminale"
 
-#: src/prompt-terminal.ui:180
+#: src/ptyxis-terminal.ui:180
 msgid "Select _All"
 msgstr "Seleziona _tutto"
 
-#: src/prompt-terminal.ui:181
+#: src/ptyxis-terminal.ui:181
 msgid "Selection all text from terminal including scrollback"
 msgstr ""
 "Seleziona tutto il testo dal terminale, incluso quello scorso all'indietro"
 
-#: src/prompt-terminal.ui:187
+#: src/ptyxis-terminal.ui:187
 msgid "Select _None"
 msgstr "_Deseleziona tutto"
 
-#: src/prompt-terminal.ui:194
+#: src/ptyxis-terminal.ui:194
 msgid "Read-Only"
 msgstr "Sola lettura"
 
-#: src/prompt-terminal.ui:215 src/prompt-window.ui:506
+#: src/ptyxis-terminal.ui:215 src/ptyxis-window.ui:506
 msgid "Leave Fullscreen"
 msgstr "Esci dallo schermo intero"
 
-#: src/prompt-terminal.ui:221
+#: src/ptyxis-terminal.ui:221
 msgid "_Inspect Terminal"
 msgstr "_Ispeziona terminale"
 
-#: src/prompt-theme-selector.ui:21 src/prompt-theme-selector.ui:23
+#: src/ptyxis-theme-selector.ui:21 src/ptyxis-theme-selector.ui:23
 msgid "Follow system style"
 msgstr "Segui lo stile del sistema"
 
-#: src/prompt-theme-selector.ui:37 src/prompt-theme-selector.ui:39
+#: src/ptyxis-theme-selector.ui:37 src/ptyxis-theme-selector.ui:39
 msgid "Light style"
 msgstr "Stile chiaro"
 
-#: src/prompt-theme-selector.ui:54 src/prompt-theme-selector.ui:56
+#: src/ptyxis-theme-selector.ui:54 src/ptyxis-theme-selector.ui:56
 msgid "Dark style"
 msgstr "Stile scuro"
 
-#: src/prompt-window.ui:354
+#: src/ptyxis-window.ui:354
 msgid "New Terminal"
 msgstr "Nuovo terminale"
 
-#: src/prompt-window.ui:407
+#: src/ptyxis-window.ui:407
 msgid "Menu"
 msgstr "Menù"
 
-#: src/prompt-window.ui:415
+#: src/ptyxis-window.ui:415
 msgid "Show Open Tabs"
 msgstr "Mostra schede aperte"
 
-#: src/prompt-window.ui:476
+#: src/ptyxis-window.ui:476
 msgid "New _Tab"
 msgstr "Nuova _scheda"
 
-#: src/prompt-window.ui:483
+#: src/ptyxis-window.ui:483
 msgid "New _Window"
 msgstr "Nuova _finestra"
 
-#: src/prompt-window.ui:492
+#: src/ptyxis-window.ui:492
 msgid "View Open Tabs"
 msgstr "Visualizza schede aperte"
 
-#: src/prompt-window.ui:500
+#: src/ptyxis-window.ui:500
 msgid "Fullscreen"
 msgstr "Schermo intero"
 
-#: src/prompt-window.ui:514
+#: src/ptyxis-window.ui:514
 msgid "_Preferences"
 msgstr "_Preferenze"
 
-#: src/prompt-window.ui:518
+#: src/ptyxis-window.ui:518
 msgid "_Keyboard Shortcuts"
 msgstr "_Scorciatoie da tastiera"
 
-#: src/prompt-window.ui:522
-msgid "_About Prompt"
-msgstr "Informazioni su Prompt"
+#: src/ptyxis-window.ui:522
+msgid "_About Ptyxis"
+msgstr "Informazioni su Ptyxis"
 
-#: src/prompt-window.ui:531
+#: src/ptyxis-window.ui:531
 msgid "Move _Left"
 msgstr "Sposta a _sinistra"
 
-#: src/prompt-window.ui:536
+#: src/ptyxis-window.ui:536
 msgid "Move _Right"
 msgstr "Sposta a _destra"
 
-#: src/prompt-window.ui:541
+#: src/ptyxis-window.ui:541
 msgid "Move to New _Window"
 msgstr "Sposta in _nuova finestra"
 
-#: src/prompt-window.ui:547
+#: src/ptyxis-window.ui:547
 msgid "_Pin Tab"
 msgstr "_Blocca scheda"
 
-#: src/prompt-window.ui:552
+#: src/ptyxis-window.ui:552
 msgid "Un_pin Tab"
 msgstr "_Rilascia scheda"
 
-#: src/prompt-window.ui:559
+#: src/ptyxis-window.ui:559
 msgid "Set Title"
 msgstr "Imposta titolo"
 
-#: src/prompt-window.ui:566
+#: src/ptyxis-window.ui:566
 msgid "Close _Other Tabs"
 msgstr "Chiudi le a_ltre schede"
 
-#: src/prompt-window.ui:571
+#: src/ptyxis-window.ui:571
 msgid "_Close Tab"
 msgstr "_Chiudi scheda"
 
-#: src/prompt-window.ui:578
+#: src/ptyxis-window.ui:578
 msgid "_My Computer"
 msgstr "_Questo computer"
 
 # Manually added strings. xgettext didn't catch them...
 
-#: src/prompt-profile.c:541
+#: src/ptyxis-profile.c:541
 msgid "Untitled Profile"
 msgstr "Profilo senza nome"
 
-#: src/prompt-shortcut-row.c:195
+#: src/ptyxis-shortcut-row.c:195
 msgid "disabled"
 msgstr "disattivata"
 
-#: src/prompt-preferences-window.c:286
+#: src/ptyxis-preferences-window.c:286
 msgid "Show fewer…"
 msgstr "Mostrane di meno…"
