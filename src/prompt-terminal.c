@@ -1015,9 +1015,9 @@ prompt_terminal_snapshot (GtkWidget   *widget,
   G_GNUC_END_IGNORE_DEPRECATIONS
 
   gtk_snapshot_push_clip (snapshot,
-                          &GRAPHENE_RECT_INIT (0,
+                          &GRAPHENE_RECT_INIT (-2,
                                                -padding.top,
-                                               gtk_widget_get_width (widget),
+                                               gtk_widget_get_width (widget) + 4,
                                                padding.top + gtk_widget_get_height (widget) + padding.bottom));
   prompt_terminal_rewrite_snapshot (widget, snapshot);
   gtk_snapshot_pop (snapshot);
