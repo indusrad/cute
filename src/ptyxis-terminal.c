@@ -856,7 +856,7 @@ ptyxis_terminal_size_allocate (GtkWidget *widget,
   PtyxisTerminal *self = PTYXIS_TERMINAL (widget);
   GtkRequisition min;
   GtkAllocation revealer_alloc, dnd_alloc;
-  GtkBorder padding;
+  GtkBorder padding, margin;
   GtkRoot *root;
   gboolean emit_size_changed = FALSE;
   int column_count;
@@ -902,12 +902,13 @@ ptyxis_terminal_size_allocate (GtkWidget *widget,
     }
 
   G_GNUC_BEGIN_IGNORE_DEPRECATIONS;
+  gtk_style_context_get_margin (gtk_widget_get_style_context (widget), &margin);
   gtk_style_context_get_padding (gtk_widget_get_style_context (widget), &padding);
   G_GNUC_END_IGNORE_DEPRECATIONS;
 
   gtk_widget_get_preferred_size (GTK_WIDGET (self->size_revealer), &min, NULL);
-  revealer_alloc.x = width + padding.right - min.width;
-  revealer_alloc.y = height + padding.bottom - min.height;
+  revealer_alloc.x = width + margin.right - min.width;
+  revealer_alloc.y = height + padding.bottom + margin.bottom - min.height;
   revealer_alloc.width = min.width;
   revealer_alloc.height = min.height;
   gtk_widget_size_allocate (GTK_WIDGET (self->size_revealer), &revealer_alloc, -1);
