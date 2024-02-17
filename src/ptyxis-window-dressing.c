@@ -157,9 +157,6 @@ ptyxis_window_dressing_update (PtyxisWindowDressing *self)
                               "window.%s .window-contents banner > revealer > widget { background-color: %s; color: %s; }\n",
                               self->css_class, bell_bg, bell_fg);
       g_string_append_printf (string,
-                              "window.%s .window-contents headerbar { background-color: %s; color: %s; }\n",
-                              self->css_class, titlebar_bg, titlebar_fg);
-      g_string_append_printf (string,
                               "window.%s .window-contents taboverview tabthumbnail button { background-color: alpha(%s,.15); color: %s; }\n"
                               "window.%s .window-contents taboverview tabthumbnail button:hover { background-color: alpha(%s,.25); }\n"
                               "window.%s .window-contents taboverview tabthumbnail button:active { background-color: alpha(%s,.55); }\n",
@@ -186,12 +183,6 @@ ptyxis_window_dressing_update (PtyxisWindowDressing *self)
                                   self->css_class, su_bg, su_fg,
                                   self->css_class, su_bg, su_fg);
         }
-
-#if DEVELOPMENT_BUILD
-      g_string_append_printf (string,
-                              "window.%s .window-contents headerbar.main-header-bar { background-image: cross-fade(5%% -gtk-recolor(url(\"resource:///org/gnome/Adwaita/styles/assets/devel-symbolic.svg\")), image(transparent)); background-repeat: repeat-x; }\n",
-                              self->css_class);
-#endif
 
       if (!ptyxis_palette_use_adwaita (self->palette))
         {
