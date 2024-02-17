@@ -32,7 +32,7 @@
 typedef struct
 {
   PtyxisTab       *tab;
-  AdwMessageDialog *dialog;
+  AdwAlertDialog *dialog;
 } SaveRequest;
 
 static void
@@ -45,11 +45,11 @@ save_request_clear (gpointer data)
 }
 
 static void
-ptyxis_close_dialog_confirm (GtkMessageDialog *dialog,
+ptyxis_close_dialog_confirm (AdwAlertDialog *dialog,
                              GArray           *requests,
                              gboolean          confirm)
 {
-  g_assert (ADW_IS_MESSAGE_DIALOG (dialog));
+  g_assert (ADW_IS_ALERT_DIALOG (dialog));
   g_assert (requests != NULL);
   g_assert (requests->len > 0);
 
@@ -64,12 +64,12 @@ ptyxis_close_dialog_confirm (GtkMessageDialog *dialog,
 }
 
 static void
-ptyxis_close_dialog_response (GtkMessageDialog *dialog,
+ptyxis_close_dialog_response (AdwAlertDialog *dialog,
                               const char       *response,
                               GArray           *requests)
 {
   GTask *task;
-  g_assert (ADW_IS_MESSAGE_DIALOG (dialog));
+  g_assert (ADW_IS_ALERT_DIALOG (dialog));
 
   task = g_object_get_data (G_OBJECT (dialog), "G_TASK");
 
@@ -87,14 +87,14 @@ ptyxis_close_dialog_response (GtkMessageDialog *dialog,
     }
 }
 
-static GtkWidget *
+static AdwDialog *
 _ptyxis_close_dialog_new (GtkWindow *parent,
                           GPtrArray *tabs)
 {
   g_autoptr(GArray) requests = NULL;
   const char *discard_label;
   PangoAttrList *smaller;
-  GtkWidget *dialog;
+  AdwDialog *dialog;
   GtkWidget *group;
   GtkWidget *prefs_page;
 
@@ -111,20 +111,19 @@ _ptyxis_close_dialog_new (GtkWindow *parent,
 
   discard_label = g_dngettext (GETTEXT_PACKAGE, _("_Close"), _("_Close All"), tabs->len);
 
-  dialog = adw_message_dialog_new (parent,
-                                   _("Close Window?"),
+  dialog = adw_alert_dialog_new (_("Close Window?"),
                                    _("Some processes are still running."));
-  gtk_widget_set_size_request (GTK_WIDGET (dialog), 400, -1);
+  //gtk_widget_set_size_request (GTK_WIDGET (dialog), 400, -1);
 
-  adw_message_dialog_add_responses (ADW_MESSAGE_DIALOG (dialog),
+  adw_alert_dialog_add_responses (ADW_ALERT_DIALOG (dialog),
                                     "cancel", _("_Cancel"),
                                     "discard", discard_label,
                                     NULL);
-  adw_message_dialog_set_response_appearance (ADW_MESSAGE_DIALOG (dialog),
+  adw_alert_dialog_set_response_appearance (ADW_ALERT_DIALOG (dialog),
                                               "discard", ADW_RESPONSE_DESTRUCTIVE);
 
   prefs_page = adw_preferences_page_new ();
-  adw_message_dialog_set_extra_child (ADW_MESSAGE_DIALOG (dialog), prefs_page);
+  adw_alert_dialog_set_extra_child (ADW_ALERT_DIALOG (dialog), prefs_page);
 
   group = adw_preferences_group_new ();
   adw_preferences_page_add (ADW_PREFERENCES_PAGE (prefs_page),
@@ -165,7 +164,7 @@ _ptyxis_close_dialog_new (GtkWindow *parent,
       adw_preferences_group_add (ADW_PREFERENCES_GROUP (group), row);
 
       sr.tab = g_object_ref (tab);
-      sr.dialog = g_object_ref (ADW_MESSAGE_DIALOG (dialog));
+      sr.dialog = g_object_ref (ADW_ALERT_DIALOG (dialog));
 
       g_array_append_val (requests, sr);
     }
@@ -190,7 +189,7 @@ _ptyxis_close_dialog_run_async (GtkWindow           *parent,
                                 gpointer             user_data)
 {
   g_autoptr(GTask) task = NULL;
-  GtkWidget *dialog;
+  AdwDialog *dialog;
 
   g_return_if_fail (!parent || GTK_IS_WINDOW (parent));
   g_return_if_fail (!cancellable || G_IS_CANCELLABLE (cancellable));
@@ -209,7 +208,7 @@ _ptyxis_close_dialog_run_async (GtkWindow           *parent,
                           "G_TASK",
                           g_steal_pointer (&task),
                           g_object_unref);
-  gtk_window_present (GTK_WINDOW (dialog));
+  adw_dialog_present (dialog, GTK_WIDGET (parent));
 }
 
 gboolean

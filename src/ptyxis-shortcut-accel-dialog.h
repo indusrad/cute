@@ -26,7 +26,7 @@ G_BEGIN_DECLS
 
 #define PTYXIS_TYPE_SHORTCUT_ACCEL_DIALOG (ptyxis_shortcut_accel_dialog_get_type())
 
-G_DECLARE_FINAL_TYPE (PtyxisShortcutAccelDialog, ptyxis_shortcut_accel_dialog, PTYXIS, SHORTCUT_ACCEL_DIALOG, AdwWindow)
+G_DECLARE_FINAL_TYPE (PtyxisShortcutAccelDialog, ptyxis_shortcut_accel_dialog, PTYXIS, SHORTCUT_ACCEL_DIALOG, AdwDialog)
 
 GtkWidget  *ptyxis_shortcut_accel_dialog_new                (void);
 char       *ptyxis_shortcut_accel_dialog_get_accelerator    (PtyxisShortcutAccelDialog *self);

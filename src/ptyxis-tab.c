@@ -464,6 +464,7 @@ ptyxis_tab_respawn_action (GtkWidget  *widget,
     ptyxis_tab_respawn (self);
 }
 
+
 static void
 ptyxis_tab_inspect_action (GtkWidget  *widget,
                            const char *action_name,

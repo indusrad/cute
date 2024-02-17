@@ -29,6 +29,8 @@
       </object>
     </child>
     <property name="default-height">700</property>
+    <property name="height-request">294</property>
+    <property name="width-request">360</property>
     <child>
       <object class="AdwPreferencesPage">
         <property name="title" translatable="yes">Appearance</property>

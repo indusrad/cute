@@ -72,14 +72,13 @@ ptyxis_shortcut_row_select_shortcut (GtkWidget  *widget,
                          "accelerator", self->accelerator,
                          "shortcut-title", title,
                          "title", _("Set Shortcut"),
-                         "transient-for", gtk_widget_get_root (widget),
                          NULL);
   g_signal_connect_object (dialog,
                            "shortcut-set",
                            G_CALLBACK (ptyxis_shortcut_row_dialog_shortcut_set_cb),
                            self,
                            G_CONNECT_SWAPPED);
-  gtk_window_present (GTK_WINDOW (dialog));
+  adw_dialog_present (ADW_DIALOG (dialog), GTK_WIDGET (gtk_widget_get_root (widget)));
 }
 
 static void

@@ -26,7 +26,7 @@
 
 struct _PtyxisTitleDialog
 {
-  AdwWindow parent_instance;
+  AdwDialog parent_instance;
 
   PtyxisTab *tab;
 
@@ -39,7 +39,7 @@ enum {
   N_PROPS
 };
 
-G_DEFINE_FINAL_TYPE (PtyxisTitleDialog, ptyxis_title_dialog, ADW_TYPE_WINDOW)
+G_DEFINE_FINAL_TYPE (PtyxisTitleDialog, ptyxis_title_dialog, ADW_TYPE_DIALOG)
 
 static GParamSpec *properties [N_PROPS];
 

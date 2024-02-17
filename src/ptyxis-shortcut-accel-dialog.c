@@ -30,7 +30,7 @@
 
 struct _PtyxisShortcutAccelDialog
 {
-  AdwWindow             parent_instance;
+  AdwDialog             parent_instance;
 
   GtkButton            *accept_button;
   GtkStack             *stack;
@@ -63,7 +63,7 @@ enum {
 static GParamSpec *properties[N_PROPS];
 static guint signals[N_SIGNALS];
 
-G_DEFINE_FINAL_TYPE (PtyxisShortcutAccelDialog, ptyxis_shortcut_accel_dialog, ADW_TYPE_WINDOW)
+G_DEFINE_FINAL_TYPE (PtyxisShortcutAccelDialog, ptyxis_shortcut_accel_dialog, ADW_TYPE_DIALOG)
 
 static gboolean
 ptyxis_shortcut_accel_dialog_is_editing (PtyxisShortcutAccelDialog *self)
@@ -165,7 +165,7 @@ ptyxis_shortcut_accel_dialog_key_pressed (GtkWidget             *widget,
           real_mask == 0 &&
           keyval_lower == GDK_KEY_Escape)
         {
-          gtk_window_close (GTK_WINDOW (self));
+          adw_dialog_close (ADW_DIALOG (self));
           return GDK_EVENT_STOP;
         }
 
@@ -257,7 +257,7 @@ shortcut_set_cb (PtyxisShortcutAccelDialog *self)
   g_signal_emit (self, signals [SHORTCUT_SET], 0,
                  ptyxis_shortcut_accel_dialog_get_accelerator (self));
 
-  gtk_window_close (GTK_WINDOW (self));
+  adw_dialog_close (ADW_DIALOG (self));
 }
 
 static void
@@ -388,10 +388,6 @@ ptyxis_shortcut_accel_dialog_init (PtyxisShortcutAccelDialog *self)
   g_object_bind_property (self, "accelerator",
                           self->display_shortcut, "accelerator",
                           G_BINDING_SYNC_CREATE);
-
-#ifdef DEVELOPMENT_BUILD
-  gtk_widget_add_css_class (GTK_WIDGET (self), "devel");
-#endif
 }
 
 gchar *
