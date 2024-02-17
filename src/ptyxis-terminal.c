@@ -120,9 +120,15 @@ ptyxis_terminal_update_colors (PtyxisTerminal *self)
   self->background = face->background;
 
   if (face->cursor.alpha > 0)
-    vte_terminal_set_color_cursor (VTE_TERMINAL (self), &face->cursor);
+    {
+      vte_terminal_set_color_cursor (VTE_TERMINAL (self), &face->cursor);
+      vte_terminal_set_color_cursor_foreground (VTE_TERMINAL (self), &face->background);
+    }
   else
-    vte_terminal_set_color_cursor (VTE_TERMINAL (self), NULL);
+    {
+      vte_terminal_set_color_cursor (VTE_TERMINAL (self), NULL);
+      vte_terminal_set_color_cursor_foreground (VTE_TERMINAL (self), NULL);
+    }
 }
 
 static void
