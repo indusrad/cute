@@ -67,7 +67,12 @@
                 },
                 {
                     "type" : "patch",
-                    "path" : "build-aux/0001-add-notification-and-shell-precmd-preexec.patch"
+                    "path" : "build-aux/0001-add-notification-and-shell-precmd-preexec.patch",
+                    "commit" : "578d8caf35b38a0490742a8927aeb426ad398e89"
+                },
+                {
+                    "type" : "patch",
+                    "path" : "build-aux/build-fix.patch"
                 }
             ]
         },
