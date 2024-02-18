@@ -30,6 +30,8 @@
 #include "ptyxis-podman-provider.h"
 #include "ptyxis-run-context.h"
 
+#define PODMAN_RELOAD_DELAY_SECONDS 5
+
 typedef struct _LabelToType
 {
   const char *label;
@@ -53,6 +55,7 @@ ptyxis_podman_provider_constructed (GObject *object)
   PtyxisPodmanProvider *self = (PtyxisPodmanProvider *)object;
   g_autoptr(GFile) file = NULL;
   g_autofree char *data_dir = NULL;
+  g_autofree char *parent_dir = NULL;
 
   G_OBJECT_CLASS (ptyxis_podman_provider_parent_class)->constructed (object);
 
@@ -62,20 +65,21 @@ ptyxis_podman_provider_constructed (GObject *object)
 
   g_assert (data_dir != NULL);
 
-  file = g_file_new_build_filename (data_dir,
-                                    "containers", "storage", "overlay-containers",
-                                    "containers.json",
-                                    NULL);
+  parent_dir = g_build_filename (data_dir, "containers", "storage", "overlay-containers", NULL);
+  file = g_file_new_build_filename (parent_dir, "containers.json", NULL);
+
+  /* If our parent directory does not exist, we won't be able to monitor
+   * for changes to the podman json file. Just create it upfront in the
+   * same form that it'd be created by podman (mode 0700).
+   */
+  g_mkdir_with_parents (parent_dir, 0700);
 
   if ((self->monitor = g_file_monitor (file, G_FILE_MONITOR_NONE, NULL, NULL)))
-    {
-      g_file_monitor_set_rate_limit (self->monitor, 5000);
-      g_signal_connect_object (self->monitor,
-                               "changed",
-                               G_CALLBACK (ptyxis_podman_provider_queue_update),
-                               self,
-                               G_CONNECT_SWAPPED);
-    }
+    g_signal_connect_object (self->monitor,
+                             "changed",
+                             G_CALLBACK (ptyxis_podman_provider_queue_update),
+                             self,
+                             G_CONNECT_SWAPPED);
 
   ptyxis_podman_provider_queue_update (self);
 }
@@ -315,9 +319,10 @@ ptyxis_podman_provider_queue_update (PtyxisPodmanProvider *self)
   g_return_if_fail (PTYXIS_IS_PODMAN_PROVIDER (self));
 
   if (self->queued_update == 0)
-    self->queued_update = g_idle_add_full (G_PRIORITY_LOW,
-                                           ptyxis_podman_provider_update_source_func,
-                                           self, NULL);
+    self->queued_update = g_timeout_add_seconds_full (G_PRIORITY_LOW,
+                                                      PODMAN_RELOAD_DELAY_SECONDS,
+                                                      ptyxis_podman_provider_update_source_func,
+                                                      self, NULL);
 }
 
 gboolean
