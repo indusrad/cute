@@ -30,7 +30,7 @@
 #include "ptyxis-podman-provider.h"
 #include "ptyxis-run-context.h"
 
-#define PODMAN_RELOAD_DELAY_SECONDS 5
+#define PODMAN_RELOAD_DELAY_SECONDS 3
 
 typedef struct _LabelToType
 {
