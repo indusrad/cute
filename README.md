@@ -165,7 +165,7 @@ would execute a new shell. However, it communicates with the UI via D-Bus
 serialization over a point-to-point `socketpair()`.
 
 It is able to do this because `ptyxis-agent`, on `x86` and `x86_64` will
-restrict it's `glibc` usage to what is available on fairly old Linux
+restrict its `glibc` usage to what is available on fairly old Linux
 installs such as CentOS 7. It does use GLib as well for D-Bus communication
 but is limited to what is available with Flatpak on the targetted platforms.
 
