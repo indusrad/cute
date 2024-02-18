@@ -27,6 +27,6 @@ G_BEGIN_DECLS
 
 #define PTYXIS_TYPE_TITLE_DIALOG (ptyxis_title_dialog_get_type())
 
-G_DECLARE_FINAL_TYPE (PtyxisTitleDialog, ptyxis_title_dialog, PTYXIS, TITLE_DIALOG, AdwWindow)
+G_DECLARE_FINAL_TYPE (PtyxisTitleDialog, ptyxis_title_dialog, PTYXIS, TITLE_DIALOG, AdwDialog)
 
 G_END_DECLS

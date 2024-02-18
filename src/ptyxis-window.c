@@ -982,7 +982,7 @@ ptyxis_window_set_title_action (GtkWidget  *widget,
                                 GVariant   *param)
 {
   PtyxisWindow *self = (PtyxisWindow *)widget;
-  AdwMessageDialog *dialog;
+  AdwDialog *dialog;
   PtyxisTab *active_tab;
 
   g_assert (PTYXIS_IS_WINDOW (self));
@@ -991,14 +991,12 @@ ptyxis_window_set_title_action (GtkWidget  *widget,
     return;
 
   dialog = g_object_new (PTYXIS_TYPE_TITLE_DIALOG,
-                         "modal", TRUE,
-                         "resizable", FALSE,
                          "tab", active_tab,
                          "title", _("Set Title"),
-                         "transient-for", self,
                          NULL);
 
-  gtk_window_present (GTK_WINDOW (dialog));
+  adw_dialog_set_presentation_mode (dialog, ADW_DIALOG_FLOATING);
+  adw_dialog_present (ADW_DIALOG (dialog), GTK_WIDGET (self));
 }
 
 static void
