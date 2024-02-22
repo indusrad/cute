@@ -791,10 +791,12 @@ generate_debug_info (PtyxisApplication *self)
   g_autofree char *flatpak_info = NULL;
   g_autofree char *gtk_theme_name= NULL;
   GtkSettings *gtk_settings;
+  GList *windows = gtk_application_get_windows (GTK_APPLICATION (self));
   GdkDisplay *display = gdk_display_get_default ();
   const char *os_name = ptyxis_application_get_os_name (self);
   const char *vte_sh_path = "/etc/profile.d/vte.sh";
   guint n_items;
+  guint id = 0;
 
   g_string_append_printf (str, "Host: %s\n", os_name);
   g_string_append_c (str, '\n');
@@ -842,6 +844,38 @@ generate_debug_info (PtyxisApplication *self)
     {
       g_autofree char *font_name = ptyxis_settings_dup_font_name (self->settings);
       g_string_append_printf (str, "Font: %s\n", font_name);
+    }
+
+  for (const GList *iter = windows; iter; iter = iter->next)
+    {
+      GtkWindow *window = iter->data;
+      GskRenderer *renderer;
+      GdkSurface *surface;
+      GdkMonitor *monitor;
+      GdkRectangle geom;
+
+      if (!PTYXIS_IS_WINDOW (window))
+        continue;
+
+      renderer = gtk_native_get_renderer (GTK_NATIVE (window));
+      surface = gtk_native_get_surface (GTK_NATIVE (window));
+      monitor = gdk_display_get_monitor_at_surface (display, surface);
+
+      gdk_monitor_get_geometry (monitor, &geom);
+
+      g_string_append_c (str, '\n');
+      g_string_append_printf (str, "window[%u].renderer = %s\n",
+                              id, G_OBJECT_TYPE_NAME (renderer));
+      g_string_append_printf (str, "window[%u].scale = %lf\n",
+                              id, gdk_surface_get_scale (surface));
+      g_string_append_printf (str, "window[%u].scale_factor = %d\n",
+                              id, gdk_surface_get_scale_factor (surface));
+      g_string_append_printf (str, "window[%u].monitor.geometry = %d,%d %d×%d\n",
+                              id, geom.x, geom.y, geom.width, geom.height);
+      g_string_append_printf (str, "window[%u].monitor.refresh_rate = %u\n",
+                              id, gdk_monitor_get_refresh_rate (monitor));
+
+      id++;
     }
 
 #if DEVELOPMENT_BUILD
