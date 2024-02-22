@@ -832,6 +832,17 @@ generate_debug_info (PtyxisApplication *self)
   g_object_get (gtk_settings, "gtk-theme-name", &gtk_theme_name, NULL);
   g_string_append_c (str, '\n');
   g_string_append_printf (str, "GTK Theme: %s\n", gtk_theme_name);
+  g_string_append_printf (str, "System Font: %s\n", self->system_font_name);
+
+  if (ptyxis_settings_get_use_system_font (self->settings))
+    {
+      g_string_append (str, "Font: -- Using System Font --\n");
+    }
+  else
+    {
+      g_autofree char *font_name = ptyxis_settings_dup_font_name (self->settings);
+      g_string_append_printf (str, "Font: %s\n", font_name);
+    }
 
 #if DEVELOPMENT_BUILD
   g_string_append_c (str, '\n');
