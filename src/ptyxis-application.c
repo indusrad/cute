@@ -791,6 +791,7 @@ generate_debug_info (PtyxisApplication *self)
   g_autofree char *flatpak_info = NULL;
   g_autofree char *gtk_theme_name= NULL;
   GtkSettings *gtk_settings;
+  GdkDisplay *display = gdk_display_get_default ();
   const char *os_name = ptyxis_application_get_os_name (self);
   const char *vte_sh_path = "/etc/profile.d/vte.sh";
   guint n_items;
@@ -823,6 +824,9 @@ generate_debug_info (PtyxisApplication *self)
                           VTE_MINOR_VERSION,
                           VTE_MICRO_VERSION,
                           vte_get_features ());
+
+  g_string_append_c (str, '\n');
+  g_string_append_printf (str, "Display: %s\n", G_OBJECT_TYPE_NAME (display));
 
   gtk_settings = gtk_settings_get_default ();
   g_object_get (gtk_settings, "gtk-theme-name", &gtk_theme_name, NULL);
