@@ -848,14 +848,19 @@ generate_debug_info (PtyxisApplication *self)
 
   for (const GList *iter = windows; iter; iter = iter->next)
     {
+      g_autoptr(GListModel) pages = NULL;
       GtkWindow *window = iter->data;
       GskRenderer *renderer;
       GdkSurface *surface;
       GdkMonitor *monitor;
       GdkRectangle geom;
+      guint n_pages;
 
       if (!PTYXIS_IS_WINDOW (window))
         continue;
+
+      pages = ptyxis_window_list_pages (PTYXIS_WINDOW (window));
+      n_pages = g_list_model_get_n_items (pages);
 
       renderer = gtk_native_get_renderer (GTK_NATIVE (window));
       surface = gtk_native_get_surface (GTK_NATIVE (window));
@@ -864,6 +869,8 @@ generate_debug_info (PtyxisApplication *self)
       gdk_monitor_get_geometry (monitor, &geom);
 
       g_string_append_c (str, '\n');
+      g_string_append_printf (str, "window[%u].n_tabs = %u\n",
+                              id, n_pages);
       g_string_append_printf (str, "window[%u].renderer = %s\n",
                               id, G_OBJECT_TYPE_NAME (renderer));
       g_string_append_printf (str, "window[%u].scale = %lf\n",
