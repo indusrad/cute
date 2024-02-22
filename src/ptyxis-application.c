@@ -22,6 +22,7 @@
 
 #include <glib/gi18n.h>
 
+#include <sys/utsname.h>
 #include <sys/wait.h>
 
 #include "ptyxis-action-group.h"
@@ -797,12 +798,23 @@ generate_debug_info (PtyxisApplication *self)
   const char *os_name = ptyxis_application_get_os_name (self);
   const char *vte_sh_path = "/etc/profile.d/vte.sh";
   const char *etc_os_release = "/etc/os-release";
+  struct utsname u;
   guint n_items;
   guint id = 0;
 
-  g_string_append_printf (str, "Host: %s\n", os_name);
+
+  g_string_append_printf (str, "Name: %s\n", os_name);
   g_string_append_c (str, '\n');
 
+  if (uname (&u) == 0)
+    {
+      g_string_append_printf (str, "uname.sysname = %s\n", u.sysname);
+      g_string_append_printf (str, "uname.release = %s\n", u.release);
+      g_string_append_printf (str, "uname.version = %s\n", u.version);
+      g_string_append_printf (str, "uname.machine = %s\n", u.machine);
+    }
+
+  g_string_append_c (str, '\n');
   g_string_append_printf (str,
                           "GLib: %d.%d.%d (compiled against %d.%d.%d)\n",
                           glib_major_version,
