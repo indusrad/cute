@@ -790,11 +790,13 @@ generate_debug_info (PtyxisApplication *self)
   g_autoptr(GListModel) containers = NULL;
   g_autofree char *flatpak_info = NULL;
   g_autofree char *gtk_theme_name= NULL;
+  g_autofree char *os_release = NULL;
   GtkSettings *gtk_settings;
   GList *windows = gtk_application_get_windows (GTK_APPLICATION (self));
   GdkDisplay *display = gdk_display_get_default ();
   const char *os_name = ptyxis_application_get_os_name (self);
   const char *vte_sh_path = "/etc/profile.d/vte.sh";
+  const char *etc_os_release = "/etc/os-release";
   guint n_items;
   guint id = 0;
 
@@ -927,6 +929,14 @@ generate_debug_info (PtyxisApplication *self)
     {
       g_string_append_c (str, '\n');
       g_string_append (str, flatpak_info);
+
+      etc_os_release = "/var/run/host/etc/os-release";
+    }
+
+  if (g_file_get_contents (etc_os_release, &os_release, NULL, NULL))
+    {
+      g_string_append_c (str, '\n');
+      g_string_append (str, os_release);
     }
 
   return g_string_free (str, FALSE);
