@@ -37,6 +37,8 @@ G_BEGIN_DECLS
 #define PTYXIS_SETTING_KEY_PROFILE_UUIDS           "profile-uuids"
 #define PTYXIS_SETTING_KEY_RESTORE_SESSION         "restore-session"
 #define PTYXIS_SETTING_KEY_RESTORE_WINDOW_SIZE     "restore-window-size"
+#define PTYXIS_SETTING_KEY_DEFAULT_COLUMNS         "default-columns"
+#define PTYXIS_SETTING_KEY_DEFAULT_ROWS            "default-rows"
 #define PTYXIS_SETTING_KEY_SCROLLBAR_POLICY        "scrollbar-policy"
 #define PTYXIS_SETTING_KEY_TEXT_BLINK_MODE         "text-blink-mode"
 #define PTYXIS_SETTING_KEY_TOAST_ON_COPY_CLIPBOARD "toast-on-copy-clipboard"
@@ -119,6 +121,15 @@ void                    ptyxis_settings_get_window_size             (PtyxisSetti
 void                    ptyxis_settings_set_window_size             (PtyxisSettings             *self,
                                                                      guint                       columns,
                                                                      guint                       rows);
+void                    ptyxis_settings_get_default_size            (PtyxisSettings             *self,
+                                                                     guint                      *columns,
+                                                                     guint                      *rows);
+guint                   ptyxis_settings_get_default_columns         (PtyxisSettings             *self);
+void                    ptyxis_settings_set_default_columns         (PtyxisSettings             *self,
+                                                                     guint                      columns);
+guint                   ptyxis_settings_get_default_rows            (PtyxisSettings             *self);
+void                    ptyxis_settings_set_default_rows            (PtyxisSettings             *self,
+                                                                     guint                      rows);
 AdwColorScheme          ptyxis_settings_get_interface_style         (PtyxisSettings             *self);
 void                    ptyxis_settings_set_interface_style         (PtyxisSettings             *self,
                                                                      AdwColorScheme              color_scheme);

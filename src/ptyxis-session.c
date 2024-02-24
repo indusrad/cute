@@ -150,6 +150,7 @@ ptyxis_session_restore (PtyxisApplication *app,
   GVariantIter iter;
   GVariant *window;
   gboolean restore_session;
+  gboolean restore_window_size;
   gboolean added_window = FALSE;
   guint32 version;
 
@@ -165,6 +166,7 @@ ptyxis_session_restore (PtyxisApplication *app,
 
   settings = ptyxis_application_get_settings (PTYXIS_APPLICATION_DEFAULT);
   restore_session = ptyxis_settings_get_restore_session (settings);
+  restore_window_size = ptyxis_settings_get_restore_window_size (settings);
 
   g_variant_iter_init (&iter, windows);
   while (g_variant_iter_loop (&iter, "@a{sv}", &window))
@@ -212,8 +214,9 @@ ptyxis_session_restore (PtyxisApplication *app,
           if (!pinned && !restore_session)
             continue;
 
-          if (!g_variant_lookup (tab, "size", "(uu)", &columns, &rows))
-            columns = 80, rows = 24;
+          if (!restore_window_size ||
+              !g_variant_lookup (tab, "size", "(uu)", &columns, &rows))
+            ptyxis_settings_get_default_size (settings, &columns, &rows);
 
           if (!g_variant_lookup (tab, "cwd", "&s", &cwd))
             cwd = NULL;

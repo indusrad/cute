@@ -523,9 +523,11 @@ ptyxis_window_new_window_action (GtkWidget  *widget,
   PtyxisWindow *self = (PtyxisWindow *)widget;
   g_autoptr(PtyxisProfile) profile = NULL;
   PtyxisWindow *window;
+  PtyxisSettings *settings;
   const char *profile_uuid = "";
   const char *container_id = "";
   PtyxisTab *tab;
+  guint columns, rows;
 
   g_assert (PTYXIS_IS_WINDOW (self));
   g_assert (param != NULL);
@@ -533,6 +535,8 @@ ptyxis_window_new_window_action (GtkWidget  *widget,
 
   g_variant_get (param, "(&s&s)", &profile_uuid, &container_id);
   profile = ptyxis_window_dup_profile_for_param (self, profile_uuid);
+
+  settings = ptyxis_application_get_settings (PTYXIS_APPLICATION_DEFAULT);
 
   tab = ptyxis_tab_new (profile);
   ptyxis_window_apply_current_settings (self, tab);
@@ -553,8 +557,8 @@ ptyxis_window_new_window_action (GtkWidget  *widget,
       gtk_window_is_fullscreen (GTK_WINDOW (self)))
     {
       PtyxisTerminal *terminal = ptyxis_tab_get_terminal (tab);
-
-      vte_terminal_set_size (VTE_TERMINAL (terminal), 80, 24);
+      ptyxis_settings_get_default_size (settings, &columns, &rows);
+      vte_terminal_set_size (VTE_TERMINAL (terminal), columns, rows);
     }
 
   window = g_object_new (PTYXIS_TYPE_WINDOW,
@@ -1665,12 +1669,14 @@ ptyxis_window_new_for_profile_and_command (PtyxisProfile      *profile,
   PtyxisTerminal *terminal;
   PtyxisWindow *self;
   PtyxisTab *tab;
-  guint columns = 80;
-  guint rows = 24;
+  guint columns = 0;
+  guint rows = 0;
 
   g_return_val_if_fail (!profile || PTYXIS_IS_PROFILE (profile), NULL);
 
   settings = ptyxis_application_get_settings (PTYXIS_APPLICATION_DEFAULT);
+
+  ptyxis_settings_get_default_size (settings, &columns, &rows);
 
   if (profile == NULL)
     {
@@ -1689,6 +1695,9 @@ ptyxis_window_new_for_profile_and_command (PtyxisProfile      *profile,
 
   if (ptyxis_settings_get_restore_window_size (settings))
     ptyxis_settings_get_window_size (settings, &columns, &rows);
+
+  if (!columns || !rows)
+    ptyxis_settings_get_default_size (settings, &columns, &rows);
 
   vte_terminal_set_size (VTE_TERMINAL (terminal), columns, rows);
 

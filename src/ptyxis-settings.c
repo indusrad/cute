@@ -48,6 +48,8 @@ enum {
   PROP_PROFILE_UUIDS,
   PROP_RESTORE_SESSION,
   PROP_RESTORE_WINDOW_SIZE,
+  PROP_DEFAULT_COLUMNS,
+  PROP_DEFAULT_ROWS,
   PROP_SCROLLBAR_POLICY,
   PROP_TEXT_BLINK_MODE,
   PROP_TOAST_ON_COPY_CLIPBOARD,
@@ -102,6 +104,10 @@ ptyxis_settings_changed_cb (PtyxisSettings *self,
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_RESTORE_SESSION]);
   else if (g_str_equal (key, PTYXIS_SETTING_KEY_RESTORE_WINDOW_SIZE))
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_RESTORE_WINDOW_SIZE]);
+  else if (g_str_equal (key, PTYXIS_SETTING_KEY_DEFAULT_COLUMNS))
+    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_DEFAULT_COLUMNS]);
+  else if (g_str_equal (key, PTYXIS_SETTING_KEY_DEFAULT_ROWS))
+    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_DEFAULT_ROWS]);
   else if (g_str_equal (key, PTYXIS_SETTING_KEY_TOAST_ON_COPY_CLIPBOARD))
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_TOAST_ON_COPY_CLIPBOARD]);
   else if (g_str_equal (key, PTYXIS_SETTING_KEY_ENABLE_A11Y))
@@ -186,6 +192,14 @@ ptyxis_settings_get_property (GObject    *object,
       g_value_set_boolean (value, ptyxis_settings_get_restore_window_size (self));
       break;
 
+    case PROP_DEFAULT_COLUMNS:
+      g_value_set_uint (value, ptyxis_settings_get_default_columns (self));
+      break;
+
+    case PROP_DEFAULT_ROWS:
+      g_value_set_uint (value, ptyxis_settings_get_default_rows (self));
+      break;
+
     case PROP_SCROLLBAR_POLICY:
       g_value_set_enum (value, ptyxis_settings_get_scrollbar_policy (self));
       break;
@@ -267,6 +281,14 @@ ptyxis_settings_set_property (GObject      *object,
 
     case PROP_RESTORE_WINDOW_SIZE:
       ptyxis_settings_set_restore_window_size (self, g_value_get_boolean (value));
+      break;
+
+    case PROP_DEFAULT_COLUMNS:
+      ptyxis_settings_set_default_columns (self, g_value_get_uint (value));
+      break;
+
+    case PROP_DEFAULT_ROWS:
+      ptyxis_settings_set_default_rows (self, g_value_get_uint (value));
       break;
 
     case PROP_SCROLLBAR_POLICY:
@@ -393,6 +415,20 @@ ptyxis_settings_class_init (PtyxisSettingsClass *klass)
                           (G_PARAM_READWRITE |
                            G_PARAM_EXPLICIT_NOTIFY |
                            G_PARAM_STATIC_STRINGS));
+
+  properties[PROP_DEFAULT_COLUMNS] =
+    g_param_spec_uint ("default-columns", NULL, NULL,
+                       1, 65535, 80,
+                       (G_PARAM_READWRITE |
+                        G_PARAM_EXPLICIT_NOTIFY |
+                        G_PARAM_STATIC_STRINGS));
+
+  properties[PROP_DEFAULT_ROWS] =
+    g_param_spec_uint ("default-rows", NULL, NULL,
+                       1, 65535, 24,
+                       (G_PARAM_READWRITE |
+                        G_PARAM_EXPLICIT_NOTIFY |
+                        G_PARAM_STATIC_STRINGS));
 
   properties[PROP_SCROLLBAR_POLICY] =
     g_param_spec_enum ("scrollbar-policy", NULL, NULL,
@@ -845,6 +881,58 @@ ptyxis_settings_set_restore_window_size (PtyxisSettings *self,
   g_settings_set_boolean (self->settings,
                           PTYXIS_SETTING_KEY_RESTORE_WINDOW_SIZE,
                           restore_window_size);
+}
+
+void
+ptyxis_settings_get_default_size (PtyxisSettings *self,
+                                  guint          *columns,
+                                  guint          *rows)
+{
+  g_return_if_fail (PTYXIS_IS_SETTINGS (self));
+
+  if (columns != NULL)
+    *columns = ptyxis_settings_get_default_columns (self);
+
+  if (rows != NULL)
+    *rows = ptyxis_settings_get_default_rows (self);
+}
+
+guint
+ptyxis_settings_get_default_columns (PtyxisSettings *self)
+{
+  g_return_val_if_fail (PTYXIS_IS_SETTINGS (self), 0);
+
+  return g_settings_get_uint (self->settings, PTYXIS_SETTING_KEY_DEFAULT_COLUMNS);
+}
+
+guint
+ptyxis_settings_get_default_rows (PtyxisSettings *self)
+{
+  g_return_val_if_fail (PTYXIS_IS_SETTINGS (self), 0);
+
+  return g_settings_get_uint (self->settings, PTYXIS_SETTING_KEY_DEFAULT_ROWS);
+}
+
+void
+ptyxis_settings_set_default_columns (PtyxisSettings *self,
+                                     guint          columns)
+{
+  g_return_if_fail (PTYXIS_IS_SETTINGS (self));
+
+  g_settings_set_uint (self->settings,
+                      PTYXIS_SETTING_KEY_DEFAULT_COLUMNS,
+                      columns);
+}
+
+void
+ptyxis_settings_set_default_rows (PtyxisSettings *self,
+                                  guint          rows)
+{
+  g_return_if_fail (PTYXIS_IS_SETTINGS (self));
+
+  g_settings_set_uint (self->settings,
+                      PTYXIS_SETTING_KEY_DEFAULT_ROWS,
+                      rows);
 }
 
 void

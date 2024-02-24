@@ -359,6 +359,39 @@
         </child>
         <child>
           <object class="AdwPreferencesGroup">
+            <property name="title" translatable="yes">Terminal Size</property>
+            <child>
+              <object class="AdwSpinRow" id="default_columns">
+                <property name="title" translatable="yes">Columns</property>
+                <property name="numeric">1</property>
+                <property name="adjustment">
+                  <object class="GtkAdjustment">
+                    <property name="lower">1</property>
+                    <property name="upper">65535</property>
+                    <property name="step-increment">1</property>
+                    <property name="page-increment">10</property>
+                  </object>
+                </property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwSpinRow" id="default_rows">
+                <property name="title" translatable="yes">Rows</property>
+                <property name="numeric">1</property>
+                <property name="adjustment">
+                  <object class="GtkAdjustment">
+                    <property name="lower">1</property>
+                    <property name="upper">65535</property>
+                    <property name="step-increment">1</property>
+                    <property name="page-increment">10</property>
+                  </object>
+                </property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
             <property name="title" translatable="yes">Scrolling</property>
             <child>
               <object class="AdwComboRow" id="scrollbar_policy">
