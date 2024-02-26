@@ -316,7 +316,7 @@ bind_title_cb (GBinding     *binding,
   if (ptyxis_str_empty0 (str))
     g_value_set_static_string (to_value, _("Ptyxis"));
   else
-    g_value_take_string (to_value, g_strdup_printf (_("%s — Ptyxis"), str));
+    g_value_set_string (to_value, str);
 
   return TRUE;
 }
