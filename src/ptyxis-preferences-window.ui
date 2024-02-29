@@ -331,6 +331,17 @@
         </child>
         <child>
           <object class="AdwPreferencesGroup">
+            <property name="title" translatable="yes">Accessibility</property>
+            <child>
+              <object class="AdwSwitchRow" id="enable_a11y">
+                <property name="title" translatable="yes">Allow Screen Readers</property>
+                <property name="subtitle" translatable="yes">Permit screen readers such as Orca to read terminal content and typed text</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
             <property name="title" translatable="yes">Bell</property>
             <child>
               <object class="AdwSwitchRow" id="audible_bell">

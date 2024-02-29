@@ -690,6 +690,9 @@ ptyxis_tab_constructed (GObject *object)
   g_object_bind_property (settings, "cursor-blink-mode",
                           self->terminal, "cursor-blink-mode",
                           G_BINDING_SYNC_CREATE);
+  g_object_bind_property (settings, "enable-a11y",
+                          self->terminal, "enable-a11y",
+                          G_BINDING_SYNC_CREATE);
   g_object_bind_property (settings, "font-desc",
                           self->terminal, "font-desc",
                           G_BINDING_SYNC_CREATE);

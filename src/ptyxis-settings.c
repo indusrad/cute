@@ -40,6 +40,7 @@ enum {
   PROP_CURSOR_BLINK_MODE,
   PROP_CURSOR_SHAPE,
   PROP_DEFAULT_PROFILE_UUID,
+  PROP_ENABLE_A11Y,
   PROP_FONT_DESC,
   PROP_FONT_NAME,
   PROP_INTERFACE_STYLE,
@@ -103,6 +104,8 @@ ptyxis_settings_changed_cb (PtyxisSettings *self,
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_RESTORE_WINDOW_SIZE]);
   else if (g_str_equal (key, PTYXIS_SETTING_KEY_TOAST_ON_COPY_CLIPBOARD))
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_TOAST_ON_COPY_CLIPBOARD]);
+  else if (g_str_equal (key, PTYXIS_SETTING_KEY_ENABLE_A11Y))
+    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_ENABLE_A11Y]);
   else if (g_str_equal (key, PTYXIS_SETTING_KEY_FONT_NAME))
     {
       g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_FONT_NAME]);
@@ -149,6 +152,10 @@ ptyxis_settings_get_property (GObject    *object,
 
     case PROP_DEFAULT_PROFILE_UUID:
       g_value_take_string (value, ptyxis_settings_dup_default_profile_uuid (self));
+      break;
+
+    case PROP_ENABLE_A11Y:
+      g_value_set_boolean (value, ptyxis_settings_get_enable_a11y (self));
       break;
 
     case PROP_FONT_DESC:
@@ -232,6 +239,10 @@ ptyxis_settings_set_property (GObject      *object,
 
     case PROP_FONT_DESC:
       ptyxis_settings_set_font_desc (self, g_value_get_boxed (value));
+      break;
+
+    case PROP_ENABLE_A11Y:
+      ptyxis_settings_set_enable_a11y (self, g_value_get_boolean (value));
       break;
 
     case PROP_FONT_NAME:
@@ -318,6 +329,13 @@ ptyxis_settings_class_init (PtyxisSettingsClass *klass)
                        (G_PARAM_READWRITE |
                         G_PARAM_EXPLICIT_NOTIFY |
                         G_PARAM_STATIC_STRINGS));
+
+  properties[PROP_ENABLE_A11Y] =
+    g_param_spec_boolean ("enable-a11y", NULL, NULL,
+                          FALSE,
+                          (G_PARAM_READWRITE |
+                           G_PARAM_EXPLICIT_NOTIFY |
+                           G_PARAM_STATIC_STRINGS));
 
   properties[PROP_FONT_DESC] =
     g_param_spec_boxed ("font-desc", NULL, NULL,
@@ -566,6 +584,25 @@ ptyxis_settings_get_settings (PtyxisSettings *self)
   g_return_val_if_fail (PTYXIS_IS_SETTINGS (self), NULL);
 
   return self->settings;
+}
+
+gboolean
+ptyxis_settings_get_enable_a11y (PtyxisSettings *self)
+{
+  g_return_val_if_fail (PTYXIS_IS_SETTINGS (self), FALSE);
+
+  return g_settings_get_boolean (self->settings, PTYXIS_SETTING_KEY_ENABLE_A11Y);
+}
+
+void
+ptyxis_settings_set_enable_a11y (PtyxisSettings *self,
+                                 gboolean        enable_a11y)
+{
+  g_return_if_fail (PTYXIS_IS_SETTINGS (self));
+
+  g_settings_set_boolean (self->settings,
+                          PTYXIS_SETTING_KEY_ENABLE_A11Y,
+                          enable_a11y);
 }
 
 gboolean

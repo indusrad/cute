@@ -843,6 +843,8 @@ generate_debug_info (PtyxisApplication *self)
 
   g_string_append_c (str, '\n');
   g_string_append_printf (str, "Display: %s\n", G_OBJECT_TYPE_NAME (display));
+  g_string_append_printf (str, "Accessibility: %s\n",
+                          ptyxis_settings_get_enable_a11y (self->settings) ? "Yes" : "No");
 
   gtk_settings = gtk_settings_get_default ();
   g_object_get (gtk_settings, "gtk-theme-name", &gtk_theme_name, NULL);

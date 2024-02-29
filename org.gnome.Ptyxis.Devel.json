@@ -68,6 +68,10 @@
                 {
                     "type" : "patch",
                     "path" : "build-aux/0001-add-notification-and-shell-precmd-preexec.patch"
+                },
+                {
+                    "type" : "patch",
+                    "path" : "build-aux/0002-a11y-implement-GtkAccessibleText.patch"
                 }
             ]
         },

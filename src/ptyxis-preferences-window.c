@@ -54,6 +54,7 @@ struct _PtyxisPreferencesWindow
   AdwComboRow          *cursor_shape;
   GListModel           *cursor_shapes;
   AdwComboRow          *delete_binding;
+  AdwSwitchRow         *enable_a11y;
   GListModel           *erase_bindings;
   AdwComboRow          *exit_action;
   GListModel           *exit_actions;
@@ -697,6 +698,9 @@ ptyxis_preferences_window_constructed (GObject *object)
   g_object_bind_property (settings, "use-system-font",
                           self->font_name_row, "activatable",
                           G_BINDING_SYNC_CREATE | G_BINDING_INVERT_BOOLEAN);
+  g_object_bind_property (settings, "enable-a11y",
+                          self->enable_a11y, "active",
+                          G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
 
   g_object_bind_property (shortcuts, "new-tab",
                           self->shortcut_new_tab, "accelerator",
@@ -905,6 +909,7 @@ ptyxis_preferences_window_class_init (PtyxisPreferencesWindowClass *klass)
   gtk_widget_class_bind_template_child (widget_class, PtyxisPreferencesWindow, cursor_shape);
   gtk_widget_class_bind_template_child (widget_class, PtyxisPreferencesWindow, cursor_shapes);
   gtk_widget_class_bind_template_child (widget_class, PtyxisPreferencesWindow, delete_binding);
+  gtk_widget_class_bind_template_child (widget_class, PtyxisPreferencesWindow, enable_a11y);
   gtk_widget_class_bind_template_child (widget_class, PtyxisPreferencesWindow, erase_bindings);
   gtk_widget_class_bind_template_child (widget_class, PtyxisPreferencesWindow, exit_action);
   gtk_widget_class_bind_template_child (widget_class, PtyxisPreferencesWindow, exit_actions);

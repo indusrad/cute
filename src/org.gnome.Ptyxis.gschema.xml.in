@@ -190,6 +190,12 @@
       <description>Show the user when text has copied to the clipboard.</description>
     </key>
 
+    <key name="enable-a11y" type="b">
+      <default>false</default>
+      <summary>Enable Accessibility</summary>
+      <description>Currently expirmental feature to send accessibility information to screen readers.</description>
+    </key>
+
   </schema>
 
   <schema id="@APP_SCHEMA_PROFILE_ID@">

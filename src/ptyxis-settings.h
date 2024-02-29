@@ -30,6 +30,7 @@ G_BEGIN_DECLS
 #define PTYXIS_SETTING_KEY_CURSOR_BLINK_MODE       "cursor-blink-mode"
 #define PTYXIS_SETTING_KEY_CURSOR_SHAPE            "cursor-shape"
 #define PTYXIS_SETTING_KEY_DEFAULT_PROFILE_UUID    "default-profile-uuid"
+#define PTYXIS_SETTING_KEY_ENABLE_A11Y             "enable-a11y"
 #define PTYXIS_SETTING_KEY_FONT_NAME               "font-name"
 #define PTYXIS_SETTING_KEY_INTERFACE_STYLE         "interface-style"
 #define PTYXIS_SETTING_KEY_NEW_TAB_POSITION        "new-tab-position"
@@ -73,6 +74,9 @@ void                    ptyxis_settings_remove_profile_uuid         (PtyxisSetti
 PtyxisNewTabPosition    ptyxis_settings_get_new_tab_position        (PtyxisSettings             *self);
 void                    ptyxis_settings_set_new_tab_position        (PtyxisSettings             *self,
                                                                      PtyxisNewTabPosition        new_tab_position);
+gboolean                ptyxis_settings_get_enable_a11y             (PtyxisSettings             *self);
+void                    ptyxis_settings_set_enable_a11y             (PtyxisSettings             *self,
+                                                                     gboolean                    enable_a11y);
 gboolean                ptyxis_settings_get_audible_bell            (PtyxisSettings             *self);
 void                    ptyxis_settings_set_audible_bell            (PtyxisSettings             *self,
                                                                      gboolean                    audible_bell);
