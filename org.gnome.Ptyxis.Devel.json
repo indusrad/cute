@@ -63,15 +63,11 @@
                 {
                     "type" : "git",
                     "url" : "https://gitlab.gnome.org/GNOME/vte.git",
-                    "branch" : "vte-0-76"
+                    "branch" : "master"
                 },
                 {
                     "type" : "patch",
                     "path" : "build-aux/0001-add-notification-and-shell-precmd-preexec.patch"
-                },
-                {
-                    "type" : "patch",
-                    "path" : "build-aux/0002-a11y-implement-GtkAccessibleText.patch"
                 }
             ]
         },
