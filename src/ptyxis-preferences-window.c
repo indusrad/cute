@@ -68,7 +68,7 @@ struct _PtyxisPreferencesWindow
   GListModel           *preserve_directories;
   GtkListBox           *profiles_list_box;
   AdwSwitchRow         *restore_session;
-  AdwSwitchRow         *restore_window_size;
+  GtkSwitch            *restore_window_size;
   AdwSpinRow           *default_rows;
   AdwSpinRow           *default_columns;
   AdwSpinRow           *scrollback_lines;
