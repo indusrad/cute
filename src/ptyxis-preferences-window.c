@@ -68,7 +68,9 @@ struct _PtyxisPreferencesWindow
   GListModel           *preserve_directories;
   GtkListBox           *profiles_list_box;
   AdwSwitchRow         *restore_session;
-  AdwSwitchRow         *restore_window_size;
+  GtkSwitch            *restore_window_size;
+  AdwSpinRow           *default_rows;
+  AdwSpinRow           *default_columns;
   AdwSpinRow           *scrollback_lines;
   AdwSwitchRow         *scroll_on_output;
   AdwSwitchRow         *scroll_on_keystroke;
@@ -689,6 +691,14 @@ ptyxis_preferences_window_constructed (GObject *object)
   g_object_bind_property (settings, "use-system-font",
                           self->use_system_font, "active",
                           G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
+
+  g_object_bind_property (settings, "default-columns",
+                          self->default_columns, "value",
+                          G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
+  g_object_bind_property (settings, "default-rows",
+                          self->default_rows, "value",
+                          G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
+
   g_object_bind_property (settings, "font-name",
                           self->font_name, "label",
                           G_BINDING_SYNC_CREATE);
@@ -924,6 +934,8 @@ ptyxis_preferences_window_class_init (PtyxisPreferencesWindowClass *klass)
   gtk_widget_class_bind_template_child (widget_class, PtyxisPreferencesWindow, profiles_list_box);
   gtk_widget_class_bind_template_child (widget_class, PtyxisPreferencesWindow, restore_session);
   gtk_widget_class_bind_template_child (widget_class, PtyxisPreferencesWindow, restore_window_size);
+  gtk_widget_class_bind_template_child (widget_class, PtyxisPreferencesWindow, default_rows);
+  gtk_widget_class_bind_template_child (widget_class, PtyxisPreferencesWindow, default_columns);
   gtk_widget_class_bind_template_child (widget_class, PtyxisPreferencesWindow, scroll_on_keystroke);
   gtk_widget_class_bind_template_child (widget_class, PtyxisPreferencesWindow, scroll_on_output);
   gtk_widget_class_bind_template_child (widget_class, PtyxisPreferencesWindow, scrollback_lines);

@@ -181,7 +181,21 @@
     </key>
 
     <key name="window-size" type="(uu)">
-      <default>(80,24)</default>
+      <default>(0,0)</default>
+    </key>
+
+    <key name="default-columns" type="u">
+      <default>80</default>
+      <range min="1" max="65535"/>
+      <summary>Default Column Size</summary>
+      <description>Default window size when restore-window-size is not true.</description>
+    </key>
+
+    <key name="default-rows" type="u">
+      <default>24</default>
+      <range min="1" max="65535"/>
+      <summary>Default Row Size</summary>
+      <description>Default window size when restore-window-size is not true.</description>
     </key>
 
     <key name="toast-on-copy-clipboard" type="b">

@@ -379,7 +379,7 @@ ptyxis_application_command_line (GApplication            *app,
           if (ptyxis_settings_get_restore_window_size (self->settings))
             {
               PtyxisTerminal *terminal = ptyxis_tab_get_terminal (tab);
-              guint columns = 80, rows = 24;
+              guint columns, rows;
 
               ptyxis_settings_get_window_size (self->settings, &columns, &rows);
               vte_terminal_set_size (VTE_TERMINAL (terminal), columns, rows);
