@@ -29,6 +29,10 @@ G_BEGIN_DECLS
 G_DECLARE_FINAL_TYPE (PtyxisPodmanProvider, ptyxis_podman_provider, PTYXIS, PODMAN_PROVIDER, PtyxisContainerProvider)
 
 PtyxisContainerProvider *ptyxis_podman_provider_new                (void);
+const char              *ptyxis_podman_provider_get_version        (void);
+gboolean                 ptyxis_podman_provider_check_version      (guint                  major,
+                                                                    guint                  minor,
+                                                                    guint                  micro);
 void                     ptyxis_podman_provider_queue_update       (PtyxisPodmanProvider  *self);
 gboolean                 ptyxis_podman_provider_update_sync        (PtyxisPodmanProvider  *self,
                                                                     GCancellable          *cancellable,

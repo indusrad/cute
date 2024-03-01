@@ -27,6 +27,7 @@
 #include "ptyxis-agent-util.h"
 #include "ptyxis-distrobox-container.h"
 #include "ptyxis-podman-container.h"
+#include "ptyxis-podman-provider.h"
 #include "ptyxis-process-impl.h"
 #include "ptyxis-run-context.h"
 #include "ptyxis-toolbox-container.h"
@@ -264,6 +265,14 @@ ptyxis_podman_container_run_context_cb (PtyxisRunContext    *run_context,
    */
   if ((max_dest_fd = ptyxis_unix_fd_map_get_max_dest_fd (unix_fd_map)) > 2)
     ptyxis_run_context_append_formatted (run_context, "--preserve-fds=%d", max_dest_fd-2);
+
+  /* If we have a modern enough podman, specify --detach-keys to avoid it
+   * stealing our ctrl+p.
+   *
+   * https://github.com/containers/toolbox/issues/394
+   */
+  if (ptyxis_podman_provider_check_version (1, 8, 1))
+    ptyxis_run_context_append_argv (run_context, "--detach-keys=");
 
   /* Append --env=FOO=BAR environment variables */
   for (guint i = 0; env[i]; i++)

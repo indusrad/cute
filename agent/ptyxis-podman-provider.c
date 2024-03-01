@@ -21,6 +21,7 @@
 #include "config.h"
 
 #include <fcntl.h>
+#include <stdio.h>
 
 #include <json-glib/json-glib.h>
 
@@ -323,6 +324,67 @@ ptyxis_podman_provider_queue_update (PtyxisPodmanProvider *self)
                                                       PODMAN_RELOAD_DELAY_SECONDS,
                                                       ptyxis_podman_provider_update_source_func,
                                                       self, NULL);
+}
+
+const char *
+ptyxis_podman_provider_get_version (void)
+{
+  static char *version;
+
+  if (version == NULL)
+    {
+      g_autoptr(GSubprocessLauncher) launcher = NULL;
+      g_autoptr(GSubprocess) subprocess = NULL;
+      g_autoptr(JsonParser) parser = NULL;
+      g_autofree char *stdout_buf = NULL;
+      JsonObject *obj;
+      JsonNode *node;
+
+      launcher = g_subprocess_launcher_new (G_SUBPROCESS_FLAGS_STDOUT_PIPE);
+      subprocess = g_subprocess_launcher_spawn (launcher, NULL, "podman", "version", "--format=json", NULL);
+      if (subprocess == NULL)
+        return NULL;
+
+      if (!g_subprocess_communicate_utf8 (subprocess, NULL, NULL, &stdout_buf, NULL, NULL))
+        return NULL;
+
+      parser = json_parser_new ();
+      if (!json_parser_load_from_data (parser, stdout_buf, -1, NULL))
+        return NULL;
+
+      if ((node = json_parser_get_root (parser)) &&
+          JSON_NODE_HOLDS_OBJECT (node) &&
+          (obj = json_node_get_object (node)) &&
+          json_object_has_member (obj, "Client") &&
+          (node = json_object_get_member (obj, "Client")) &&
+          JSON_NODE_HOLDS_OBJECT (node) &&
+          (obj = json_node_get_object (node)) &&
+          json_object_has_member (obj, "Version") &&
+          (node = json_object_get_member (obj, "Version")) &&
+          JSON_NODE_HOLDS_VALUE (node))
+        version = g_strdup (json_node_get_string (node));
+    }
+
+  return version;
+}
+
+gboolean
+ptyxis_podman_provider_check_version (guint major,
+                                      guint minor,
+                                      guint micro)
+{
+  const char *version = ptyxis_podman_provider_get_version ();
+  guint pmaj, pmin, pmic;
+
+  if (version == NULL)
+    return FALSE;
+
+  if (sscanf (version, "%u.%u.%u", &pmaj, &pmin, &pmic) != 3)
+    return FALSE;
+
+  return (pmaj > major) ||
+         ((pmaj == major) && (pmin > minor)) ||
+         ((pmaj == major) && (pmin == minor) && (pmic >= micro));
 }
 
 gboolean
