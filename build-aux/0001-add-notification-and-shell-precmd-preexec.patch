@@ -11,7 +11,6 @@ such careful integration with the vtable of the class as that isn't used.
 
 You can always connect to the signal rather than the vtable default func.
 ---
- src/app/app.cc        |  26 ++++++++-
  src/marshal.list      |   1 +
  src/vte.cc            |  28 +++++++++
  src/vte.sh.in         |   7 ++-
@@ -22,51 +21,6 @@ You can always connect to the signal rather than the vtable default func.
  src/vteseq.cc         | 123 ++++++++++++++++++++++++++++++++++++++-
  9 files changed, 347 insertions(+), 4 deletions(-)
 
-diff --git a/src/app/app.cc b/src/app/app.cc
-index 117bc677..9391e86a 100644
---- a/src/app/app.cc
-+++ b/src/app/app.cc
-@@ -2355,6 +2355,26 @@ window_window_title_changed_cb(VteTerminal* terminal,
-         gtk_window_set_title(GTK_WINDOW(window), title && title[0] ? title : "Terminal");
- }
- 
-+static void
-+notification_received_cb(VteTerminal *terminal,
-+                         const gchar *summary,
-+                         const gchar *body)
-+{
-+        g_print("[%s]: %s\n", summary, body);
-+}
-+
-+static void
-+shell_precmd_cb(VteTerminal *terminal)
-+{
-+        g_print("[shell] showing command prompt\n");
-+}
-+
-+static void
-+shell_preexec_cb(VteTerminal *terminal)
-+{
-+        g_print("[shell] executing command\n");
-+}
-+
- static void
- window_lower_window_cb(VteTerminal* terminal,
-                        VteappWindow* window)
-@@ -2663,8 +2683,12 @@ vteapp_window_constructed(GObject *object)
-         if (options.object_notifications)
-                 g_signal_connect(window->terminal, "notify", G_CALLBACK(window_notify_cb), window);
- 
--        /* Settings */
-+        g_signal_connect(window->terminal, "notification-received", G_CALLBACK(notification_received_cb), NULL);
-+        g_signal_connect(window->terminal, "shell-precmd", G_CALLBACK(shell_precmd_cb), NULL);
-+        g_signal_connect(window->terminal, "shell-preexec", G_CALLBACK(shell_preexec_cb), NULL);
-+
- #if VTE_GTK == 3
-+        /* Settings */
-         if (options.no_double_buffer) {
-                 G_GNUC_BEGIN_IGNORE_DEPRECATIONS;
-                 gtk_widget_set_double_buffered(GTK_WIDGET(window->terminal), false);
 diff --git a/src/marshal.list b/src/marshal.list
 index 16bef201..8f829c4d 100644
 --- a/src/marshal.list
