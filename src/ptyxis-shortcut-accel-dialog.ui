@@ -38,15 +38,15 @@
             <property name="show-end-title-buttons">False</property>
             <child type="start">
               <object class="GtkButton" id="cancel_button">
-                <property name="label" translatable="yes">_Cancel</property>
-                <property name="use-underline">true</property>
+                <!-- do not use underline as it prevents alt+c as an accelerator -->
+                <property name="label" translatable="yes">Cancel</property>
                 <property name="action-name">window.close</property>
               </object>
             </child>
             <child type="end">
               <object class="GtkButton" id="accept_button">
-                <property name="label" translatable="yes">_Set</property>
-                <property name="use-underline">true</property>
+                <!-- do not use underline as it prevents alt+s as an accelerator -->
+                <property name="label" translatable="yes">Set</property>
                 <property name="action-name">shortcut.set</property>
                 <style>
                   <class name="suggested-action"/>
