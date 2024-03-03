@@ -1,3 +1,5 @@
+# Ptyxis 46.rc
+
 Changes since 46.alpha
 
  * Ignore exit action if tab spuriously exited after spawning
@@ -15,6 +17,21 @@ Changes since 46.alpha
  * Use AdwAboutDialog
  * Podman infrastructure containers are now ignored
  * A new italian translation
+ * Various window styling improvements
+ * Allow specifying default column/rows when restore-window-size
+   setting is not used
+ * Use --detach-keys with podman to fix ctrl+p usage
+ * Initial accessibility support using vendored patches to VTE
+ * Remove Ptyxis suffix from title to match gnome-terminal
+ * About dialog includes a bunch of new informatio to help triage user
+   issues without roundtrips to users.
+ * New icon for Ptyxis branding
+ * Fix where we delay reloading of podman containers to help avoid
+   missing changes
+ * Various improvements for the new fractional scaling support in GTK
+ * Make most internal p2p D-Bus API calls asynchronous
+ * Allow disabling the visual process leader colors
+ * Ignore podman infrastructure containers
 
 # Ptyxis 46.alpha
 
