@@ -374,16 +374,17 @@ ptyxis_application_command_line (GApplication            *app,
 
       if (window == NULL || !did_restore)
         {
+          PtyxisTerminal *terminal = ptyxis_tab_get_terminal (tab);
+          guint columns, rows;
+
           window = ptyxis_window_new_empty ();
 
           if (ptyxis_settings_get_restore_window_size (self->settings))
-            {
-              PtyxisTerminal *terminal = ptyxis_tab_get_terminal (tab);
-              guint columns, rows;
+            ptyxis_settings_get_window_size (self->settings, &columns, &rows);
+          else
+            ptyxis_settings_get_default_size (self->settings, &columns, &rows);
 
-              ptyxis_settings_get_window_size (self->settings, &columns, &rows);
-              vte_terminal_set_size (VTE_TERMINAL (terminal), columns, rows);
-            }
+          vte_terminal_set_size (VTE_TERMINAL (terminal), columns, rows);
         }
 
       ptyxis_tab_set_initial_working_directory_uri (tab, cwd_uri);
