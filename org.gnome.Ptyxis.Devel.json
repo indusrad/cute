@@ -1,7 +1,7 @@
 {
     "app-id" : "org.gnome.Ptyxis.Devel",
     "runtime" : "org.gnome.Platform",
-    "runtime-version" : "master",
+    "runtime-version" : "46beta",
     "sdk" : "org.gnome.Sdk",
     "command" : "ptyxis",
     "finish-args" : [
@@ -33,7 +33,7 @@
         {
             "name" : "libportal",
             "config-opts" : [
-                "--buildtype=debugoptimized",
+                "--buildtype=release",
                 "-Dbackends=gtk4",
                 "-Ddocs=false",
                 "-Dtests=false"
@@ -63,11 +63,15 @@
                 {
                     "type" : "git",
                     "url" : "https://gitlab.gnome.org/GNOME/vte.git",
-                    "branch" : "master"
+                    "branch" : "vte-0-76"
                 },
                 {
                     "type" : "patch",
                     "path" : "build-aux/0001-add-notification-and-shell-precmd-preexec.patch"
+                },
+                {
+                    "type" : "patch",
+                    "path" : "build-aux/0001-a11y-implement-GtkAccessibleText.patch"
                 }
             ]
         },
@@ -76,12 +80,14 @@
             "builddir" : true,
             "buildsystem" : "meson",
             "config-opts" : [
-                "-Ddevelopment=true"
+                "--buildtype=release",
+                "-Ddevelopment=false"
             ],
             "sources" : [
                 {
-                    "type" : "dir",
-                    "path" : "."
+                    "type" : "git",
+                    "url" : "https://gitlab.gnome.org/chergert/ptyxis.git",
+                    "branch" : "gnome-46"
                 }
             ]
         }
