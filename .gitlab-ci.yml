@@ -10,7 +10,7 @@ stages:
   variables:
     MANIFEST_PATH: "org.gnome.Ptyxis.Devel.json"
     FLATPAK_MODULE: "ptyxis"
-    RUNTIME_REPO: "https://nightly.gnome.org/gnome-nightly.flatpakrepo"
+    RUNTIME_REPO: "https://dl.flathub.org/beta-repo/flathub-beta.flatpakrepo"
     APP_ID: "org.gnome.Ptyxis.Devel"
   extends: ".flatpak"
 
