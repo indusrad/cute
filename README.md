@@ -35,8 +35,8 @@ After that process has completed, you may file an issue referencing it.
 Ptyxis is a combination of work I've done across multiple projects. The
 container abstractions came from a prototype I did many years ago for GNOME
 Builder around a "Terminal Workspace". The motivation to finally push this
-over the line was some recent (Fall '23) on making VTE feel fast/low-latency
-on GTK 4 with GNOME Shell as a Wayland compositor.
+over the line was some recent (Fall '23) work on making VTE feel
+fast/low-latency on GTK 4 with GNOME Shell as a Wayland compositor.
 
 It's probably not the fastest thing out there, but it should be close enough
 that other features are of more value.  Some of those include robust
