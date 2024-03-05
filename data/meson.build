@@ -1,5 +1,10 @@
 desktop_config = configuration_data()
 desktop_config.set('APP_ID', app_id)
+if app_is_generic
+  desktop_config.set('APP_NAME', 'Terminal')
+else
+  desktop_config.set('APP_NAME', 'Ptyxis')
+endif
 desktop_file_in = configure_file(
           input: 'org.gnome.Ptyxis.desktop.in.in',
          output: 'org.gnome.Ptyxis.desktop.in',

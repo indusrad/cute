@@ -314,7 +314,7 @@ bind_title_cb (GBinding     *binding,
   const char *str = g_value_get_string (from_value);
 
   if (ptyxis_str_empty0 (str))
-    g_value_set_static_string (to_value, _("Ptyxis"));
+    g_value_set_static_string (to_value, ptyxis_app_name ());
   else
     g_value_set_string (to_value, str);
 
@@ -373,7 +373,7 @@ ptyxis_window_notify_selected_page_cb (PtyxisWindow *self,
   if (terminal == NULL)
     {
       gtk_revealer_set_reveal_child (self->find_bar_revealer, FALSE);
-      gtk_window_set_title (GTK_WINDOW (self), _("Ptyxis"));
+      gtk_window_set_title (GTK_WINDOW (self), ptyxis_app_name ());
     }
 
   ptyxis_find_bar_set_terminal (self->find_bar, terminal);
