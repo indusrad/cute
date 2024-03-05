@@ -1,5 +1,5 @@
 [Desktop Entry]
-Name=Ptyxis
+Name=@APP_NAME@
 Comment=A container-oriented terminal for GNOME
 Exec=ptyxis
 # Translators: Do NOT translate or transliterate this text (this is an icon file name)!
@@ -9,6 +9,7 @@ StartupNotify=true
 Terminal=false
 Type=Application
 Categories=GNOME;GTK;System;TerminalEmulator;
+GenericName=Terminal
 # Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
 Keywords=terminal;prompt;ptyxis;shell;command;commandline;cmd;cli;
 Actions=new-window;new-tab;preferences;

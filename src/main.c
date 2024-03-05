@@ -23,6 +23,7 @@
 #include <glib/gi18n.h>
 
 #include "ptyxis-application.h"
+#include "ptyxis-util.h"
 
 static void
 check_early_opts (int        *argc,
@@ -119,7 +120,7 @@ main (int   argc,
   textdomain (GETTEXT_PACKAGE);
 
   g_set_prgname ("ptyxis");
-  g_set_application_name (_("Ptyxis"));
+  g_set_application_name (ptyxis_app_name ());
 
   check_early_opts (&argc, &argv, &standalone);
 

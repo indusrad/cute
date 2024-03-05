@@ -9,6 +9,8 @@ cc = meson.get_compiler('c')
 i18n = import('i18n')
 gnome = import('gnome')
 
+app_is_generic = get_option('generic')
+
 if get_option('development')
   app_id = 'org.gnome.Ptyxis.Devel'
   app_schema_path = '/org/gnome/Ptyxis/Devel/'
@@ -53,6 +55,7 @@ config_h.set_quoted('PACKAGE_WEBSITE', 'https://gitlab.gnome.org/chergert/ptyxis
 config_h.set_quoted('PACKAGE_ICON_NAME', app_id)
 config_h.set_quoted('PACKAGE_NAME', 'Ptyxis')
 config_h.set10('DEVELOPMENT_BUILD', get_option('development'))
+config_h.set10('APP_IS_GENERIC', app_is_generic)
 
 check_functions = [
   ['HAVE_GRANTPT', 'grantpt'],

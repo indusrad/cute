@@ -33,6 +33,7 @@
 #include <wordexp.h>
 
 #include <glib-unix.h>
+#include <glib/gi18n.h>
 #include <glib/gstdio.h>
 
 #include <gio/gio.h>
@@ -298,4 +299,14 @@ ptyxis_parse_shells (const char *etc_shells)
   split = g_strsplit (etc_shells, "\n", 0);
 
   return G_LIST_MODEL (gtk_string_list_new ((const char * const *)split));
+}
+
+const char *
+ptyxis_app_name (void)
+{
+#ifdef APP_IS_GENERIC
+  return _("Terminal");
+#else
+  return _("Ptyxis");
+#endif
 }
