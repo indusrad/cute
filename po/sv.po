@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-12-16 15:46+0300\n"
-"PO-Revision-Date: 2023-12-31 13:34+0100\n"
+"PO-Revision-Date: 2024-03-05 14:26+0100\n"
 "Last-Translator: Luna Jernberg <lunajernberg@gnome.org>\n"
 "Language-Team: Swedish\n"
 "Language: sv_SE\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 3.4.1\n"
+"X-Generator: Poedit 3.4.2\n"
 
 #: data/org.gnome.Ptyxis.desktop.in.in:3
 #: data/org.gnome.Ptyxis.metainfo.xml.in.in:6 src/main.c:122
@@ -882,7 +882,7 @@ msgstr "Välj teckensnitt"
 
 #: src/ptyxis-preferences-window.c:286
 msgid "Show fewer…"
-msgstr "Visa färre..."
+msgstr "Visa färre…"
 
 #: src/ptyxis-preferences-window.c:288 src/ptyxis-preferences-window.ui:41
 msgid "Show more…"
@@ -1026,7 +1026,7 @@ msgstr "Antalet rader att behålla för rulla tillbaka"
 
 #: src/ptyxis-preferences-window.ui:429 src/ptyxis-profile-editor.ui:145
 msgid "Shell"
-msgstr "Skal "
+msgstr "Skal"
 
 #: src/ptyxis-preferences-window.ui:432 src/ptyxis-profile-editor.ui:163
 msgid "Use Login Shell"
@@ -1122,7 +1122,7 @@ msgstr "Visa fliköversikt"
 
 #: src/ptyxis-preferences-window.ui:643
 msgid "Show an overview of all tabs within the window"
-msgstr "isa en översikt över alla flikar i fönstret"
+msgstr "Visa en översikt över alla flikar i fönstret"
 
 #: src/ptyxis-preferences-window.ui:653
 msgid "Close the current tab"
@@ -1466,7 +1466,6 @@ msgstr "Ny _flik"
 msgid "New _Window"
 msgstr "Nytt _fönster"
 
-# Normalde View için Gör çevirisini kullanıyoruz fakat çok yakın kullanılmış Show Open Tabs çevirisi ile çok yakında yer aldığı için böyle bir tercih yaptım.
 #: src/ptyxis-window.ui:477
 msgid "View Open Tabs"
 msgstr "Visa öppna flikar"
