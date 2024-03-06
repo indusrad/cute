@@ -147,7 +147,7 @@ automatically. Otherwise you'll need to create a jhbuild tab using the menu
 item which is less convenient.
 
 ```sh
-if [ x$UNDER_JHBUILD != x ]; then
+if [ -t 1 -a x$UNDER_JHBUILD != x ]; then
     printf "\033]777;container;push;%s;jhbuild\033\\" "JHBuild"
     function pop_container {
         printf "\033]777;container;pop;;\033\\"
