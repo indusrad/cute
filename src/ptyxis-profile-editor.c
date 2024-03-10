@@ -30,6 +30,7 @@
 #include "ptyxis-application.h"
 #include "ptyxis-profile-editor.h"
 #include "ptyxis-preferences-list-item.h"
+#include "ptyxis-util.h"
 
 struct _PtyxisProfileEditor
 {
@@ -57,7 +58,6 @@ struct _PtyxisProfileEditor
   GtkScale          *opacity;
   GtkAdjustment     *opacity_adjustment;
   GtkLabel          *opacity_label;
-  AdwToastOverlay   *toasts;
   AdwSwitchRow      *use_proxy;
   AdwActionRow      *uuid_row;
   GListStore        *erase_bindings;
@@ -122,18 +122,13 @@ ptyxis_profile_editor_uuid_copy (GtkWidget  *widget,
 {
   PtyxisProfileEditor *self = (PtyxisProfileEditor *)widget;
   GdkClipboard *clipboard;
-  AdwToast *toast;
 
   g_assert (PTYXIS_IS_PROFILE_EDITOR (self));
 
   clipboard = gtk_widget_get_clipboard (widget);
   gdk_clipboard_set_text (clipboard, ptyxis_profile_get_uuid (self->profile));
 
-  toast = g_object_new (ADW_TYPE_TOAST,
-                        "title", _("Copied to clipboard"),
-                        "timeout", 3,
-                        NULL);
-  adw_toast_overlay_add_toast (self->toasts, toast);
+  gtk_widget_activate_action_variant (widget, "toast.add", ptyxis_variant_new_toast (_("Copied to clipboard"), 3));
 }
 
 static void
@@ -472,7 +467,6 @@ ptyxis_profile_editor_class_init (PtyxisProfileEditorClass *klass)
   gtk_widget_class_bind_template_child (widget_class, PtyxisProfileEditor, scroll_on_keystroke);
   gtk_widget_class_bind_template_child (widget_class, PtyxisProfileEditor, scroll_on_output);
   gtk_widget_class_bind_template_child (widget_class, PtyxisProfileEditor, scrollback_lines);
-  gtk_widget_class_bind_template_child (widget_class, PtyxisProfileEditor, toasts);
   gtk_widget_class_bind_template_child (widget_class, PtyxisProfileEditor, use_custom_commmand);
   gtk_widget_class_bind_template_child (widget_class, PtyxisProfileEditor, use_proxy);
   gtk_widget_class_bind_template_child (widget_class, PtyxisProfileEditor, uuid_row);
