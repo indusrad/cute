@@ -313,3 +313,16 @@ ptyxis_app_name (void)
   return _("Ptyxis");
 #endif
 }
+
+GVariant *
+ptyxis_variant_new_toast (const char *title,
+                          guint timeout)
+{
+  GVariantBuilder *b;
+
+  b = g_variant_builder_new (G_VARIANT_TYPE ("a{sv}"));
+  g_variant_builder_add (b, "{sv}", "title", g_variant_new_string (title));
+  g_variant_builder_add (b, "{sv}", "timeout", g_variant_new_uint32 (timeout));
+
+  return g_variant_builder_end (b);
+}
