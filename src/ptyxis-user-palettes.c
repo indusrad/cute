@@ -105,6 +105,9 @@ ptyxis_user_palettes_load_file (PtyxisUserPalettes *self,
       g_ptr_array_add (self->items, g_object_ref (palette));
       g_list_model_items_changed (G_LIST_MODEL (self), self->items->len - 1, 0, 1);
     }
+
+  if (error)
+    g_warning ("%s", error->message);
 }
 
 static void
