@@ -36,6 +36,7 @@ G_DECLARE_FINAL_TYPE (PtyxisApplication, ptyxis_application, PTYXIS, APPLICATION
 
 PtyxisApplication  *ptyxis_application_new                        (const char           *application_id,
                                                                    GApplicationFlags     flags);
+const char         *ptyxis_application_get_user_data_dir          (PtyxisApplication    *self);
 const char         *ptyxis_application_get_os_name                (PtyxisApplication    *self);
 PtyxisSettings     *ptyxis_application_get_settings               (PtyxisApplication    *self);
 PtyxisShortcuts    *ptyxis_application_get_shortcuts              (PtyxisApplication    *self);

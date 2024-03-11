@@ -24,6 +24,9 @@
     <!-- The NAME= field from /etc/os-release -->
     <property name="OsName" access="read" type="s"/>
 
+    <!-- XDG uesr data dir outside of Flatpak -->
+    <property name="UserDataDir" access="read" type="s"/>
+
     <!--
       GetPreferredShell:
 

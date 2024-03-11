@@ -89,6 +89,8 @@ ptyxis_agent_impl_constructed (GObject *object)
 
   G_OBJECT_CLASS (ptyxis_agent_impl_parent_class)->constructed (object);
 
+  ptyxis_ipc_agent_set_user_data_dir (PTYXIS_IPC_AGENT (self), g_get_user_data_dir ());
+
   ptyxis_agent_impl_load_os_release (self);
 }
 
