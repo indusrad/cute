@@ -811,8 +811,6 @@ ptyxis_client_discover_current_container (PtyxisClient *self,
                                                              NULL,
                                                              NULL))
     {
-      g_print ("path: %s\n", object_path);
-
       for (guint i = 0; i < self->containers->len; i++)
         {
           PtyxisIpcContainer *container = g_ptr_array_index (self->containers, i);
@@ -832,4 +830,12 @@ ptyxis_client_get_os_name (PtyxisClient *self)
   g_return_val_if_fail (PTYXIS_IS_CLIENT (self), NULL);
 
   return ptyxis_ipc_agent_get_os_name (self->proxy);
+}
+
+const char *
+ptyxis_client_get_user_data_dir (PtyxisClient *self)
+{
+  g_return_val_if_fail (PTYXIS_IS_CLIENT (self), NULL);
+
+  return ptyxis_ipc_agent_get_user_data_dir (self->proxy);
 }

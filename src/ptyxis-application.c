@@ -1739,3 +1739,11 @@ ptyxis_application_get_overlay_scrollbars (PtyxisApplication *self)
 
   return self->overlay_scrollbars;
 }
+
+const char *
+ptyxis_application_get_user_data_dir (PtyxisApplication *self)
+{
+  g_return_val_if_fail (PTYXIS_IS_APPLICATION (self), NULL);
+
+  return ptyxis_client_get_user_data_dir (self->client);
+}
