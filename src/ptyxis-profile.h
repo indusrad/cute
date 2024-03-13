@@ -45,6 +45,7 @@ G_BEGIN_DECLS
 #define PTYXIS_PROFILE_KEY_SCROLL_ON_KEYSTROKE "scroll-on-keystroke"
 #define PTYXIS_PROFILE_KEY_SCROLL_ON_OUTPUT    "scroll-on-output"
 #define PTYXIS_PROFILE_KEY_SCROLLBACK_LINES    "scrollback-lines"
+#define PTYXIS_PROFILE_KEY_USE_PROXY           "use-proxy"
 #define PTYXIS_PROFILE_KEY_USE_CUSTOM_COMMAND  "use-custom-command"
 
 typedef enum _PtyxisExitAction
@@ -136,5 +137,8 @@ void                     ptyxis_profile_set_custom_command      (PtyxisProfile  
 gboolean                 ptyxis_profile_get_use_custom_command  (PtyxisProfile            *self);
 void                     ptyxis_profile_set_use_custom_command  (PtyxisProfile            *self,
                                                                  gboolean                  use_custom_command);
+gboolean                 ptyxis_profile_get_use_proxy           (PtyxisProfile            *self);
+void                     ptyxis_profile_set_use_proxy           (PtyxisProfile            *self,
+                                                                 gboolean                  use_proxy);
 
 G_END_DECLS

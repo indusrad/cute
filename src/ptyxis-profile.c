@@ -59,6 +59,7 @@ enum {
   PROP_SCROLL_ON_OUTPUT,
   PROP_SCROLLBACK_LINES,
   PROP_USE_CUSTOM_COMMAND,
+  PROP_USE_PROXY,
   PROP_UUID,
   N_PROPS
 };
@@ -108,6 +109,8 @@ ptyxis_profile_changed_cb (PtyxisProfile *self,
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_CUSTOM_COMMAND]);
   else if (g_str_equal (key, PTYXIS_PROFILE_KEY_USE_CUSTOM_COMMAND))
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_USE_CUSTOM_COMMAND]);
+  else if (g_str_equal (key, PTYXIS_PROFILE_KEY_USE_PROXY))
+    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_USE_PROXY]);
 }
 
 static void
@@ -228,6 +231,10 @@ ptyxis_profile_get_property (GObject    *object,
       g_value_set_boolean (value, ptyxis_profile_get_use_custom_command (self));
       break;
 
+    case PROP_USE_PROXY:
+      g_value_set_boolean (value, ptyxis_profile_get_use_proxy (self));
+      break;
+
     case PROP_UUID:
       g_value_set_string (value, ptyxis_profile_get_uuid (self));
       break;
@@ -329,6 +336,10 @@ ptyxis_profile_set_property (GObject      *object,
 
     case PROP_USE_CUSTOM_COMMAND:
       ptyxis_profile_set_use_custom_command (self, g_value_get_boolean (value));
+      break;
+
+    case PROP_USE_PROXY:
+      ptyxis_profile_set_use_proxy (self, g_value_get_boolean (value));
       break;
 
     case PROP_UUID:
@@ -484,6 +495,13 @@ ptyxis_profile_class_init (PtyxisProfileClass *klass)
 
   properties[PROP_USE_CUSTOM_COMMAND] =
     g_param_spec_boolean ("use-custom-command", NULL, NULL,
+                          FALSE,
+                          (G_PARAM_READWRITE |
+                           G_PARAM_EXPLICIT_NOTIFY |
+                           G_PARAM_STATIC_STRINGS));
+
+  properties[PROP_USE_PROXY] =
+    g_param_spec_boolean ("use-proxy", NULL, NULL,
                           FALSE,
                           (G_PARAM_READWRITE |
                            G_PARAM_EXPLICIT_NOTIFY |
@@ -924,6 +942,26 @@ ptyxis_profile_set_use_custom_command (PtyxisProfile *self,
   g_settings_set_boolean (self->settings,
                           PTYXIS_PROFILE_KEY_USE_CUSTOM_COMMAND,
                           use_custom_command);
+}
+
+gboolean
+ptyxis_profile_get_use_proxy (PtyxisProfile *self)
+{
+  g_return_val_if_fail (PTYXIS_IS_PROFILE (self), FALSE);
+
+  return g_settings_get_boolean (self->settings,
+                                 PTYXIS_PROFILE_KEY_USE_PROXY);
+}
+
+void
+ptyxis_profile_set_use_proxy (PtyxisProfile *self,
+                              gboolean       use_proxy)
+{
+  g_return_if_fail (PTYXIS_IS_PROFILE (self));
+
+  g_settings_set_boolean (self->settings,
+                          PTYXIS_PROFILE_KEY_USE_PROXY,
+                          use_proxy);
 }
 
 char *

@@ -44,6 +44,12 @@ static void agent_iface_init (PtyxisIpcAgentIface *iface);
 G_DEFINE_TYPE_WITH_CODE (PtyxisAgentImpl, ptyxis_agent_impl, PTYXIS_IPC_TYPE_AGENT_SKELETON,
                          G_IMPLEMENT_INTERFACE (PTYXIS_IPC_TYPE_AGENT, agent_iface_init))
 
+static inline gboolean
+strempty (const char *s)
+{
+  return !s || !s[0];
+}
+
 static void
 ptyxis_agent_impl_finalize (GObject *object)
 {
@@ -367,8 +373,6 @@ ptyxis_agent_impl_handle_discover_current_container (PtyxisIpcAgent        *agen
 
   pid = tcgetpgrp (consumer_fd);
 
-  g_print ("pid: %d\n", pid);
-
   if (pid > 0)
     {
 #if 0
@@ -438,6 +442,197 @@ return_gerror:
   return TRUE;
 }
 
+static GSettings *
+_g_settings_try_new (const char *id)
+{
+  GSettingsSchemaSource *source = g_settings_schema_source_get_default ();
+  g_autoptr(GSettingsSchema) schema = g_settings_schema_source_lookup (source, id, TRUE);
+
+  if (schema == NULL)
+    return NULL;
+
+  return g_settings_new (id);
+}
+
+#define USER_ALLOWED_CHARS "!$&'()*+,="
+#define PASSWORD_ALLOWED_CHARS "!$&'()*+,=:"
+#define IP_ADDR_ALLOWED_CHARS ":"
+#define HOST_ALLOWED_CHARS G_URI_RESERVED_CHARS_SUBCOMPONENT_DELIMITERS
+
+static char *
+uri_build_with_user (const char *protocol,
+                     const char *user,
+                     const char *password,
+                     const char *host,
+                     int         port)
+{
+  GString *str = g_string_new (protocol);
+
+  g_string_append (str, "://");
+
+  if (user != NULL)
+    {
+      g_string_append_uri_escaped (str, user, USER_ALLOWED_CHARS, TRUE);
+
+      if (password != NULL)
+        {
+          g_string_append_c (str, ':');
+          g_string_append_uri_escaped (str, password, PASSWORD_ALLOWED_CHARS, TRUE);
+        }
+
+      g_string_append_c (str, '@');
+    }
+
+  if (strchr (host, ':') && g_hostname_is_ip_address (host))
+    {
+      g_string_append_c (str, '[');
+      g_string_append_uri_escaped (str, host, IP_ADDR_ALLOWED_CHARS, TRUE);
+      g_string_append_c (str, ']');
+    }
+  else
+    {
+      g_string_append_uri_escaped (str, host, HOST_ALLOWED_CHARS, TRUE);
+    }
+
+  if (port > 0)
+    g_string_append_printf (str, ":%d", port);
+
+  return g_string_free (str, FALSE);
+}
+
+static void
+add_proxy_environment (GPtrArray  *ar,
+                       const char *protocol,
+                       const char *scheme,
+                       const char *envvar)
+{
+  g_autofree char *schema_id = NULL;
+  g_autofree char *authentication_user = NULL;
+  g_autofree char *authentication_password = NULL;
+  g_autofree char *host = NULL;
+  g_autoptr(GSettings) settings = NULL;
+  g_autofree char *uri = NULL;
+  int port = 0;
+
+  g_assert (ar != NULL);
+  g_assert (protocol != NULL);
+  g_assert (envvar != NULL);
+
+  schema_id = g_strdup_printf ("org.gnome.system.proxy.%s", protocol);
+  settings = _g_settings_try_new (schema_id);
+
+  if (settings == NULL)
+    return;
+
+  host = g_settings_get_string (settings, "host");
+  port = g_settings_get_int (settings, "port");
+  if (strempty (host) || port <= 0)
+    return;
+
+  if (g_str_equal (protocol, "http") &&
+      g_settings_get_boolean (settings, "use-authentication"))
+    {
+      authentication_user = g_settings_get_string (settings, "authentication-user");
+      authentication_password = g_settings_get_string (settings, "authentication-password");
+    }
+
+  uri = uri_build_with_user (scheme,
+                             strempty (authentication_user) ? NULL : authentication_user,
+                             strempty (authentication_password) ? NULL : authentication_password,
+                             host,
+                             port);
+
+  if (uri != NULL)
+    {
+      g_autofree char *lower = g_strdup_printf ("%s=%s", envvar, uri);
+      g_autofree char *upper_key = g_ascii_strup (envvar, -1);
+      g_autofree char *upper = g_strdup_printf ("%s=%s", upper_key, uri);
+
+      g_ptr_array_add (ar, g_steal_pointer (&lower));
+      g_ptr_array_add (ar, g_steal_pointer (&upper));
+    }
+}
+
+static gboolean
+populate_proxy_environment_from_gsettings (GPtrArray *ar)
+{
+  g_autoptr(GSettings) settings = NULL;
+  g_autofree char *mode = NULL;
+  g_auto(GStrv) ignore_hosts = NULL;
+
+  g_assert (ar != NULL);
+
+  if (!(settings = _g_settings_try_new ("org.gnome.system.proxy")))
+    return FALSE;
+
+  mode = g_settings_get_string (settings, "mode");
+
+  /* Automatic is not supported */
+  if (!g_str_equal (mode, "manual"))
+    return TRUE;
+
+  add_proxy_environment (ar, "http", "http", "http_proxy");
+  add_proxy_environment (ar, "https", "http", "https_proxy");
+  add_proxy_environment (ar, "ftp", "ftp", "ftp_proxy");
+  add_proxy_environment (ar, "socks", "socks", "all_proxy");
+
+  if ((ignore_hosts = g_settings_get_strv (settings, "ignore-hosts")) && ignore_hosts[0])
+    {
+      g_autofree char *value = g_strjoinv (",", ignore_hosts);
+      g_autofree char *lower = g_strdup_printf ("no_proxy=%s", value);
+      g_autofree char *upper = g_strdup_printf ("NO_PROXY=%s", value);
+
+      g_ptr_array_add (ar, g_steal_pointer (&lower));
+      g_ptr_array_add (ar, g_steal_pointer (&upper));
+    }
+
+  return TRUE;
+}
+
+static void
+populate_proxy_environment_from_environ (GPtrArray *ar)
+{
+  static const char *envvars[] = {
+    "ftp_proxy", "FTP_PROXY",
+    "http_proxy", "HTTP_PROXY",
+    "https_proxy", "HTTPS_PROXY",
+    "no_proxy", "NO_PROXY",
+    "all_proxy", "ALL_PROXY",
+  };
+
+  g_assert (ar != NULL);
+
+  for (guint i = 0; i < G_N_ELEMENTS (envvars); i++)
+    {
+      const char *key = envvars[i];
+      const char *value = g_getenv (key);
+
+      if (value != NULL)
+        g_ptr_array_add (ar, g_strdup_printf ("%s=%s", key, value));
+    }
+}
+
+static gboolean
+ptyxis_agent_impl_handle_discover_proxy_environment (PtyxisIpcAgent        *agent,
+                                                     GDBusMethodInvocation *invocation)
+{
+  g_autoptr(GPtrArray) ar = NULL;
+
+  g_assert (PTYXIS_IS_AGENT_IMPL (agent));
+  g_assert (G_IS_DBUS_METHOD_INVOCATION (invocation));
+
+  ar = g_ptr_array_new_with_free_func (g_free);
+  if (!populate_proxy_environment_from_gsettings (ar))
+    populate_proxy_environment_from_environ (ar);
+  g_ptr_array_add (ar, NULL);
+
+  ptyxis_ipc_agent_complete_discover_proxy_environment (agent,
+                                                        g_steal_pointer (&invocation),
+                                                        (const char * const *)(gpointer)ar->pdata);
+
+  return TRUE;
+}
+
 static void
 agent_iface_init (PtyxisIpcAgentIface *iface)
 {
@@ -446,4 +641,5 @@ agent_iface_init (PtyxisIpcAgentIface *iface)
   iface->handle_get_preferred_shell = ptyxis_agent_impl_handle_get_preferred_shell;
   iface->handle_list_containers = ptyxis_agent_impl_handle_list_containers;
   iface->handle_discover_current_container = ptyxis_agent_impl_handle_discover_current_container;
+  iface->handle_discover_proxy_environment = ptyxis_agent_impl_handle_discover_proxy_environment;
 }

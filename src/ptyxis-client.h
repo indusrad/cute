@@ -41,6 +41,9 @@ VtePty             *ptyxis_client_create_pty                 (PtyxisClient      
 int                 ptyxis_client_create_pty_producer        (PtyxisClient         *self,
                                                               VtePty               *pty,
                                                               GError              **error);
+char              **ptyxis_client_discover_proxy_environment (PtyxisClient         *self,
+                                                              GCancellable         *cancellable,
+                                                              GError              **error);
 void                ptyxis_client_discover_shell_async       (PtyxisClient         *self,
                                                               GCancellable         *cancellable,
                                                               GAsyncReadyCallback   callback,
