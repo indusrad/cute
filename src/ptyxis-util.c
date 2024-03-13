@@ -304,7 +304,7 @@ ptyxis_parse_shells (const char *etc_shells)
 const char *
 ptyxis_app_name (void)
 {
-#ifdef APP_IS_GENERIC
+#if APP_IS_GENERIC
   return _("Terminal");
 #else
   return _("Ptyxis");
