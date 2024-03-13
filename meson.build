@@ -142,15 +142,28 @@ foreach link_arg: test_link_args
   endif
 endforeach
 
-subdir('data')
-subdir('agent')
-subdir('src')
-subdir('po')
+ptyxis_agent_ipc = gnome.gdbus_codegen('ptyxis-agent-ipc',
+           sources: 'agent/org.gnome.Ptyxis.Agent.xml',
+  interface_prefix: 'org.gnome.Ptyxis.',
+         namespace: 'PtyxisIpc',
+)
+
+if get_option('agent')
+  subdir('agent')
+endif
+
+if get_option('ui')
+  subdir('data')
+  subdir('src')
+  subdir('po')
+endif
 
 configure_file(output: 'config.h', configuration: config_h)
 
-gnome.post_install(
-     glib_compile_schemas: true,
-    gtk_update_icon_cache: true,
-  update_desktop_database: true,
-)
+if get_option('ui')
+  gnome.post_install(
+       glib_compile_schemas: true,
+      gtk_update_icon_cache: true,
+    update_desktop_database: true,
+  )
+endif

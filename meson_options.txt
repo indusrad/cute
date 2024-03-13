@@ -1,2 +1,5 @@
 option('development', type: 'boolean', value: false, description: 'If this is a development build (org.gnome.Ptyxis.Devel)')
 option('generic', type: 'boolean', value: false, description: 'If the application should use the generic name Terminal')
+option('static-agent', type: 'boolean', value: false, description: 'If the agent should be statically linked (for Flatpak)')
+option('agent', type: 'boolean', value: true, description: 'Build the Ptyxis agent component')
+option('ui', type: 'boolean', value: true, description: 'Build the Ptyxis UI component')
