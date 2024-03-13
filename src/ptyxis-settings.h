@@ -133,7 +133,6 @@ void                    ptyxis_settings_set_default_rows            (PtyxisSetti
 AdwColorScheme          ptyxis_settings_get_interface_style         (PtyxisSettings             *self);
 void                    ptyxis_settings_set_interface_style         (PtyxisSettings             *self,
                                                                      AdwColorScheme              color_scheme);
-char                  **ptyxis_settings_get_proxy_environment       (PtyxisSettings             *self);
 gboolean                ptyxis_settings_get_toast_on_copy_clipboard (PtyxisSettings             *self);
 void                    ptyxis_settings_set_toast_on_copy_clipboard (PtyxisSettings             *self,
                                                                      gboolean                    toast_on_copy_clipboard);

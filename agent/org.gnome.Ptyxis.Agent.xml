@@ -99,6 +99,20 @@
       <arg name="container" direction="out" type="o"/>
     </method>
 
+    <!--
+      DiscoverProxyEnvironment:
+
+      Requests the current environment settings for the system. On GNOME, this
+      will try to look at the hosts GSettings to apply the correct environment
+      variables.
+
+      On other systems, it will just check what the agent's environment is
+      for the appropriate variables to pass across.
+    -->
+    <method name="DiscoverProxyEnvironment">
+      <arg name="proxy_environment" direction="out" type="as"/>
+    </method>
+
   </interface>
 
   <interface name="org.gnome.Ptyxis.Container">

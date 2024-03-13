@@ -545,12 +545,15 @@ ptyxis_client_spawn_async (PtyxisClient        *self,
       return;
     }
 
-  g_snprintf (vte_version, sizeof vte_version, "%u", VTE_VERSION_NUMERIC);
+  if (ptyxis_profile_get_use_proxy (profile))
+    env = ptyxis_client_discover_proxy_environment (self, NULL, NULL);
 
   env = g_environ_setenv (env, "PTYXIS_PROFILE", ptyxis_profile_get_uuid (profile), TRUE);
   env = g_environ_setenv (env, "PTYXIS_VERSION", PACKAGE_VERSION, TRUE);
   env = g_environ_setenv (env, "COLORTERM", "truecolor", TRUE);
   env = g_environ_setenv (env, "TERM", "xterm-256color", TRUE);
+
+  g_snprintf (vte_version, sizeof vte_version, "%u", VTE_VERSION_NUMERIC);
   env = g_environ_setenv (env, "VTE_VERSION", vte_version, TRUE);
 
   argv_builder = g_strv_builder_new ();
@@ -838,4 +841,20 @@ ptyxis_client_get_user_data_dir (PtyxisClient *self)
   g_return_val_if_fail (PTYXIS_IS_CLIENT (self), NULL);
 
   return ptyxis_ipc_agent_get_user_data_dir (self->proxy);
+}
+
+char **
+ptyxis_client_discover_proxy_environment (PtyxisClient  *self,
+                                          GCancellable  *cancellable,
+                                          GError       **error)
+{
+  char **ret = NULL;
+
+  g_return_val_if_fail (PTYXIS_IS_CLIENT (self), NULL);
+  g_return_val_if_fail (!cancellable || G_IS_CANCELLABLE (cancellable), NULL);
+
+  if (ptyxis_ipc_agent_call_discover_proxy_environment_sync (self->proxy, &ret, cancellable, error))
+    return ret;
+
+  return NULL;
 }
