@@ -58,6 +58,7 @@ struct _PtyxisProfileEditor
   GtkAdjustment     *opacity_adjustment;
   GtkLabel          *opacity_label;
   AdwToastOverlay   *toasts;
+  AdwSwitchRow      *use_proxy;
   GtkLabel          *uuid;
   GListStore        *erase_bindings;
   AdwComboRow       *backspace_binding;
@@ -232,6 +233,9 @@ ptyxis_profile_editor_constructed (GObject *object)
                           G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
   g_object_bind_property (self->profile, "use-custom-command",
                           self->use_custom_commmand, "active",
+                          G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
+  g_object_bind_property (self->profile, "use-proxy",
+                          self->use_proxy, "active",
                           G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
   g_object_bind_property (self->profile, "custom-command",
                           self->custom_commmand, "text",
@@ -423,6 +427,7 @@ ptyxis_profile_editor_class_init (PtyxisProfileEditorClass *klass)
   gtk_widget_class_bind_template_child (widget_class, PtyxisProfileEditor, scrollback_lines);
   gtk_widget_class_bind_template_child (widget_class, PtyxisProfileEditor, toasts);
   gtk_widget_class_bind_template_child (widget_class, PtyxisProfileEditor, use_custom_commmand);
+  gtk_widget_class_bind_template_child (widget_class, PtyxisProfileEditor, use_proxy);
   gtk_widget_class_bind_template_child (widget_class, PtyxisProfileEditor, uuid);
 
   gtk_widget_class_bind_template_callback (widget_class, get_container_title);

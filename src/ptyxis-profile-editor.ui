@@ -142,6 +142,17 @@
                 </child>
                 <child>
                   <object class="AdwPreferencesGroup">
+                    <property name="title" translatable="yes">Network</property>
+                    <child>
+                      <object class="AdwSwitchRow" id="use_proxy">
+                        <property name="title" translatable="yes">Proxy</property>
+                        <property name="subtitle" translatable="yes">Applies the network proxy settings to the container environment</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="AdwPreferencesGroup">
                     <property name="title" translatable="yes">Shell</property>
                     <child>
                       <object class="AdwSwitchRow" id="use_custom_commmand">
