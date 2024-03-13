@@ -92,6 +92,19 @@ maybe_start (PtyxisPodmanContainer *self,
 
   priv->has_started = TRUE;
 
+  /* If this is distrobox, just skip starting as it will start
+   * the container manually inside. This fixes an issue where
+   * it has a race with the container being started outside
+   * of distrobox via podman directly.
+   *
+   * https://gitlab.gnome.org/GNOME/ptyxis/-/issues/31
+   */
+  if (PTYXIS_IS_DISTROBOX_CONTAINER (self))
+    {
+      g_task_return_boolean (task, TRUE);
+      return;
+    }
+
   launcher = g_subprocess_launcher_new (G_SUBPROCESS_FLAGS_STDERR_SILENCE |
                                         G_SUBPROCESS_FLAGS_STDOUT_SILENCE);
 
