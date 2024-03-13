@@ -80,8 +80,8 @@
             ],
             "sources" : [
                 {
-                    "type" : "dir",
-                    "path" : "."
+                    "type" : "git",
+                    "url" : "https://gitlab.gnome.org/GNOME/ptyxis.git"
                 }
             ]
         }
