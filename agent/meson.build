@@ -1,16 +1,9 @@
-# We build the agent with older versions of GLib required as well
-# as various linker symbols so that we can run the agent, unmodified
-# on older enterprise linux distributions. Currently, ptyxis-agent
-# can run on CentOS 7.
-
-PTYXIS_AGENT_MIN_GLIB_MAJOR = 2
-PTYXIS_AGENT_MIN_GLIB_MINOR = 56
-PTYXIS_AGENT_MIN_GLIB_VERSION = '@0@.@1@'.format(PTYXIS_AGENT_MIN_GLIB_MAJOR, PTYXIS_AGENT_MIN_GLIB_MINOR)
+static_link = get_option('static-agent')
 
 ptyxis_agent_deps = [
-  dependency('gio-2.0', version: '>= @0@'.format(PTYXIS_AGENT_MIN_GLIB_VERSION)),
-  dependency('gio-unix-2.0', version: '>= @0@'.format(PTYXIS_AGENT_MIN_GLIB_VERSION)),
-  dependency('json-glib-1.0'),
+  dependency('gio-2.0', static: static_link),
+  dependency('gio-unix-2.0', static: static_link),
+  dependency('json-glib-1.0', static: static_link),
 ]
 
 ptyxis_agent_sources = [
@@ -38,22 +31,17 @@ ptyxis_agent_link_args = []
 
 ptyxis_agent_c_args = [
   release_link_args,
-  '-DGLIB_VERSION_MIN_REQUIRED=GLIB_VERSION_@0@_@1@'.format(PTYXIS_AGENT_MIN_GLIB_MAJOR, PTYXIS_AGENT_MIN_GLIB_MINOR),
-  '-DGLIB_VERSION_MAX_ALLOWED=GLIB_VERSION_@0@_@1@'.format(PTYXIS_AGENT_MIN_GLIB_MAJOR, PTYXIS_AGENT_MIN_GLIB_MINOR),
 ]
 
-libc_compat = true
-if target_machine.cpu_family() == 'x86_64'
-  ptyxis_agent_c_args += ['-include', 'x86_64/force_link_glibc_2.17.h']
-elif target_machine.cpu_family() == 'x86'
-  ptyxis_agent_c_args += ['-include', 'x86/force_link_glibc_2.17.h']
-else
-  libc_compat = false
-endif
-
-if libc_compat
-  config_h.set10('LIBC_COMPAT', libc_compat)
-  ptyxis_agent_link_args += ['-Wl,--wrap=__libc_start_main']
+if static_link
+  ptyxis_agent_c_args += [
+    '-static-libgcc',
+    '-static-libstdc++',
+    '-pthread',
+  ]
+  ptyxis_agent_link_args += [
+    '-lgcc_eh',
+  ]
 endif
 
 executable('ptyxis-agent', ptyxis_agent_sources + ptyxis_agent_ipc,

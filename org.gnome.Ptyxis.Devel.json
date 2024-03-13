@@ -26,10 +26,107 @@
         "/share/gtk-doc",
         "/share/man",
         "/share/pkgconfig",
+        "/static",
         "*.la",
         "*.a"
     ],
     "modules" : [
+        {
+            "name" : "zlib",
+            "buildsystem" : "simple",
+            "build-commands" : [
+                "./configure --prefix=/app/static --libdir=/app/static/lib",
+                "make",
+                "make install"
+            ],
+            "sources" : [
+                {
+                    "type" : "git",
+                    "url" : "https://github.com/madler/zlib.git",
+                    "tag" : "v1.3.1"
+                }
+            ]
+        },
+        {
+            "name" : "libpcre2-8",
+            "buildsystem" : "autotools",
+            "config-opts" : [
+                "--enable-static",
+                "--prefix=/app/static",
+                "--libdir=/app/static/lib"
+            ],
+            "sources" : [
+                {
+                    "type" : "git",
+                    "url" : "https://github.com/PCRE2Project/pcre2.git"
+                }
+            ]
+        },
+        {
+            "name" : "libffi",
+            "buildsystem" : "autotools",
+            "config-opts" : [
+                "--enable-static",
+                "--prefix=/app/static",
+                "--libdir=/app/static/lib"
+            ],
+            "sources" : [
+                {
+                    "type" : "git",
+                    "url" : "https://github.com/libffi/libffi.git"
+                }
+            ]
+        },
+        {
+            "name" : "glib",
+            "buildsystem" : "meson",
+            "config-opts" : [
+                "--prefix=/app/static",
+                "--libdir=lib",
+                "-Dpkg_config_path=/app/static/lib/pkgconfig",
+                "-Ddefault_library=static",
+                "-Ddocumentation=false",
+                "-Dintrospection=disabled",
+                "-Dlibelf=disabled",
+                "-Dlibmount=disabled",
+                "-Dman-pages=disabled",
+                "-Dnls=disabled",
+                "-Dselinux=disabled",
+                "-Dsysprof=disabled",
+                "-Dtests=false",
+                "-Dxattr=false"
+            ],
+            "sources" : [
+                {
+                    "type" : "git",
+                    "url" : "https://gitlab.gnome.org/GNOME/glib.git",
+                    "branch" : "main"
+                }
+            ]
+        },
+        {
+            "name" : "json-glib",
+            "buildsystem" : "meson",
+            "config-opts" : [
+                "--buildtype=debugoptimized",
+                "--prefix=/app/static",
+                "--libdir=lib",
+                "-Dpkg_config_path=/app/static/lib/pkgconfig",
+                "-Ddefault_library=static",
+                "-Dgtk_doc=disabled",
+                "-Dintrospection=disabled",
+                "-Dman=false",
+                "-Dnls=disabled",
+                "-Dtests=false"
+            ],
+            "sources" : [
+                {
+                    "type" : "git",
+                    "url" : "https://gitlab.gnome.org/GNOME/json-glib.git",
+                    "branch" : "master"
+                }
+            ]
+        },
         {
             "name" : "libportal",
             "config-opts" : [
@@ -72,16 +169,38 @@
             ]
         },
         {
-            "name" : "ptyxis",
+            "name" : "ptyxis-agent",
             "builddir" : true,
             "buildsystem" : "meson",
             "config-opts" : [
-                "-Ddevelopment=true"
+                "-Dpkg_config_path=/app/static/lib/pkgconfig:/app/lib/pkgconfig:",
+                "-Ddevelopment=true",
+                "-Dagent=true",
+                "-Dui=false",
+                "-Dstatic-agent=true"
             ],
             "sources" : [
                 {
                     "type" : "git",
-                    "url" : "https://gitlab.gnome.org/GNOME/ptyxis.git"
+                    "url" : "https://gitlab.gnome.org/GNOME/ptyxis.git",
+                    "branch" : "wip/chergert/static-linking"
+                }
+            ]
+        },
+        {
+            "name" : "ptyxis",
+            "builddir" : true,
+            "buildsystem" : "meson",
+            "config-opts" : [
+                "-Ddevelopment=true",
+                "-Dagent=false",
+                "-Dui=true"
+            ],
+            "sources" : [
+                {
+                    "type" : "git",
+                    "url" : "https://gitlab.gnome.org/GNOME/ptyxis.git",
+                    "branch" : "wip/chergert/static-linking"
                 }
             ]
         }
