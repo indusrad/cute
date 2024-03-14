@@ -903,7 +903,7 @@ ptyxis_client_ping (PtyxisClient  *self,
                                      NULL,
                                      NULL,
                                      G_DBUS_CALL_FLAGS_NONE,
-                                     -1,
+                                     1000, /* 1 second */
                                      NULL,
                                      error);
 
