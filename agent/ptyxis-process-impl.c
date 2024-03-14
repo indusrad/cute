@@ -138,7 +138,7 @@ ptyxis_process_impl_new (GDBusConnection  *connection,
                                          error))
     return NULL;
 
-  return g_steal_pointer (&self);
+  return PTYXIS_IPC_PROCESS (g_steal_pointer (&self));
 }
 
 static gboolean
