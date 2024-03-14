@@ -330,8 +330,35 @@ ptyxis_client_new (GError **error)
                                          ptyxis_client_child_setup_func,
                                          NULL, NULL);
   if (!(subprocess = g_subprocess_launcher_spawnv (launcher, (const char * const *)argv->pdata, error)))
-    return NULL;
+    {
+      if (ptyxis_get_process_kind () == PTYXIS_PROCESS_KIND_FLATPAK)
+        {
+          /* Try again, but launching inside our own Flatpak namespace. This
+           * can happen when the host system does not have glibc. We may not
+           * provide as good of an experience, but try nonetheless.
+           */
+          g_critical ("Failed to spawn ptyxis-agent on the host system. "
+                      "Trying again within Flatpak namespace. "
+                      "Some features may not work correctly!");
 
+          /* TODO: We probably want to leave a notification to the user
+           *       as well about this in the UI.
+           */
+
+          if (error != NULL)
+            g_clear_error (error);
+
+          if ((subprocess = g_subprocess_launcher_spawn (launcher, error,
+                                                         "/app/libexec/ptyxis-agent",
+                                                         "--socket-fd=3",
+                                                         NULL)))
+            goto spawned_agent;
+        }
+
+      return NULL;
+    }
+
+spawned_agent:
   g_set_object (&self->subprocess, subprocess);
 
   guid = g_dbus_generate_guid ();

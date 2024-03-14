@@ -63,6 +63,7 @@ void                 ptyxis_run_context_push                    (PtyxisRunContex
                                                                  PtyxisRunContextHandler   handler,
                                                                  gpointer                  handler_data,
                                                                  GDestroyNotify            handler_data_destroy);
+void                 ptyxis_run_context_push_host               (PtyxisRunContext         *self);
 void                 ptyxis_run_context_push_at_base            (PtyxisRunContext         *self,
                                                                  PtyxisRunContextHandler   handler,
                                                                  gpointer                  handler_data,
@@ -117,6 +118,9 @@ GIOStream           *ptyxis_run_context_create_stdio_stream     (PtyxisRunContex
 GSubprocessLauncher *ptyxis_run_context_end                     (PtyxisRunContext         *self,
                                                                  GError                  **error);
 GSubprocess         *ptyxis_run_context_spawn                   (PtyxisRunContext         *self,
+                                                                 GError                  **error);
+GSubprocess         *ptyxis_run_context_spawn_with_flags        (PtyxisRunContext         *self,
+                                                                 GSubprocessFlags          flags,
                                                                  GError                  **error);
 
 G_END_DECLS

@@ -70,7 +70,7 @@ maybe_start (PtyxisPodmanContainer *self,
              gpointer               user_data)
 {
   PtyxisPodmanContainerPrivate *priv = ptyxis_podman_container_get_instance_private (self);
-  g_autoptr(GSubprocessLauncher) launcher = NULL;
+  g_autoptr(PtyxisRunContext) run_context = NULL;
   g_autoptr(GSubprocess) subprocess = NULL;
   g_autoptr(GError) error = NULL;
   g_autoptr(GTask) task = NULL;
@@ -105,11 +105,17 @@ maybe_start (PtyxisPodmanContainer *self,
       return;
     }
 
-  launcher = g_subprocess_launcher_new (G_SUBPROCESS_FLAGS_STDERR_SILENCE |
-                                        G_SUBPROCESS_FLAGS_STDOUT_SILENCE);
+  run_context = ptyxis_run_context_new ();
+
+  /* In case we're sandboxed */
+  ptyxis_run_context_push_host (run_context);
+
+  ptyxis_run_context_append_argv (run_context, "podman");
+  ptyxis_run_context_append_argv (run_context, "start");
+  ptyxis_run_context_append_argv (run_context, id);
 
   /* Wait so that we don't try to run before the pod has started */
-  if ((subprocess = g_subprocess_launcher_spawn (launcher, &error, "podman", "start", id, NULL)))
+  if ((subprocess = ptyxis_run_context_spawn (run_context, &error)))
     g_subprocess_wait_check_async (subprocess,
                                    cancellable,
                                    maybe_start_cb,
@@ -261,7 +267,7 @@ ptyxis_podman_container_run_context_cb (PtyxisRunContext    *run_context,
     ptyxis_run_context_append_argv (run_context, "--tty");
 
   /* If there is a CWD specified, then apply it. However, podman containers
-   * wont necessarily have the user home directory in them except for when
+   * won't necessarily have the user home directory in them except for when
    * using toolbox/distrobox. So only apply in those cases.
    */
   if (PTYXIS_IS_TOOLBOX_CONTAINER (self) || PTYXIS_IS_DISTROBOX_CONTAINER (self))
@@ -307,12 +313,14 @@ ptyxis_podman_container_real_prepare_run_context (PtyxisPodmanContainer *self,
   g_assert (PTYXIS_IS_PODMAN_CONTAINER (self));
   g_assert (PTYXIS_IS_RUN_CONTEXT (run_context));
 
+  ptyxis_run_context_push_host (run_context);
+
   ptyxis_run_context_push (run_context,
                            ptyxis_podman_container_run_context_cb,
                            g_object_ref (self),
                            g_object_unref);
 
-  /* Give acces to some minimal state in the environment from
+  /* Give access to some minimal state in the environment from
    * our host system.
    */
   ptyxis_run_context_add_minimal_environment (run_context);
@@ -517,8 +525,8 @@ ptyxis_podman_container_find_program_in_path_start_cb (GObject      *object,
                                                        gpointer      user_data)
 {
   PtyxisPodmanContainer *self = (PtyxisPodmanContainer *)object;
+  g_autoptr(PtyxisRunContext) run_context = NULL;
   g_autoptr(FindContainerInPath) state = user_data;
-  g_autoptr(GSubprocessLauncher) launcher = NULL;
   g_autoptr(GSubprocess) subprocess = NULL;
   g_autoptr(GError) error = NULL;
 
@@ -538,13 +546,17 @@ ptyxis_podman_container_find_program_in_path_start_cb (GObject      *object,
       return;
     }
 
-  launcher = g_subprocess_launcher_new (G_SUBPROCESS_FLAGS_STDOUT_PIPE | G_SUBPROCESS_FLAGS_STDERR_SILENCE);
-  subprocess = g_subprocess_launcher_spawn (launcher, &error,
-                                            "podman", "exec", state->id,
-                                            "which", state->program,
-                                            NULL);
+  run_context = ptyxis_run_context_new ();
 
-  if (subprocess == NULL)
+  /* In case we're sandboxed */
+  ptyxis_run_context_push_host (run_context);
+  ptyxis_run_context_append_argv (run_context, "podman");
+  ptyxis_run_context_append_argv (run_context, "exec");
+  ptyxis_run_context_append_argv (run_context, state->id);
+  ptyxis_run_context_append_argv (run_context, "which");
+  ptyxis_run_context_append_argv (run_context, state->program);
+
+  if (!(subprocess = ptyxis_run_context_spawn_with_flags (run_context, G_SUBPROCESS_FLAGS_STDOUT_PIPE, &error)))
     g_dbus_method_invocation_return_gerror (g_steal_pointer (&state->invocation),
                                             g_steal_pointer (&error));
   else

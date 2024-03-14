@@ -108,6 +108,9 @@ ptyxis_distrobox_container_prepare_run_context (PtyxisPodmanContainer *container
   ptyxis_run_context_setenv (run_context, "HOME", g_get_home_dir ());
   ptyxis_run_context_setenv (run_context, "USER", g_get_user_name ());
 
+  /* In case we got sandboxed due to incompatible host */
+  ptyxis_run_context_push_host (run_context);
+
   ptyxis_run_context_push (run_context,
                            ptyxis_distrobox_container_run_context_cb,
                            g_object_ref (container),

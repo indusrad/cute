@@ -284,12 +284,33 @@ ptyxis_podman_provider_communicate_cb (GObject      *object,
   g_task_return_boolean (task, TRUE);
 }
 
+static GPtrArray *
+get_podman_argv (void)
+{
+  GPtrArray *argv = g_ptr_array_new ();
+
+  /* In case we were only able to spawn inside of our Flatpak,
+   * and not on the host, route through the host for podman.
+   */
+  if (ptyxis_agent_is_sandboxed ())
+    {
+      g_ptr_array_add (argv, (char *)"flatpak-spawn");
+      g_ptr_array_add (argv, (char *)"--host");
+      g_ptr_array_add (argv, (char *)"--watch-bus");
+    }
+
+  g_ptr_array_add (argv, (char *)"podman");
+
+  return argv;
+}
+
 static gboolean
 ptyxis_podman_provider_update_source_func (gpointer user_data)
 {
   PtyxisPodmanProvider *self = user_data;
   g_autoptr(GSubprocessLauncher) launcher = NULL;
   g_autoptr(GSubprocess) subprocess = NULL;
+  g_autoptr(GPtrArray) argv = NULL;
   g_autoptr(GError) error = NULL;
   g_autoptr(GTask) task = NULL;
 
@@ -297,8 +318,14 @@ ptyxis_podman_provider_update_source_func (gpointer user_data)
 
   self->queued_update = 0;
 
+  argv = get_podman_argv ();
+  g_ptr_array_add (argv, (char *)"ps");
+  g_ptr_array_add (argv, (char *)"--all");
+  g_ptr_array_add (argv, (char *)"--format=json");
+  g_ptr_array_add (argv, NULL);
+
   launcher = g_subprocess_launcher_new (G_SUBPROCESS_FLAGS_STDOUT_PIPE);
-  subprocess = g_subprocess_launcher_spawn (launcher, &error, "podman", "ps", "--all", "--format=json", NULL);
+  subprocess = g_subprocess_launcher_spawnv (launcher, (const char * const *)argv->pdata, &error);
   if (subprocess == NULL)
     return G_SOURCE_REMOVE;
 
@@ -336,12 +363,18 @@ ptyxis_podman_provider_get_version (void)
       g_autoptr(GSubprocessLauncher) launcher = NULL;
       g_autoptr(GSubprocess) subprocess = NULL;
       g_autoptr(JsonParser) parser = NULL;
+      g_autoptr(GPtrArray) argv = NULL;
       g_autofree char *stdout_buf = NULL;
       JsonObject *obj;
       JsonNode *node;
 
+      argv = get_podman_argv ();
+      g_ptr_array_add (argv, (char *)"version");
+      g_ptr_array_add (argv, (char *)"--format=json");
+      g_ptr_array_add (argv, NULL);
+
       launcher = g_subprocess_launcher_new (G_SUBPROCESS_FLAGS_STDOUT_PIPE);
-      subprocess = g_subprocess_launcher_spawn (launcher, NULL, "podman", "version", "--format=json", NULL);
+      subprocess = g_subprocess_launcher_spawnv (launcher, (const char * const *)argv->pdata, NULL);
       if (subprocess == NULL)
         return NULL;
 
@@ -392,7 +425,7 @@ ptyxis_podman_provider_update_sync (PtyxisPodmanProvider  *self,
                                     GCancellable          *cancellable,
                                     GError               **error)
 {
-  g_autoptr(GSubprocessLauncher) launcher = NULL;
+  g_autoptr(PtyxisRunContext) run_context = NULL;
   g_autoptr(GSubprocess) subprocess = NULL;
   g_autoptr(GPtrArray) containers = NULL;
   g_autoptr(JsonParser) parser = NULL;
@@ -405,8 +438,16 @@ ptyxis_podman_provider_update_sync (PtyxisPodmanProvider  *self,
 
   g_clear_handle_id (&self->queued_update, g_source_remove);
 
-  launcher = g_subprocess_launcher_new (G_SUBPROCESS_FLAGS_STDOUT_PIPE);
-  subprocess = g_subprocess_launcher_spawn (launcher, error, "podman", "ps", "--all", "--format=json", NULL);
+  run_context = ptyxis_run_context_new ();
+
+  ptyxis_run_context_push_host (run_context);
+
+  ptyxis_run_context_append_argv (run_context, "podman");
+  ptyxis_run_context_append_argv (run_context, "ps");
+  ptyxis_run_context_append_argv (run_context, "--all");
+  ptyxis_run_context_append_argv (run_context, "--format=json");
+
+  subprocess = ptyxis_run_context_spawn_with_flags (run_context, G_SUBPROCESS_FLAGS_STDOUT_PIPE, error);
   if (subprocess == NULL)
     return FALSE;
 

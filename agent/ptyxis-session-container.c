@@ -105,6 +105,9 @@ ptyxis_session_container_handle_spawn (PtyxisIpcContainer    *container,
 
   run_context = ptyxis_run_context_new ();
 
+  /* If we had to run within Flatpak, escape to host */
+  ptyxis_run_context_push_host (run_context);
+
   /* Place the process inside a new scope similar to what VTE would do. */
   ptyxis_run_context_push_scope (run_context);
 

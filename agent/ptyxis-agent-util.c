@@ -310,3 +310,18 @@ ptyxis_agent_push_spawn (PtyxisRunContext   *run_context,
         }
     }
 }
+
+gboolean
+ptyxis_agent_is_sandboxed (void)
+{
+  static gboolean initialized;
+  static gboolean sandboxed;
+
+  if (!initialized)
+    {
+      sandboxed = g_file_test ("/.flatpak-info", G_FILE_TEST_EXISTS);
+      initialized = TRUE;
+    }
+
+  return sandboxed;
+}
