@@ -63,6 +63,7 @@ void                 ptyxis_run_context_push                    (PtyxisRunContex
                                                                  PtyxisRunContextHandler   handler,
                                                                  gpointer                  handler_data,
                                                                  GDestroyNotify            handler_data_destroy);
+void                 ptyxis_run_context_push_host               (PtyxisRunContext         *self);
 void                 ptyxis_run_context_push_at_base            (PtyxisRunContext         *self,
                                                                  PtyxisRunContextHandler   handler,
                                                                  gpointer                  handler_data,
