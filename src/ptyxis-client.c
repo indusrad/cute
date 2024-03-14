@@ -261,6 +261,24 @@ ptyxis_client_child_setup_func (gpointer data)
 #endif
 }
 
+static gpointer
+do_timeout_on_thread (gpointer data)
+{
+  g_autoptr(GCancellable) cancellable = data;
+  g_usleep (G_USEC_PER_SEC);
+  g_cancellable_cancel (cancellable);
+  return NULL;
+}
+
+static void
+timeout_on_thread (GCancellable *cancellable)
+{
+  GThread *thread = g_thread_new ("[ptyxis-client-timeout]",
+                                  do_timeout_on_thread,
+                                  g_object_ref (cancellable));
+  g_thread_unref (thread);
+}
+
 PtyxisClient *
 ptyxis_client_new (gboolean   in_sandbox,
                    GError   **error)
@@ -272,6 +290,7 @@ ptyxis_client_new (gboolean   in_sandbox,
   g_autoptr(GDBusConnection) bus = NULL;
   g_autoptr(GSocketConnection) stream = NULL;
   g_autoptr(GSubprocess) subprocess = NULL;
+  g_autoptr(GCancellable) cancellable = NULL;
   g_autoptr(GSocket) socket = NULL;
   g_auto(GStrv) object_paths = NULL;
   g_autofree char *guid = NULL;
@@ -365,10 +384,19 @@ spawned_agent:
   guid = g_dbus_generate_guid ();
   stream = g_socket_connection_factory_create_connection (socket);
 
+  /* This can lock-up if the other side crashes when spawning.
+   * Particularly if we flatpak-spawn on a host without glibc or
+   * something like that.
+   *
+   * To handle that, we create a new GCancellable that will
+   * timeout on a thread in short order so we don't lockup.
+   */
+  cancellable = g_cancellable_new ();
+  timeout_on_thread (cancellable);
   if (!(bus = g_dbus_connection_new_sync (G_IO_STREAM (stream), guid,
                                           (G_DBUS_CONNECTION_FLAGS_AUTHENTICATION_ALLOW_ANONYMOUS |
                                            G_DBUS_CONNECTION_FLAGS_AUTHENTICATION_SERVER),
-                                          NULL, NULL, error)))
+                                          NULL, cancellable, error)))
     return NULL;
 
   g_set_object (&self->bus, bus);
