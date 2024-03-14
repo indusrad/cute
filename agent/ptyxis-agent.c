@@ -112,8 +112,7 @@ ptyxis_agent_init (PtyxisAgent  *agent,
   ptyxis_agent_impl_add_container (agent->impl, PTYXIS_IPC_CONTAINER (session));
 
   jhbuildrc = g_file_new_build_filename (g_get_home_dir (), ".config", "jhbuildrc", NULL);
-  if (g_file_query_exists (jhbuildrc, NULL) &&
-      (jhbuild_path = g_find_program_in_path ("jhbuild")))
+  if (g_file_query_exists (jhbuildrc, NULL))
     {
       g_autoptr(PtyxisSessionContainer) jhbuild_container = ptyxis_session_container_new ();
       ptyxis_ipc_container_set_id (PTYXIS_IPC_CONTAINER (jhbuild_container), "jhbuild");
@@ -121,7 +120,7 @@ ptyxis_agent_init (PtyxisAgent  *agent,
       ptyxis_ipc_container_set_display_name (PTYXIS_IPC_CONTAINER (jhbuild_container), "JHBuild");
       ptyxis_ipc_container_set_icon_name (PTYXIS_IPC_CONTAINER (jhbuild_container), "container-jhbuild-symbolic");
       ptyxis_session_container_set_command_prefix (PTYXIS_SESSION_CONTAINER (jhbuild_container),
-                                                   (const char * const []) { jhbuild_path, "run", NULL });
+                                                   (const char * const []) { "jhbuild", "run", NULL });
       ptyxis_agent_impl_add_container (agent->impl, PTYXIS_IPC_CONTAINER (jhbuild_container));
     }
 
