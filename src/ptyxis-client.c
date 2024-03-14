@@ -201,9 +201,10 @@ ptyxis_client_containers_changed_cb (PtyxisClient       *self,
 }
 
 static char *
-find_ptyxis_agent_path (void)
+find_ptyxis_agent_path (gboolean in_sandbox)
 {
-  if (ptyxis_get_process_kind () == PTYXIS_PROCESS_KIND_FLATPAK)
+  if (!in_sandbox &&
+      ptyxis_get_process_kind () == PTYXIS_PROCESS_KIND_FLATPAK)
     {
       g_autofree char *contents = NULL;
       gsize len;
@@ -222,7 +223,7 @@ find_ptyxis_agent_path (void)
   return g_build_filename (LIBEXECDIR, "ptyxis-agent", NULL);
 }
 
-G_GNUC_NORETURN static void
+static void
 ptyxis_client_wait_cb (GObject      *object,
                        GAsyncResult *result,
                        gpointer      user_data)
@@ -246,9 +247,7 @@ ptyxis_client_wait_cb (GObject      *object,
    */
 
   if (!g_subprocess_wait_check_finish (subprocess, result, &error))
-    g_error ("%s", error->message);
-  else
-    g_error ("ptyxis-agent exited, cannot continue");
+    g_critical ("Client exited: %s", error->message);
 }
 
 static void
@@ -263,9 +262,10 @@ ptyxis_client_child_setup_func (gpointer data)
 }
 
 PtyxisClient *
-ptyxis_client_new (GError **error)
+ptyxis_client_new (gboolean   in_sandbox,
+                   GError   **error)
 {
-  g_autofree char *ptyxis_agent_path = find_ptyxis_agent_path ();
+  g_autofree char *ptyxis_agent_path = find_ptyxis_agent_path (in_sandbox);
   PtyxisClient *self = g_object_new (PTYXIS_TYPE_CLIENT, NULL);
   g_autoptr(GSubprocessLauncher) launcher = g_subprocess_launcher_new (0);
   g_autoptr(GPtrArray) argv = g_ptr_array_new_with_free_func (g_free);
@@ -278,7 +278,8 @@ ptyxis_client_new (GError **error)
   int pair[2];
   int res;
 
-  if (ptyxis_get_process_kind () == PTYXIS_PROCESS_KIND_FLATPAK)
+  if (!in_sandbox &&
+      ptyxis_get_process_kind () == PTYXIS_PROCESS_KIND_FLATPAK)
     {
       g_ptr_array_add (argv, g_strdup ("flatpak-spawn"));
       g_ptr_array_add (argv, g_strdup ("--host"));
