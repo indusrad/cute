@@ -68,7 +68,6 @@ ptyxis_agent_init (PtyxisAgent  *agent,
   g_autoptr(PtyxisContainerProvider) podman = NULL;
   g_autoptr(GError) local_error = NULL;
   g_autoptr(GFile) jhbuildrc = NULL;
-  g_autofree char *jhbuild_path = NULL;
 
   memset (agent, 0, sizeof *agent);
 
