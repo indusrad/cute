@@ -572,6 +572,8 @@ ptyxis_application_startup (GApplication *application)
         g_error ("Failed to spawn ptyxis-agent in sandbox: %s", error->message);
     }
 
+  g_debug ("Connected to ptyxis-agent");
+
   self->profile_menu = ptyxis_profile_menu_new (self->settings);
 
   filter = gtk_custom_filter_new (filter_session_container, NULL, NULL);
