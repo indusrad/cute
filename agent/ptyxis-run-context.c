@@ -914,9 +914,16 @@ GSubprocess *
 ptyxis_run_context_spawn (PtyxisRunContext  *self,
                           GError           **error)
 {
+  return ptyxis_run_context_spawn_with_flags (self, 0, error);
+}
+
+GSubprocess *
+ptyxis_run_context_spawn_with_flags (PtyxisRunContext  *self,
+                                     GSubprocessFlags   flags,
+                                     GError           **error)
+{
   g_autoptr(GSubprocessLauncher) launcher = NULL;
   const char * const *argv;
-  GSubprocessFlags flags = 0;
   guint length;
 
   g_return_val_if_fail (PTYXIS_IS_RUN_CONTEXT (self), NULL);
@@ -950,10 +957,10 @@ ptyxis_run_context_spawn (PtyxisRunContext  *self,
 
       source_fd = ptyxis_unix_fd_map_steal (self->root.unix_fd_map, i, &dest_fd);
 
-      if (dest_fd == STDOUT_FILENO && source_fd == -1)
+      if (dest_fd == STDOUT_FILENO && source_fd == -1 && (flags & G_SUBPROCESS_FLAGS_STDOUT_PIPE) == 0)
         flags |= G_SUBPROCESS_FLAGS_STDOUT_SILENCE;
 
-      if (dest_fd == STDERR_FILENO && source_fd == -1)
+      if (dest_fd == STDERR_FILENO && source_fd == -1 && (flags & G_SUBPROCESS_FLAGS_STDERR_PIPE) == 0)
         flags |= G_SUBPROCESS_FLAGS_STDERR_SILENCE;
 
       if (source_fd != -1 && dest_fd != -1)
