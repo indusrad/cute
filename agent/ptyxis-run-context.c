@@ -50,6 +50,7 @@ struct _PtyxisRunContext
   GQueue                layers;
   PtyxisRunContextLayer root;
   guint                 ended : 1;
+  guint                 setup_tty : 1;
 };
 
 G_DEFINE_TYPE (PtyxisRunContext, ptyxis_run_context, G_TYPE_OBJECT)
@@ -213,6 +214,8 @@ ptyxis_run_context_class_init (PtyxisRunContextClass *klass)
 static void
 ptyxis_run_context_init (PtyxisRunContext *self)
 {
+  self->setup_tty = TRUE;
+
   ptyxis_run_context_layer_init (&self->root);
 
   g_queue_push_head_link (&self->layers, &self->root.qlink);
@@ -884,6 +887,8 @@ ptyxis_run_context_callback_layer (PtyxisRunContext       *self,
 static void
 ptyxis_run_context_child_setup_cb (gpointer data)
 {
+  gboolean setup_tty = GPOINTER_TO_INT (data);
+
   setsid ();
   setpgid (0, 0);
 
@@ -891,8 +896,11 @@ ptyxis_run_context_child_setup_cb (gpointer data)
   prctl (PR_SET_PDEATHSIG, SIGHUP);
 #endif
 
-  if (isatty (STDIN_FILENO))
-    ioctl (STDIN_FILENO, TIOCSCTTY, 0);
+  if (setup_tty)
+    {
+      if (isatty (STDIN_FILENO))
+        ioctl (STDIN_FILENO, TIOCSCTTY, 0);
+    }
 }
 
 /**
@@ -964,7 +972,8 @@ ptyxis_run_context_spawn (PtyxisRunContext  *self,
   g_subprocess_launcher_set_flags (launcher, flags);
   g_subprocess_launcher_set_child_setup (launcher,
                                          ptyxis_run_context_child_setup_cb,
-                                         NULL, NULL);
+                                         GINT_TO_POINTER (self->setup_tty),
+                                         NULL);
 
   return g_subprocess_launcher_spawnv (launcher, argv, error);
 }
@@ -1111,5 +1120,91 @@ ptyxis_run_context_push_scope (PtyxisRunContext *self)
 
   ptyxis_run_context_push (self,
                            ptyxis_run_context_push_scope_cb,
+                           NULL, NULL);
+}
+
+static gboolean
+ptyxis_run_context_host_handler (PtyxisRunContext    *self,
+                                 const char * const  *argv,
+                                 const char * const  *env,
+                                 const char          *cwd,
+                                 PtyxisUnixFDMap     *unix_fd_map,
+                                 gpointer             user_data,
+                                 GError             **error)
+{
+  static const char *required_for_dbus[] = {
+    "DBUS_SESSION_BUS_ADDRESS",
+  };
+  guint length;
+
+  g_assert (PTYXIS_IS_RUN_CONTEXT (self));
+  g_assert (argv != NULL);
+  g_assert (env != NULL);
+  g_assert (PTYXIS_IS_UNIX_FD_MAP (unix_fd_map));
+  g_assert (ptyxis_agent_is_sandboxed ());
+
+  for (guint i = 0; i < G_N_ELEMENTS (required_for_dbus); i++)
+    {
+      const char *key = required_for_dbus[i];
+      const char *value = g_getenv (key);
+
+      if (value != NULL)
+        ptyxis_run_context_setenv (self, key, value);
+    }
+
+  ptyxis_run_context_append_argv (self, "flatpak-spawn");
+  ptyxis_run_context_append_argv (self, "--host");
+  ptyxis_run_context_append_argv (self, "--watch-bus");
+
+  if (env != NULL)
+    {
+      for (guint i = 0; env[i]; i++)
+        ptyxis_run_context_append_formatted (self, "--env=%s", env[i]);
+    }
+
+  if (cwd != NULL)
+    ptyxis_run_context_append_formatted (self, "--directory=%s", cwd);
+
+  if ((length = ptyxis_unix_fd_map_get_length (unix_fd_map)))
+    {
+      for (guint i = 0; i < length; i++)
+        {
+          int source_fd;
+          int dest_fd;
+
+          source_fd = ptyxis_unix_fd_map_peek (unix_fd_map, i, &dest_fd);
+
+          if (dest_fd < STDERR_FILENO)
+            continue;
+
+          g_debug ("Mapping Builder FD %d to target FD %d via flatpak-spawn",
+                   source_fd, dest_fd);
+
+          if (source_fd != -1 && dest_fd != -1)
+            ptyxis_run_context_append_formatted (self, "--forward-fd=%d", dest_fd);
+        }
+
+      if (!ptyxis_run_context_merge_unix_fd_map (self, unix_fd_map, error))
+        return FALSE;
+    }
+
+  /* Now append the arguments */
+  ptyxis_run_context_append_args (self, argv);
+
+  return TRUE;
+}
+
+void
+ptyxis_run_context_push_host (PtyxisRunContext *self)
+{
+  g_return_if_fail (PTYXIS_IS_RUN_CONTEXT (self));
+
+  if (!ptyxis_agent_is_sandboxed ())
+    return;
+
+  self->setup_tty = FALSE;
+
+  ptyxis_run_context_push (self,
+                           ptyxis_run_context_host_handler,
                            NULL, NULL);
 }
