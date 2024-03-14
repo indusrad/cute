@@ -557,8 +557,20 @@ ptyxis_application_startup (GApplication *application)
 
   G_APPLICATION_CLASS (ptyxis_application_parent_class)->startup (application);
 
-  if (!(self->client = ptyxis_client_new (&error)))
-    g_error ("Failed to launch ptyxis-agent: %s", error->message);
+  /* Try to spawn ptyxis-agent on the host when possible */
+  if (!(self->client = ptyxis_client_new (FALSE, &error)) ||
+      !ptyxis_client_ping (self->client, &error))
+    {
+      g_warning ("Failed to spawn ptyxis-agent on host: %s",
+                 error->message);
+
+      g_clear_object (&self->client);
+      g_clear_error (&error);
+
+      if (!(self->client = ptyxis_client_new (TRUE, &error)) ||
+          !ptyxis_client_ping (self->client, &error))
+        g_error ("Failed to spawn ptyxis-agent in sandbox: %s", error->message);
+    }
 
   self->profile_menu = ptyxis_profile_menu_new (self->settings);
 

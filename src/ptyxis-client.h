@@ -33,7 +33,8 @@ G_BEGIN_DECLS
 
 G_DECLARE_FINAL_TYPE (PtyxisClient, ptyxis_client, PTYXIS, CLIENT, GObject)
 
-PtyxisClient       *ptyxis_client_new                        (GError              **error);
+PtyxisClient       *ptyxis_client_new                        (gboolean              use_sandbox,
+                                                              GError              **error);
 const char         *ptyxis_client_get_user_data_dir          (PtyxisClient         *self);
 void                ptyxis_client_force_exit                 (PtyxisClient         *self);
 VtePty             *ptyxis_client_create_pty                 (PtyxisClient         *self,
