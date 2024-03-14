@@ -307,6 +307,8 @@ ptyxis_podman_container_real_prepare_run_context (PtyxisPodmanContainer *self,
   g_assert (PTYXIS_IS_PODMAN_CONTAINER (self));
   g_assert (PTYXIS_IS_RUN_CONTEXT (run_context));
 
+  ptyxis_run_context_push_host (run_context);
+
   ptyxis_run_context_push (run_context,
                            ptyxis_podman_container_run_context_cb,
                            g_object_ref (self),
