@@ -119,5 +119,8 @@ GSubprocessLauncher *ptyxis_run_context_end                     (PtyxisRunContex
                                                                  GError                  **error);
 GSubprocess         *ptyxis_run_context_spawn                   (PtyxisRunContext         *self,
                                                                  GError                  **error);
+GSubprocess         *ptyxis_run_context_spawn_with_flags        (PtyxisRunContext         *self,
+                                                                 GSubprocessFlags          flags,
+                                                                 GError                  **error);
 
 G_END_DECLS
