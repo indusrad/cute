@@ -885,3 +885,26 @@ ptyxis_client_discover_proxy_environment (PtyxisClient  *self,
 
   return NULL;
 }
+
+gboolean
+ptyxis_client_ping (PtyxisClient  *self,
+                    GError       **error)
+{
+  g_autoptr(GVariant) ret = NULL;
+
+  g_return_val_if_fail (PTYXIS_IS_CLIENT (self), FALSE);
+
+  ret = g_dbus_connection_call_sync (self->bus,
+                                     NULL,
+                                     "/org/gnome/Ptyxis/Agent",
+                                     "org.freedesktop.DBus.Peer",
+                                     "Ping",
+                                     NULL,
+                                     NULL,
+                                     G_DBUS_CALL_FLAGS_NONE,
+                                     -1,
+                                     NULL,
+                                     error);
+
+  return ret != NULL;
+}
