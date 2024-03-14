@@ -328,6 +328,44 @@ return_gerror:
   return TRUE;
 }
 
+static void
+ptyxis_agent_impl_get_preferred_shell_cb (GObject      *object,
+                                          GAsyncResult *result,
+                                          gpointer      user_data)
+{
+  GSubprocess *subprocess = (GSubprocess *)object;
+  g_autoptr(GDBusMethodInvocation) invocation = user_data;
+  g_autoptr(GError) error = NULL;
+  g_autofree char *stdout_buf = NULL;
+  PtyxisIpcAgent *agent;
+  const char *default_shell = "/bin/sh";
+
+  g_assert (G_IS_SUBPROCESS (subprocess));
+  g_assert (G_IS_ASYNC_RESULT (result));
+  g_assert (G_IS_DBUS_METHOD_INVOCATION (invocation));
+
+  agent = g_object_get_data (G_OBJECT (invocation), "PTYXIS_IPC_AGENT");
+
+  if (g_subprocess_communicate_utf8_finish (subprocess, result, &stdout_buf, NULL, &error))
+    {
+      default_shell = g_strstrip (stdout_buf);
+    }
+  else
+    {
+      struct passwd *pw;
+
+      if ((pw = getpwuid (getuid ())))
+        {
+          if (access (pw->pw_shell, X_OK) == 0)
+            default_shell = pw->pw_shell;
+        }
+    }
+
+  ptyxis_ipc_agent_complete_get_preferred_shell (agent,
+                                                 g_steal_pointer (&invocation),
+                                                 default_shell);
+}
+
 static gboolean
 ptyxis_agent_impl_handle_get_preferred_shell (PtyxisIpcAgent        *agent,
                                               GDBusMethodInvocation *invocation)
@@ -337,6 +375,35 @@ ptyxis_agent_impl_handle_get_preferred_shell (PtyxisIpcAgent        *agent,
 
   g_assert (PTYXIS_IS_AGENT_IMPL (agent));
   g_assert (G_IS_DBUS_METHOD_INVOCATION (invocation));
+
+  if (ptyxis_agent_is_sandboxed ())
+    {
+      g_autoptr(PtyxisRunContext) run_context = ptyxis_run_context_new ();
+      g_autoptr(GSubprocess) subprocess = NULL;
+
+      /* Try to get this on the host using getent instead because
+       * whatever our sandbox tells us is a lie.
+       */
+
+      ptyxis_run_context_push_host (run_context);
+      ptyxis_run_context_append_argv (run_context, "sh");
+      ptyxis_run_context_append_argv (run_context, "-c");
+      ptyxis_run_context_append_argv (run_context, "/usr/bin/getent passwd $USER | cut -f 7 -d :");
+
+      if ((subprocess = ptyxis_run_context_spawn_with_flags (run_context, G_SUBPROCESS_FLAGS_STDOUT_PIPE, NULL)))
+        {
+          g_object_set_data_full (G_OBJECT (invocation),
+                                  "PTYXIS_IPC_AGENT",
+                                  g_object_ref (agent),
+                                  g_object_unref);
+          g_subprocess_communicate_utf8_async (subprocess,
+                                               NULL,
+                                               NULL,
+                                               ptyxis_agent_impl_get_preferred_shell_cb,
+                                               g_steal_pointer (&invocation));
+          return TRUE;
+        }
+    }
 
   if ((pw = getpwuid (getuid ())))
     {
