@@ -1139,7 +1139,7 @@ ptyxis_run_context_host_handler (PtyxisRunContext    *self,
                                  gpointer             user_data,
                                  GError             **error)
 {
-  g_auto(GStrv) our_env = NULL;
+  const char *dbus_session_bus_address;
   guint length;
 
   g_assert (PTYXIS_IS_RUN_CONTEXT (self));
@@ -1148,8 +1148,10 @@ ptyxis_run_context_host_handler (PtyxisRunContext    *self,
   g_assert (PTYXIS_IS_UNIX_FD_MAP (unix_fd_map));
   g_assert (ptyxis_agent_is_sandboxed ());
 
-  our_env = g_get_environ ();
-  ptyxis_run_context_set_environ (self, (const char * const *)our_env);
+  if ((dbus_session_bus_address = g_getenv ("DBUS_SESSION_BUS_ADDRESS")))
+    ptyxis_run_context_setenv (self,
+                               "DBUS_SESSION_BUS_ADDRESS",
+                               dbus_session_bus_address);
 
   ptyxis_run_context_append_argv (self, "flatpak-spawn");
   ptyxis_run_context_append_argv (self, "--host");

@@ -561,8 +561,13 @@ ptyxis_application_startup (GApplication *application)
   if (!(self->client = ptyxis_client_new (FALSE, &error)) ||
       !ptyxis_client_ping (self->client, &error))
     {
-      g_warning ("Failed to spawn ptyxis-agent on host: %s",
-                 error->message);
+      /* Try again, but launching inside our own Flatpak namespace. This
+       * can happen when the host system does not have glibc. We may not
+       * provide as good of an experience, but try nonetheless.
+       */
+      g_critical ("Failed to spawn ptyxis-agent on the host system. "
+                  "Trying again within Flatpak namespace. "
+                  "Some features may not work correctly!");
 
       g_clear_object (&self->client);
       g_clear_error (&error);
