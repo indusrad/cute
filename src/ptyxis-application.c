@@ -525,6 +525,38 @@ filter_session_container (gpointer item,
   return g_strcmp0 ("session", ptyxis_ipc_container_get_id (item)) != 0;
 }
 
+static gboolean
+ptyxis_application_should_sandbox_agent (PtyxisApplication *self)
+{
+  g_autofree char *os_release = NULL;
+
+  g_assert (PTYXIS_IS_APPLICATION (self));
+
+  /* Nothing to do if we're not sandboxed */
+  if (!g_file_test ("/.flatpak-info", G_FILE_TEST_EXISTS))
+    return FALSE;
+
+  /* Some systems we know will absolutely not work with the
+   * ptyxis-agent spawned on the host because they lack a
+   * compatible glibc and/or linker loader.
+   *
+   * They will simply get degraded features when in Flatpak.
+   *
+   * Even if the system does not support it, we will discover
+   * that at runtime with a 1 second timeout. Adding things
+   * here will gain you that extra second.
+   */
+  if (g_file_get_contents ("/var/run/host/os-release", &os_release, NULL, NULL))
+    {
+      if (strstr (os_release, "\"postmarketOS\"") ||
+          strstr (os_release, "\"alpine\"") ||
+          strstr (os_release, "NixOS"))
+        return TRUE;
+    }
+
+  return FALSE;
+}
+
 static void
 ptyxis_application_startup (GApplication *application)
 {
@@ -536,6 +568,7 @@ ptyxis_application_startup (GApplication *application)
   g_autoptr(GBytes) session_bytes = NULL;
   g_autoptr(GError) error = NULL;
   AdwStyleManager *style_manager;
+  gboolean sandbox_agent;
 
   g_assert (PTYXIS_IS_APPLICATION (self));
 
@@ -557,8 +590,10 @@ ptyxis_application_startup (GApplication *application)
 
   G_APPLICATION_CLASS (ptyxis_application_parent_class)->startup (application);
 
+  sandbox_agent = ptyxis_application_should_sandbox_agent (self);
+
   /* Try to spawn ptyxis-agent on the host when possible */
-  if (!(self->client = ptyxis_client_new (FALSE, &error)) ||
+  if (!(self->client = ptyxis_client_new (sandbox_agent, &error)) ||
       !ptyxis_client_ping (self->client, &error))
     {
       /* Try again, but launching inside our own Flatpak namespace. This
