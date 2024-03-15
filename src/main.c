@@ -115,15 +115,6 @@ main (int   argc,
   gboolean standalone = FALSE;
   int ret;
 
-  {
-    /* For GTK 4.14, we are disabing ngl/fractional-scaling until a future
-     * release, such as 4.14.1 depending on incoming performance improvements.
-     */
-    g_setenv ("GSK_RENDERER", "gl", FALSE);
-    if (g_strcmp0 (g_getenv ("GSK_RENDERER"), "gl") == 0)
-      g_setenv ("GDK_DEBUG", "gl-no-fractional", FALSE);
-  }
-
   bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
   bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
   textdomain (GETTEXT_PACKAGE);
