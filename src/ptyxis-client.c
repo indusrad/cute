@@ -49,6 +49,11 @@ enum {
   N_PROPS
 };
 
+enum {
+  CLOSED,
+  N_SIGNALS
+};
+
 static GType
 ptyxis_client_get_item_type (GListModel *model)
 {
@@ -84,7 +89,8 @@ list_model_iface_init (GListModelInterface *iface)
 G_DEFINE_FINAL_TYPE_WITH_CODE (PtyxisClient, ptyxis_client, G_TYPE_OBJECT,
                                G_IMPLEMENT_INTERFACE (G_TYPE_LIST_MODEL, list_model_iface_init))
 
-static GParamSpec *properties [N_PROPS];
+static GParamSpec *properties[N_PROPS];
+static guint signals[N_SIGNALS];
 
 static void
 ptyxis_client_dispose (GObject *object)
@@ -146,6 +152,15 @@ ptyxis_client_class_init (PtyxisClientClass *klass)
                         G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_properties (object_class, N_PROPS, properties);
+
+  signals[CLOSED] =
+    g_signal_new ("closed",
+                  G_TYPE_FROM_CLASS (klass),
+                  G_SIGNAL_RUN_LAST,
+                  0,
+                  NULL, NULL,
+                  NULL,
+                  G_TYPE_NONE, 0);
 }
 
 static void
@@ -248,6 +263,8 @@ ptyxis_client_wait_cb (GObject      *object,
 
   if (!g_subprocess_wait_check_finish (subprocess, result, &error))
     g_critical ("Client exited: %s", error->message);
+
+  g_signal_emit (self, signals[CLOSED], 0);
 }
 
 static void

@@ -557,6 +557,17 @@ ptyxis_application_should_sandbox_agent (PtyxisApplication *self)
   return FALSE;
 }
 
+static void G_GNUC_NORETURN
+ptyxis_application_client_closed_cb (PtyxisApplication *self,
+                                     PtyxisClient      *client)
+{
+  g_assert (PTYXIS_IS_APPLICATION (self));
+  g_assert (PTYXIS_IS_CLIENT (client));
+
+  /* We want a stack trace generated because this should not happen */
+  g_error ("ptyxis-agent exited unexpectedly. exiting too.");
+}
+
 static void
 ptyxis_application_startup (GApplication *application)
 {
@@ -613,6 +624,12 @@ ptyxis_application_startup (GApplication *application)
     }
 
   g_debug ("Connected to ptyxis-agent");
+
+  g_signal_connect_object (self->client,
+                           "closed",
+                           G_CALLBACK (ptyxis_application_client_closed_cb),
+                           self,
+                           G_CONNECT_SWAPPED);
 
   self->profile_menu = ptyxis_profile_menu_new (self->settings);
 
