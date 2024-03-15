@@ -103,6 +103,8 @@ ptyxis_session_container_handle_spawn (PtyxisIpcContainer    *container,
   if (cwd[0] == 0 || !g_file_test (cwd, G_FILE_TEST_IS_DIR))
     cwd = g_get_home_dir ();
 
+  env = g_get_environ ();
+
   run_context = ptyxis_run_context_new ();
 
   /* If we had to run within Flatpak, escape to host */
@@ -115,8 +117,10 @@ ptyxis_session_container_handle_spawn (PtyxisIpcContainer    *container,
    * as our environment. For other types of containers, that may be different
    * as you likely want to filter some stateful things out.
    */
-  env = g_get_environ ();
-  ptyxis_run_context_set_environ (run_context, (const char * const *)env);
+  if (ptyxis_agent_is_sandboxed ())
+    ptyxis_run_context_add_minimal_environment (run_context);
+  else
+    ptyxis_run_context_set_environ (run_context, (const char * const *)env);
 
   /* If a command prefix was specified, add that now */
   if (self->command_prefix != NULL)

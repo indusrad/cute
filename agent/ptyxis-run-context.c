@@ -1154,7 +1154,6 @@ ptyxis_run_context_host_handler (PtyxisRunContext    *self,
   ptyxis_run_context_append_argv (self, "flatpak-spawn");
   ptyxis_run_context_append_argv (self, "--host");
   ptyxis_run_context_append_argv (self, "--watch-bus");
-  ptyxis_run_context_append_argv (self, "--clear-env");
 
   if (env != NULL)
     {
