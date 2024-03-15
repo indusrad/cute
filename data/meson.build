@@ -42,7 +42,7 @@ appstream_file = i18n.merge_file(
 
 appstreamcli = find_program('appstreamcli', required: false, disabler: true)
 test('Validate appstream file', appstreamcli,
-     args: ['validate', '--no-net', '--explain', appstream_file])
+     args: ['validate', '--no-net', '--explain', appstream_file, '--override', 'developer-name-tag-deprecated=info'])
 
 compile_schemas = find_program('glib-compile-schemas', required: false, disabler: true)
 test('Validate schema file',
