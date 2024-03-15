@@ -1,3 +1,32 @@
+# Ptyxis 46.0
+
+Changes since 46.rc
+
+ * ptyxis-agent will now fallback to running within the Flatpak
+   sandbox if it cannot execute on the host. This is useful when
+   you have a host that is not suitable for executing like those
+   without glibc (postmarketOS) or purposefully broken linker
+   loader (NixOS).
+
+   Of course, while this allows Ptyxis to run, it will continue to
+   have the shortcomings that come with PTY/ptmx coming from within
+   the Flatpak namespace. Thusly, tempor your expectation of TTY API
+   functionally.
+
+ * Ptyxis will no longer attempt to start distrobox containers before
+   entering them to fix a race condition in distrobox-enter.
+
+ * Unless GSK_RENDERER env is set, Ptyxis will force the previous GL
+   renderer without fractional-scaling at startup as the performance
+   is more aligned with the Ptyxis use-case. I do not expect this
+   to last long.
+
+ * Ptyxis can be "white box" renamed to Terminal using -Dgeneric=true
+   when building the project. The App ID does not change but the icon
+   and name within desktop files / UI is updated.
+
+ * Updated translations: Dutch, Swedish
+
 # Ptyxis 46.rc
 
 Changes since 46.alpha
