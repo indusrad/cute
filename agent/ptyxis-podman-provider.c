@@ -301,8 +301,6 @@ ptyxis_podman_provider_update_source_func (gpointer user_data)
 
   ptyxis_run_context_push_host (run_context);
 
-  ptyxis_run_context_add_minimal_environment (run_context);
-
   ptyxis_run_context_append_argv (run_context, "podman");
   ptyxis_run_context_append_argv (run_context, "ps");
   ptyxis_run_context_append_argv (run_context, "--all");
@@ -353,8 +351,6 @@ ptyxis_podman_provider_get_version (void)
       run_context = ptyxis_run_context_new ();
 
       ptyxis_run_context_push_host (run_context);
-
-      ptyxis_run_context_add_minimal_environment (run_context);
 
       ptyxis_run_context_append_argv (run_context, "podman");
       ptyxis_run_context_append_argv (run_context, "version");
@@ -427,8 +423,6 @@ ptyxis_podman_provider_update_sync (PtyxisPodmanProvider  *self,
   run_context = ptyxis_run_context_new ();
 
   ptyxis_run_context_push_host (run_context);
-
-  ptyxis_run_context_add_minimal_environment (run_context);
 
   ptyxis_run_context_append_argv (run_context, "podman");
   ptyxis_run_context_append_argv (run_context, "ps");
