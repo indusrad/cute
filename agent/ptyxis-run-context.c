@@ -214,11 +214,18 @@ ptyxis_run_context_class_init (PtyxisRunContextClass *klass)
 static void
 ptyxis_run_context_init (PtyxisRunContext *self)
 {
+  g_auto(GStrv) environ = g_get_environ ();
+
   self->setup_tty = TRUE;
 
   ptyxis_run_context_layer_init (&self->root);
 
   g_queue_push_head_link (&self->layers, &self->root.qlink);
+
+  /* Always start with full environment at the base layer, but allow
+   * removal by _set_environ(NULL) to clear it.
+   */
+  ptyxis_run_context_set_environ (self, (const char * const *)environ);
 }
 
 void
@@ -1139,7 +1146,6 @@ ptyxis_run_context_host_handler (PtyxisRunContext    *self,
                                  gpointer             user_data,
                                  GError             **error)
 {
-  g_auto(GStrv) environ = NULL;
   guint length;
 
   g_assert (PTYXIS_IS_RUN_CONTEXT (self));
@@ -1147,9 +1153,6 @@ ptyxis_run_context_host_handler (PtyxisRunContext    *self,
   g_assert (env != NULL);
   g_assert (PTYXIS_IS_UNIX_FD_MAP (unix_fd_map));
   g_assert (ptyxis_agent_is_sandboxed ());
-
-  environ = g_get_environ ();
-  ptyxis_run_context_set_environ (self, (const char * const *)environ);
 
   ptyxis_run_context_append_argv (self, "flatpak-spawn");
   ptyxis_run_context_append_argv (self, "--host");
