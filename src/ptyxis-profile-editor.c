@@ -59,7 +59,7 @@ struct _PtyxisProfileEditor
   GtkLabel          *opacity_label;
   AdwToastOverlay   *toasts;
   AdwSwitchRow      *use_proxy;
-  GtkLabel          *uuid;
+  AdwActionRow      *uuid_row;
   GListStore        *erase_bindings;
   AdwComboRow       *backspace_binding;
   AdwComboRow       *delete_binding;
@@ -208,7 +208,7 @@ ptyxis_profile_editor_constructed (GObject *object)
   gsettings = ptyxis_profile_dup_settings (self->profile);
 
   g_object_bind_property (self->profile, "uuid",
-                          self->uuid, "label",
+                          self->uuid_row, "subtitle",
                           G_BINDING_SYNC_CREATE);
   g_object_bind_property (self->profile, "label",
                           self->label, "text",
@@ -428,7 +428,7 @@ ptyxis_profile_editor_class_init (PtyxisProfileEditorClass *klass)
   gtk_widget_class_bind_template_child (widget_class, PtyxisProfileEditor, toasts);
   gtk_widget_class_bind_template_child (widget_class, PtyxisProfileEditor, use_custom_commmand);
   gtk_widget_class_bind_template_child (widget_class, PtyxisProfileEditor, use_proxy);
-  gtk_widget_class_bind_template_child (widget_class, PtyxisProfileEditor, uuid);
+  gtk_widget_class_bind_template_child (widget_class, PtyxisProfileEditor, uuid_row);
 
   gtk_widget_class_bind_template_callback (widget_class, get_container_title);
 

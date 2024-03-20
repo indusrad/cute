@@ -39,13 +39,11 @@
                       </object>
                     </child>
                     <child>
-                      <object class="AdwActionRow">
+                      <object class="AdwActionRow" id="uuid_row">
                         <property name="title" translatable="yes">Identifier</property>
-                        <child type="suffix">
-                          <object class="GtkLabel" id="uuid">
-                            <property name="selectable">false</property>
-                          </object>
-                        </child>
+                        <style>
+                          <class name="property"/>
+                        </style>
                         <child type="suffix">
                           <object class="GtkButton">
                             <property name="valign">center</property>
