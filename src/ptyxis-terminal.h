@@ -31,8 +31,12 @@ G_BEGIN_DECLS
 
 G_DECLARE_FINAL_TYPE (PtyxisTerminal, ptyxis_terminal, PTYXIS, TERMINAL, VteTerminal)
 
-PtyxisPalette *ptyxis_terminal_get_palette (PtyxisTerminal *self);
-void           ptyxis_terminal_set_palette (PtyxisTerminal *self,
-                                            PtyxisPalette  *palette);
+PtyxisPalette *ptyxis_terminal_get_palette                   (PtyxisTerminal *self);
+void           ptyxis_terminal_set_palette                   (PtyxisTerminal *self,
+                                                              PtyxisPalette  *palette);
+const char    *ptyxis_terminal_get_current_container_name    (PtyxisTerminal *self);
+const char    *ptyxis_terminal_get_current_container_runtime (PtyxisTerminal *self);
+char          *ptyxis_terminal_dup_current_directory_uri     (PtyxisTerminal *self);
+char          *ptyxis_terminal_dup_current_file_uri          (PtyxisTerminal *self);
 
 G_END_DECLS

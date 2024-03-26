@@ -80,6 +80,8 @@ enum {
 enum {
   MATCH_CLICKED,
   GRID_SIZE_CHANGED,
+  SHELL_PRECMD,
+  SHELL_PREEXEC,
   N_SIGNALS
 };
 
@@ -1051,6 +1053,22 @@ ptyxis_terminal_shortcuts_notify_cb (PtyxisTerminal  *self,
 }
 
 static void
+ptyxis_terminal_emit_shell_precmd (PtyxisTerminal *self)
+{
+  g_assert (PTYXIS_IS_TERMINAL (self));
+
+  g_signal_emit (self, signals[SHELL_PRECMD], 0);
+}
+
+static void
+ptyxis_terminal_emit_shell_preexec (PtyxisTerminal *self)
+{
+  g_assert (PTYXIS_IS_TERMINAL (self));
+
+  g_signal_emit (self, signals[SHELL_PREEXEC], 0);
+}
+
+static void
 ptyxis_terminal_constructed (GObject *object)
 {
   PtyxisTerminal *self = (PtyxisTerminal *)object;
@@ -1187,6 +1205,24 @@ ptyxis_terminal_class_init (PtyxisTerminalClass *klass)
                   GDK_TYPE_MODIFIER_TYPE,
                   G_TYPE_STRING | G_SIGNAL_TYPE_STATIC_SCOPE);
 
+  signals[SHELL_PRECMD] =
+    g_signal_new ("shell-precmd",
+                  G_TYPE_FROM_CLASS (klass),
+                  G_SIGNAL_RUN_LAST,
+                  0,
+                  NULL, NULL,
+                  NULL,
+                  G_TYPE_NONE, 0);
+
+  signals[SHELL_PREEXEC] =
+    g_signal_new ("shell-preexec",
+                  G_TYPE_FROM_CLASS (klass),
+                  G_SIGNAL_RUN_LAST,
+                  0,
+                  NULL, NULL,
+                  NULL,
+                  G_TYPE_NONE, 0);
+
   gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/Ptyxis/ptyxis-terminal.ui");
 
   gtk_widget_class_bind_template_child (widget_class, PtyxisTerminal, drop_highlight);
@@ -1225,6 +1261,11 @@ ptyxis_terminal_class_init (PtyxisTerminalClass *klass)
                    error->message,
                    url_regexes_str[i]);
     }
+
+  vte_install_termprop (VTE_TERMPROP_FEDORA_CONTAINER_NAME, VTE_PROPERTY_STRING, VTE_PROPERTY_FLAG_NONE);
+  vte_install_termprop (VTE_TERMPROP_FEDORA_CONTAINER_RUNTIME, VTE_PROPERTY_STRING, VTE_PROPERTY_FLAG_NONE);
+  vte_install_termprop (VTE_TERMPROP_FEDORA_SHELL_PRECMD, VTE_PROPERTY_VALUELESS, VTE_PROPERTY_FLAG_NONE);
+  vte_install_termprop (VTE_TERMPROP_FEDORA_SHELL_PREEXEC, VTE_PROPERTY_VALUELESS, VTE_PROPERTY_FLAG_NONE);
 }
 
 static void
@@ -1269,6 +1310,15 @@ ptyxis_terminal_init (PtyxisTerminal *self)
                                      (GDK_ACTION_COPY |
                                       GDK_ACTION_MOVE));
   gtk_drop_target_async_set_formats (self->drop_target, formats);
+
+  g_signal_connect (self,
+                    "termprop-changed::" VTE_TERMPROP_FEDORA_SHELL_PRECMD,
+                    G_CALLBACK (ptyxis_terminal_emit_shell_precmd),
+                    NULL);
+  g_signal_connect (self,
+                    "termprop-changed::" VTE_TERMPROP_FEDORA_SHELL_PREEXEC,
+                    G_CALLBACK (ptyxis_terminal_emit_shell_preexec),
+                    NULL);
 }
 
 PtyxisPalette *
@@ -1290,4 +1340,60 @@ ptyxis_terminal_set_palette (PtyxisTerminal *self,
       ptyxis_terminal_update_colors (self);
       g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_PALETTE]);
     }
+}
+
+const char *
+ptyxis_terminal_get_current_container_name (PtyxisTerminal *self)
+{
+  gsize len;
+
+  g_return_val_if_fail (PTYXIS_IS_TERMINAL (self), NULL);
+
+  return vte_terminal_get_termprop_string (VTE_TERMINAL (self),
+                                           VTE_TERMPROP_FEDORA_CONTAINER_NAME,
+                                           &len);
+}
+
+const char *
+ptyxis_terminal_get_current_container_runtime (PtyxisTerminal *self)
+{
+  gsize len;
+
+  g_return_val_if_fail (PTYXIS_IS_TERMINAL (self), NULL);
+
+  return vte_terminal_get_termprop_string (VTE_TERMINAL (self),
+                                           VTE_TERMPROP_FEDORA_CONTAINER_RUNTIME,
+                                           &len);
+}
+
+static char *
+ptyxis_terminal_dup_termprop_uri_by_id (PtyxisTerminal *self,
+                                        guint           property)
+{
+  g_autoptr(GUri) uri = NULL;
+
+  g_assert (PTYXIS_IS_TERMINAL (self));
+
+  if ((uri = vte_terminal_ref_termprop_uri_by_id (VTE_TERMINAL (self), property)))
+    return g_uri_to_string (uri);
+
+  return NULL;
+}
+
+char *
+ptyxis_terminal_dup_current_directory_uri (PtyxisTerminal *self)
+{
+  g_return_val_if_fail (PTYXIS_IS_TERMINAL (self), NULL);
+
+  return ptyxis_terminal_dup_termprop_uri_by_id (self, VTE_PROPERTY_ID_CURRENT_DIRECTORY_URI);
+}
+
+char *
+ptyxis_terminal_dup_current_file_uri (PtyxisTerminal *self)
+{
+  g_autoptr(GUri) uri = NULL;
+
+  g_return_val_if_fail (PTYXIS_IS_TERMINAL (self), NULL);
+
+  return ptyxis_terminal_dup_termprop_uri_by_id (self, VTE_PROPERTY_ID_CURRENT_FILE_URI);
 }

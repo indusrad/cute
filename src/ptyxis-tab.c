@@ -592,9 +592,8 @@ ptyxis_tab_bell_cb (PtyxisTab      *self,
 static PtyxisIpcContainer *
 ptyxis_tab_discover_container (PtyxisTab *self)
 {
-  VteTerminal *terminal = VTE_TERMINAL (self->terminal);
-  const char *current_container_name = vte_terminal_get_current_container_name (terminal);
-  const char *current_container_runtime = vte_terminal_get_current_container_runtime (terminal);
+  const char *current_container_name = ptyxis_terminal_get_current_container_name (self->terminal);
+  const char *current_container_runtime = ptyxis_terminal_get_current_container_runtime (self->terminal);
 
   return ptyxis_application_find_container_by_name (PTYXIS_APPLICATION_DEFAULT,
                                                     current_container_runtime,
@@ -1261,28 +1260,28 @@ ptyxis_tab_collapse_uri (const char *uri)
 char *
 ptyxis_tab_dup_subtitle (PtyxisTab *self)
 {
-  const char *current_directory_uri;
-  const char *current_file_uri;
+  g_autofree char *current_directory_uri = NULL;
+  g_autofree char *current_file_uri = NULL;
 
   g_return_val_if_fail (PTYXIS_IS_TAB (self), NULL);
 
-  current_file_uri = vte_terminal_get_current_file_uri (VTE_TERMINAL (self->terminal));
+  current_file_uri = ptyxis_terminal_dup_current_file_uri (self->terminal);
   if (current_file_uri != NULL && current_file_uri[0] != 0)
     return ptyxis_tab_collapse_uri (current_file_uri);
 
-  current_directory_uri = vte_terminal_get_current_directory_uri (VTE_TERMINAL (self->terminal));
+  current_directory_uri = ptyxis_terminal_dup_current_directory_uri (self->terminal);
   if (current_directory_uri != NULL && current_directory_uri[0] != 0)
     return ptyxis_tab_collapse_uri (current_directory_uri);
 
   return NULL;
 }
 
-const char *
-ptyxis_tab_get_current_directory_uri (PtyxisTab *self)
+char *
+ptyxis_tab_dup_current_directory_uri (PtyxisTab *self)
 {
   g_return_val_if_fail (PTYXIS_IS_TAB (self), NULL);
 
-  return vte_terminal_get_current_directory_uri (VTE_TERMINAL (self->terminal));
+  return ptyxis_terminal_dup_current_directory_uri (self->terminal);
 }
 
 void
@@ -1517,8 +1516,8 @@ ptyxis_tab_dup_container (PtyxisTab *self)
 
   g_return_val_if_fail (PTYXIS_IS_TAB (self), NULL);
 
-  if ((runtime = vte_terminal_get_current_container_runtime (VTE_TERMINAL (self->terminal))) &&
-      (name = vte_terminal_get_current_container_name (VTE_TERMINAL (self->terminal))))
+  if ((runtime = ptyxis_terminal_get_current_container_runtime (self->terminal)) &&
+      (name = ptyxis_terminal_get_current_container_name (self->terminal)))
     container = ptyxis_application_find_container_by_name (PTYXIS_APPLICATION_DEFAULT, runtime, name);
 
   if (container == NULL)

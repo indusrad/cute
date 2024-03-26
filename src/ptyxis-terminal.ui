@@ -23,6 +23,7 @@
     <property name="allow-hyperlink">true</property>
     <property name="scroll-unit-is-pixels">true</property>
     <property name="enable-fallback-scrolling">false</property>
+    <property name="enable-legacy-osc777">true</property>
     <child>
       <object class="GtkShortcutController" id="shortcuts">
         <property name="propagation-phase">capture</property>

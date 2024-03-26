@@ -80,11 +80,11 @@ ptyxis_session_save (PtyxisApplication *app)
                   PtyxisTab *tab = PTYXIS_TAB (adw_tab_page_get_child (page));
                   g_autoptr(PtyxisIpcContainer) container = NULL;
                   g_autofree char *default_container = NULL;
+                  g_autofree char *cwd = NULL;
                   PtyxisTerminal *terminal;
                   PtyxisProfile *profile;
                   const char *container_id = NULL;
                   const char *window_title;
-                  const char *cwd;
                   const char *uuid;
                   gboolean is_active;
                   PtyxisZoomLevel zoom;
@@ -102,7 +102,7 @@ ptyxis_session_save (PtyxisApplication *app)
                   terminal = ptyxis_tab_get_terminal (tab);
                   columns = vte_terminal_get_column_count (VTE_TERMINAL (terminal));
                   rows = vte_terminal_get_row_count (VTE_TERMINAL (terminal));
-                  cwd = vte_terminal_get_current_directory_uri (VTE_TERMINAL (terminal));
+                  cwd = ptyxis_terminal_dup_current_directory_uri (terminal);
                   window_title = vte_terminal_get_window_title (VTE_TERMINAL (terminal));
                   zoom = ptyxis_tab_get_zoom (tab);
 
