@@ -10,12 +10,17 @@ i18n = import('i18n')
 gnome = import('gnome')
 
 app_is_generic = get_option('generic')
+app_id = get_option('app-id')
 
 if get_option('development')
-  app_id = 'org.gnome.Ptyxis.Devel'
+  if app_id == ''
+    app_id = 'org.gnome.Ptyxis.Devel'
+  endif
   app_schema_path = '/org/gnome/Ptyxis/Devel/'
 else
-  app_id = 'org.gnome.Ptyxis'
+  if app_id == ''
+    app_id = 'org.gnome.Ptyxis'
+  endif
   app_schema_path = '/org/gnome/Ptyxis/'
 endif
 # Various optimizations for non-debug builds including disabling of

@@ -1,2 +1,3 @@
 option('development', type: 'boolean', value: false, description: 'If this is a development build (org.gnome.Ptyxis.Devel)')
 option('generic', type: 'boolean', value: false, description: 'If the application should use the generic name Terminal')
+option('app-id', type: 'string', value: '', description: 'An alternate app-id to use for the application')
