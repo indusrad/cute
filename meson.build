@@ -9,7 +9,8 @@ cc = meson.get_compiler('c')
 i18n = import('i18n')
 gnome = import('gnome')
 
-app_is_generic = get_option('generic')
+app_is_generic = get_option('generic') != 'ptyxis'
+app_is_builder = get_option('generic') == 'builder'
 app_id = get_option('app-id')
 
 if get_option('development')
@@ -61,6 +62,7 @@ config_h.set_quoted('PACKAGE_ICON_NAME', app_id)
 config_h.set_quoted('PACKAGE_NAME', 'Ptyxis')
 config_h.set10('DEVELOPMENT_BUILD', get_option('development'))
 config_h.set10('APP_IS_GENERIC', app_is_generic)
+config_h.set10('APP_IS_BUILDER', app_is_builder)
 
 check_functions = [
   ['HAVE_GRANTPT', 'grantpt'],
