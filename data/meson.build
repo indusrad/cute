@@ -1,10 +1,14 @@
+if app_is_builder
+  app_name = 'Builder Terminal'
+elif app_is_generic
+  app_name = 'Terminal'
+else
+  app_name = 'Ptyxis'
+endif
+
 desktop_config = configuration_data()
 desktop_config.set('APP_ID', app_id)
-if app_is_generic
-  desktop_config.set('APP_NAME', 'Terminal')
-else
-  desktop_config.set('APP_NAME', 'Ptyxis')
-endif
+desktop_config.set('APP_NAME', app_name)
 desktop_file_in = configure_file(
           input: 'org.gnome.Ptyxis.desktop.in.in',
          output: 'org.gnome.Ptyxis.desktop.in',
@@ -26,6 +30,7 @@ endif
 
 appstream_config = configuration_data()
 appstream_config.set('APP_ID', app_id)
+appstream_config.set('APP_NAME', app_name)
 appstream_file_in = configure_file(
           input: 'org.gnome.Ptyxis.metainfo.xml.in.in',
          output: 'org.gnome.Ptyxis.metainfo.xml.in',
