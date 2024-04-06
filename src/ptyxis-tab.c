@@ -356,6 +356,8 @@ ptyxis_tab_spawn_cb (GObject      *object,
 
   g_set_object (&self->process, process);
 
+  g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_ICON]);
+
   ptyxis_application_wait_async (app,
                                  process,
                                  NULL,
