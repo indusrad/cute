@@ -1,3 +1,13 @@
+# Ptyxis 46.1
+
+Changes since 46.0
+
+ * Ensure run contexts start with full environment which fixes an
+   issue with running podman in some configurations
+ * Fix initial tab icon state
+ * Podman integration now uses PtyxisRunContext to better trampoline
+   into the target container
+
 # Ptyxis 46.0
 
 Changes since 46.rc
