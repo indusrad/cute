@@ -192,6 +192,25 @@ get_current_window (PtyxisApplication *self)
   return NULL;
 }
 
+static void
+ptyxis_application_apply_default_size (PtyxisApplication *self,
+                                       PtyxisTerminal    *terminal)
+{
+  guint columns;
+  guint rows;
+
+  g_assert (PTYXIS_IS_APPLICATION (self));
+  g_assert (PTYXIS_IS_TERMINAL (terminal));
+  g_assert (PTYXIS_IS_SETTINGS (self->settings));
+
+  if (ptyxis_settings_get_restore_window_size (self->settings))
+    ptyxis_settings_get_window_size (self->settings, &columns, &rows);
+  else
+    ptyxis_settings_get_default_size (self->settings, &columns, &rows);
+
+  vte_terminal_set_size (VTE_TERMINAL (terminal), columns, rows);
+}
+
 static int
 ptyxis_application_command_line (GApplication            *app,
                                  GApplicationCommandLine *cmdline)
@@ -341,14 +360,18 @@ ptyxis_application_command_line (GApplication            *app,
       g_autoptr(PtyxisProfile) profile = ptyxis_application_dup_default_profile (self);
       PtyxisWindow *window = get_current_window (self);
       PtyxisTab *tab = ptyxis_tab_new (profile);
+      PtyxisTerminal *terminal = ptyxis_tab_get_terminal (tab);
 
       if (window == NULL || new_window)
-        window = ptyxis_window_new_empty ();
+        {
+          window = ptyxis_window_new_empty ();
+          ptyxis_application_apply_default_size (self, terminal);
+        }
 
       ptyxis_tab_set_initial_working_directory_uri (tab, cwd_uri);
-
       ptyxis_window_add_tab (window, tab);
       ptyxis_window_set_active_tab (window, tab);
+
       gtk_window_present (GTK_WINDOW (window));
     }
   else if (new_tab_with_profile)
@@ -356,14 +379,18 @@ ptyxis_application_command_line (GApplication            *app,
       g_autoptr(PtyxisProfile) profile = ptyxis_application_dup_profile (self, new_tab_with_profile);
       PtyxisWindow *window = get_current_window (self);
       PtyxisTab *tab = ptyxis_tab_new (profile);
+      PtyxisTerminal *terminal = ptyxis_tab_get_terminal (tab);
 
       if (window == NULL || new_window)
-        window = ptyxis_window_new_empty ();
+        {
+          window = ptyxis_window_new_empty ();
+          ptyxis_application_apply_default_size (self, terminal);
+        }
 
       ptyxis_tab_set_initial_working_directory_uri (tab, cwd_uri);
-
       ptyxis_window_add_tab (window, tab);
       ptyxis_window_set_active_tab (window, tab);
+
       gtk_window_present (GTK_WINDOW (window));
     }
   else if (g_variant_dict_contains (dict, "new-window"))
@@ -371,20 +398,12 @@ ptyxis_application_command_line (GApplication            *app,
       g_autoptr(PtyxisProfile) profile = ptyxis_application_dup_default_profile (self);
       PtyxisWindow *window = get_current_window (self);
       PtyxisTab *tab = ptyxis_tab_new (profile);
+      PtyxisTerminal *terminal = ptyxis_tab_get_terminal (tab);
 
       if (window == NULL || !did_restore)
         {
-          PtyxisTerminal *terminal = ptyxis_tab_get_terminal (tab);
-          guint columns, rows;
-
           window = ptyxis_window_new_empty ();
-
-          if (ptyxis_settings_get_restore_window_size (self->settings))
-            ptyxis_settings_get_window_size (self->settings, &columns, &rows);
-          else
-            ptyxis_settings_get_default_size (self->settings, &columns, &rows);
-
-          vte_terminal_set_size (VTE_TERMINAL (terminal), columns, rows);
+          ptyxis_application_apply_default_size (self, terminal);
         }
 
       ptyxis_tab_set_initial_working_directory_uri (tab, cwd_uri);
