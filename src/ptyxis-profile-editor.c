@@ -35,7 +35,7 @@ struct _PtyxisProfileEditor
 {
   AdwNavigationPage  parent_instance;
 
-  PtyxisProfile    *profile;
+  PtyxisProfile     *profile;
 
   AdwEntryRow       *label;
   AdwSwitchRow      *bold_is_bright;
@@ -134,6 +134,51 @@ ptyxis_profile_editor_uuid_copy (GtkWidget  *widget,
                         "timeout", 3,
                         NULL);
   adw_toast_overlay_add_toast (self->toasts, toast);
+}
+
+static void
+undo_profile_delete (AdwToast      *toast,
+                     PtyxisProfile *profile)
+{
+  g_assert (ADW_IS_TOAST (toast));
+  g_assert (PTYXIS_IS_PROFILE (profile));
+
+  ptyxis_application_add_profile (PTYXIS_APPLICATION_DEFAULT, profile);
+}
+
+static void
+ptyxis_profile_editor_profile_delete (GtkWidget  *widget,
+                                      const char *action_name,
+                                      GVariant   *param)
+{
+  PtyxisProfileEditor *self = (PtyxisProfileEditor *)widget;
+  AdwPreferencesWindow *window;
+  AdwToast *toast;
+
+  g_assert (PTYXIS_IS_PROFILE_EDITOR (self));
+
+  g_object_ref (self);
+
+
+
+  window = ADW_PREFERENCES_WINDOW (gtk_widget_get_ancestor (widget, ADW_TYPE_PREFERENCES_WINDOW));
+  toast = adw_toast_new_format (_("Removed profile “%s”"),
+                                ptyxis_profile_dup_label (self->profile));
+  adw_toast_set_button_label (toast, _("Undo"));
+  g_signal_connect_data (toast,
+                         "button-clicked",
+                         G_CALLBACK (undo_profile_delete),
+                         g_object_ref (self->profile),
+                         (GClosureNotify)g_object_unref,
+                         0);
+
+  ptyxis_application_remove_profile (PTYXIS_APPLICATION_DEFAULT, self->profile);
+
+  adw_preferences_window_add_toast (window, toast);
+
+  adw_preferences_window_pop_subpage (window);
+
+  g_object_unref (self);
 }
 
 static char *
@@ -433,6 +478,7 @@ ptyxis_profile_editor_class_init (PtyxisProfileEditorClass *klass)
   gtk_widget_class_bind_template_callback (widget_class, get_container_title);
 
   gtk_widget_class_install_action (widget_class, "uuid.copy", NULL, ptyxis_profile_editor_uuid_copy);
+  gtk_widget_class_install_action (widget_class, "profile.delete", NULL, ptyxis_profile_editor_profile_delete);
 }
 
 static void
