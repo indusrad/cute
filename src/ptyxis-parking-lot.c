@@ -54,11 +54,20 @@ static void
 ptyxis_parking_lot_remove (PtyxisParkingLot *self,
                            PtyxisParkedTab  *parked)
 {
+  g_autofree char *title = NULL;
+  g_autoptr(PtyxisTab) tab = NULL;
+
+  g_assert (PTYXIS_IS_PARKING_LOT (self));
+  g_assert (parked != NULL);
+
+  tab = g_steal_pointer (&parked->tab);
   g_clear_handle_id (&parked->source_id, g_source_remove);
   g_queue_unlink (&self->tabs, &parked->link);
-  g_clear_object (&parked->tab);
   parked->lot = NULL;
-  g_free (parked);
+  g_clear_pointer (&parked, g_free);
+
+  title = ptyxis_tab_dup_title (tab);
+  g_debug ("Removing tab \"%s\" from parking lot", title);
 }
 
 static void
@@ -182,9 +191,13 @@ ptyxis_parking_lot_push (PtyxisParkingLot *self,
                          PtyxisTab        *tab)
 {
   PtyxisParkedTab *parked;
+  g_autofree char *title = NULL;
 
   g_return_if_fail (PTYXIS_IS_PARKING_LOT (self));
   g_return_if_fail (PTYXIS_IS_TAB (tab));
+
+  title = ptyxis_tab_dup_title (tab);
+  g_debug ("Adding tab \"%s\" to parking lot", title);
 
   parked = g_new0 (PtyxisParkedTab, 1);
   parked->link.data = parked;
@@ -211,6 +224,9 @@ ptyxis_parking_lot_pop (PtyxisParkingLot *self)
   PtyxisTab *ret = NULL;
 
   g_return_val_if_fail (PTYXIS_IS_PARKING_LOT (self), NULL);
+
+  g_debug ("Request to pop tab from parking lot of %u tabs",
+           self->tabs.length);
 
   if ((parked = g_queue_peek_head (&self->tabs)))
     {
