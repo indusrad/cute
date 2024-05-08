@@ -52,22 +52,29 @@ static GParamSpec *properties [N_PROPS];
 
 static void
 ptyxis_parking_lot_remove (PtyxisParkingLot *self,
-                           PtyxisParkedTab  *parked)
+                           PtyxisParkedTab  *parked,
+                           gboolean          force_quit)
 {
-  g_autofree char *title = NULL;
   g_autoptr(PtyxisTab) tab = NULL;
 
   g_assert (PTYXIS_IS_PARKING_LOT (self));
   g_assert (parked != NULL);
 
   tab = g_steal_pointer (&parked->tab);
+
   g_clear_handle_id (&parked->source_id, g_source_remove);
   g_queue_unlink (&self->tabs, &parked->link);
   parked->lot = NULL;
   g_clear_pointer (&parked, g_free);
 
-  title = ptyxis_tab_dup_title (tab);
-  g_debug ("Removing tab \"%s\" from parking lot", title);
+  if (tab != NULL)
+    {
+      g_autofree char *title = ptyxis_tab_dup_title (tab);
+      g_debug ("Removing tab \"%s\" from parking lot", title);
+
+      if (force_quit)
+        ptyxis_tab_force_quit (tab);
+    }
 }
 
 static void
@@ -76,7 +83,7 @@ ptyxis_parking_lot_dispose (GObject *object)
   PtyxisParkingLot *self = (PtyxisParkingLot *)object;
 
   while (self->tabs.head != NULL)
-    ptyxis_parking_lot_remove (self, self->tabs.head->data);
+    ptyxis_parking_lot_remove (self, self->tabs.head->data, TRUE);
 
   G_OBJECT_CLASS (ptyxis_parking_lot_parent_class)->dispose (object);
 }
@@ -181,7 +188,7 @@ ptyxis_parking_lot_source_func (gpointer data)
   g_assert (PTYXIS_IS_TAB (parked->tab));
   g_assert (parked->source_id != 0);
 
-  ptyxis_parking_lot_remove (parked->lot, parked);
+  ptyxis_parking_lot_remove (parked->lot, parked, TRUE);
 
   return G_SOURCE_REMOVE;
 }
@@ -231,7 +238,7 @@ ptyxis_parking_lot_pop (PtyxisParkingLot *self)
   if ((parked = g_queue_peek_head (&self->tabs)))
     {
       ret = g_steal_pointer (&parked->tab);
-      ptyxis_parking_lot_remove (self, parked);
+      ptyxis_parking_lot_remove (self, parked, FALSE);
     }
 
   return ret;
