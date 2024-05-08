@@ -87,6 +87,7 @@ endif
 
 ptyxis_c_args = [
   release_link_args,
+  '-DG_LOG_DOMAIN="Ptyxis"',
 ]
 
 ptyxis_include_directories = [
