@@ -54,6 +54,7 @@ struct _PtyxisApplication
   GVariant            *session;
   guint                has_restored_session : 1;
   guint                overlay_scrollbars : 1;
+  guint                client_is_fallback : 1;
 };
 
 static void ptyxis_application_about             (GSimpleAction *action,
@@ -626,6 +627,8 @@ ptyxis_application_startup (GApplication *application)
   if (!(self->client = ptyxis_client_new (sandbox_agent, &error)) ||
       !ptyxis_client_ping (self->client, &error))
     {
+      self->client_is_fallback = TRUE;
+
       /* Try again, but launching inside our own Flatpak namespace. This
        * can happen when the host system does not have glibc. We may not
        * provide as good of an experience, but try nonetheless.
@@ -893,7 +896,6 @@ generate_debug_info (PtyxisApplication *self)
   guint n_items;
   guint id = 0;
 
-
   g_string_append_printf (str, "Name: %s\n", os_name);
   g_string_append_c (str, '\n');
 
@@ -904,6 +906,11 @@ generate_debug_info (PtyxisApplication *self)
       g_string_append_printf (str, "uname.version = %s\n", u.version);
       g_string_append_printf (str, "uname.machine = %s\n", u.machine);
     }
+
+  g_string_append_c (str, '\n');
+  g_string_append_printf (str,
+                          "Agent: running %s\n",
+                          self->client_is_fallback ? "in sandbox" : "on host");
 
   g_string_append_c (str, '\n');
   g_string_append_printf (str,
