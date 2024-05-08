@@ -20,8 +20,6 @@
  *          Christian Hergert <chergert@redhat.com>
  */
 
-#define G_LOG_DOMAIN "ptyxis-shortcut-accel-dialog"
-
 #include "config.h"
 
 #include <glib/gi18n.h>
