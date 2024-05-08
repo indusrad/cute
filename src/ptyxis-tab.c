@@ -184,6 +184,26 @@ on_scroll_end_cb (GtkEventControllerScroll *scroll,
   gtk_event_controller_scroll_set_flags (scroll, GTK_EVENT_CONTROLLER_SCROLL_VERTICAL);
 }
 
+static void
+ptyxis_tab_send_signal (PtyxisTab *self,
+                        int        signum)
+{
+  g_autofree char *title = NULL;
+
+  g_assert (PTYXIS_IS_TAB (self));
+
+  if (self->process == NULL)
+    {
+      g_debug ("Cannot send signal %d to tab, process is gone.", signum);
+      return;
+    }
+
+  title = ptyxis_tab_dup_title (self);
+  g_debug ("Sending signal %d to tab \"%s\"", signum, title);
+
+  ptyxis_ipc_process_call_send_signal (self->process, signum, NULL, NULL, NULL);
+}
+
 static gboolean
 ptyxis_tab_is_active (PtyxisTab *self)
 {
@@ -241,6 +261,8 @@ ptyxis_tab_wait_cb (GObject      *object,
   g_clear_object (&self->process);
 
   exit_code = ptyxis_application_wait_finish (app, result, &error);
+
+  g_debug ("Process completed with exit-code 0x%x", exit_code);
 
   if (error == NULL && WIFEXITED (exit_code) && WEXITSTATUS (exit_code) == 0)
     self->state = PTYXIS_TAB_STATE_EXITED;
@@ -854,10 +876,11 @@ ptyxis_tab_dispose (GObject *object)
   PtyxisTab *self = (PtyxisTab *)object;
   GtkWidget *child;
 
+  g_debug ("Disposing tab");
+
   ptyxis_tab_notify_destroy (&self->notify);
 
-  if (self->process != NULL)
-    ptyxis_ipc_process_call_send_signal (self->process, SIGKILL, NULL, NULL, NULL);
+  ptyxis_tab_force_quit (self);
 
   gtk_widget_dispose_template (GTK_WIDGET (self), PTYXIS_TYPE_TAB);
 
@@ -1428,10 +1451,11 @@ ptyxis_tab_force_quit (PtyxisTab *self)
 {
   g_return_if_fail (PTYXIS_IS_TAB (self));
 
+  g_debug ("Forcing tab to quit");
+
   self->forced_exit = TRUE;
 
-  if (self->process != NULL)
-    ptyxis_ipc_process_call_send_signal (self->process, SIGKILL, NULL, NULL, NULL);
+  ptyxis_tab_send_signal (self, SIGKILL);
 }
 
 PtyxisIpcProcess *
