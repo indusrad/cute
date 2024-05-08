@@ -52,6 +52,13 @@ ptyxis_sources += gnome.compile_resources('ptyxis-resources',
   c_name: 'ptyxis'
 )
 
+ptyxis_sources += vcs_tag(
+      command: ['git', 'describe'],
+     fallback: meson.project_version(),
+        input: 'ptyxis-build-ident.h.in',
+       output: 'ptyxis-build-ident.h',
+)
+
 schema_config = configuration_data()
 schema_config.set('APP_SCHEMA_ID', app_schema_id)
 schema_config.set('APP_SCHEMA_PATH', app_schema_path)

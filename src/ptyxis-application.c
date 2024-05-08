@@ -27,6 +27,7 @@
 
 #include "ptyxis-action-group.h"
 #include "ptyxis-application.h"
+#include "ptyxis-build-ident.h"
 #include "ptyxis-client.h"
 #include "ptyxis-container-menu.h"
 #include "ptyxis-preferences-window.h"
@@ -877,7 +878,13 @@ generate_debug_info (PtyxisApplication *self)
   guint n_items;
   guint id = 0;
 
-  g_string_append_printf (str, "Name: %s\n", os_name);
+  g_string_append_printf (str, "%s %s (%s)\n",
+                          ptyxis_app_name (),
+                          PACKAGE_VERSION,
+                          PTYXIS_BUILD_IDENTIFIER);
+  g_string_append_c (str, '\n');
+
+  g_string_append_printf (str, "Operating System: %s\n", os_name);
   g_string_append_c (str, '\n');
 
   if (uname (&u) == 0)
