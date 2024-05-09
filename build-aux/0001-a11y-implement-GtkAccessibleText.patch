@@ -34,7 +34,6 @@ some symmetry between the APIs.
 Currently, this does not implement "text-scrolled" like the GTK 3
 implementation does as I'm not sure yet if there is a benefit.
 ---
- meson.build           |   6 +-
  src/meson.build       |  13 +-
  src/vte.cc            |  11 +
  src/vte/vteterminal.h |   7 +
@@ -48,23 +47,6 @@ implementation does as I'm not sure yet if there is a benefit.
  create mode 100644 src/vteaccess-gtk4.cc
  create mode 100644 src/vteaccess-gtk4.h
 
-diff --git a/meson.build b/meson.build
-index 7df4cf5f..599881c9 100644
---- a/meson.build
-+++ b/meson.build
-@@ -41,9 +41,9 @@ gtk3_req_version          = '3.24.0'
- gtk3_min_req_version      = '3.24'
- gtk3_max_allowed_version  = '3.24'
- 
--gtk4_req_version          = '4.12'
--gtk4_min_req_version      = '4.12'
--gtk4_max_allowed_version  = '4.12'
-+gtk4_req_version          = '4.13'
-+gtk4_min_req_version      = '4.14'
-+gtk4_max_allowed_version  = '4.14'
- 
- cairo_req_version         = '1.0'
- cairo_gobject_req_version = '1.0'
 diff --git a/src/meson.build b/src/meson.build
 index 3f89f492..6d1b4b2b 100644
 --- a/src/meson.build
