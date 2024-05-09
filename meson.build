@@ -9,15 +9,40 @@ cc = meson.get_compiler('c')
 i18n = import('i18n')
 gnome = import('gnome')
 
-app_is_generic = get_option('generic')
+app_schema_id = get_option('gschema-id')
+app_schema_path = get_option('gschema-path')
+
+app_is_generic = get_option('generic') != 'ptyxis'
+app_id = get_option('app-id')
 
 if get_option('development')
-  app_id = 'org.gnome.Ptyxis.Devel'
-  app_schema_path = '/org/gnome/Ptyxis/Devel/'
+  if app_id == ''
+    app_id = 'org.gnome.Ptyxis.Devel'
+  endif
+  if app_schema_path == ''
+    app_schema_path = '/org/gnome/Ptyxis/Devel/'
+  endif
 else
-  app_id = 'org.gnome.Ptyxis'
-  app_schema_path = '/org/gnome/Ptyxis/'
+  if app_id == ''
+    app_id = 'org.gnome.Ptyxis'
+  endif
+  if app_schema_path == ''
+    app_schema_path = '/org/gnome/Ptyxis/'
+  endif
 endif
+
+if app_schema_id == ''
+  if get_option('development')
+    app_schema_id = 'org.gnome.Ptyxis.Devel'
+  else
+    app_schema_id = 'org.gnome.Ptyxis'
+  endif
+endif
+
+app_schema_profile_id = '@0@.Profile'.format(app_schema_id)
+app_schema_shortcuts_id = '@0@.Shortcuts'.format(app_schema_id)
+app_schema_shortcuts_path = '@0@Shortcuts/'.format(app_schema_path)
+
 # Various optimizations for non-debug builds including disabling of
 # cast checks, asserts, and additional link options.
 release_link_args = []
@@ -33,11 +58,6 @@ if not get_option('buildtype').startswith('debug')
   ], language: 'c')
   test_link_args += ['-Wl,-Bsymbolic', '-fno-plt']
 endif
-
-app_schema_id = app_id
-app_schema_profile_id = '@0@.Profile'.format(app_id)
-app_schema_shortcuts_id = '@0@.Shortcuts'.format(app_id)
-app_schema_shortcuts_path = '@0@Shortcuts/'.format(app_schema_path)
 
 config_h = configuration_data()
 config_h.set_quoted('APP_ID', app_id)
@@ -56,6 +76,12 @@ config_h.set_quoted('PACKAGE_ICON_NAME', app_id)
 config_h.set_quoted('PACKAGE_NAME', 'Ptyxis')
 config_h.set10('DEVELOPMENT_BUILD', get_option('development'))
 config_h.set10('APP_IS_GENERIC', app_is_generic)
+
+summary('Application ID', app_id)
+summary('GSchema ID Prefix', app_schema_id)
+summary('GSchema Path Prefix', app_schema_path)
+summary('Development Banner', get_option('development'))
+summary('Generic', app_is_generic)
 
 check_functions = [
   ['HAVE_GRANTPT', 'grantpt'],
