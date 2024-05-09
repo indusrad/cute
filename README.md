@@ -172,6 +172,11 @@ but is limited to what is available with Flatpak on the targetted platforms.
 Doing so allows Ptyxis to support Flatpak natively while also traversing
 container PTY and PID namespaces in an efficient manner.
 
+If your host system does not support GLibc (such as Alpine or PostmarketOS) or
+lacks a functioning dynamic linker from the session (NixOS) then Ptyxis will
+detect this and fallback to running `ptyxis-agent` within the Flatpak sandbox.
+This will naturally restrict the capability of some features.
+
 
 ## Screenshots
 
