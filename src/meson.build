@@ -75,7 +75,7 @@ configure_file(
 ptyxis_deps = [
   dependency('gio-unix-2.0'),
   dependency('gtk4', version: '>= 4.12'),
-  dependency('libadwaita-1', version: '>= 1.5'),
+  dependency('libadwaita-1', version: '>= 1.6'),
   dependency('json-glib-1.0', version: '>= 1.6'),
   dependency('vte-2.91-gtk4'),
   cc.find_library('m', required: false),
