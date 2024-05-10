@@ -73,11 +73,11 @@ configure_file(
 )
 
 ptyxis_deps = [
-  dependency('gio-unix-2.0'),
-  dependency('gtk4', version: '>= 4.12'),
-  dependency('libadwaita-1', version: '>= 1.6'),
-  dependency('json-glib-1.0', version: '>= 1.6'),
-  dependency('vte-2.91-gtk4'),
+  dependency('gio-unix-2.0', version: glib_req),
+  dependency('gtk4', version: gtk_req),
+  dependency('libadwaita-1', version: adwaita_req),
+  dependency('json-glib-1.0', version: json_glib_req),
+  dependency('vte-2.91-gtk4', version: vte_req),
   cc.find_library('m', required: false),
 ]
 
@@ -88,6 +88,12 @@ endif
 ptyxis_c_args = [
   release_link_args,
   '-DG_LOG_DOMAIN="Ptyxis"',
+  '-DGLIB_VERSION_MIN_REQUIRED=GLIB_VERSION_@0@'.format(glib_req_version.replace('.', '_')),
+  '-DGLIB_VERSION_MAX_ALLOWED=GLIB_VERSION_@0@'.format(glib_req_version.replace('.', '_')),
+  '-DGDK_VERSION_MIN_REQUIRED=GDK_VERSION_@0@'.format(gtk_req_version.replace('.', '_')),
+  '-DGDK_VERSION_MAX_ALLOWED=GDK_VERSION_@0@'.format(gtk_req_version.replace('.', '_')),
+  '-DADW_VERSION_MIN_REQUIRED=ADW_VERSION_@0@'.format(adwaita_req_version.replace('.', '_')),
+  '-DADW_VERSION_MAX_ALLOWED=ADW_VERSION_@0@'.format(adwaita_req_version.replace('.', '_')),
 ]
 
 ptyxis_include_directories = [
