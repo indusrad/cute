@@ -43,6 +43,18 @@ app_schema_profile_id = '@0@.Profile'.format(app_schema_id)
 app_schema_shortcuts_id = '@0@.Shortcuts'.format(app_schema_id)
 app_schema_shortcuts_path = '@0@Shortcuts/'.format(app_schema_path)
 
+glib_req_version = '2.80'
+gtk_req_version = '4.14'
+adwaita_req_version = '1.5'
+json_glib_req_version = '1.6'
+vte_req_version = '0.76'
+
+glib_req = '>= @0@'.format(glib_req_version)
+gtk_req = '>= @0@'.format(gtk_req_version)
+adwaita_req = '>= @0@'.format(adwaita_req_version)
+json_glib_req = '>= @0@'.format(json_glib_req_version)
+vte_req = '>= @0@'.format(vte_req_version)
+
 # Various optimizations for non-debug builds including disabling of
 # cast checks, asserts, and additional link options.
 release_link_args = []
