@@ -1,3 +1,18 @@
+# Ptyxis 46.2
+
+Changes since 46.1
+
+ * Additional troubleshooting data has been added to the about dialog
+   to help users provide useful information.
+ * Patches for `vte.sh` are updated to match changes I made for
+   Fedora 40 which properly support PROMPT_COMMAND as a bash array.
+ * Patches for a11y are updated to apply against vte-0-76 branch.
+ * Ensure tabs are force-quit when timing out in the parking lot.
+ * Some build system rework has occurred for Ptyxis to be compiled
+   with alternate app-id and/or gschema identifiers.
+ * The build system will now enforce specific linked versions of
+   GLib, GTK, and libadwaita using min/max version macros.
+
 # Ptyxis 46.1
 
 Changes since 46.0
