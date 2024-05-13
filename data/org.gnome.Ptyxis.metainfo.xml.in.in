@@ -4,7 +4,7 @@
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>GPL-3.0-or-later</project_license>
   <name>Ptyxis</name>
-  <summary>A container oriented terminal for GNOME</summary>
+  <summary>Container oriented terminal</summary>
   <description>
     <p>
       Ptyxis is a terminal for GNOME that focuses on ease-of-use in a
