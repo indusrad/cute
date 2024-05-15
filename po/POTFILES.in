@@ -1,3 +1,5 @@
+# List of source files containing translatable strings.
+# Please keep this file sorted alphabetically.
 data/org.gnome.Ptyxis.desktop.in.in
 data/org.gnome.Ptyxis.metainfo.xml.in.in
 src/main.c
