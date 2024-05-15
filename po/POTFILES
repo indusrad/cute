@@ -1,12 +1,14 @@
 data/org.gnome.Ptyxis.desktop.in.in
 data/org.gnome.Ptyxis.metainfo.xml.in.in
-src/org.gnome.Ptyxis.gschema.xml.in
 src/main.c
+src/org.gnome.Ptyxis.gschema.xml.in
 src/ptyxis-application.c
 src/ptyxis-close-dialog.c
 src/ptyxis-container-menu.c
 src/ptyxis-find-bar.ui
+src/ptyxis-inspector.c
 src/ptyxis-inspector.ui
+src/ptyxis-palette.c
 src/ptyxis-palette-preview.ui
 src/ptyxis-preferences-window.c
 src/ptyxis-preferences-window.ui
@@ -23,5 +25,6 @@ src/ptyxis-tab-notify.h
 src/ptyxis-terminal.c
 src/ptyxis-terminal.ui
 src/ptyxis-theme-selector.ui
+src/ptyxis-util.c
 src/ptyxis-window.c
 src/ptyxis-window.ui
