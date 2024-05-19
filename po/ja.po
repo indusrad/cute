@@ -1,15 +1,15 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Japanese translation of Ptyxis.
+# Copyright (C) 2024 THE Ptyxis'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the Ptyxis package.
+# Gnuey56 <gnuey56@proton.me>, 2024.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: \n"
+"Project-Id-Version: Ptyxis\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-03 13:00+0900\n"
-"PO-Revision-Date: 2024-05-04 18:03+0900\n"
+"POT-Creation-Date: 2024-05-18 22:06+0900\n"
+"PO-Revision-Date: 2024-05-18 22:11+0900\n"
 "Last-Translator: Gnuey56 <gnuey56@proton.me>\n"
 "Language-Team: \n"
 "Language: ja\n"
@@ -32,10 +32,13 @@ msgid "Terminal"
 msgstr "ターミナル"
 
 #: data/org.gnome.Ptyxis.desktop.in.in:15
-msgid "terminal;prompt;ptyxis;shell;command;commandline;cmd;cli;"
+msgid ""
+"terminal;prompt;ptyxis;shell;command;commandline;cmd;cli;container;podman;"
+"toolbx;distrobox;"
 msgstr ""
-"terminal;prompt;ptyxis;shell;command;commandline;cmd;cli;ターミナル;プロンプ"
-"ト;シェル;コマンド;コマンドライン;"
+"terminal;prompt;ptyxis;shell;command;commandline;cmd;cli;container;podman;"
+"toolbx;distrobox;ターミナル;端末;プロンプト;シェル;コマンド;コマンドライン;コ"
+"ンテナー;"
 
 #: data/org.gnome.Ptyxis.desktop.in.in:21
 #: src/org.gnome.Ptyxis.gschema.xml.in:357 src/ptyxis-preferences-window.ui:680
@@ -53,15 +56,15 @@ msgid "Preferences"
 msgstr "設定"
 
 #: data/org.gnome.Ptyxis.metainfo.xml.in.in:7
-msgid "A container oriented terminal for GNOME"
-msgstr "コンテナ志向の GNOME 向けターミナル"
+msgid "Container-oriented terminal"
+msgstr "コンテナ志向のターミナル"
 
 #: data/org.gnome.Ptyxis.metainfo.xml.in.in:9
 msgid ""
 "Ptyxis is a terminal for GNOME that focuses on ease-of-use in a world of "
 "containers."
 msgstr ""
-"Ptyxis はコンテナでの使いやすさにフォーカスした GNOME 向けのターミナルです。"
+"Ptyxis はコンテナの使いやすさにフォーカスした GNOME 向けのターミナルです。"
 
 #: data/org.gnome.Ptyxis.metainfo.xml.in.in:13
 msgid "Features:"
@@ -1376,7 +1379,7 @@ msgstr "フルスクリーンを解除"
 
 #: src/ptyxis-terminal.ui:221
 msgid "_Inspect Terminal"
-msgstr "分析ツール (_I)"
+msgstr "ターミナルを分析 (_I)"
 
 #: src/ptyxis-theme-selector.ui:21 src/ptyxis-theme-selector.ui:23
 msgid "Follow system style"
@@ -1465,3 +1468,6 @@ msgstr "タブを閉じる (_C)"
 #: src/ptyxis-window.ui:584
 msgid "_My Computer"
 msgstr "このコンピューター (_M)"
+
+#~ msgid "A container oriented terminal for GNOME"
+#~ msgstr "コンテナ志向の GNOME 向けターミナル"
