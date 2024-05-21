@@ -29,11 +29,10 @@ window.tiled-bottom vte-terminal:drop(active) { border-radius: 0; }
 
 vte-terminal revealer.size label
 {
-  background: @theme_bg_color;
+  background-color: mix(@theme_bg_color, @theme_fg_color, .1);
   padding: 3px 12px;
-  border-top-left-radius: 9px;
-  border-top: 1px solid alpha(@borders,.5);
-  border-left: 1px solid alpha(@borders,.5);
+  border-radius: 8px;
+  margin: 4px;
 }
 
 findbar .close-button
