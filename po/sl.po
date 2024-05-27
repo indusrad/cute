@@ -1,0 +1,1952 @@
+# Slovenian translation for ptyxis.
+# Copyright (C) 2024 ptyxis's COPYRIGHT HOLDER
+# This file is distributed under the same license as the ptyxis package.
+# Martin <miles@filmsi.net>, 2024.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ptyxis main\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/chergert/ptyxis/issues\n"
+"POT-Creation-Date: 2024-05-26 11:20+0000\n"
+"PO-Revision-Date: 2024-05-27 19:41+0200\n"
+"Language-Team: Slovenian <gnome-si@googlegroups.com>\n"
+"Language: sl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100>=3 && n"
+"%100<=4 ? 2 : 3);\n"
+"Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
+"X-Generator: Poedit 2.2.1\n"
+
+#: data/org.gnome.Ptyxis.desktop.in.in:3
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:6
+msgid "@APP_NAME@"
+msgstr "Ptyxys"
+
+#: data/org.gnome.Ptyxis.desktop.in.in:4
+msgid "A container-oriented terminal for GNOME"
+msgstr "Zabojnikom posvečen terminal za GNOME"
+
+#: data/org.gnome.Ptyxis.desktop.in.in:13 src/ptyxis-preferences-window.ui:610
+#: src/ptyxis-tab.c:1228 src/ptyxis-util.c:311
+msgid "Terminal"
+msgstr "Terminal"
+
+#. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
+#: data/org.gnome.Ptyxis.desktop.in.in:15
+msgid ""
+"terminal;prompt;ptyxis;shell;command;commandline;cmd;cli;container;podman;"
+"toolbx;distrobox;"
+msgstr ""
+"terminal;utripalka;ptiksa;ptysis;lupina;ukaz;ukazna;vrstica;cmd;cli;vsebnik;"
+"zabojnik;kontejner;podman;orodje;toolbx;distrobox;"
+
+#: data/org.gnome.Ptyxis.desktop.in.in:21
+#: src/org.gnome.Ptyxis.gschema.xml.in:357 src/ptyxis-preferences-window.ui:680
+msgid "New Window"
+msgstr "Novo okno"
+
+#: data/org.gnome.Ptyxis.desktop.in.in:25
+#: src/org.gnome.Ptyxis.gschema.xml.in:351 src/ptyxis-preferences-window.ui:674
+msgid "New Tab"
+msgstr "Nov zavihek"
+
+#: data/org.gnome.Ptyxis.desktop.in.in:29
+#: src/org.gnome.Ptyxis.gschema.xml.in:369 src/ptyxis-preferences-window.ui:849
+msgid "Preferences"
+msgstr "Nastavitve"
+
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:7
+msgid "Container-oriented terminal"
+msgstr "Zabojnikom posvečen terminal"
+
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:9
+msgid ""
+"Ptyxis is a terminal for GNOME that focuses on ease-of-use in a world of "
+"containers."
+msgstr ""
+"Ptyxis je terminal za GNOME, ki se osredotoča na enostavnost uporabe v svetu "
+"vsebnikov."
+
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:13
+msgid "Features:"
+msgstr "Zmožnosti:"
+
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:15
+#, fuzzy
+msgid ""
+"Remembers current container when opening a new tab with support for podman, "
+"toolbox, distrobox, and more"
+msgstr ""
+"Zapomni si trenutni vsebnik pri odpiranju novega zavihka s podporo za "
+"podman, toolbox, distrobox in drugo"
+
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:16
+msgid "Configurable keyboard shortcuts"
+msgstr "Nastavljive tipke za bližnjice"
+
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:17
+msgid "Modern interface which integrates the palette with the window styling"
+msgstr "Sodoben vmesnik, ki integrira paleto s slogom oken"
+
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:18
+msgid "User-installable color palettes"
+msgstr "Barvne palete, ki jih lahko namesti uporabnik"
+
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:19
+#, fuzzy
+msgid "Support for preferences profiles with container integration"
+msgstr "Podpora za profile nastavitev z integracijo vsebnikov"
+
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:20
+#, fuzzy
+msgid "Integrated color palettes with light and dark support"
+msgstr "Integrirane barvne palete s svetlo in temno podporo"
+
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:21
+#, fuzzy
+msgid "Tabbed interface with tab overviews"
+msgstr "Vmesnik z zavihki s pregledi zavihkov"
+
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:22
+#, fuzzy
+msgid "Efficient foreground process tracking denoting sudo and SSH"
+msgstr "Učinkovito sledenje procesom v ospredju, ki označuje sudo in SSH"
+
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:23
+#, fuzzy
+msgid "Support for transparent terminal backgrounds"
+msgstr "Podpora za prozorna ozadja terminalov"
+
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:24
+#, fuzzy
+msgid "Separate process mode for terminal-based applications"
+msgstr "Ločen procesni način za terminalske aplikacije"
+
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:25
+#, fuzzy
+msgid "Support for pinned tabs and saved sessions"
+msgstr "Podpora za pripete zavihke in shranjene seje"
+
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:26
+#, fuzzy
+msgid "Terminal tabs are run within separate cgroups"
+msgstr "Zavihki terminalov se izvajajo znotraj ločenih skupin"
+
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:27
+#, fuzzy
+msgid "Terminal inspector to help when writing terminal-based applications"
+msgstr "Terminalski inšpektor za pomoč pri pisanju terminalskih aplikacij"
+
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:52
+#, fuzzy
+msgid "A column and row size indicator is displayed when resizing the window"
+msgstr ""
+"Pri spreminjanju velikosti okna se prikaže indikator velikosti stolpca in "
+"vrstice"
+
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:57
+#, fuzzy
+msgid "Containers are automatically discovered and displayed"
+msgstr "Vsebniki se samodejno odkrijejo in prikažejo"
+
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:62
+#, fuzzy
+msgid "Many behaviors of the terminal may be tweaked to user preference"
+msgstr "Veliko vedenja terminala je mogoče prilagoditi željam uporabnika"
+
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:67
+#, fuzzy
+msgid "You may rename a tab by providing a prefix to the title"
+msgstr "Zavihek lahko preimenujete tako, da naslovu dodate predpono"
+
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:72
+#, fuzzy
+msgid "Palettes provide an integrated dark mode"
+msgstr "Palete zagotavljajo integriran temen način"
+
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:77
+#, fuzzy
+msgid "You can see an overview of your tabs at any time"
+msgstr "Pregled zavihkov si lahko kadar koli ogledate"
+
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:82
+#, fuzzy
+msgid "Many shortcuts may be remapped to user preference"
+msgstr "Številne bližnjice bodo morda preslikane v uporabniške nastavitve"
+
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:87
+#, fuzzy
+msgid "Built-in color palettes provide both dark and light mode variants"
+msgstr ""
+"Vgrajene barvne palete zagotavljajo različice temnega in svetlega načina"
+
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:92
+#, fuzzy
+msgid ""
+"Profiles allow for overriding a number of features such as default container"
+msgstr ""
+"Profili omogočajo preglasitev številnih funkcij, kot je privzeti vsebnik"
+
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:97
+#, fuzzy
+msgid "The terminal will remind you when you're root on the local system"
+msgstr "Terminal vas bo spomnil, kdaj ste root v lokalnem sistemu"
+
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:102
+#, fuzzy
+msgid "The terminal will remind you when you're on a remote system"
+msgstr "Terminal vas bo opomnil, ko ste v oddaljenem sistemu"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:95
+#, fuzzy
+msgid "Default Profile UUID"
+msgstr "Privzeti UUID profila"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:96
+#, fuzzy
+msgid "The UUID of the default profile"
+msgstr "UUID privzetega profila"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:101
+#, fuzzy
+msgid "UUIDs of all Profiles"
+msgstr "UUID-ji vseh profilov"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:102
+#, fuzzy
+msgid "A list of UUID for every profile"
+msgstr "Seznam UUID za vsak profil"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:107 src/ptyxis-preferences-window.ui:291
+#, fuzzy
+msgid "New Tab Position"
+msgstr "Nov položaj zavihka"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:108
+#, fuzzy
+msgid "Where to place new tabs"
+msgstr "Kje postaviti nove zavihke"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:113 src/ptyxis-preferences-window.ui:383
+#, fuzzy
+msgid "Audible Bell"
+msgstr "Zvočni zvonec"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:114
+#, fuzzy
+msgid "If an audible bell should be used"
+msgstr "Če je treba uporabiti zvočni zvonec"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:119
+#, fuzzy
+msgid "Visible Bell"
+msgstr "Vidni zvonec"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:120
+#, fuzzy
+msgid "If a visual bell should be used"
+msgstr "Če je treba uporabiti vizualni zvonec"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:125
+#, fuzzy
+msgid "Visual Process Leader"
+msgstr "Vodja vizualnih procesov"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:126
+#, fuzzy
+msgid ""
+"Display a visual window highlight when process leader is SSH, sudo, or other "
+"specialized tooling"
+msgstr ""
+"Prikažite vizualno oznako, ko je vodja procesa SSH, sudo ali druga "
+"specializirana orodja"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:131
+msgid "Use System Font"
+msgstr "Uporabi sistemsko pisavo"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:132
+#, fuzzy
+msgid "If the default system monospace font should be used"
+msgstr ""
+"Ali naj bo uporabljena privzeta sistemska pisava z enakomerno širino črk."
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:137
+msgid "Font Name"
+msgstr "Ime pisave"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:138
+#, fuzzy
+msgid "The font description to use if use-system-font is set to False"
+msgstr ""
+"Opis pisave, ki ga uporabite, če je pisava user-system-font nastavljena na "
+"False"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:143 src/ptyxis-preferences-window.ui:218
+#, fuzzy
+msgid "Cursor Shape"
+msgstr "Oblika kazalca"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:144
+#, fuzzy
+msgid "The default shape of the cursor"
+msgstr "Privzeta oblika kazalca"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:149
+#, fuzzy
+msgid "Cursor Blink Mode"
+msgstr "Način utripanja kazalca"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:150
+#, fuzzy
+msgid "The default blink mode cursor"
+msgstr "Privzeti kazalec načina utripanja"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:155
+#, fuzzy
+msgid "Scrollbar Policy"
+msgstr "Pravilnik drsnega traku"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:156
+#, fuzzy
+msgid "If scrollbars should be displayed"
+msgstr "Če naj bodo prikazani drsni trakovi"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:161
+#, fuzzy
+msgid "Text Blink Mode"
+msgstr "Način utripanja besedila"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:162
+#, fuzzy
+msgid "When text blinking is allowed"
+msgstr "Ko je dovoljeno utripanje besedila"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:167
+#, fuzzy
+msgid "Interface Style"
+msgstr "Slog vmesnika"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:168
+#, fuzzy
+msgid "If light or dark interface style should be used"
+msgstr "Če želite uporabiti slog svetlega ali temnega vmesnika"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:173 src/ptyxis-preferences-window.ui:320
+#, fuzzy
+msgid "Restore Session"
+msgstr "Obnovi sejo"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:174
+#, fuzzy
+msgid "Restore tabs from previous session when starting Ptyxis"
+msgstr "Obnovite zavihke iz prejšnje seje ob zagonu zdravila Ptyxis"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:179 src/ptyxis-preferences-window.ui:326
+#, fuzzy
+msgid "Restore Window Size"
+msgstr "Obnovi velikost okna"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:180
+#, fuzzy
+msgid "Restore the previous window size when creating new windows"
+msgstr "Obnovitev prejšnje velikosti okna pri ustvarjanju novih oken"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:190
+#, fuzzy
+msgid "Default Column Size"
+msgstr "Privzeta velikost stolpca"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:191
+#: src/org.gnome.Ptyxis.gschema.xml.in:198
+#, fuzzy
+msgid "Default window size when restore-window-size is not true."
+msgstr "Privzeta velikost okna, ko velikost obnovitvenega okna ni resnična."
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:197
+#, fuzzy
+msgid "Default Row Size"
+msgstr "Privzeta velikost vrstice"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:203
+#, fuzzy
+msgid "Toast on Copy Clipboard"
+msgstr "Zdravica v odložišču"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:204
+#, fuzzy
+msgid "Show the user when text has copied to the clipboard."
+msgstr "Pokažite uporabniku, kdaj je besedilo kopirano v odložišče."
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:209
+#, fuzzy
+msgid "Enable Accessibility"
+msgstr "Omogočanje pripomočkov za osebe s posebnimi potrebami"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:210
+#, fuzzy
+msgid ""
+"Currently expirmental feature to send accessibility information to screen "
+"readers."
+msgstr ""
+"Trenutno potekla funkcija za pošiljanje informacij o pripomočkih za osebe s "
+"posebnimi potrebami bralnikom zaslona."
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:219
+msgid "Label"
+msgstr "Oznaka"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:220
+#, fuzzy
+msgid "The label for the profile"
+msgstr "Oznaka profila"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:225
+#, fuzzy
+msgid "Login Shell"
+msgstr "Lupina za prijavo"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:226
+#, fuzzy
+msgid "Use a login shell"
+msgstr "Uporaba lupine za prijavo"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:231 src/ptyxis-preferences-window.ui:451
+#: src/ptyxis-profile-editor.ui:303
+msgid "Limit Scrollback"
+msgstr "Omeji pomikanje nazaj"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:232
+#, fuzzy
+msgid "Limit the number of lines to keep for scrollback"
+msgstr "Omejite število vrstic, ki jih želite obdržati za pomikanje nazaj"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:238 src/ptyxis-preferences-window.ui:460
+#: src/ptyxis-profile-editor.ui:312
+#, fuzzy
+msgid "Scrollback Lines"
+msgstr "Vrstice zgodovine"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:239
+#, fuzzy
+msgid "The number of lines to keep in the scrollback, zero for no scrollback"
+msgstr ""
+"Število vrstic, ki jih je treba obdržati v povratnem pomikanju, nič za brez "
+"pomikanja nazaj"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:244 src/ptyxis-preferences-window.ui:441
+#: src/ptyxis-profile-editor.ui:293
+#, fuzzy
+msgid "Scroll on Output"
+msgstr "Drsenje ob dopolnjenem izpisu"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:245
+#, fuzzy
+msgid "Scroll to the bottom upon new output"
+msgstr "Pomaknite se na dno ob novem izhodu"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:250 src/ptyxis-preferences-window.ui:435
+#: src/ptyxis-profile-editor.ui:287
+#, fuzzy
+msgid "Scroll on Keystroke"
+msgstr "Pomikanje po pritisku tipk"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:251
+#, fuzzy
+msgid "Scroll to the bottom upon user keystroke"
+msgstr "Pomaknite se na dno ob pritisku tipke uporabnika"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:256 src/ptyxis-profile-editor.ui:157
+#, fuzzy
+msgid "Use Custom Command"
+msgstr "Uporaba ukaza po meri"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:257
+#, fuzzy
+msgid "If a custom command should be used"
+msgstr "Če želite uporabiti ukaz po meri"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:262
+#, fuzzy
+msgid "Use Proxy"
+msgstr "Uporabi posredniški strežnik"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:263
+#, fuzzy
+msgid "Apply proxy settings from the host in the container"
+msgstr "Uporaba nastavitev strežnika proxy od gostitelja v vsebniku"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:268 src/ptyxis-profile-editor.ui:162
+#, fuzzy
+msgid "Custom Command"
+msgstr "Ukaz po meri:"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:269
+#, fuzzy
+msgid "A custom command for the shell"
+msgstr "Ukaz po meri za lupino"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:274 src/ptyxis-profile-editor.ui:181
+msgid "Default Container"
+msgstr "Privzeti zabojnik"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:275
+#, fuzzy
+msgid "The default container to run the command in"
+msgstr "Privzeti vsebnik za zagon ukaza v"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:280 src/ptyxis-profile-editor.ui:190
+#, fuzzy
+msgid "Preserve Container"
+msgstr "Ohrani vsebnik"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:281
+#, fuzzy
+msgid "Preserve the active container when creating new tabs and windows"
+msgstr "Ohranjanje aktivnega vsebnika pri ustvarjanju novih zavihkov in oken"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:286 src/ptyxis-preferences-window.ui:520
+#: src/ptyxis-profile-editor.ui:251
+#, fuzzy
+msgid "Exit Action"
+msgstr "Opusti dejanje"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:287
+#, fuzzy
+msgid "The action to take when the shell exits"
+msgstr "Dejanje, ki ga je treba sprejeti, ko lupina zapusti"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:292
+#, fuzzy
+msgid "Preserve Directory"
+msgstr "Ohrani imenik"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:293
+#, fuzzy
+msgid "If the directory should be preserved for new terminals"
+msgstr "Če je treba imenik ohraniti za nove terminale"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:298 src/ptyxis-inspector.ui:102
+#: src/ptyxis-preferences-window.ui:40 src/ptyxis-profile-editor.ui:67
+msgid "Palette"
+msgstr "Paleta"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:299
+#, fuzzy
+msgid "The color palette to use for the profile, by name"
+msgstr "Barvna paleta za profil po imenu"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:305
+msgid "Opacity"
+msgstr "Prekrivnost"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:306
+#, fuzzy
+msgid "The opacity of the palette background"
+msgstr "Neprosojnost ozadja palete"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:311
+#, fuzzy
+msgid "Bold is Bright"
+msgstr "Krepko je svetlo"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:312
+#, fuzzy
+msgid ""
+"Setting bold on one of the lower 8 colors in the palette will use bright "
+"variant (upper 8 colors)"
+msgstr ""
+"Nastavitev krepko na eni od spodnjih 8 barv v paleti bo uporabila svetlo "
+"različico (zgornjih 8 barv)"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:317
+#, fuzzy
+msgid "CJK Ambiguous Width"
+msgstr "CJK dvoumna širina"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:318
+#, fuzzy
+msgid "The size to apply to ambiguous width characters"
+msgstr "Velikost, ki velja za dvoumne znake širine"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:323
+#: src/org.gnome.Ptyxis.gschema.xml.in:329
+#, fuzzy
+msgid "Backspace Binding"
+msgstr "Vezava na hrbtni prostor"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:324
+#: src/org.gnome.Ptyxis.gschema.xml.in:330
+#, fuzzy
+msgid "What to send to the PTY when a backspace is entered"
+msgstr "Kaj poslati na PTY, ko je vnesen backspace"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:339 src/ptyxis-preferences-window.ui:613
+msgid "Copy to Clipboard"
+msgstr "Kopiraj v odložišče"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:340
+#, fuzzy
+msgid "The shortcut to copy to clipboard"
+msgstr "Bližnjica za kopiranje v odložišče"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:345 src/ptyxis-preferences-window.ui:618
+#, fuzzy
+msgid "Paste from Clipboard"
+msgstr "Prilepi iz odložišča v terminal"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:346
+#, fuzzy
+msgid "The shortcut to paste from the clipboard"
+msgstr "Bližnjica za lepljenje iz odložišča"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:352
+#, fuzzy
+msgid "The shortcut to create a new tab in the current window"
+msgstr "Bližnjica za ustvarjanje novega zavihka v trenutnem oknu"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:358
+#, fuzzy
+msgid "The shortcut to create a new tab in a new window"
+msgstr "Bližnjica za ustvarjanje novega zavihka v novem oknu"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:363
+#, fuzzy
+msgid "Tab Overview"
+msgstr "Pregled zavihkov"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:364
+#, fuzzy
+msgid "The shortcut to show the tab overview"
+msgstr "Bližnjica za prikaz pregleda zavihkov"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:370
+#, fuzzy
+msgid "The shortcut to show application preferences"
+msgstr "Bližnjica za prikaz nastavitev aplikacije"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:375 src/ptyxis-preferences-window.ui:818
+#: src/ptyxis-window.c:1252 src/ptyxis-window.c:1260
+msgid "Zoom Out"
+msgstr "Oddalji"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:376
+#, fuzzy
+msgid "The shortcut to zoom out"
+msgstr "Bližnjica za pomanjšavo"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:381 src/ptyxis-preferences-window.ui:823
+#: src/ptyxis-window.c:1269
+msgid "Reset Zoom"
+msgstr "Ponastavi povečavo"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:382
+#, fuzzy
+msgid "The shortcut to reset zoom"
+msgstr "Bližnjica za ponastavitev povečave"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:387 src/ptyxis-preferences-window.ui:813
+#: src/ptyxis-window.c:1237 src/ptyxis-window.c:1245
+#, fuzzy
+msgid "Zoom In"
+msgstr "Približa pogled"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:388
+#, fuzzy
+msgid "The shortcut to zoom in"
+msgstr "Bližnjica za povečavo"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:393 src/ptyxis-preferences-window.ui:833
+msgid "Toggle Fullscreen"
+msgstr "Preklopi celozaslonski način"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:394
+#, fuzzy
+msgid "The shortcut to toggle fullscreen"
+msgstr "Bližnjica za preklapljanje celozaslonskega načina"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:399
+#, fuzzy
+msgid "Reset Terminal"
+msgstr "Ponastavi terminal"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:400
+#, fuzzy
+msgid "Reset the terminal state for misbehaving clients"
+msgstr "Ponastavitev stanja terminala za odjemalce, ki se ne vedejo pravilno"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:405
+#, fuzzy
+msgid "Reset Terminal and Clear History"
+msgstr "Ponastavitev terminala in počisti zgodovino"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:406
+#, fuzzy
+msgid "Reset the terminal state and clear history for misbehaving clients"
+msgstr ""
+"Ponastavitev stanja terminala in počistite zgodovino za odjemalce, ki se ne "
+"vedejo pravilno"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:411 src/ptyxis-preferences-window.ui:655
+#, fuzzy
+msgid "Search History"
+msgstr "Zgodovina iskanja"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:412
+#, fuzzy
+msgid "Shortcut to begin searching the terminal history"
+msgstr "Bližnjica za začetek iskanja po zgodovini terminala"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:417 src/ptyxis-preferences-window.ui:627
+msgid "Select All"
+msgstr "Izberi vse"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:418
+#, fuzzy
+msgid "Shortcut to select all the entire terminal scrollback"
+msgstr "Bližnjica za izbiro celotnega pomikanja terminala"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:423
+msgid "Select None"
+msgstr "Ne izberi ničesar"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:424
+#, fuzzy
+msgid "Shortcut to clear the terminal selection"
+msgstr "Bližnjica za čiščenje izbire terminala"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:429
+#, fuzzy
+msgid "Popup Menu"
+msgstr "pojavni meni"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:430
+#, fuzzy
+msgid "Shortcut to show the popup menu for the terminal"
+msgstr "Bližnjica za prikaz pojavnega menija za terminal"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:435
+msgid "Primary Menu"
+msgstr "Osnovni meni"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:436
+#, fuzzy
+msgid "Shortcut to show the primary menu for the window"
+msgstr "Bližnjica za prikaz primarnega menija za okno"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:441 src/ptyxis-preferences-window.ui:722
+#, fuzzy
+msgid "Move to Previous Tab"
+msgstr "Premakne na predhodni zavihek"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:442
+#, fuzzy
+msgid "Shortcut to move to the previous tab"
+msgstr "Bližnjica za premik na prejšnji zavihek"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:447 src/ptyxis-preferences-window.ui:727
+#, fuzzy
+msgid "Move to Next Tab"
+msgstr "Premakne na naslednji zavihek"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:448
+#, fuzzy
+msgid "Shortcut to move to the next tab"
+msgstr "Bližnjica za premik na naslednji zavihek"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:453 src/ptyxis-preferences-window.ui:736
+#, fuzzy
+msgid "Move Tab Left"
+msgstr "Premakne na zavihek levo"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:454
+#, fuzzy
+msgid "Shortcut to move the current tab to the left one position"
+msgstr "Bližnjica za premik trenutnega zavihka v levo za en položaj"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:459 src/ptyxis-preferences-window.ui:742
+#, fuzzy
+msgid "Move Tab Right"
+msgstr "Premakne na zavihek desno"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:460
+#, fuzzy
+msgid "Shortcut to move the current tab to the right one position"
+msgstr "Bližnjica za premik trenutnega zavihka v desno za en položaj"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:465 src/ptyxis-preferences-window.ui:748
+msgid "Move Tab to New Window"
+msgstr "Premakni zavihek v novo okno"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:466
+#, fuzzy
+msgid "Shortcut to move the current tab into a new window"
+msgstr "Bližnjica za premikanje trenutnega zavihka v novo okno"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:471 src/ptyxis-preferences-window.ui:700
+msgid "Close Tab"
+msgstr "Zapri zavihek"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:472
+#, fuzzy
+msgid "Shortcut to close the current tab"
+msgstr "Bližnjica za zapiranje trenutnega zavihka"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:477 src/ptyxis-preferences-window.ui:706
+#, fuzzy
+msgid "Close Other Tabs"
+msgstr "Zapri _druge zavihke"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:478
+#, fuzzy
+msgid "Shortcut to close all tabs in the window but the current one"
+msgstr "Bližnjica za zapiranje vseh zavihkov v oknu, razen trenutnega"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:483
+#, fuzzy
+msgid "Focus Tab 1"
+msgstr "Zavihek »Fokus« 1"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:484
+#, fuzzy
+msgid "Shortcut to focus tab 1"
+msgstr "Bližnjica do zavihka fokusa 1"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:489
+#, fuzzy
+msgid "Focus Tab 2"
+msgstr "Zavihek »Fokus« 2"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:490
+#, fuzzy
+msgid "Shortcut to focus tab 2"
+msgstr "Bližnjica do zavihka 2 v fokusu"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:495
+#, fuzzy
+msgid "Focus Tab 3"
+msgstr "Zavihek »Fokus« 3"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:496
+#, fuzzy
+msgid "Shortcut to focus tab 3"
+msgstr "Bližnjica do zavihka 3 v fokusu"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:501
+#, fuzzy
+msgid "Focus Tab 4"
+msgstr "Zavihek »Fokus« 4"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:502
+#, fuzzy
+msgid "Shortcut to focus tab 4"
+msgstr "Bližnjica do zavihka 4 v fokusu"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:507
+#, fuzzy
+msgid "Focus Tab 5"
+msgstr "Zavihek »Fokus« 5"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:508
+#, fuzzy
+msgid "Shortcut to focus tab 5"
+msgstr "Bližnjica do zavihka 5 v fokusu"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:513
+#, fuzzy
+msgid "Focus Tab 6"
+msgstr "Zavihek »Fokus« 6"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:514
+#, fuzzy
+msgid "Shortcut to focus tab 6"
+msgstr "Bližnjica do zavihka 6 v fokusu"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:519
+#, fuzzy
+msgid "Focus Tab 7"
+msgstr "Zavihek »Fokus« 7"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:520
+#, fuzzy
+msgid "Shortcut to focus tab 7"
+msgstr "Bližnjica do zavihka 7 v fokusu"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:525
+#, fuzzy
+msgid "Focus Tab 8"
+msgstr "Zavihek »Fokus« 8"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:526
+#, fuzzy
+msgid "Shortcut to focus tab 8"
+msgstr "Bližnjica do zavihka 8 v fokusu"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:531
+#, fuzzy
+msgid "Focus Tab 9"
+msgstr "Zavihek »Fokus« 9"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:532
+#, fuzzy
+msgid "Shortcut to focus tab 9"
+msgstr "Bližnjica do zavihka 9 v fokusu"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:537
+#, fuzzy
+msgid "Focus Tab 10"
+msgstr "Zavihek »Fokus« 10"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:538
+#, fuzzy
+msgid "Shortcut to focus tab 10"
+msgstr "Bližnjica do zavihka v fokusu 10"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:543 src/ptyxis-preferences-window.ui:712
+#, fuzzy
+msgid "Undo Close Tab"
+msgstr "Razveljavitev zavihka za zapiranje"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:544
+#, fuzzy
+msgid "Undo closing of last tab"
+msgstr "Razveljavitev zapiranja zadnjega zavihka"
+
+#: src/ptyxis-application.c:263
+#, fuzzy
+msgid "--tab, --tab-with-profile, or --new-window may not be used together"
+msgstr ""
+"--tab, --tab-with-profil ali ---new-window morda ne boste uporabljali skupaj"
+
+#: src/ptyxis-application.c:309
+#, fuzzy, c-format
+msgid "Cannot parse command: %s"
+msgstr "Ukaza ni mogoče razčleniti: %s"
+
+#: src/ptyxis-application.c:815
+msgid "Examples:"
+msgstr "Primeri:"
+
+#: src/ptyxis-application.c:817
+msgid "Show the application preferences"
+msgstr "Pokaži lastnosti programa"
+
+#. Used for new tabs/windows/etc when specified
+#: src/ptyxis-application.c:820
+#, fuzzy
+msgid "Use DIR for --tab, --tab-with-profile, --new-window, or -x"
+msgstr "Uporabite DIR za --tab, --tab-with-profile, --new-window ali -x"
+
+#: src/ptyxis-application.c:820
+msgid "DIR"
+msgstr "DIR"
+
+#. By default, this implies a new ptyxis instance unless the options
+#. * below are provided to override that.
+#.
+#: src/ptyxis-application.c:825
+#, fuzzy
+msgid "Command to execute in new window"
+msgstr "Ukaz za izvedbo v novem oknu"
+
+#. These options all imply we're using a shared Ptyxis instance. We do not support
+#. * short command options for these to make it easier to sniff them in early args
+#. * checking from `main.c`.
+#.
+#: src/ptyxis-application.c:831
+#, fuzzy
+msgid "New terminal window"
+msgstr "Novo okno priključka"
+
+#: src/ptyxis-application.c:832
+#, fuzzy
+msgid "New terminal tab in active window"
+msgstr "Nov zavihek terminala v aktivnem oknu"
+
+#: src/ptyxis-application.c:833
+#, fuzzy
+msgid "New terminal tab in active window using PROFILE"
+msgstr "Nov zavihek terminala v aktivnem oknu z uporabo funkcije PROFILE"
+
+#: src/ptyxis-application.c:833
+msgid "PROFILE"
+msgstr "PROFIL"
+
+#: src/ptyxis-application.c:840
+#, fuzzy
+msgid "Run Separate Instance"
+msgstr "Zaženite ločen primerek"
+
+#: src/ptyxis-application.c:844
+msgid "Open Preferences"
+msgstr "Odpri nastavitve"
+
+#: src/ptyxis-application.c:848
+#, fuzzy
+msgid "Run Custom Command in New Window"
+msgstr "Zaženi ukaz po meri v novem oknu"
+
+#: src/ptyxis-application.c:852
+#, fuzzy
+msgid "[-- COMMAND ARGUMENTS]"
+msgstr "Argumenti ukaza"
+
+#: src/ptyxis-application.c:1090
+msgid "translator-credits"
+msgstr "Martin Srebotnjak  <miles@filmsi.net>"
+
+#: src/ptyxis-close-dialog.c:110
+msgid "_Close"
+msgstr "Za_pri"
+
+#: src/ptyxis-close-dialog.c:110
+msgid "_Close All"
+msgstr "_Zapri vse"
+
+#: src/ptyxis-close-dialog.c:112
+#, fuzzy
+msgid "Close Window?"
+msgstr "_Zapri okno"
+
+#: src/ptyxis-close-dialog.c:113
+#, fuzzy
+msgid "Some processes are still running."
+msgstr "Nekateri procesi se še vedno izvajajo."
+
+#: src/ptyxis-close-dialog.c:117
+msgid "_Cancel"
+msgstr "Pre_kliči"
+
+#: src/ptyxis-close-dialog.c:147
+#, c-format
+msgid "Process %d"
+msgstr "Opravilo %d"
+
+#: src/ptyxis-container-menu.c:101
+#, fuzzy
+msgid "Unknown Container"
+msgstr "Neznani vsebnik"
+
+#: src/ptyxis-find-bar.ui:68
+#, fuzzy
+msgid "Search up to next result"
+msgstr "Iskanje do naslednjega rezultata"
+
+#: src/ptyxis-find-bar.ui:75
+#, fuzzy
+msgid "Search down to next result"
+msgstr "Iskanje do naslednjega rezultata"
+
+#: src/ptyxis-find-bar.ui:84
+#, fuzzy
+msgid "Search Options"
+msgstr "Možnosti iskanja"
+
+#: src/ptyxis-find-bar.ui:95
+#, fuzzy
+msgid "Match _Case"
+msgstr "_Upoštevaj velikost črk"
+
+#: src/ptyxis-find-bar.ui:101
+#, fuzzy
+msgid "Whole _Words"
+msgstr "Le _cele besede"
+
+#: src/ptyxis-find-bar.ui:107
+#, fuzzy
+msgid "Use _Regular Expressions"
+msgstr "Uporabi _logične izraze"
+
+#: src/ptyxis-find-bar.ui:127 src/ptyxis-preferences-window.ui:541
+#: src/ptyxis-profile-editor.ui:272
+msgid "Close"
+msgstr "Zapri"
+
+#: src/ptyxis-find-bar.ui:128
+#, fuzzy
+msgid "Close the search bar"
+msgstr "Zapiranje vrstice za iskanje"
+
+#: src/ptyxis-inspector.c:89 src/ptyxis-inspector.c:351
+#, fuzzy
+msgid "unset"
+msgstr "Nedoločeno"
+
+#: src/ptyxis-inspector.c:110 src/ptyxis-inspector.c:268
+msgid "Row"
+msgstr "Vrstica"
+
+#: src/ptyxis-inspector.c:110 src/ptyxis-inspector.c:268
+msgid "Column"
+msgstr "Stolpec"
+
+#. NOTE: If we are in a container that also supports VTE patches
+#. * then it will send shell-precmd via escape sequences. The reality
+#. * is that our foreground is the `toolbox enter` process (until we
+#. * have better patches in VTE) but we show "Shell" instead.
+#. *
+#. * This is fine for now, but I'd like it to be better and actually
+#. * show the proper `tcgetpgrp()` foreground.
+#.
+#: src/ptyxis-inspector.c:171 src/ptyxis-inspector.c:191
+#: src/ptyxis-preferences-window.ui:477 src/ptyxis-profile-editor.ui:154
+msgid "Shell"
+msgstr "Lupina"
+
+#: src/ptyxis-inspector.c:270
+#, fuzzy
+msgid "untracked"
+msgstr "Brez sledenja"
+
+#: src/ptyxis-inspector.ui:4
+msgid "Inspector"
+msgstr "Nadzornik"
+
+#: src/ptyxis-inspector.ui:7
+#, fuzzy
+msgid "Process"
+msgstr "Opravila"
+
+#: src/ptyxis-inspector.ui:13
+#, fuzzy
+msgid "Foreground Process"
+msgstr "Proces v ospredju"
+
+#: src/ptyxis-inspector.ui:33
+msgid "Window Title"
+msgstr "Naziv okna"
+
+#: src/ptyxis-inspector.ui:45
+#, fuzzy
+msgid "Current Directory"
+msgstr "ni v trenutni mapi"
+
+#: src/ptyxis-inspector.ui:53
+#, fuzzy
+msgid "Current File"
+msgstr "Trenutna datoteka"
+
+#: src/ptyxis-inspector.ui:63
+#, fuzzy
+msgid "Container"
+msgstr "Vsebovalnik"
+
+#: src/ptyxis-inspector.ui:66
+#, fuzzy
+msgid "Runtime"
+msgstr "Izvajalni program"
+
+#: src/ptyxis-inspector.ui:74 src/ptyxis-inspector.ui:228
+#: src/ptyxis-profile-editor.ui:38
+#, fuzzy
+msgid "Name"
+msgstr "IME"
+
+#: src/ptyxis-inspector.ui:86 src/ptyxis-preferences-window.ui:36
+msgid "Appearance"
+msgstr "Videz"
+
+#: src/ptyxis-inspector.ui:92
+#, fuzzy
+msgid "Grid Size"
+msgstr "Velikost mreže"
+
+#: src/ptyxis-inspector.ui:105
+msgid "Colors"
+msgstr "Barve"
+
+#: src/ptyxis-inspector.ui:225 src/ptyxis-preferences-window.ui:122
+msgid "Font"
+msgstr "Pisava"
+
+#: src/ptyxis-inspector.ui:233
+#, fuzzy
+msgid "Cell Size"
+msgstr "Velikost celice:"
+
+#: src/ptyxis-inspector.ui:242
+#, fuzzy
+msgid "Input"
+msgstr "Vnos"
+
+#: src/ptyxis-inspector.ui:246 src/ptyxis-preferences-window.ui:215
+#, fuzzy
+msgid "Cursor"
+msgstr "Kazalec"
+
+#: src/ptyxis-inspector.ui:249 src/ptyxis-inspector.ui:262
+msgid "Position"
+msgstr "Položaj"
+
+#: src/ptyxis-inspector.ui:259
+msgid "Mouse"
+msgstr "Miška"
+
+#: src/ptyxis-inspector.ui:270
+msgid "Hyperlink"
+msgstr "Hiperpovezava"
+
+#: src/ptyxis-palette-preview.ui:12
+#, fuzzy
+msgid "The quick brown fox jumps over the lazy dog"
+msgstr "Šerif bo za vajo spet skuhal domače žgance"
+
+#: src/ptyxis-preferences-window.c:240
+msgid "Select Font"
+msgstr "Izbor pisave"
+
+#: src/ptyxis-preferences-window.c:290
+#, fuzzy
+msgid "Show fewer…"
+msgstr "Pokaži manj ..."
+
+#: src/ptyxis-preferences-window.c:292 src/ptyxis-preferences-window.ui:43
+#, fuzzy
+msgid "Show more…"
+msgstr "Pokaži več _podrobnosti"
+
+#: src/ptyxis-preferences-window.ui:64 src/ptyxis-profile-editor.ui:76
+msgid "Transparency"
+msgstr "Prosojnost"
+
+#: src/ptyxis-preferences-window.ui:65 src/ptyxis-profile-editor.ui:77
+#, fuzzy
+msgid "Reduces the opacity of the background window"
+msgstr "Zmanjša prosojnost okna za ozadje"
+
+#: src/ptyxis-preferences-window.ui:126
+#, fuzzy
+msgid "Use System _Font"
+msgstr "Uporabi sistemsko pisavo"
+
+#: src/ptyxis-preferences-window.ui:138
+msgid "Custom Font"
+msgstr "Pisava po meri"
+
+#: src/ptyxis-preferences-window.ui:167 src/ptyxis-profile-editor.ui:136
+#, fuzzy
+msgid "Use Bright Colors for Bold"
+msgstr "Uporaba svetlih barv za krepko"
+
+#: src/ptyxis-preferences-window.ui:176
+#, fuzzy
+msgid "Blinking Text"
+msgstr "Utripajoče besedilo"
+
+#: src/ptyxis-preferences-window.ui:185 src/ptyxis-preferences-window.ui:409
+#: src/ptyxis-preferences-window.ui:498 src/ptyxis-profile-editor.ui:200
+#: src/ptyxis-profile-editor.ui:229
+msgid "Never"
+msgstr "Nikoli"
+
+#: src/ptyxis-preferences-window.ui:191
+msgid "Focused"
+msgstr "S pozornostjo"
+
+#: src/ptyxis-preferences-window.ui:197
+#, fuzzy
+msgid "Unfocused"
+msgstr "Dovoli izbiranje poljubnega obsega"
+
+#: src/ptyxis-preferences-window.ui:203 src/ptyxis-preferences-window.ui:421
+#: src/ptyxis-preferences-window.ui:510 src/ptyxis-profile-editor.ui:206
+#: src/ptyxis-profile-editor.ui:241
+msgid "Always"
+msgstr "Vedno"
+
+#: src/ptyxis-preferences-window.ui:227
+#, fuzzy
+msgid "Block"
+msgstr "Blok"
+
+#: src/ptyxis-preferences-window.ui:233
+#, fuzzy
+msgid "I-Beam"
+msgstr "I-žarek"
+
+#: src/ptyxis-preferences-window.ui:239
+msgid "Underline"
+msgstr "Podčrtano"
+
+#: src/ptyxis-preferences-window.ui:249
+#, fuzzy
+msgid "Cursor Blinking"
+msgstr "_Utripanje kazalke"
+
+#: src/ptyxis-preferences-window.ui:258 src/ptyxis-preferences-window.ui:415
+msgid "Follow System"
+msgstr "Sledi sistemu"
+
+#: src/ptyxis-preferences-window.ui:264
+msgid "Enabled"
+msgstr "Omogočeno"
+
+#: src/ptyxis-preferences-window.ui:270
+msgid "Disabled"
+msgstr "Onemogočeno"
+
+#: src/ptyxis-preferences-window.ui:284
+msgid "Behavior"
+msgstr "Vedenje"
+
+#: src/ptyxis-preferences-window.ui:288
+msgid "Interface"
+msgstr "Vmesnik"
+
+#: src/ptyxis-preferences-window.ui:300
+msgid "Next"
+msgstr "Naslednji"
+
+#: src/ptyxis-preferences-window.ui:306
+msgid "Last"
+msgstr "Zadnji"
+
+#: src/ptyxis-preferences-window.ui:321
+#, fuzzy
+msgid "Attempt to restore previous tabs when Ptyxis starts"
+msgstr "Poskusite obnoviti prejšnje zavihke ob zagonu Ptyxis"
+
+#: src/ptyxis-preferences-window.ui:327
+#, fuzzy
+msgid "Restore the previous window size when creating a new window"
+msgstr "Obnovitev prejšnje velikosti okna pri ustvarjanju novega okna"
+
+#: src/ptyxis-preferences-window.ui:337
+msgid "Columns"
+msgstr "Stolpci"
+
+#: src/ptyxis-preferences-window.ui:351
+msgid "Rows"
+msgstr "Vrstice"
+
+#: src/ptyxis-preferences-window.ui:369
+msgid "Accessibility"
+msgstr "Dostopnost"
+
+#: src/ptyxis-preferences-window.ui:372
+#, fuzzy
+msgid "Allow Screen Readers"
+msgstr "Dovoli bralnike zaslona"
+
+#: src/ptyxis-preferences-window.ui:373
+#, fuzzy
+msgid ""
+"Permit screen readers such as Orca to read terminal content and typed text"
+msgstr ""
+"Dovolite bralnikom zaslona, kot je Orca, branje terminalne vsebine in "
+"natipkanega besedila"
+
+#: src/ptyxis-preferences-window.ui:380
+msgid "Bell"
+msgstr "Zvonec"
+
+#: src/ptyxis-preferences-window.ui:384
+#, fuzzy
+msgid "Emit an audible bell when requested by active tab"
+msgstr "Oddajanje zvočnega zvona, ko to zahteva aktivni zavihek"
+
+#: src/ptyxis-preferences-window.ui:389
+#, fuzzy
+msgid "Visual Bell"
+msgstr "Vizualni zvonec"
+
+#: src/ptyxis-preferences-window.ui:390
+#, fuzzy
+msgid "Emit a visual bell when requested by active tab"
+msgstr "Oddajanje vizualnega zvonca, ko to zahteva aktivni zavihek"
+
+#: src/ptyxis-preferences-window.ui:397 src/ptyxis-profile-editor.ui:284
+msgid "Scrolling"
+msgstr "Drsenje"
+
+#: src/ptyxis-preferences-window.ui:400
+#, fuzzy
+msgid "Use Scrollbars"
+msgstr "Uporaba drsnih trakov"
+
+#: src/ptyxis-preferences-window.ui:436 src/ptyxis-profile-editor.ui:288
+#, fuzzy
+msgid "Scroll to the bottom upon input keystroke"
+msgstr "Pomaknite se na dno ob pritisku tipke na vnos"
+
+#: src/ptyxis-preferences-window.ui:442 src/ptyxis-profile-editor.ui:294
+#, fuzzy
+msgid "Scroll to the bottom when new content is available"
+msgstr "Pomaknite se na dno, ko je na voljo nova vsebina"
+
+#: src/ptyxis-preferences-window.ui:452 src/ptyxis-profile-editor.ui:304
+#, fuzzy
+msgid "Restrict the number of lines saved for scrollback"
+msgstr "Omejite število vrstic, shranjenih za pomikanje nazaj"
+
+#: src/ptyxis-preferences-window.ui:461 src/ptyxis-profile-editor.ui:313
+#, fuzzy
+msgid "The number of lines to keep for scrollback"
+msgstr "Število shranjenih vrstic zgodovine drsnika"
+
+#: src/ptyxis-preferences-window.ui:480 src/ptyxis-profile-editor.ui:172
+#, fuzzy
+msgid "Use Login Shell"
+msgstr "Uporabite lupino za prijavo"
+
+#: src/ptyxis-preferences-window.ui:489 src/ptyxis-profile-editor.ui:220
+#, fuzzy
+msgid "Preserve Working Directory"
+msgstr "Ohrani delovni imenik"
+
+#: src/ptyxis-preferences-window.ui:504 src/ptyxis-profile-editor.ui:235
+msgid "Safe"
+msgstr "Varno"
+
+#: src/ptyxis-preferences-window.ui:529 src/ptyxis-profile-editor.ui:260
+#, fuzzy
+msgid "No Action"
+msgstr "Je dejanje"
+
+#: src/ptyxis-preferences-window.ui:535 src/ptyxis-profile-editor.ui:266
+msgid "Restart"
+msgstr "Ponovno zaženi"
+
+#: src/ptyxis-preferences-window.ui:553 src/ptyxis-profile-editor.ui:329
+msgid "Compatibility"
+msgstr "Združljivost"
+
+#: src/ptyxis-preferences-window.ui:556 src/ptyxis-profile-editor.ui:332
+#, fuzzy
+msgid "Backspace Key"
+msgstr "Ključ »Backspace«"
+
+#: src/ptyxis-preferences-window.ui:557 src/ptyxis-profile-editor.ui:333
+#, fuzzy
+msgid "Sequence to send for Backspace key"
+msgstr "Zaporedje, ki ga želite poslati za tipko Backspace"
+
+#: src/ptyxis-preferences-window.ui:566 src/ptyxis-profile-editor.ui:342
+#, fuzzy
+msgid "Delete Key"
+msgstr "Tipka &brisanja"
+
+#: src/ptyxis-preferences-window.ui:567 src/ptyxis-profile-editor.ui:343
+#, fuzzy
+msgid "Sequence to send for Delete key"
+msgstr "Zaporedje, ki ga želite poslati za tipko »Delete«"
+
+#: src/ptyxis-preferences-window.ui:576 src/ptyxis-profile-editor.ui:352
+#, fuzzy
+msgid "Ambiguous-width Characters"
+msgstr "Znaki dvoumne širine"
+
+#: src/ptyxis-preferences-window.ui:585 src/ptyxis-profile-editor.ui:361
+msgid "Narrow"
+msgstr "Ozko"
+
+#: src/ptyxis-preferences-window.ui:591 src/ptyxis-profile-editor.ui:367
+msgid "Wide"
+msgstr "Široko"
+
+#: src/ptyxis-preferences-window.ui:606
+msgid "Shortcuts"
+msgstr "Tipkovne bližnjice:"
+
+#: src/ptyxis-preferences-window.ui:632
+#, fuzzy
+msgid "Clear Selection"
+msgstr "_Počisti izbrano"
+
+#: src/ptyxis-preferences-window.ui:641 src/ptyxis-terminal.ui:201
+msgid "Reset"
+msgstr "Ponastavi"
+
+#: src/ptyxis-preferences-window.ui:646 src/ptyxis-terminal.ui:207
+msgid "Reset and Clear"
+msgstr "Ponastavi in počisti"
+
+#: src/ptyxis-preferences-window.ui:664
+#, fuzzy
+msgid "Show Context Menu"
+msgstr "Pokaži kontekstni meni"
+
+#: src/ptyxis-preferences-window.ui:671
+msgid "Tabs"
+msgstr "Zavihki"
+
+#: src/ptyxis-preferences-window.ui:675
+#, fuzzy
+msgid "Open a new tab in the current window"
+msgstr "Odpiranje novega zavihka v trenutnem oknu"
+
+#: src/ptyxis-preferences-window.ui:681
+#, fuzzy
+msgid "Open a new tab in a new window"
+msgstr "Odpiranje novega zavihka v novem oknu"
+
+#: src/ptyxis-preferences-window.ui:690
+#, fuzzy
+msgid "View Tab Overview"
+msgstr "Pregled zavihka »Pogled«"
+
+#: src/ptyxis-preferences-window.ui:691
+#, fuzzy
+msgid "Show an overview of all tabs within the window"
+msgstr "Prikaz pregleda vseh zavihkov v oknu"
+
+#: src/ptyxis-preferences-window.ui:701
+msgid "Close the current tab"
+msgstr "Zapri trenutni zavihek"
+
+#: src/ptyxis-preferences-window.ui:707
+#, fuzzy
+msgid "Close all tabs except the active tab"
+msgstr "Zaprite vse zavihke razen aktivnega zavihka"
+
+#: src/ptyxis-preferences-window.ui:713
+#, fuzzy
+msgid "Undo closing the last tab"
+msgstr "Razveljavitev zapiranja zadnjega zavihka"
+
+#: src/ptyxis-preferences-window.ui:737
+#, fuzzy
+msgid "Move the tab one position to the left"
+msgstr "Pomik zavihka za eno mesto levo"
+
+#: src/ptyxis-preferences-window.ui:743
+#, fuzzy
+msgid "Move the tab one position to the right"
+msgstr "Pomik zavihka za eno mesto v desno"
+
+#: src/ptyxis-preferences-window.ui:749
+#, fuzzy
+msgid "Detach the current tab and move it to a new window"
+msgstr "Odklopite trenutni zavihek in ga premaknite v novo okno"
+
+#: src/ptyxis-preferences-window.ui:758
+msgid "Switch to Tab 1"
+msgstr "Preklop na zavihek 1"
+
+#: src/ptyxis-preferences-window.ui:763
+msgid "Switch to Tab 2"
+msgstr "Preklop na zavihek 2"
+
+#: src/ptyxis-preferences-window.ui:768
+msgid "Switch to Tab 3"
+msgstr "Preklop na zavihek 3"
+
+#: src/ptyxis-preferences-window.ui:773
+msgid "Switch to Tab 4"
+msgstr "Preklop na zavihek 4"
+
+#: src/ptyxis-preferences-window.ui:778
+msgid "Switch to Tab 5"
+msgstr "Preklop na zavihek 5"
+
+#: src/ptyxis-preferences-window.ui:783
+msgid "Switch to Tab 6"
+msgstr "Preklop na zavihek 6"
+
+#: src/ptyxis-preferences-window.ui:788
+msgid "Switch to Tab 7"
+msgstr "Preklop na zavihek 7"
+
+#: src/ptyxis-preferences-window.ui:793
+msgid "Switch to Tab 8"
+msgstr "Preklop na zavihek 8"
+
+#: src/ptyxis-preferences-window.ui:798
+msgid "Switch to Tab 9"
+msgstr "Preklop na zavihek 9"
+
+#: src/ptyxis-preferences-window.ui:803
+msgid "Switch to Tab 10"
+msgstr "Preklop na zavihek 10"
+
+#: src/ptyxis-preferences-window.ui:810
+msgid "Zoom"
+msgstr "Povečava"
+
+#: src/ptyxis-preferences-window.ui:830
+msgid "Application"
+msgstr "Program"
+
+#: src/ptyxis-preferences-window.ui:834
+#, fuzzy
+msgid "Toggle in and out of fullscreen"
+msgstr "Preklapljanje v celozaslonski način in iz njega"
+
+#: src/ptyxis-preferences-window.ui:843
+msgid "Show Primary Menu"
+msgstr "Pokaži osnovni meni"
+
+#: src/ptyxis-preferences-window.ui:844
+#, fuzzy
+msgid "Displays the primary menu for the terminal window"
+msgstr "Prikaže primarni meni za okno terminala"
+
+#: src/ptyxis-preferences-window.ui:850
+#, fuzzy
+msgid "Show this preferences window"
+msgstr "Pokaži to okno z nastavitvami"
+
+#: src/ptyxis-preferences-window.ui:859 src/ptyxis-preferences-window.ui:863
+#: src/ptyxis-window.c:1344
+msgid "Profiles"
+msgstr "Profili"
+
+#: src/ptyxis-preferences-window.ui:870
+msgid "_Add Profile"
+msgstr "_Dodaj profil"
+
+#: src/ptyxis-preferences-window.ui:897 src/ptyxis-profile-editor.ui:401
+msgid "Automatic"
+msgstr "Samodejno"
+
+#: src/ptyxis-preferences-window.ui:903 src/ptyxis-profile-editor.ui:407
+msgid "Control-H"
+msgstr "Krmilka-H"
+
+#: src/ptyxis-preferences-window.ui:909 src/ptyxis-profile-editor.ui:413
+#, fuzzy
+msgid "ASCII DEL"
+msgstr "ASCII DEL"
+
+#: src/ptyxis-preferences-window.ui:915 src/ptyxis-profile-editor.ui:419
+#, fuzzy
+msgid "Escape Sequence"
+msgstr "neveljavno ubežno zaporedje v znakovnem razredu"
+
+#: src/ptyxis-preferences-window.ui:921 src/ptyxis-profile-editor.ui:425
+#, fuzzy
+msgid "TTY Erase"
+msgstr "Brisanje TTY"
+
+#: src/ptyxis-profile.c:559
+msgid "Untitled Profile"
+msgstr "Neimenovani profil"
+
+#: src/ptyxis-profile-editor.c:133 src/ptyxis-terminal.c:411
+#: src/ptyxis-terminal.c:446
+msgid "Copied to clipboard"
+msgstr "Kopirano na odložišče"
+
+#: src/ptyxis-profile-editor.c:165 src/ptyxis-profile-row.c:102
+#, c-format
+msgid "Removed profile “%s”"
+msgstr "Odstranjeni profil »%s«"
+
+#: src/ptyxis-profile-editor.c:167 src/ptyxis-profile-row.c:104
+msgid "Undo"
+msgstr "Razveljavi"
+
+#: src/ptyxis-profile-editor.c:196
+msgid "My Computer"
+msgstr "Moj računalnik"
+
+#: src/ptyxis-profile-editor.ui:22 src/ptyxis-tab.c:368 src/ptyxis-tab.c:425
+msgid "Edit Profile"
+msgstr "Uredi profil"
+
+#: src/ptyxis-profile-editor.ui:33
+msgid "Profile"
+msgstr "Profil"
+
+#: src/ptyxis-profile-editor.ui:43
+msgid "Identifier"
+msgstr "Identifikator"
+
+#: src/ptyxis-profile-editor.ui:52
+msgid "Copy"
+msgstr "Kopiraj"
+
+#: src/ptyxis-profile-editor.ui:64
+msgid "Color"
+msgstr "Barva"
+
+#: src/ptyxis-profile-editor.ui:143
+msgid "Network"
+msgstr "Omrežje"
+
+#: src/ptyxis-profile-editor.ui:146
+msgid "Proxy"
+msgstr "Posredovalni strežnik"
+
+#: src/ptyxis-profile-editor.ui:147
+#, fuzzy
+msgid "Applies the network proxy settings to the container environment"
+msgstr "Uporabi nastavitve omrežnega proxyja v okolju vsebnika"
+
+#: src/ptyxis-profile-editor.ui:182
+#, fuzzy
+msgid "The default container to use with this profile"
+msgstr "Privzeti vsebnik za uporabo s tem profilom"
+
+#: src/ptyxis-profile-editor.ui:191
+#, fuzzy
+msgid "Preserve the current container when opening new tabs and windows"
+msgstr "Ohranjanje trenutnega vsebnika pri odpiranju novih zavihkov in oken"
+
+#: src/ptyxis-profile-editor.ui:384
+msgid "Remove Profile"
+msgstr "Odstrani profil"
+
+#: src/ptyxis-profile-row.ui:33
+msgid "View More"
+msgstr "Pokaži več"
+
+#: src/ptyxis-profile-row.ui:43
+#, fuzzy
+msgid "_Make Default"
+msgstr "_Make Privzeto"
+
+#: src/ptyxis-profile-row.ui:49
+msgid "_Duplicate…"
+msgstr "Po_dvoji …"
+
+#: src/ptyxis-profile-row.ui:53
+msgid "_Edit…"
+msgstr "_Uredi ..."
+
+#: src/ptyxis-profile-row.ui:59
+msgid "_Remove"
+msgstr "_Odstrani"
+
+#. Translators: <b>%s</b> is used to show the provided text in bold
+#: src/ptyxis-shortcut-accel-dialog.c:442
+#, c-format
+msgid "Enter new shortcut to change <b>%s</b>."
+msgstr "Vnesite novo bližnjico za spremembo <b>%s</b>."
+
+#. do not use underline as it prevents alt+c as an accelerator
+#: src/ptyxis-shortcut-accel-dialog.ui:42
+msgid "Cancel"
+msgstr "Prekliči"
+
+#. do not use underline as it prevents alt+s as an accelerator
+#: src/ptyxis-shortcut-accel-dialog.ui:49
+msgid "Set"
+msgstr "Določi"
+
+#: src/ptyxis-shortcut-accel-dialog.ui:89
+msgid "Press Escape to cancel or Backspace to disable."
+msgstr "Pritisnite ubežnico (Esc) za preklic ali vračalko za onemogočanje."
+
+#: src/ptyxis-shortcut-row.c:74
+msgid "Set Shortcut"
+msgstr "Nastavi tipkovno bližnjico"
+
+#: src/ptyxis-shortcut-row.c:194
+msgid "disabled"
+msgstr "onemogočeno"
+
+#: src/ptyxis-tab.c:279
+#, fuzzy, c-format
+msgid "Process Exited from Signal %d"
+msgstr "Proces, ki je bil izpuščen iz signalne %d"
+
+#: src/ptyxis-tab.c:282 src/ptyxis-tab.c:305
+msgid "_Restart"
+msgstr "_Znova zaženi"
+
+#. Always prepare the banner even if we don't show it because we may
+#. * display it again if the tab is removed from the parking lot and
+#. * restored into the window.
+#.
+#: src/ptyxis-tab.c:304
+#, fuzzy
+msgid "Process Exited"
+msgstr "Podrejeni proces se je zaključil s kodo %ld"
+
+#: src/ptyxis-tab.c:367
+#, fuzzy
+msgid "Failed to launch terminal"
+msgstr "Terminala ni bilo mogoče zagnati"
+
+#: src/ptyxis-tab.c:423
+#, fuzzy, c-format
+msgid "Cannot locate container “%s”"
+msgstr "Vsebnika \"%s\" ni mogoče najti"
+
+#: src/ptyxis-tab.c:447
+#, fuzzy
+msgid "Failed to create pseudo terminal device"
+msgstr "Ni bilo mogoče ustvariti psevdo terminalske naprave"
+
+#: src/ptyxis-tab.c:1231
+msgid "Exited"
+msgstr "Program je končan"
+
+#: src/ptyxis-tab.c:1233
+msgid "Failed"
+msgstr "Neuspešno"
+
+#: src/ptyxis-tab.c:1769
+msgid "Failed to open link"
+msgstr "Odpiranje povezave je spodletelo"
+
+#: src/ptyxis-tab-notify.h:89
+msgid "Command completed"
+msgstr "Ukaz je zaključen"
+
+#: src/ptyxis-terminal.ui:147
+msgid "Search…"
+msgstr "Poišči …"
+
+#: src/ptyxis-terminal.ui:153
+msgid "_Open Link"
+msgstr "_Odpri povezavo"
+
+#: src/ptyxis-terminal.ui:161
+msgid "_Copy"
+msgstr "_Kopiraj"
+
+#: src/ptyxis-terminal.ui:162
+msgid "Copy selection from terminal to clipboard"
+msgstr "Kopira izbor iz terminala na odložišče"
+
+#: src/ptyxis-terminal.ui:166
+msgid "_Copy Link"
+msgstr "Kopiraj _povezavo"
+
+#: src/ptyxis-terminal.ui:172
+msgid "_Paste"
+msgstr "_Prilepi"
+
+#: src/ptyxis-terminal.ui:173
+msgid "Paste from clipboard into the terminal"
+msgstr "Prilepi iz odložišča v terminal"
+
+#: src/ptyxis-terminal.ui:180
+msgid "Select _All"
+msgstr "_Izberi vse"
+
+#: src/ptyxis-terminal.ui:181
+msgid "Selection all text from terminal including scrollback"
+msgstr "Izbor celotnega besedila s terminala, vključno z drsenjem nazaj"
+
+#: src/ptyxis-terminal.ui:187
+msgid "Select _None"
+msgstr "_Brez izbora"
+
+#: src/ptyxis-terminal.ui:194
+msgid "Read-Only"
+msgstr "Samo za branje"
+
+#: src/ptyxis-terminal.ui:215 src/ptyxis-window.ui:512
+msgid "Leave Fullscreen"
+msgstr "Zapusti celozaslonski način"
+
+#: src/ptyxis-terminal.ui:221
+#, fuzzy
+msgid "_Inspect Terminal"
+msgstr "_Inspect Terminal"
+
+#: src/ptyxis-theme-selector.ui:21 src/ptyxis-theme-selector.ui:23
+msgid "Follow system style"
+msgstr "Upoštevaj sistemski slog"
+
+#: src/ptyxis-theme-selector.ui:37 src/ptyxis-theme-selector.ui:39
+msgid "Light style"
+msgstr "Svetla tema"
+
+#: src/ptyxis-theme-selector.ui:54 src/ptyxis-theme-selector.ui:56
+msgid "Dark style"
+msgstr "Temna tema"
+
+#. translators: Builder Terminal means this is a terminal bundled with GNOME Builder
+#: src/ptyxis-util.c:309
+#, fuzzy
+msgid "Builder Terminal"
+msgstr "Gradbeni terminal"
+
+#: src/ptyxis-util.c:313
+msgid "Ptyxis"
+msgstr "Ptyxis"
+
+#: src/ptyxis-window.c:999 src/ptyxis-window.ui:565
+#, fuzzy
+msgid "Set Title"
+msgstr "Nastavi naslov"
+
+#: src/ptyxis-window.c:1248
+msgid "Zoom in"
+msgstr "Približaj"
+
+#: src/ptyxis-window.c:1263
+msgid "Zoom out"
+msgstr "Oddalji"
+
+#: src/ptyxis-window.c:1347
+msgid "Containers"
+msgstr "Zabojniki"
+
+#: src/ptyxis-window.ui:359
+msgid "New Terminal"
+msgstr "Novo okno terminala"
+
+#: src/ptyxis-window.ui:372
+msgid "Show Profiles and Containers"
+msgstr "Pokaži profile in zabojnike"
+
+#: src/ptyxis-window.ui:413
+msgid "Main Menu"
+msgstr "Glavni meni"
+
+#: src/ptyxis-window.ui:421 src/ptyxis-window.ui:498
+msgid "Show Open Tabs"
+msgstr "Pokaži odprte zavihke"
+
+#: src/ptyxis-window.ui:482
+msgid "New _Tab"
+msgstr "Nov za_vihek"
+
+#: src/ptyxis-window.ui:489
+msgid "New _Window"
+msgstr "Novo _okno"
+
+#: src/ptyxis-window.ui:506
+msgid "Fullscreen"
+msgstr "Celozaslonski način"
+
+#: src/ptyxis-window.ui:520
+msgid "_Preferences"
+msgstr "_Nastavitve"
+
+#: src/ptyxis-window.ui:524
+msgid "_Keyboard Shortcuts"
+msgstr "_Tipke za bližnjico"
+
+#: src/ptyxis-window.ui:528
+msgid "_About"
+msgstr "_O programu"
+
+#: src/ptyxis-window.ui:537
+msgid "Move _Left"
+msgstr "Premakni _levo"
+
+#: src/ptyxis-window.ui:542
+msgid "Move _Right"
+msgstr "Premakni _desno"
+
+#: src/ptyxis-window.ui:547
+msgid "Move to New _Window"
+msgstr "_Prestavi na novo okno"
+
+#: src/ptyxis-window.ui:553
+msgid "_Pin Tab"
+msgstr "_Pripni zavihek"
+
+#: src/ptyxis-window.ui:558
+msgid "Un_pin Tab"
+msgstr "Od_pni zavihek"
+
+#: src/ptyxis-window.ui:572
+msgid "Close _Other Tabs"
+msgstr "Zapri _druge zavihke"
+
+#: src/ptyxis-window.ui:577
+msgid "_Close Tab"
+msgstr "_Zapri zavihek"
+
+#: src/ptyxis-window.ui:584
+msgid "_My Computer"
+msgstr "_Moj računalnik"
