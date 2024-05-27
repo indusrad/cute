@@ -7,8 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ptyxis main\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/chergert/ptyxis/issues\n"
-"POT-Creation-Date: 2024-05-26 11:20+0000\n"
-"PO-Revision-Date: 2024-05-27 19:41+0200\n"
+"POT-Creation-Date: 2024-05-27 17:42+0000\n"
+"PO-Revision-Date: 2024-05-27 22:28+0200\n"
+"Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Slovenian <gnome-si@googlegroups.com>\n"
 "Language: sl\n"
 "MIME-Version: 1.0\n"
@@ -16,7 +17,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100>=3 && n"
 "%100<=4 ? 2 : 3);\n"
-"Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "X-Generator: Poedit 2.2.1\n"
 
 #: data/org.gnome.Ptyxis.desktop.in.in:3
@@ -95,17 +95,14 @@ msgid "User-installable color palettes"
 msgstr "Barvne palete, ki jih lahko namesti uporabnik"
 
 #: data/org.gnome.Ptyxis.metainfo.xml.in.in:19
-#, fuzzy
 msgid "Support for preferences profiles with container integration"
-msgstr "Podpora za profile nastavitev z integracijo vsebnikov"
+msgstr "Podpora za profile nastavitev z integracijo zabojnikov"
 
 #: data/org.gnome.Ptyxis.metainfo.xml.in.in:20
-#, fuzzy
 msgid "Integrated color palettes with light and dark support"
-msgstr "Integrirane barvne palete s svetlo in temno podporo"
+msgstr "Integrirane barvne palete s podporo za svetlo in temno temo"
 
 #: data/org.gnome.Ptyxis.metainfo.xml.in.in:21
-#, fuzzy
 msgid "Tabbed interface with tab overviews"
 msgstr "Vmesnik z zavihki s pregledi zavihkov"
 
@@ -162,9 +159,8 @@ msgid "You may rename a tab by providing a prefix to the title"
 msgstr "Zavihek lahko preimenujete tako, da naslovu dodate predpono"
 
 #: data/org.gnome.Ptyxis.metainfo.xml.in.in:72
-#, fuzzy
 msgid "Palettes provide an integrated dark mode"
-msgstr "Palete zagotavljajo integriran temen način"
+msgstr "Palete zagotavljajo integriran temni način"
 
 #: data/org.gnome.Ptyxis.metainfo.xml.in.in:77
 #, fuzzy
@@ -220,34 +216,28 @@ msgid "A list of UUID for every profile"
 msgstr "Seznam UUID za vsak profil"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:107 src/ptyxis-preferences-window.ui:291
-#, fuzzy
 msgid "New Tab Position"
-msgstr "Nov položaj zavihka"
+msgstr "Položaj novega zavihka"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:108
-#, fuzzy
 msgid "Where to place new tabs"
-msgstr "Kje postaviti nove zavihke"
+msgstr "Kam postaviti nove zavihke"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:113 src/ptyxis-preferences-window.ui:383
-#, fuzzy
 msgid "Audible Bell"
-msgstr "Zvočni zvonec"
+msgstr "Slišni zvonec"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:114
-#, fuzzy
 msgid "If an audible bell should be used"
-msgstr "Če je treba uporabiti zvočni zvonec"
+msgstr "Ali naj se uporabi slišni zvonec"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:119
-#, fuzzy
 msgid "Visible Bell"
 msgstr "Vidni zvonec"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:120
-#, fuzzy
 msgid "If a visual bell should be used"
-msgstr "Če je treba uporabiti vizualni zvonec"
+msgstr "Ali naj se uporabi vidni zvonec"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:125
 #, fuzzy
@@ -325,17 +315,14 @@ msgid "When text blinking is allowed"
 msgstr "Ko je dovoljeno utripanje besedila"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:167
-#, fuzzy
 msgid "Interface Style"
 msgstr "Slog vmesnika"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:168
-#, fuzzy
 msgid "If light or dark interface style should be used"
 msgstr "Če želite uporabiti slog svetlega ali temnega vmesnika"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:173 src/ptyxis-preferences-window.ui:320
-#, fuzzy
 msgid "Restore Session"
 msgstr "Obnovi sejo"
 
@@ -345,7 +332,6 @@ msgid "Restore tabs from previous session when starting Ptyxis"
 msgstr "Obnovite zavihke iz prejšnje seje ob zagonu zdravila Ptyxis"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:179 src/ptyxis-preferences-window.ui:326
-#, fuzzy
 msgid "Restore Window Size"
 msgstr "Obnovi velikost okna"
 
@@ -355,7 +341,6 @@ msgid "Restore the previous window size when creating new windows"
 msgstr "Obnovitev prejšnje velikosti okna pri ustvarjanju novih oken"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:190
-#, fuzzy
 msgid "Default Column Size"
 msgstr "Privzeta velikost stolpca"
 
@@ -795,9 +780,8 @@ msgid "Shortcut to close the current tab"
 msgstr "Bližnjica za zapiranje trenutnega zavihka"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:477 src/ptyxis-preferences-window.ui:706
-#, fuzzy
 msgid "Close Other Tabs"
-msgstr "Zapri _druge zavihke"
+msgstr "Zapri druge zavihke"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:478
 #, fuzzy
@@ -805,114 +789,92 @@ msgid "Shortcut to close all tabs in the window but the current one"
 msgstr "Bližnjica za zapiranje vseh zavihkov v oknu, razen trenutnega"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:483
-#, fuzzy
 msgid "Focus Tab 1"
-msgstr "Zavihek »Fokus« 1"
+msgstr "Pozornost na zavihek 1"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:484
-#, fuzzy
 msgid "Shortcut to focus tab 1"
-msgstr "Bližnjica do zavihka fokusa 1"
+msgstr "Bližnjica do pozornosti zavihku 1"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:489
-#, fuzzy
 msgid "Focus Tab 2"
-msgstr "Zavihek »Fokus« 2"
+msgstr "Pozornost na zavihek 2"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:490
-#, fuzzy
 msgid "Shortcut to focus tab 2"
-msgstr "Bližnjica do zavihka 2 v fokusu"
+msgstr "Bližnjica do pozornosti zavihku 2"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:495
-#, fuzzy
 msgid "Focus Tab 3"
-msgstr "Zavihek »Fokus« 3"
+msgstr "Pozornost na zavihek 3"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:496
-#, fuzzy
 msgid "Shortcut to focus tab 3"
-msgstr "Bližnjica do zavihka 3 v fokusu"
+msgstr "Bližnjica do pozornosti zavihku 3"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:501
-#, fuzzy
 msgid "Focus Tab 4"
-msgstr "Zavihek »Fokus« 4"
+msgstr "Pozornost na zavihek 4"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:502
-#, fuzzy
 msgid "Shortcut to focus tab 4"
-msgstr "Bližnjica do zavihka 4 v fokusu"
+msgstr "Bližnjica do pozornosti zavihku 4"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:507
-#, fuzzy
 msgid "Focus Tab 5"
-msgstr "Zavihek »Fokus« 5"
+msgstr "Pozornost na zavihek 5"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:508
-#, fuzzy
 msgid "Shortcut to focus tab 5"
-msgstr "Bližnjica do zavihka 5 v fokusu"
+msgstr "Bližnjica do pozornosti zavihku 5"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:513
-#, fuzzy
 msgid "Focus Tab 6"
-msgstr "Zavihek »Fokus« 6"
+msgstr "Pozornost na zavihek 6"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:514
-#, fuzzy
 msgid "Shortcut to focus tab 6"
-msgstr "Bližnjica do zavihka 6 v fokusu"
+msgstr "Bližnjica do pozornosti zavihku 6"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:519
-#, fuzzy
 msgid "Focus Tab 7"
-msgstr "Zavihek »Fokus« 7"
+msgstr "Pozornost na zavihek 7"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:520
-#, fuzzy
 msgid "Shortcut to focus tab 7"
-msgstr "Bližnjica do zavihka 7 v fokusu"
+msgstr "Bližnjica do pozornosti zavihku 7"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:525
-#, fuzzy
 msgid "Focus Tab 8"
-msgstr "Zavihek »Fokus« 8"
+msgstr "Pozornost na zavihek 8"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:526
-#, fuzzy
 msgid "Shortcut to focus tab 8"
-msgstr "Bližnjica do zavihka 8 v fokusu"
+msgstr "Bližnjica do pozornosti zavihku 8"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:531
-#, fuzzy
 msgid "Focus Tab 9"
-msgstr "Zavihek »Fokus« 9"
+msgstr "Pozornost na zavihek 9"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:532
-#, fuzzy
 msgid "Shortcut to focus tab 9"
-msgstr "Bližnjica do zavihka 9 v fokusu"
+msgstr "Bližnjica do pozornosti zavihku 9"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:537
-#, fuzzy
 msgid "Focus Tab 10"
-msgstr "Zavihek »Fokus« 10"
+msgstr "Pozornost na zavihek 10"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:538
-#, fuzzy
 msgid "Shortcut to focus tab 10"
-msgstr "Bližnjica do zavihka v fokusu 10"
+msgstr "Bližnjica do pozornosti zavihku 10"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:543 src/ptyxis-preferences-window.ui:712
-#, fuzzy
 msgid "Undo Close Tab"
-msgstr "Razveljavitev zavihka za zapiranje"
+msgstr "Razveljavi zaprtje zavihka"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:544
-#, fuzzy
 msgid "Undo closing of last tab"
-msgstr "Razveljavitev zapiranja zadnjega zavihka"
+msgstr "Razveljavi zapirtje zadnjega zavihka"
 
 #: src/ptyxis-application.c:263
 #, fuzzy
