@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ptyxis main\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/chergert/ptyxis/issues\n"
-"POT-Creation-Date: 2024-05-25 16:01+0000\n"
-"PO-Revision-Date: 2024-05-26 14:19+0300\n"
+"POT-Creation-Date: 2024-05-28 20:22+0000\n"
+"PO-Revision-Date: 2024-05-29 12:35+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian\n"
 "Language: uk\n"
@@ -35,13 +35,16 @@ msgstr "Термінал"
 
 #. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
 #: data/org.gnome.Ptyxis.desktop.in.in:15
+#| msgid ""
+#| "terminal;prompt;ptyxis;shell;command;commandline;cmd;cli;container;podman;"
+#| "toolbx;distrobox;"
 msgid ""
 "terminal;prompt;ptyxis;shell;command;commandline;cmd;cli;container;podman;"
-"toolbx;distrobox;"
+"toolbox;distrobox;"
 msgstr ""
 "terminal;prompt;ptyxis;shell;command;commandline;cmd;cli;container;podman;"
-"toolbox;distrobox;термінал;запит;птиксіс;команда;рядок;клі;контейнер;подмен;т"
-"улбокс;дістробокс;"
+"toolbox;distrobox;термінал;запит;птиксіс;команда;рядок;клі;контейнер;подмен;"
+"тулбокс;дістробокс;"
 
 #: data/org.gnome.Ptyxis.desktop.in.in:21
 #: src/org.gnome.Ptyxis.gschema.xml.in:357 src/ptyxis-preferences-window.ui:680
@@ -67,8 +70,8 @@ msgid ""
 "Ptyxis is a terminal for GNOME that focuses on ease-of-use in a world of "
 "containers."
 msgstr ""
-"Ptyxis — термінал для GNOME, акцент у якому зроблено на простоту"
-" користування у світі контейнерів."
+"Ptyxis — термінал для GNOME, акцент у якому зроблено на простоту "
+"користування у світі контейнерів."
 
 #: data/org.gnome.Ptyxis.metainfo.xml.in.in:13
 msgid "Features:"
@@ -79,8 +82,8 @@ msgid ""
 "Remembers current container when opening a new tab with support for podman, "
 "toolbox, distrobox, and more"
 msgstr ""
-"Запам'ятовує поточний контейнер при відкритті нової вкладки із підтримкою"
-" podman, toolbox, distrobox тощо"
+"Запам'ятовує поточний контейнер при відкритті нової вкладки із підтримкою "
+"podman, toolbox, distrobox тощо"
 
 #: data/org.gnome.Ptyxis.metainfo.xml.in.in:16
 msgid "Configurable keyboard shortcuts"
@@ -129,8 +132,8 @@ msgstr "Вкладки термінала запускаються у межах
 #: data/org.gnome.Ptyxis.metainfo.xml.in.in:27
 msgid "Terminal inspector to help when writing terminal-based applications"
 msgstr ""
-"Інспектор термінала, який допоможе у написанні заснованих на терміналі"
-" програм"
+"Інспектор термінала, який допоможе у написанні заснованих на терміналі "
+"програм"
 
 #: data/org.gnome.Ptyxis.metainfo.xml.in.in:52
 msgid "A column and row size indicator is displayed when resizing the window"
@@ -144,8 +147,8 @@ msgstr "Автоматичне виявлення та показ контейн
 #: data/org.gnome.Ptyxis.metainfo.xml.in.in:62
 msgid "Many behaviors of the terminal may be tweaked to user preference"
 msgstr ""
-"Багато параметрів роботи термінала може бути скориговано за уподобаннями"
-" користувача"
+"Багато параметрів роботи термінала може бути скориговано за уподобаннями "
+"користувача"
 
 #: data/org.gnome.Ptyxis.metainfo.xml.in.in:67
 msgid "You may rename a tab by providing a prefix to the title"
@@ -162,8 +165,8 @@ msgstr "Ви будь-коли можете переглянути огляд в
 #: data/org.gnome.Ptyxis.metainfo.xml.in.in:82
 msgid "Many shortcuts may be remapped to user preference"
 msgstr ""
-"Багато клавіатурних скорочень може бути перевизначено за уподобаннями"
-" користувача"
+"Багато клавіатурних скорочень може бути перевизначено за уподобаннями "
+"користувача"
 
 #: data/org.gnome.Ptyxis.metainfo.xml.in.in:87
 msgid "Built-in color palettes provide both dark and light mode variants"
@@ -173,14 +176,14 @@ msgstr "У вбудованих палітрах кольорів передба
 msgid ""
 "Profiles allow for overriding a number of features such as default container"
 msgstr ""
-"Профілі забезпечують перевизначення багатьох можливостей, зокрема типового"
-" контейнера"
+"Профілі забезпечують перевизначення багатьох можливостей, зокрема типового "
+"контейнера"
 
 #: data/org.gnome.Ptyxis.metainfo.xml.in.in:97
 msgid "The terminal will remind you when you're root on the local system"
 msgstr ""
-"Термінал нагадає вам, якщо ви працюєте від імені адміністратора у локальній"
-" системі"
+"Термінал нагадає вам, якщо ви працюєте від імені адміністратора у локальній "
+"системі"
 
 #: data/org.gnome.Ptyxis.metainfo.xml.in.in:102
 msgid "The terminal will remind you when you're on a remote system"
@@ -235,8 +238,8 @@ msgid ""
 "Display a visual window highlight when process leader is SSH, sudo, or other "
 "specialized tooling"
 msgstr ""
-"Показ візуального підсвічування вікна, якщо лідером процесів є SSH, sudo або"
-" інший спеціалізований інструмент"
+"Показ візуального підсвічування вікна, якщо лідером процесів є SSH, sudo або "
+"інший спеціалізований інструмент"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:131
 msgid "Use System Font"
@@ -253,8 +256,8 @@ msgstr "Назва шрифту"
 #: src/org.gnome.Ptyxis.gschema.xml.in:138
 msgid "The font description to use if use-system-font is set to False"
 msgstr ""
-"Опис шрифту, яким слід скористатися, якщо для use-system-font встановлено"
-" значення False"
+"Опис шрифту, яким слід скористатися, якщо для use-system-font встановлено "
+"значення False"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:143 src/ptyxis-preferences-window.ui:218
 msgid "Cursor Shape"
@@ -320,8 +323,7 @@ msgstr "Типовий розмір стовпчика"
 #: src/org.gnome.Ptyxis.gschema.xml.in:191
 #: src/org.gnome.Ptyxis.gschema.xml.in:198
 msgid "Default window size when restore-window-size is not true."
-msgstr ""
-"Типовий розмір, якщо restore-window-size не встановлено значення true."
+msgstr "Типовий розмір, якщо restore-window-size не встановлено значення true."
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:197
 msgid "Default Row Size"
@@ -340,12 +342,15 @@ msgid "Enable Accessibility"
 msgstr "Увімкнути можливості доступності"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:210
+#| msgid ""
+#| "Currently expirmental feature to send accessibility information to screen "
+#| "readers."
 msgid ""
-"Currently expirmental feature to send accessibility information to screen "
+"Currently experimental feature to send accessibility information to screen "
 "readers."
 msgstr ""
-"У поточній версії експериментальна можливість надсилання даних доступності"
-" до засобів читання з екрана."
+"У поточній версії експериментальна можливість надсилання даних доступності "
+"до засобів читання з екрана."
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:219
 msgid "Label"
@@ -380,8 +385,8 @@ msgstr "Рядки буфера гортання"
 #: src/org.gnome.Ptyxis.gschema.xml.in:239
 msgid "The number of lines to keep in the scrollback, zero for no scrollback"
 msgstr ""
-"Кількість рядків, які слід зберігати у буфері гортання. 0 — не"
-" використовувати буфер гортання."
+"Кількість рядків, які слід зберігати у буфері гортання. 0 — не "
+"використовувати буфер гортання."
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:244 src/ptyxis-preferences-window.ui:441
 #: src/ptyxis-profile-editor.ui:293
@@ -484,8 +489,8 @@ msgid ""
 "Setting bold on one of the lower 8 colors in the palette will use bright "
 "variant (upper 8 colors)"
 msgstr ""
-"Встановлення для напівжирного одного з 8 кольорів у палітрі призведе до"
-" використання яскравого варіанта кольору (верхніх 8 кольорів)"
+"Встановлення для напівжирного одного з 8 кольорів у палітрі призведе до "
+"використання яскравого варіанта кольору (верхніх 8 кольорів)"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:317
 msgid "CJK Ambiguous Width"
@@ -593,8 +598,8 @@ msgstr "Скинути термінал і спорожнити журнал"
 #: src/org.gnome.Ptyxis.gschema.xml.in:406
 msgid "Reset the terminal state and clear history for misbehaving clients"
 msgstr ""
-"Відновити початковий стан термінала і спорожнити журнал для клієнтів із"
-" нештатною поведінкою"
+"Відновити початковий стан термінала і спорожнити журнал для клієнтів із "
+"нештатною поведінкою"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:411 src/ptyxis-preferences-window.ui:655
 msgid "Search History"
@@ -610,8 +615,7 @@ msgstr "Позначити все"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:418
 msgid "Shortcut to select all the entire terminal scrollback"
-msgstr ""
-"Клавіатурне скорочення для позначення усього буфера гортання термінала"
+msgstr "Клавіатурне скорочення для позначення усього буфера гортання термінала"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:423
 msgid "Select None"
@@ -660,8 +664,8 @@ msgstr "Пересунути вкладку ліворуч"
 #: src/org.gnome.Ptyxis.gschema.xml.in:454
 msgid "Shortcut to move the current tab to the left one position"
 msgstr ""
-"Клавіатурне скорочення для перенесення поточної вкладки на одну позицію"
-" ліворуч"
+"Клавіатурне скорочення для перенесення поточної вкладки на одну позицію "
+"ліворуч"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:459 src/ptyxis-preferences-window.ui:742
 msgid "Move Tab Right"
@@ -670,8 +674,8 @@ msgstr "Пересунути вкладку праворуч"
 #: src/org.gnome.Ptyxis.gschema.xml.in:460
 msgid "Shortcut to move the current tab to the right one position"
 msgstr ""
-"Клавіатурне скорочення для перенесення поточної вкладки на одну позицію"
-" праворуч"
+"Клавіатурне скорочення для перенесення поточної вкладки на одну позицію "
+"праворуч"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:465 src/ptyxis-preferences-window.ui:748
 msgid "Move Tab to New Window"
@@ -696,8 +700,8 @@ msgstr "Закрити інші вкладки"
 #: src/org.gnome.Ptyxis.gschema.xml.in:478
 msgid "Shortcut to close all tabs in the window but the current one"
 msgstr ""
-"Клавіатурне скорочення для закриття усіх вкладок у вікні, окрім поточної"
-" вкладки"
+"Клавіатурне скорочення для закриття усіх вкладок у вікні, окрім поточної "
+"вкладки"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:483
 msgid "Focus Tab 1"
@@ -1161,8 +1165,8 @@ msgstr "Дозволити засоби читання з екрана"
 msgid ""
 "Permit screen readers such as Orca to read terminal content and typed text"
 msgstr ""
-"Дозволити засобам читання з екрана, зокрема Orca, читати дані з термінала та"
-" введений текст"
+"Дозволити засобам читання з екрана, зокрема Orca, читати дані з термінала та "
+"введений текст"
 
 #: src/ptyxis-preferences-window.ui:380
 msgid "Bell"
