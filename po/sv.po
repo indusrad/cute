@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Ptyxis main\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/chergert/ptyxis/issues\n"
-"POT-Creation-Date: 2024-05-23 10:43+0000\n"
-"PO-Revision-Date: 2024-05-23 17:52+0200\n"
+"POT-Creation-Date: 2024-05-24 18:09+0000\n"
+"PO-Revision-Date: 2024-05-24 20:15+0200\n"
 "Last-Translator: Anders Jonsson <anders.jonsson@norsjovallen.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "Language: sv\n"
@@ -30,7 +30,7 @@ msgid "A container-oriented terminal for GNOME"
 msgstr "En behållarorienterad terminal för GNOME"
 
 #: data/org.gnome.Ptyxis.desktop.in.in:13 src/ptyxis-preferences-window.ui:610
-#: src/ptyxis-tab.c:1228
+#: src/ptyxis-tab.c:1228 src/ptyxis-util.c:308
 msgid "Terminal"
 msgstr "Terminal"
 
@@ -54,7 +54,7 @@ msgstr "Ny flik"
 msgid "Preferences"
 msgstr "Inställningar"
 
-#: data/org.gnome.Ptyxis.metainfo.xml.in.in:6
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:6 src/ptyxis-util.c:310
 msgid "Ptyxis"
 msgstr "Ptyxis"
 
@@ -910,6 +910,35 @@ msgstr "Stäng"
 msgid "Close the search bar"
 msgstr "Stäng sökfältet"
 
+#: src/ptyxis-inspector.c:89 src/ptyxis-inspector.c:351
+msgid "unset"
+msgstr "ej inställt"
+
+#: src/ptyxis-inspector.c:110 src/ptyxis-inspector.c:268
+msgid "Row"
+msgstr "Rad"
+
+#: src/ptyxis-inspector.c:110 src/ptyxis-inspector.c:268
+msgid "Column"
+msgstr "Kolumn"
+
+#. NOTE: If we are in a container that also supports VTE patches
+#. * then it will send shell-precmd via escape sequences. The reality
+#. * is that our foreground is the `toolbox enter` process (until we
+#. * have better patches in VTE) but we show "Shell" instead.
+#. *
+#. * This is fine for now, but I'd like it to be better and actually
+#. * show the proper `tcgetpgrp()` foreground.
+#.
+#: src/ptyxis-inspector.c:171 src/ptyxis-inspector.c:191
+#: src/ptyxis-preferences-window.ui:477 src/ptyxis-profile-editor.ui:145
+msgid "Shell"
+msgstr "Skal"
+
+#: src/ptyxis-inspector.c:270
+msgid "untracked"
+msgstr "ospårad"
+
 #: src/ptyxis-inspector.ui:4
 msgid "Inspector"
 msgstr "Inspektör"
@@ -1160,10 +1189,6 @@ msgstr "Begränsa antalet rader som sparas för tillbakarullning"
 #: src/ptyxis-preferences-window.ui:461 src/ptyxis-profile-editor.ui:304
 msgid "The number of lines to keep for scrollback"
 msgstr "Antalet rader att behålla för tillbakarullning"
-
-#: src/ptyxis-preferences-window.ui:477 src/ptyxis-profile-editor.ui:145
-msgid "Shell"
-msgstr "Skal"
 
 #: src/ptyxis-preferences-window.ui:480 src/ptyxis-profile-editor.ui:163
 msgid "Use Login Shell"
