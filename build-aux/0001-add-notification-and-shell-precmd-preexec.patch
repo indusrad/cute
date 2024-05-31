@@ -1,6 +1,6 @@
-From d40bf6e043bad8f920f5fe1119c5f860af21edac Mon Sep 17 00:00:00 2001
+From 38d7f1f2540543855cb6cf69302e0290ffbbfa39 Mon Sep 17 00:00:00 2001
 From: Christian Hergert <chergert@redhat.com>
-Date: Mon, 29 Jan 2024 10:28:54 -0800
+Date: Fri, 31 May 2024 14:34:10 -0700
 Subject: [PATCH] add notification and shell precmd/preexec
 
 This is a bit simpler to manage as a single patch rather than a series of
@@ -13,13 +13,13 @@ You can always connect to the signal rather than the vtable default func.
 ---
  src/marshal.list      |   1 +
  src/vte.cc            |  28 +++++++++
- src/vte.sh.in         |   7 ++-
+ src/vte.sh.in         |  10 ++++
  src/vte/vteterminal.h |   4 ++
  src/vtegtk.cc         | 131 ++++++++++++++++++++++++++++++++++++++++++
  src/vtegtk.hh         |   5 ++
  src/vteinternal.hh    |  26 +++++++++
  src/vteseq.cc         | 123 ++++++++++++++++++++++++++++++++++++++-
- 9 files changed, 347 insertions(+), 4 deletions(-)
+ 8 files changed, 327 insertions(+), 1 deletion(-)
 
 diff --git a/src/marshal.list b/src/marshal.list
 index 16bef201..8f829c4d 100644
@@ -32,10 +32,10 @@ index 16bef201..8f829c4d 100644
 +VOID:STRING,STRING
  VOID:UINT,UINT
 diff --git a/src/vte.cc b/src/vte.cc
-index b4139733..0753c68c 100644
+index 96ad60a0..da15ac6b 100644
 --- a/src/vte.cc
 +++ b/src/vte.cc
-@@ -10880,6 +10880,34 @@ Terminal::emit_pending_signals()
+@@ -11005,6 +11005,34 @@ Terminal::emit_pending_signals()
                  widget()->notify_termprops_changed(changed_props, n_changed_props);
          }
  
@@ -109,10 +109,10 @@ index 2328a9ec..93f45ea8 100644
  
      # Shell integration
 diff --git a/src/vte/vteterminal.h b/src/vte/vteterminal.h
-index 8920e530..625973f0 100644
+index 669f8233..a704598e 100644
 --- a/src/vte/vteterminal.h
 +++ b/src/vte/vteterminal.h
-@@ -570,6 +570,10 @@ glong vte_terminal_get_column_count(VteTerminal *terminal) _VTE_CXX_NOEXCEPT _VT
+@@ -577,6 +577,10 @@ glong vte_terminal_get_column_count(VteTerminal *terminal) _VTE_CXX_NOEXCEPT _VT
  _VTE_PUBLIC
  const char *vte_terminal_get_window_title(VteTerminal *terminal) _VTE_CXX_NOEXCEPT _VTE_GNUC_NONNULL(1);
  _VTE_PUBLIC
@@ -124,10 +124,10 @@ index 8920e530..625973f0 100644
  _VTE_PUBLIC
  const char *vte_terminal_get_current_file_uri(VteTerminal *terminal) _VTE_CXX_NOEXCEPT _VTE_GNUC_NONNULL(1);
 diff --git a/src/vtegtk.cc b/src/vtegtk.cc
-index c1fbb540..dbe5d6c2 100644
+index 2d9fcaed..988235ee 100644
 --- a/src/vtegtk.cc
 +++ b/src/vtegtk.cc
-@@ -1035,6 +1035,12 @@ try
+@@ -1054,6 +1054,12 @@ try
                  case PROP_CURSOR_BLINK_MODE:
                          g_value_set_enum (value, vte_terminal_get_cursor_blink_mode (terminal));
                          break;
@@ -140,7 +140,7 @@ index c1fbb540..dbe5d6c2 100644
                  case PROP_CURRENT_DIRECTORY_URI:
                          g_value_set_string (value, vte_terminal_get_current_directory_uri (terminal));
                          break;
-@@ -1598,6 +1604,60 @@ vte_terminal_class_init(VteTerminalClass *klass)
+@@ -1623,6 +1629,60 @@ vte_terminal_class_init(VteTerminalClass *klass)
                                     G_OBJECT_CLASS_TYPE(klass),
                                     g_cclosure_marshal_VOID__INTv);
  
@@ -201,7 +201,7 @@ index c1fbb540..dbe5d6c2 100644
          /**
           * VteTerminal::window-title-changed:
           * @vteterminal: the object which received the signal
-@@ -2737,6 +2797,27 @@ vte_terminal_class_init(VteTerminalClass *klass)
+@@ -2778,6 +2838,27 @@ vte_terminal_class_init(VteTerminalClass *klass)
                                       NULL,
                                       (GParamFlags) (G_PARAM_READABLE | G_PARAM_STATIC_STRINGS | G_PARAM_EXPLICIT_NOTIFY));
  
@@ -229,7 +229,7 @@ index c1fbb540..dbe5d6c2 100644
          /**
           * VteTerminal:current-directory-uri:
           *
-@@ -6093,6 +6174,56 @@ catch (...)
+@@ -6189,6 +6270,56 @@ catch (...)
          return -1;
  }
  
@@ -287,7 +287,7 @@ index c1fbb540..dbe5d6c2 100644
   * vte_terminal_get_current_directory_uri:
   * @terminal: a #VteTerminal
 diff --git a/src/vtegtk.hh b/src/vtegtk.hh
-index 159c4715..1d783e87 100644
+index bdf4f071..cbb965eb 100644
 --- a/src/vtegtk.hh
 +++ b/src/vtegtk.hh
 @@ -53,6 +53,9 @@ enum {
@@ -310,10 +310,10 @@ index 159c4715..1d783e87 100644
          PROP_CURRENT_FILE_URI,
          PROP_DELETE_BINDING,
 diff --git a/src/vteinternal.hh b/src/vteinternal.hh
-index 879924aa..fa58ea5a 100644
+index af4c96bc..eb0ccefb 100644
 --- a/src/vteinternal.hh
 +++ b/src/vteinternal.hh
-@@ -64,6 +64,7 @@
+@@ -66,6 +66,7 @@
  #include <list>
  #include <queue>
  #include <optional>
@@ -321,7 +321,7 @@ index 879924aa..fa58ea5a 100644
  #include <string>
  #include <unordered_map>
  #include <unordered_set>
-@@ -128,6 +129,18 @@ typedef enum _VteCharacterReplacement {
+@@ -130,6 +131,18 @@ typedef enum _VteCharacterReplacement {
          VTE_CHARACTER_REPLACEMENT_LINE_DRAWING
  } VteCharacterReplacement;
  
@@ -340,7 +340,7 @@ index 879924aa..fa58ea5a 100644
  typedef struct _VtePaletteColor {
  	struct {
  		vte::color::rgb color;
-@@ -740,6 +753,12 @@ public:
+@@ -742,6 +755,12 @@ public:
          gboolean m_cursor_moved_pending;
          gboolean m_contents_changed_pending;
  
@@ -353,7 +353,7 @@ index 879924aa..fa58ea5a 100644
          std::string m_window_title{};
          std::string m_current_directory_uri{};
          std::string m_current_file_uri{};
-@@ -754,6 +773,10 @@ public:
+@@ -756,6 +775,10 @@ public:
                  TITLE = 1u << 1,
                  CWD   = 1u << 2,
                  CWF   = 1u << 3,
@@ -364,7 +364,7 @@ index 879924aa..fa58ea5a 100644
          };
          unsigned m_pending_changes{0};
  
-@@ -1729,6 +1752,9 @@ public:
+@@ -1759,6 +1782,9 @@ public:
                              bool& query) noexcept;
  
          /* OSC handlers */
@@ -375,7 +375,7 @@ index 879924aa..fa58ea5a 100644
                         vte::parser::StringTokeniser::const_iterator& token,
                         vte::parser::StringTokeniser::const_iterator const& endtoken,
 diff --git a/src/vteseq.cc b/src/vteseq.cc
-index dad51616..66092fdf 100644
+index 2430054c..27b90b12 100644
 --- a/src/vteseq.cc
 +++ b/src/vteseq.cc
 @@ -39,6 +39,9 @@
@@ -388,8 +388,8 @@ index dad51616..66092fdf 100644
  
  using namespace std::literals;
  
-@@ -1304,6 +1307,121 @@ Terminal::erase_in_line(vte::parser::Sequence const& seq)
-         m_text_deleted_flag = TRUE;
+@@ -4485,6 +4488,121 @@ Terminal::DECSGR(vte::parser::Sequence const& seq)
+         /* TODO: consider implementing sub/superscript? */
  }
  
 +void
@@ -508,9 +508,9 @@ index dad51616..66092fdf 100644
 +}
 +
  bool
- Terminal::get_osc_color_index(int osc,
-                                         int value,
-@@ -6836,6 +6954,10 @@ Terminal::OSC(vte::parser::Sequence const& seq)
+ Terminal::DECSIXEL(vte::parser::Sequence const& seq)
+ {
+@@ -6844,6 +6962,10 @@ Terminal::OSC(vte::parser::Sequence const& seq)
                  vte_termprop(seq, it, cend);
                  break;
  
@@ -521,7 +521,7 @@ index dad51616..66092fdf 100644
          case VTE_OSC_XTERM_SET_ICON_TITLE:
          case VTE_OSC_XTERM_SET_XPROPERTY:
          case VTE_OSC_XTERM_SET_COLOR_MOUSE_CURSOR_FG:
-@@ -6876,7 +6998,6 @@ Terminal::OSC(vte::parser::Sequence const& seq)
+@@ -6884,7 +7006,6 @@ Terminal::OSC(vte::parser::Sequence const& seq)
          case VTE_OSC_URXVT_SET_FONT_BOLD_ITALIC:
          case VTE_OSC_URXVT_VIEW_UP:
          case VTE_OSC_URXVT_VIEW_DOWN:
@@ -530,5 +530,5 @@ index dad51616..66092fdf 100644
          default:
                  break;
 -- 
-2.43.0
+2.45.1
 
