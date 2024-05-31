@@ -591,6 +591,17 @@ ptyxis_client_spawn_async (PtyxisClient        *self,
       return;
     }
 
+  /* Make sure that the child PTY FD is blocking as most things
+   * will expect that by default. We continue to keep our consumer
+   * FD non-blocking for how we use it.
+   */
+  if (!g_unix_set_fd_nonblocking (pty_fd, FALSE, &error))
+    {
+      g_warning ("Failed to set child PTY FD non-blocking: %s",
+                 error->message);
+      g_clear_error (&error);
+    }
+
   if (ptyxis_profile_get_use_proxy (profile))
     env = ptyxis_client_discover_proxy_environment (self, NULL, NULL);
 
