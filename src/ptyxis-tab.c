@@ -310,7 +310,8 @@ ptyxis_tab_wait_cb (GObject      *object,
    * allow ourselves to auto-close in that case as it's likely an error
    * the user would want to see.
    */
-  if ((g_get_monotonic_time () - self->respawn_time) < (G_USEC_PER_SEC/2) &&
+  if ((self->command == NULL || self->state == PTYXIS_TAB_STATE_FAILED) &&
+      (g_get_monotonic_time () - self->respawn_time) < (G_USEC_PER_SEC/2) &&
       !ptyxis_tab_monitor_get_has_pressed_key (self->monitor))
     exit_action = PTYXIS_EXIT_ACTION_NONE;
 
