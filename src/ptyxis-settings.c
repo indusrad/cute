@@ -63,12 +63,6 @@ G_DEFINE_FINAL_TYPE (PtyxisSettings, ptyxis_settings, G_TYPE_OBJECT)
 
 static GParamSpec *properties [N_PROPS];
 
-static inline gboolean
-strempty (const char *s)
-{
-  return !s || !s[0];
-}
-
 static void
 ptyxis_settings_changed_cb (PtyxisSettings *self,
                             const char     *key,
