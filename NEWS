@@ -1,3 +1,14 @@
+# Ptyxis 46.3
+
+Changes since 46.3
+
+ * stdin in child processes defaults to blocking mode as is generally
+   expected of terminals.
+ * Ignore tab respawn warnings when custom commands are used and they
+   exited nominally.
+ * Various build system and metainfo updates.
+ * Translation updates.
+
 # Ptyxis 46.2
 
 Changes since 46.1

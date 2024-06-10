@@ -43,6 +43,13 @@
   <launchable type="desktop-id">@APP_ID@.desktop</launchable>
 
   <releases>
+    <release version="46.3" date="2024-06-10">
+      <description>
+        <p>This release includes important bugfixes and translation updates.</p>
+        <p>Ptyxis will now default the standard input (stdin) of shells to blocking status as is generally expected from user shells.</p>
+        <p>When requesting Ptyxis run a custom command using "--" or "--execute" no longer will warning banners be displayed for quickly exiting processes as long as the process exits nominally.</p>
+      </description>
+    </release>
     <release version="46.2" date="2024-05-10"/>
     <release version="46.1" date="2024-04-10"/>
     <release version="46.0" date="2024-03-15"/>
