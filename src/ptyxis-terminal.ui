@@ -80,7 +80,7 @@
                 <lookup name="shortcuts">PtyxisTerminal</lookup>
               </lookup>
             </binding>
-            <property name="action">action(terminal.select-none)</property>
+            <property name="action">action(terminal.select-all)</property>
             <property name="arguments">false</property>
           </object>
         </child>
