@@ -59,6 +59,7 @@ struct _PtyxisWindow
   GtkWidget             *tab_overview_button;
   GtkWidget             *new_tab_box;
 
+  GBindingGroup         *profile_bindings;
   GBindingGroup         *active_tab_bindings;
   GSignalGroup          *active_tab_signals;
   GSignalGroup          *selected_page_signals;
@@ -341,27 +342,13 @@ ptyxis_window_notify_selected_page_cb (PtyxisWindow *self,
 
   if (page != NULL)
     {
-      PtyxisProfile *profile;
-
       tab = PTYXIS_TAB (adw_tab_page_get_child (page));
-      profile = ptyxis_tab_get_profile (tab);
 
       has_page = TRUE;
 
       terminal = ptyxis_tab_get_terminal (tab);
 
       g_signal_group_set_target (self->active_tab_signals, tab);
-
-      g_object_bind_property (profile, "palette",
-                              self->dressing, "palette",
-                              G_BINDING_SYNC_CREATE);
-      g_object_bind_property (profile, "opacity",
-                              self->dressing, "opacity",
-                              G_BINDING_SYNC_CREATE);
-      g_object_bind_property_full (tab, "title",
-                                   self, "title",
-                                   G_BINDING_SYNC_CREATE,
-                                   bind_title_cb, NULL, NULL, NULL);
 
       read_only = g_property_action_new ("tab.read-only", tab, "read-only");
 
@@ -1333,6 +1320,12 @@ ptyxis_window_constructed (GObject *object)
   G_OBJECT_CLASS (ptyxis_window_parent_class)->constructed (object);
 
   self->dressing = ptyxis_window_dressing_new (self);
+  g_binding_group_bind (self->profile_bindings, "palette",
+                        self->dressing, "palette",
+                        G_BINDING_SYNC_CREATE);
+  g_binding_group_bind (self->profile_bindings, "opacity",
+                        self->dressing, "opacity",
+                        G_BINDING_SYNC_CREATE);
 
   gtk_widget_action_set_enabled (GTK_WIDGET (self), "win.unfullscreen", FALSE);
 
@@ -1413,6 +1406,7 @@ ptyxis_window_dispose (GObject *object)
 
   g_signal_group_set_target (self->active_tab_signals, NULL);
   g_binding_group_set_source (self->active_tab_bindings, NULL);
+  g_binding_group_set_source (self->profile_bindings, NULL);
   g_signal_group_set_target (self->selected_page_signals, NULL);
   g_clear_handle_id (&self->focus_active_tab_source, g_source_remove);
   g_clear_object (&self->parking_lot);
@@ -1427,6 +1421,7 @@ ptyxis_window_finalize (GObject *object)
 
   g_clear_object (&self->active_tab_bindings);
   g_clear_object (&self->active_tab_signals);
+  g_clear_object (&self->profile_bindings);
   g_clear_object (&self->selected_page_signals);
 
   G_OBJECT_CLASS (ptyxis_window_parent_class)->finalize (object);
@@ -1571,6 +1566,7 @@ ptyxis_window_init (PtyxisWindow *self)
   g_autoptr(GIcon) default_icon = NULL;
 
   self->active_tab_bindings = g_binding_group_new ();
+  self->profile_bindings = g_binding_group_new ();
 
   self->selected_page_signals = g_signal_group_new (ADW_TYPE_TAB_PAGE);
   g_signal_connect_object (self->selected_page_signals,
@@ -1627,6 +1623,14 @@ ptyxis_window_init (PtyxisWindow *self)
   ptyxis_window_shortcuts_notify_cb (self, NULL, self->shortcuts);
 
   adw_tab_view_set_shortcuts (self->tab_view, 0);
+
+  g_binding_group_bind (self->active_tab_bindings, "profile",
+                        self->profile_bindings, "source",
+                        G_BINDING_SYNC_CREATE);
+  g_binding_group_bind_full (self->active_tab_bindings, "title",
+                             self, "title",
+                             G_BINDING_SYNC_CREATE,
+                             bind_title_cb, NULL, NULL, NULL);
 }
 
 PtyxisTab *
