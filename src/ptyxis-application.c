@@ -297,8 +297,6 @@ ptyxis_application_command_line (GApplication            *app,
         cwd_uri = g_strdup_printf ("file://%s", working_directory);
     }
 
-  g_print ("Title: %s\n", title);
-
   /* First restore our session state so it won't be lost when closing the
    * application down. No matter what the options, if we're not single instance
    * mode then we need to restore state.
