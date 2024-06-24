@@ -1,0 +1,447 @@
+From 3dacc32eca0166c3e42ffc53fdda6b487370c9cb Mon Sep 17 00:00:00 2001
+From: Christian Hergert <chergert@redhat.com>
+Date: Mon, 24 Jun 2024 12:34:44 -0700
+Subject: [PATCH 1/2] widget: Add termprops to replace fedora patches
+
+Add termprops to replace the fedora patches adding toolbox support, as
+well as shell precmd/preexec and command completion notification.
+
+Also add code to parse the legacy OSC 777 fedora sequences to set these
+termprops, if enabled and these termprops are installed.
+
+# Conflicts:
+#	src/app/app.cc
+#	src/vteinternal.hh
+---
+ src/app/app.cc        |  30 +++++++++++++
+ src/termprops.hh      |   7 +++
+ src/vte/vteterminal.h |   8 +++-
+ src/vtegtk.cc         |  76 ++++++++++++++++++++++++++++++--
+ src/vtegtk.hh         |   1 +
+ src/vteinternal.hh    |  20 +++++++++
+ src/vteseq.cc         | 100 +++++++++++++++++++++++++++++++++++++++++-
+ src/widget.hh         |   3 ++
+ 8 files changed, 240 insertions(+), 5 deletions(-)
+
+diff --git a/src/app/app.cc b/src/app/app.cc
+index 385df674..f99021fe 100644
+--- a/src/app/app.cc
++++ b/src/app/app.cc
+@@ -1819,6 +1819,13 @@ vteapp_search_popover_new(VteTerminal* terminal,
+ #define VTEAPP_IS_TERMINAL_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE((k), VTEAPP_TYPE_TERMINAL))
+ #define VTEAPP_TERMINAL_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS((o), VTEAPP_TYPE_TERMINAL, VteappTerminalClass))
+ 
++#define VTEAPP_TERMPROP_FEDORA_CONTAINER_NAME    VTE_TERMPROP_NAME_PREFIX "fedora.container.name"    /* string */
++#define VTEAPP_TERMPROP_FEDORA_CONTAINER_RUNTIME VTE_TERMPROP_NAME_PREFIX "fedora.container.runtime" /* string */
++#define VTEAPP_TERMPROP_FEDORA_CONTAINER_UID     VTE_TERMPROP_NAME_PREFIX "fedora.container.uid"     /* uint64 */
++#define VTEAPP_TERMPROP_FEDORA_SHELL_PRECMD      VTE_TERMPROP_NAME_PREFIX "fedora.shell.precmd"      /* valueless */
++#define VTEAPP_TERMPROP_FEDORA_SHELL_PREEXEC     VTE_TERMPROP_NAME_PREFIX "fedora.shell.preexec"     /* valueless */
++#define VTEAPP_TERMPROP_FEDORA_SHELL_POSTEXEC    VTE_TERMPROP_NAME_PREFIX "fedora.shell.postexec"    /* valueless */
++
+ typedef struct _VteappTerminal       VteappTerminal;
+ typedef struct _VteappTerminalClass  VteappTerminalClass;
+ 
+@@ -2141,6 +2148,27 @@ vteapp_terminal_class_init(VteappTerminalClass *klass)
+                         verbose_print("  %s\n", termprops.get()[i]);
+                 }
+         }
++
++        { // BEGIN distro patches
++                vte_install_termprop(VTEAPP_TERMPROP_FEDORA_CONTAINER_NAME,
++                                     VTE_PROPERTY_STRING,
++                                     VTE_PROPERTY_FLAG_NONE);
++                vte_install_termprop(VTEAPP_TERMPROP_FEDORA_CONTAINER_RUNTIME,
++                                     VTE_PROPERTY_STRING,
++                                     VTE_PROPERTY_FLAG_NONE);
++                vte_install_termprop(VTEAPP_TERMPROP_FEDORA_CONTAINER_UID,
++                                     VTE_PROPERTY_UINT,
++                                     VTE_PROPERTY_FLAG_NONE);
++                vte_install_termprop(VTEAPP_TERMPROP_FEDORA_SHELL_PRECMD,
++                                     VTE_PROPERTY_VALUELESS,
++                                     VTE_PROPERTY_FLAG_NONE);
++                vte_install_termprop(VTEAPP_TERMPROP_FEDORA_SHELL_PREEXEC,
++                                     VTE_PROPERTY_VALUELESS,
++                                     VTE_PROPERTY_FLAG_NONE);
++                vte_install_termprop(VTEAPP_TERMPROP_FEDORA_SHELL_POSTEXEC,
++                                     VTE_PROPERTY_VALUELESS,
++                                     VTE_PROPERTY_FLAG_NONE);
++        } // END distro patches
+ }
+ 
+ static void
+@@ -2154,6 +2182,8 @@ vteapp_terminal_init(VteappTerminal *terminal)
+         if (options.background_pixbuf != nullptr)
+                 vte_terminal_set_clear_background(VTE_TERMINAL(terminal), false);
+ #endif /* VTE_GTK == 3 */
++
++        vte_terminal_set_enable_legacy_osc777(VTE_TERMINAL(terminal), true);
+ }
+ 
+ static GtkWidget *
+diff --git a/src/termprops.hh b/src/termprops.hh
+index 151de9d4..bb1f7f19 100644
+--- a/src/termprops.hh
++++ b/src/termprops.hh
+@@ -655,3 +655,10 @@ unparse_termprop_value(TermpropType type,
+ }
+ 
+ } // namespace vte::terminal
++
++#define VTE_TERMPROP_FEDORA_CONTAINER_NAME    VTE_TERMPROP_NAME_PREFIX "fedora.container.name"    /* string */
++#define VTE_TERMPROP_FEDORA_CONTAINER_RUNTIME VTE_TERMPROP_NAME_PREFIX "fedora.container.runtime" /* string */
++#define VTE_TERMPROP_FEDORA_CONTAINER_UID     VTE_TERMPROP_NAME_PREFIX "fedora.container.uid"     /* uint64 */
++#define VTE_TERMPROP_FEDORA_SHELL_PRECMD      VTE_TERMPROP_NAME_PREFIX "fedora.shell.precmd"      /* valueless */
++#define VTE_TERMPROP_FEDORA_SHELL_PREEXEC     VTE_TERMPROP_NAME_PREFIX "fedora.shell.preexec"     /* valueless */
++#define VTE_TERMPROP_FEDORA_SHELL_POSTEXEC    VTE_TERMPROP_NAME_PREFIX "fedora.shell.postexec"    /* valueless */
+diff --git a/src/vte/vteterminal.h b/src/vte/vteterminal.h
+index f02ba548..b9c85e16 100644
+--- a/src/vte/vteterminal.h
++++ b/src/vte/vteterminal.h
+@@ -642,6 +642,13 @@ void vte_terminal_set_yfill(VteTerminal* terminal,
+ _VTE_PUBLIC
+ gboolean vte_terminal_get_yfill(VteTerminal* terminal) _VTE_CXX_NOEXCEPT _VTE_GNUC_NONNULL(1);
+ 
++_VTE_PUBLIC
++void vte_terminal_set_enable_legacy_osc777(VteTerminal* terminal,
++                                           gboolean enable) _VTE_CXX_NOEXCEPT _VTE_GNUC_NONNULL(1);
++
++_VTE_PUBLIC
++gboolean vte_terminal_get_enable_legacy_osc777(VteTerminal* terminal) _VTE_CXX_NOEXCEPT _VTE_GNUC_NONNULL(1);
++
+ _VTE_PUBLIC
+ void vte_terminal_set_context_menu_model(VteTerminal* terminal,
+                                          GMenuModel* model) _VTE_CXX_NOEXCEPT _VTE_GNUC_NONNULL(1);
+@@ -672,7 +679,6 @@ gboolean vte_event_context_get_coordinates(VteEventContext const* context,
+                                            double* y) _VTE_CXX_NOEXCEPT _VTE_GNUC_NONNULL(1);
+ 
+ #endif /* VTE_GTK */
+-
+ _VTE_PUBLIC
+ gboolean vte_terminal_get_termprop_bool(VteTerminal* terminal,
+                                         char const* prop,
+diff --git a/src/vtegtk.cc b/src/vtegtk.cc
+index fe483bfb..3bebf148 100644
+--- a/src/vtegtk.cc
++++ b/src/vtegtk.cc
+@@ -1122,6 +1122,9 @@ try
+                 case PROP_ENABLE_FALLBACK_SCROLLING:
+                         g_value_set_boolean (value, vte_terminal_get_enable_fallback_scrolling(terminal));
+                         break;
++                case PROP_ENABLE_LEGACY_OSC777:
++                        g_value_set_boolean(value, vte_terminal_get_enable_legacy_osc777(terminal));
++                        break;
+                 case PROP_ENABLE_SHAPING:
+                         g_value_set_boolean (value, vte_terminal_get_enable_shaping (terminal));
+                         break;
+@@ -1198,7 +1201,6 @@ try
+                 case PROP_YFILL:
+                         g_value_set_boolean(value, vte_terminal_get_yfill(terminal));
+                         break;
+-
+                 default:
+ 			G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+ 			return;
+@@ -1280,6 +1282,9 @@ try
+                 case PROP_ENABLE_FALLBACK_SCROLLING:
+                         vte_terminal_set_enable_fallback_scrolling (terminal, g_value_get_boolean (value));
+                         break;
++                case PROP_ENABLE_LEGACY_OSC777:
++                        vte_terminal_set_enable_legacy_osc777(terminal, g_value_get_boolean(value));
++                        break;
+                 case PROP_ENABLE_SHAPING:
+                         vte_terminal_set_enable_shaping (terminal, g_value_get_boolean (value));
+                         break;
+@@ -1398,12 +1403,17 @@ check_termprop_wellknown(char const* name,
+                          vte::terminal::TermpropType* type,
+                          vte::terminal::TermpropFlags* flags) noexcept
+ {
+-#if 0 // remove this when adding the first well-known termprop
+         static constinit struct {
+                 char const* name;
+                 vte::terminal::TermpropType type;
+                 vte::terminal::TermpropFlags flags;
+         } const well_known_termprops[] = {
++                { VTE_TERMPROP_FEDORA_CONTAINER_NAME,    vte::terminal::TermpropType::STRING,    vte::terminal::TermpropFlags::NONE },
++                { VTE_TERMPROP_FEDORA_CONTAINER_RUNTIME, vte::terminal::TermpropType::STRING,    vte::terminal::TermpropFlags::NONE },
++                { VTE_TERMPROP_FEDORA_CONTAINER_UID,     vte::terminal::TermpropType::UINT,      vte::terminal::TermpropFlags::NONE },
++                { VTE_TERMPROP_FEDORA_SHELL_PRECMD,      vte::terminal::TermpropType::VALUELESS, vte::terminal::TermpropFlags::NONE },
++                { VTE_TERMPROP_FEDORA_SHELL_PREEXEC,     vte::terminal::TermpropType::VALUELESS, vte::terminal::TermpropFlags::NONE },
++                { VTE_TERMPROP_FEDORA_SHELL_POSTEXEC,    vte::terminal::TermpropType::VALUELESS, vte::terminal::TermpropFlags::NONE },
+         };
+ 
+         for (auto i = 0u; i < G_N_ELEMENTS(well_known_termprops); ++i) {
+@@ -1417,7 +1427,6 @@ check_termprop_wellknown(char const* name,
+                         *flags = wkt->flags;
+                 return true;
+         }
+-#endif
+ 
+         return false;
+ }
+@@ -2941,6 +2950,19 @@ vte_terminal_class_init(VteTerminalClass *klass)
+                                      TRUE,
+                                      GParamFlags(G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_EXPLICIT_NOTIFY));
+ 
++        /**
++         * VteTerminal:enable-legacy-osc777:
++         *
++         * Whether legacy OSC 777 sequences are translated to
++         * their corresponding termprops, if installed.
++         *
++         * Since: 0.78
++         */
++        pspecs[PROP_ENABLE_LEGACY_OSC777] =
++                g_param_spec_boolean("enable-legacy-osc777", nullptr, nullptr,
++                                     false,
++                                     GParamFlags(G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_EXPLICIT_NOTIFY));
++
+         g_object_class_install_properties(gobject_class, LAST_PROP, pspecs);
+ 
+ #if VTE_GTK == 3
+@@ -8115,6 +8137,54 @@ catch (...)
+         return true;
+ }
+ 
++/**
++ * vte_terminal_set_enable_legacy_osc777:
++ * @terminal: a #VteTerminal
++ * @enable: whether to enable legacy OSC 777
++ *
++ * Sets whether legacy OSC 777 sequences are translated to
++ * their corresponding termprops, if installed.
++ *
++ * Since: 0.78
++ */
++void
++vte_terminal_set_enable_legacy_osc777(VteTerminal* terminal,
++                                      gboolean enable) noexcept
++try
++{
++        g_return_if_fail(VTE_IS_TERMINAL(terminal));
++
++        if (WIDGET(terminal)->set_enable_legacy_osc777(enable != false))
++                g_object_notify_by_pspec(G_OBJECT(terminal), pspecs[PROP_ENABLE_LEGACY_OSC777]);
++}
++catch (...)
++{
++        vte::log_exception();
++}
++
++/**
++ * vte_terminal_get_enable_legacy_osc777:
++ * @terminal: a #VteTerminal
++ * @enable: whether to enable legacy OSC 777
++ *
++ * Returns: %TRUE iff legacy OSC 777 is enabled
++ *
++ * Since: 0.78
++ */
++gboolean
++vte_terminal_get_enable_legacy_osc777(VteTerminal* terminal) noexcept
++try
++{
++        g_return_val_if_fail(VTE_IS_TERMINAL(terminal), true);
++
++        return WIDGET(terminal)->enable_legacy_osc777();
++}
++catch (...)
++{
++        vte::log_exception();
++        return true;
++}
++
+ /**
+  * vte_terminal_set_context_menu_model: (attributes org.gtk.Method.set_property=context-menu-model)
+  * @terminal: a #VteTerminal
+diff --git a/src/vtegtk.hh b/src/vtegtk.hh
+index bdf4f071..a62e5abf 100644
+--- a/src/vtegtk.hh
++++ b/src/vtegtk.hh
+@@ -80,6 +80,7 @@ enum {
+         PROP_ENABLE_A11Y,
+         PROP_ENABLE_BIDI,
+         PROP_ENABLE_FALLBACK_SCROLLING,
++        PROP_ENABLE_LEGACY_OSC777,
+         PROP_ENABLE_SHAPING,
+         PROP_ENABLE_SIXEL,
+         PROP_ENCODING,
+diff --git a/src/vteinternal.hh b/src/vteinternal.hh
+index fd0a7860..5cf8f443 100644
+--- a/src/vteinternal.hh
++++ b/src/vteinternal.hh
+@@ -869,6 +869,22 @@ public:
+                 m_pending_changes |= vte::to_integral(PendingChanges::TERMPROPS);
+         }
+ 
++        bool m_enable_legacy_osc777{false};
++
++        bool set_enable_legacy_osc777(bool enable) noexcept
++        {
++                if (enable == m_enable_legacy_osc777)
++                        return false;
++
++                m_enable_legacy_osc777 = enable;
++                return true;
++        }
++
++        constexpr auto enable_legacy_osc777() const noexcept
++        {
++                return m_enable_legacy_osc777;
++        }
++
+ public:
+ 
+         inline VteRowData const* find_row_data(vte::grid::row_t row) const;
+@@ -1812,6 +1828,10 @@ public:
+         // ringview
+         void ringview_update();
+ 
++        void urxvt_extension(vte::parser::Sequence const& seq,
++                             vte::parser::StringTokeniser::const_iterator& token,
++                             vte::parser::StringTokeniser::const_iterator const& endtoken) noexcept;
++
+         /* Sequence handlers */
+         // Note: inlining the handlers seems to worsen the performance, so we don't do that
+ #define _VTE_CMD_HANDLER(cmd) \
+diff --git a/src/vteseq.cc b/src/vteseq.cc
+index d62e8076..af1e4411 100644
+--- a/src/vteseq.cc
++++ b/src/vteseq.cc
+@@ -1782,6 +1782,101 @@ Terminal::collect_rect(vte::parser::Sequence const& seq,
+         return std::nullopt;
+ }
+ 
++void
++Terminal::urxvt_extension(vte::parser::Sequence const& seq,
++                          vte::parser::StringTokeniser::const_iterator& token,
++                          vte::parser::StringTokeniser::const_iterator const& endtoken) noexcept
++{
++        if (!enable_legacy_osc777())
++                return;
++
++        if (token == endtoken)
++                return;
++
++        auto maybe_set_termprop_void = [&](auto const& name,
++                                           bool set = true) -> void {
++                if (auto const info = get_termprop_info(name);
++                    info && info->type() == vte::terminal::TermpropType::VALUELESS) {
++                        m_termprops_dirty.at(info->id()) = set;
++                        m_termprop_values.at(info->id()) = {};
++                        m_pending_changes |= vte::to_integral(PendingChanges::TERMPROPS);
++                }
++        };
++
++        auto maybe_set_termprop = [&](auto const& name,
++                                      auto&& value) -> void {
++                if (auto const info = get_termprop_info(name)) {
++                        m_termprops_dirty.at(info->id()) = true;
++                        m_termprop_values.at(info->id()) = std::move(value);
++                        m_pending_changes |= vte::to_integral(PendingChanges::TERMPROPS);
++                }
++        };
++
++        auto maybe_reset_termprop = [&](auto const& name) -> void {
++                if (auto const info = get_termprop_info(name)) {
++                        m_termprops_dirty.at(info->id()) = true;
++                        m_termprop_values.at(info->id()) = {};
++                        m_pending_changes |= vte::to_integral(PendingChanges::TERMPROPS);
++                }
++        };
++
++        auto const cmd = *token;
++        if (cmd == "precmd") {
++                maybe_set_termprop_void(VTE_TERMPROP_FEDORA_SHELL_PRECMD);
++
++        } else if (cmd == "preexec") {
++                maybe_set_termprop_void(VTE_TERMPROP_FEDORA_SHELL_PREEXEC);
++
++        } else if (cmd == "notify") {
++                if (++token == endtoken)
++                        return;
++
++                if (*token != "Command completed")
++                        return;
++
++                maybe_set_termprop_void(VTE_TERMPROP_FEDORA_SHELL_POSTEXEC);
++
++        } else if (cmd == "container") {
++
++                if (++token == endtoken)
++                        return;
++
++                auto const subcmd = *token;
++                if (subcmd != "pop" && subcmd != "push")
++                        return;
++
++                // Note: There is no stack of values anymore.
++
++                // Reset container termprops so we don't get inconsistent
++                // values with incomplete sequences below.
++                maybe_reset_termprop(VTE_TERMPROP_FEDORA_CONTAINER_NAME);
++                maybe_reset_termprop(VTE_TERMPROP_FEDORA_CONTAINER_RUNTIME);
++                maybe_reset_termprop(VTE_TERMPROP_FEDORA_CONTAINER_UID);
++
++                if (subcmd == "push") {
++                        if (++token == endtoken)
++                                return;
++
++                        maybe_set_termprop(VTE_TERMPROP_FEDORA_CONTAINER_NAME, *token);
++
++                        if (++token == endtoken)
++                                return;
++
++                        maybe_set_termprop(VTE_TERMPROP_FEDORA_CONTAINER_RUNTIME, *token);
++
++                        if (++token == endtoken)
++                                return;
++
++                        if (auto value = vte::terminal::parse_termprop_value(vte::terminal::TermpropType::UINT, *token)) {
++                                maybe_set_termprop(VTE_TERMPROP_FEDORA_CONTAINER_UID, *value);
++                        }
++
++                } else if (subcmd == "pop") {
++                        // already reset above
++                }
++        }
++}
++
+ /*
+  * Command Handlers
+  * This is the unofficial documentation of all the VTE_CMD_* definitions.
+@@ -6915,6 +7010,10 @@ Terminal::OSC(vte::parser::Sequence const& seq)
+                 vte_termprop(seq, it, cend);
+                 break;
+ 
++        case VTE_OSC_URXVT_EXTENSION:
++                urxvt_extension(seq, it, cend);
++                break;
++
+         case VTE_OSC_XTERM_SET_ICON_TITLE:
+         case VTE_OSC_XTERM_SET_XPROPERTY:
+         case VTE_OSC_XTERM_SET_COLOR_MOUSE_CURSOR_FG:
+@@ -6955,7 +7054,6 @@ Terminal::OSC(vte::parser::Sequence const& seq)
+         case VTE_OSC_URXVT_SET_FONT_BOLD_ITALIC:
+         case VTE_OSC_URXVT_VIEW_UP:
+         case VTE_OSC_URXVT_VIEW_DOWN:
+-        case VTE_OSC_URXVT_EXTENSION:
+         case VTE_OSC_YF_RQGWR:
+         default:
+                 break;
+diff --git a/src/widget.hh b/src/widget.hh
+index 96df04b5..5dba4470 100644
+--- a/src/widget.hh
++++ b/src/widget.hh
+@@ -538,6 +538,9 @@ public:
+         bool set_fallback_scrolling(bool set) { return terminal()->set_fallback_scrolling(set); }
+         bool fallback_scrolling() const noexcept { return terminal()->fallback_scrolling(); }
+ 
++        bool set_enable_legacy_osc777(bool enable) { return terminal()->set_enable_legacy_osc777(enable); }
++        auto enable_legacy_osc777() const noexcept { return terminal()->enable_legacy_osc777(); }
++
+         char const* encoding() const noexcept { return m_terminal->encoding(); }
+ 
+         void emit_child_exited(int status) noexcept;
+-- 
+2.45.1
+

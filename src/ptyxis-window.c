@@ -400,9 +400,9 @@ ptyxis_window_apply_current_settings (PtyxisWindow *self,
   if ((active_tab = ptyxis_window_get_active_tab (self)))
     {
       PtyxisTerminal *terminal = ptyxis_tab_get_terminal (active_tab);
-      const char *current_directory_uri = ptyxis_tab_get_current_directory_uri (active_tab);
-      const char *current_container_name = vte_terminal_get_current_container_name (VTE_TERMINAL (terminal));
-      const char *current_container_runtime = vte_terminal_get_current_container_runtime (VTE_TERMINAL (terminal));
+      g_autofree char *current_directory_uri = ptyxis_tab_dup_current_directory_uri (active_tab);
+      const char *current_container_name = ptyxis_terminal_get_current_container_name (terminal);
+      const char *current_container_runtime = ptyxis_terminal_get_current_container_runtime (terminal);
       PtyxisZoomLevel zoom = ptyxis_tab_get_zoom (active_tab);
       g_autoptr(PtyxisIpcContainer) current_container = NULL;
 

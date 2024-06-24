@@ -30,6 +30,11 @@ G_BEGIN_DECLS
 
 #define VTE_VERSION_NUMERIC ((VTE_MAJOR_VERSION) * 10000 + (VTE_MINOR_VERSION) * 100 + (VTE_MICRO_VERSION))
 
+#define VTE_TERMPROP_FEDORA_CONTAINER_NAME    VTE_TERMPROP_NAME_PREFIX "fedora.container.name"
+#define VTE_TERMPROP_FEDORA_CONTAINER_RUNTIME VTE_TERMPROP_NAME_PREFIX "fedora.container.runtime"
+#define VTE_TERMPROP_FEDORA_SHELL_PRECMD      VTE_TERMPROP_NAME_PREFIX "fedora.shell.precmd"
+#define VTE_TERMPROP_FEDORA_SHELL_PREEXEC     VTE_TERMPROP_NAME_PREFIX "fedora.shell.preexec"
+
 #define _GDK_RGBA_DECODE(c) ((unsigned)(((c) >= 'A' && (c) <= 'F') ? ((c)-'A'+10) : \
                                         ((c) >= 'a' && (c) <= 'f') ? ((c)-'a'+10) : \
                                         ((c) >= '0' && (c) <= '9') ? ((c)-'0') : \

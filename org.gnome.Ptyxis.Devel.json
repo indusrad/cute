@@ -67,7 +67,11 @@
                 },
                 {
                     "type" : "patch",
-                    "path" : "build-aux/0001-add-notification-and-shell-precmd-preexec.patch"
+                    "path" : "build-aux/0001-widget-Add-termprops-to-replace-fedora-patches.patch"
+                },
+                {
+                    "type" : "patch",
+                    "path" : "build-aux/0002-vte.sh-forward-port-notify-prexec-precmd.patch"
                 }
             ]
         },
