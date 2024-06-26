@@ -43,6 +43,12 @@
   <launchable type="desktop-id">@APP_ID@.desktop</launchable>
 
   <releases>
+    <release version="46.4" date="2024-06-26">
+      <description>
+        <p>This release includes bugfixes.</p>
+        <p>Most importantly Ptyxis will now work around containers with a non-existant shell specified for a user.</p>
+      </description>
+    </release>
     <release version="46.3" date="2024-06-10">
       <description>
         <p>This release includes important bugfixes and translation updates.</p>

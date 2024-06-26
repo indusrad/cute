@@ -1,6 +1,15 @@
-# Ptyxis 46.3
+# Ptyxis 46.4
 
 Changes since 46.3
+
+ * Fix clear selection shortcut binding
+ * Only allow a single palette to affect window dressing at a time,
+   fixing a situation where the last palette selected takes precedence.
+ * Work around misconfigured /etc/passwd in containers.
+
+# Ptyxis 46.3
+
+Changes since 46.2
 
  * stdin in child processes defaults to blocking mode as is generally
    expected of terminals.
