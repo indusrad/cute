@@ -645,7 +645,7 @@ ptyxis_client_spawn_async (PtyxisClient        *self,
       arg0 = g_strdup ("");
       g_strv_builder_add (argv_builder, "sh");
       g_strv_builder_add (argv_builder, "-c");
-      g_strv_builder_add (argv_builder, "$(getent passwd $(whoami) | cut -d : -f 7)");
+      g_strv_builder_add (argv_builder, "if [ -x \"$(getent passwd $(whoami) | cut -d : -f 7)\" ]; then exec $(getent passwd $(whoami) | cut -d : -f 7); else exec sh; fi");
     }
 
   if (arg0 != NULL &&
