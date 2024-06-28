@@ -1,60 +1,30 @@
-# Ptyxis 46.rc
+# Ptyxis 47.alpha
 
-Changes since 46.alpha
+This is our first pre-release for GNOME 47 as part of 47.alpha.
 
- * Ignore exit action if tab spuriously exited after spawning
- * Allow disabling the process leader window decoration
- * Make VS Code palette switch between light/dark theme
- * Make Horizon palette switch between light/dark theme
- * Demote rxvt style from primary palette set
- * Fallback to getent to discover user shell
- * Use whoami instead of $USER as it might not be correct
-   when transitioning into a container
- * Allow disabing F10 in the shortcut preferences
- * The VTE patches have been simplified to make it easier
-   to apply on top of VTE master.
- * Avoid restyling AdwDialog
- * Use AdwAboutDialog
- * Podman infrastructure containers are now ignored
- * A new italian translation
- * Various window styling improvements
- * Allow specifying default column/rows when restore-window-size
-   setting is not used
- * Use --detach-keys with podman to fix ctrl+p usage
- * Initial accessibility support using vendored patches to VTE
- * Remove Ptyxis suffix from title to match gnome-terminal
- * About dialog includes a bunch of new informatio to help triage user
-   issues without roundtrips to users.
- * New icon for Ptyxis branding
- * Fix where we delay reloading of podman containers to help avoid
-   missing changes
- * Various improvements for the new fractional scaling support in GTK
- * Make most internal p2p D-Bus API calls asynchronous
- * Allow disabling the visual process leader colors
- * Ignore podman infrastructure containers
+Chances since 46.0
 
-# Ptyxis 46.alpha
+ * Many updates for GNOME HIG across dialogs and widgetry.
+ * Ptyxis can run the ptyxis-agent inside the sandbox if we fail to run
+   on the host. That comes with drawbacks but at least keeps the application
+   working in those scenarios.
+ * The build system supports some whitebox renaming allowing it to be called
+   "Terminal" in some situations. Distributions shipping Ptyxis as their
+   terminal may be encouraged to use that. Branding is also reduced to less
+   dramatic styling.
+ * Many fixes for Podman, Toolbox, and Distrobox.
+ * Fallback to `sh` if we cannot locate the shell specified in /etc/passwd.
+ * Improvements to the tab parking lot so that processes are properly exited.
+ * Notification improvements.
+ * Port Ptyxis to use the new VTE "termprops" feature. This requires a newer
+   VTE than is currently released but is anticipated shortly. This reduces
+   the number of patches required by Ptyxis (and eventually Fedora) to a
+   single small patch for vte.sh.in.
+ * New palettes styles.
+ * Many new command line options and improved support for combining them.
+ * Translation updates.
 
-Ptyxis is a new container oriented terminal.
+Thanks to everyone who filed bugs and contributed patches!
 
-It attempts to improve the experience on operating systems where users are
-commonly entering or working with terminals in containers different than
-the host. For example, "immutable" desktops.
+-- Christian
 
-Ptyxis takes a practical approach to preferences including support for
-profiles. Users may set a default container per-profile as well as choose
-to inherit the currently entered container.
-
-Ptyxis does require patches on-top of VTE. These patches are similar to what
-has been shipped in Fedora for a number of years. They provide some basic
-container and notification abstractions on-top of VTE. In the future, we hope
-to not require additional VTE patches once new functionality lands in VTE.
-Packagers may find those patches in `build-aux/` which apply on top of git
-master at the time of writing.
-
-Performance and correctness of Ptyxis is critical upon using VTE with the
-performance work I've done in the 46 GNOME cycle. In fact, the patches above
-will only apply on a VTE tree which contains that work. The drawing of Ptyxis
-will be incorrect without the upstream work in VTE.
-
-This is an initial release, which should be considered alpha quality.
