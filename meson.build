@@ -48,7 +48,7 @@ glib_req_version = '2.80'
 gtk_req_version = '4.14'
 adwaita_req_version = '1.6'
 json_glib_req_version = '1.6'
-vte_req_version = '0.76'
+vte_req_version = '0.77'
 
 glib_req = '>= @0@'.format(glib_req_version)
 gtk_req = '>= @0@'.format(gtk_req_version)
