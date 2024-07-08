@@ -210,6 +210,12 @@
       <description>Currently experimental feature to send accessibility information to screen readers.</description>
     </key>
 
+    <key name="disable-padding" type="b">
+      <default>false</default>
+      <summary>Disable Padding around Terminal Emulator</summary>
+      <description>Do not pad around the terminal emulator widget. Setting to true may have significant performance impacts.</description>
+    </key>
+
   </schema>
 
   <schema id="@APP_SCHEMA_PROFILE_ID@">

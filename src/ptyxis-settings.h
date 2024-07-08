@@ -45,6 +45,7 @@ G_BEGIN_DECLS
 #define PTYXIS_SETTING_KEY_USE_SYSTEM_FONT         "use-system-font"
 #define PTYXIS_SETTING_KEY_VISUAL_BELL             "visual-bell"
 #define PTYXIS_SETTING_KEY_VISUAL_PROCESS_LEADER   "visual-process-leader"
+#define PTYXIS_SETTING_KEY_DISABLE_PADDING         "disable-padding"
 
 typedef enum _PtyxisNewTabPosition
 {
@@ -136,5 +137,8 @@ void                    ptyxis_settings_set_interface_style         (PtyxisSetti
 gboolean                ptyxis_settings_get_toast_on_copy_clipboard (PtyxisSettings             *self);
 void                    ptyxis_settings_set_toast_on_copy_clipboard (PtyxisSettings             *self,
                                                                      gboolean                    toast_on_copy_clipboard);
+gboolean                ptyxis_settings_get_disable_padding         (PtyxisSettings             *self);
+void                    ptyxis_settings_set_disable_padding         (PtyxisSettings             *self,
+                                                                     gboolean                    disable_padding);
 
 G_END_DECLS

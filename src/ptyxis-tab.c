@@ -697,6 +697,20 @@ ptyxis_tab_update_scrollbar_policy (PtyxisTab *self)
 }
 
 static void
+ptyxis_tab_update_padding_cb (PtyxisTab      *self,
+                              GParamSpec     *pspec,
+                              PtyxisSettings *settings)
+{
+  g_assert (PTYXIS_IS_TAB (self));
+  g_assert (PTYXIS_IS_SETTINGS (settings));
+
+  if (ptyxis_settings_get_disable_padding (settings))
+    gtk_widget_remove_css_class (GTK_WIDGET (self->terminal), "padded");
+  else
+    gtk_widget_add_css_class (GTK_WIDGET (self->terminal), "padded");
+}
+
+static void
 ptyxis_tab_constructed (GObject *object)
 {
   PtyxisTab *self = (PtyxisTab *)object;
@@ -723,6 +737,13 @@ ptyxis_tab_constructed (GObject *object)
   g_object_bind_property (settings, "text-blink-mode",
                           self->terminal, "text-blink-mode",
                           G_BINDING_SYNC_CREATE);
+
+  g_signal_connect_object (settings,
+                           "notify::disable-padding",
+                           G_CALLBACK (ptyxis_tab_update_padding_cb),
+                           self,
+                           G_CONNECT_SWAPPED);
+  ptyxis_tab_update_padding_cb (self, NULL, settings);
 
   g_signal_connect_object (PTYXIS_APPLICATION_DEFAULT,
                            "notify::overlay-scrollbars",

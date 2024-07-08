@@ -40,6 +40,7 @@ enum {
   PROP_CURSOR_BLINK_MODE,
   PROP_CURSOR_SHAPE,
   PROP_DEFAULT_PROFILE_UUID,
+  PROP_DISABLE_PADDING,
   PROP_ENABLE_A11Y,
   PROP_FONT_DESC,
   PROP_FONT_NAME,
@@ -74,6 +75,8 @@ ptyxis_settings_changed_cb (PtyxisSettings *self,
 
   if (g_str_equal (key, PTYXIS_SETTING_KEY_DEFAULT_PROFILE_UUID))
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_DEFAULT_PROFILE_UUID]);
+  else if (g_str_equal (key, PTYXIS_SETTING_KEY_DISABLE_PADDING))
+    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_DISABLE_PADDING]);
   else if (g_str_equal (key, PTYXIS_SETTING_KEY_PROFILE_UUIDS))
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_PROFILE_UUIDS]);
   else if (g_str_equal (key, PTYXIS_SETTING_KEY_NEW_TAB_POSITION))
@@ -152,6 +155,10 @@ ptyxis_settings_get_property (GObject    *object,
 
     case PROP_DEFAULT_PROFILE_UUID:
       g_value_take_string (value, ptyxis_settings_dup_default_profile_uuid (self));
+      break;
+
+    case PROP_DISABLE_PADDING:
+      g_value_set_boolean (value, ptyxis_settings_get_disable_padding (self));
       break;
 
     case PROP_ENABLE_A11Y:
@@ -267,6 +274,10 @@ ptyxis_settings_set_property (GObject      *object,
 
     case PROP_DEFAULT_PROFILE_UUID:
       ptyxis_settings_set_default_profile_uuid (self, g_value_get_string (value));
+      break;
+
+    case PROP_DISABLE_PADDING:
+      ptyxis_settings_set_disable_padding (self, g_value_get_boolean (value));
       break;
 
     case PROP_RESTORE_SESSION:
@@ -389,6 +400,13 @@ ptyxis_settings_class_init (PtyxisSettingsClass *klass)
                          (G_PARAM_READWRITE |
                           G_PARAM_EXPLICIT_NOTIFY |
                           G_PARAM_STATIC_STRINGS));
+
+  properties[PROP_DISABLE_PADDING] =
+    g_param_spec_boolean ("disable-padding", NULL, NULL,
+                          FALSE,
+                          (G_PARAM_READWRITE |
+                           G_PARAM_EXPLICIT_NOTIFY |
+                           G_PARAM_STATIC_STRINGS));
 
   properties[PROP_PROFILE_UUIDS] =
     g_param_spec_boxed ("profile-uuids", NULL, NULL,
@@ -988,4 +1006,24 @@ ptyxis_settings_set_toast_on_copy_clipboard (PtyxisSettings *self,
   g_settings_set_boolean (self->settings,
                           PTYXIS_SETTING_KEY_TOAST_ON_COPY_CLIPBOARD,
                           toast_on_copy_clipboard);
+}
+
+void
+ptyxis_settings_set_disable_padding (PtyxisSettings *self,
+                                     gboolean        disable_padding)
+{
+  g_return_if_fail (PTYXIS_IS_SETTINGS (self));
+
+  g_settings_set_boolean (self->settings,
+                          PTYXIS_SETTING_KEY_DISABLE_PADDING,
+                          !!disable_padding);
+}
+
+gboolean
+ptyxis_settings_get_disable_padding (PtyxisSettings *self)
+{
+  g_return_val_if_fail (PTYXIS_IS_SETTINGS (self), FALSE);
+
+  return g_settings_get_boolean (self->settings,
+                                 PTYXIS_SETTING_KEY_DISABLE_PADDING);
 }
