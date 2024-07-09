@@ -43,6 +43,11 @@
   <launchable type="desktop-id">@APP_ID@.desktop</launchable>
 
   <releases>
+    <release version="46.5" date="2024-07-09">
+      <description>
+        <p>This release adds a man page for Ptyxis.</p>
+      </description>
+    </release>
     <release version="46.4" date="2024-06-26">
       <description>
         <p>This release includes bugfixes.</p>
