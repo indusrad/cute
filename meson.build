@@ -184,6 +184,7 @@ subdir('data')
 subdir('agent')
 subdir('src')
 subdir('po')
+subdir('man')
 
 configure_file(output: 'config.h', configuration: config_h)
 
