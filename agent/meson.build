@@ -45,8 +45,6 @@ ptyxis_agent_c_args = [
 libc_compat = true
 if target_machine.cpu_family() == 'x86_64'
   ptyxis_agent_c_args += ['-include', 'x86_64/force_link_glibc_2.17.h']
-elif target_machine.cpu_family() == 'x86'
-  ptyxis_agent_c_args += ['-include', 'x86/force_link_glibc_2.17.h']
 else
   libc_compat = false
 endif
