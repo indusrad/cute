@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ptyxis main\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/chergert/ptyxis/issues\n"
-"POT-Creation-Date: 2024-07-11 05:30+0000\n"
-"PO-Revision-Date: 2024-07-11 07:35+0200\n"
+"POT-Creation-Date: 2024-07-11 19:40+0000\n"
+"PO-Revision-Date: 2024-07-23 12:31+0200\n"
 "Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Slovenian <gnome-si@googlegroups.com>\n"
 "Language: sl\n"
@@ -106,9 +106,8 @@ msgid "Tabbed interface with tab overviews"
 msgstr "Vmesnik z zavihki s pregledi zavihkov"
 
 #: data/org.gnome.Ptyxis.metainfo.xml.in.in:22
-#, fuzzy
 msgid "Efficient foreground process tracking denoting sudo and SSH"
-msgstr "Učinkovito sledenje procesom v ospredju, ki označuje sudo in SSH"
+msgstr "Učinkovito sledenje procesom v ospredju, ki označujejo sudo in SSH"
 
 #: data/org.gnome.Ptyxis.metainfo.xml.in.in:23
 msgid "Support for transparent terminal backgrounds"
@@ -221,28 +220,25 @@ msgid "If a visual bell should be used"
 msgstr "Ali naj se uporabi vidni zvonec"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:125
-#, fuzzy
 msgid "Visual Process Leader"
-msgstr "Vodja vizualnih procesov"
+msgstr "Vizualno izpostavi vodjo procesov"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:126
-#, fuzzy
 msgid ""
 "Display a visual window highlight when process leader is SSH, sudo, or other "
 "specialized tooling"
 msgstr ""
-"Prikažite vizualno oznako, ko je vodja procesa SSH, sudo ali druga "
-"specializirana orodja"
+"Prikaži vizualno poudarjanje okna, ko je vodja procesa SSH, sudo ali drugo "
+"specializirano orodjo"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:131
 msgid "Use System Font"
 msgstr "Uporabi sistemsko pisavo"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:132
-#, fuzzy
 msgid "If the default system monospace font should be used"
 msgstr ""
-"Ali naj bo uporabljena privzeta sistemska pisava z enakomerno širino črk."
+"Ali naj bo uporabljena privzeta sistemska pisava z enakomerno širino črk"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:137
 msgid "Font Name"
@@ -322,9 +318,8 @@ msgid "Default Row Size"
 msgstr "Privzeta velikost vrstice"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:203
-#, fuzzy
 msgid "Toast on Copy Clipboard"
-msgstr "Zdravica v odložišču"
+msgstr "Obvesti o odložišču"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:204
 msgid "Show the user when text has copied to the clipboard."
@@ -392,25 +387,21 @@ msgstr ""
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:250 src/ptyxis-preferences-window.ui:441
 #: src/ptyxis-profile-editor.ui:293
-#, fuzzy
 msgid "Scroll on Output"
-msgstr "Drsenje ob dopolnjenem izpisu"
+msgstr "Drsenje ob izpisu"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:251
-#, fuzzy
 msgid "Scroll to the bottom upon new output"
-msgstr "Pomaknite se na dno ob novem izhodu"
+msgstr "Drsenje na dno ob novem izpisu"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:256 src/ptyxis-preferences-window.ui:435
 #: src/ptyxis-profile-editor.ui:287
-#, fuzzy
 msgid "Scroll on Keystroke"
-msgstr "Pomikanje po pritisku tipk"
+msgstr "Drsenje po pritisku tipke"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:257
-#, fuzzy
 msgid "Scroll to the bottom upon user keystroke"
-msgstr "Pomaknite se na dno ob pritisku tipke uporabnika"
+msgstr "Drsenje na dno ob pritisku tipke uporabnika"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:262 src/ptyxis-profile-editor.ui:157
 msgid "Use Custom Command"
@@ -421,14 +412,12 @@ msgid "If a custom command should be used"
 msgstr "Če želite uporabiti ukaz po meri"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:268
-#, fuzzy
 msgid "Use Proxy"
 msgstr "Uporabi posredniški strežnik"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:269
-#, fuzzy
 msgid "Apply proxy settings from the host in the container"
-msgstr "Uporaba nastavitev strežnika proxy od gostitelja v vsebniku"
+msgstr "Uveljavi nastavitev posrednega strežnika od gostitelja v vsebniku"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:274 src/ptyxis-profile-editor.ui:162
 msgid "Custom Command"
@@ -443,9 +432,8 @@ msgid "Default Container"
 msgstr "Privzeti zabojnik"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:281
-#, fuzzy
 msgid "The default container to run the command in"
-msgstr "Privzeti vsebnik za zagon ukaza v"
+msgstr "Privzeti vsebnik za zagon ukaza v njem"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:286 src/ptyxis-profile-editor.ui:190
 msgid "Preserve Container"
@@ -502,14 +490,12 @@ msgstr ""
 "različico (zgornjih 8 barv)"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:323
-#, fuzzy
 msgid "CJK Ambiguous Width"
-msgstr "CJK dvoumna širina"
+msgstr "Dvoumna širina CJK"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:324
-#, fuzzy
 msgid "The size to apply to ambiguous width characters"
-msgstr "Velikost, ki velja za dvoumne znake širine"
+msgstr "Velikost, ki velja za znake z dvoumno širino"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:329
 #: src/org.gnome.Ptyxis.gschema.xml.in:335
@@ -623,7 +609,6 @@ msgid "Select All"
 msgstr "Izberi vse"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:424
-#, fuzzy
 msgid "Shortcut to select all the entire terminal scrollback"
 msgstr "Bližnjica za izbor celotnega pomikanja terminala"
 
@@ -1106,7 +1091,6 @@ msgid "Block"
 msgstr "Blok"
 
 #: src/ptyxis-preferences-window.ui:233
-#, fuzzy
 msgid "I-Beam"
 msgstr "I-žarek"
 
@@ -1182,9 +1166,8 @@ msgid "Bell"
 msgstr "Zvonec"
 
 #: src/ptyxis-preferences-window.ui:384
-#, fuzzy
 msgid "Emit an audible bell when requested by active tab"
-msgstr "Oddajanje zvočnega zvona, ko to zahteva aktivni zavihek"
+msgstr "Oddaj zvok zvonca, ko to zahteva dejavni zavihek"
 
 #: src/ptyxis-preferences-window.ui:389
 msgid "Visual Bell"
@@ -1203,22 +1186,18 @@ msgid "Use Scrollbars"
 msgstr "Uporabi drsne trakove"
 
 #: src/ptyxis-preferences-window.ui:436 src/ptyxis-profile-editor.ui:288
-#, fuzzy
 msgid "Scroll to the bottom upon input keystroke"
-msgstr "Pomaknite se na dno ob pritisku tipke na vnos"
+msgstr "Drsenje na dno ob pritisku tipke za vnos"
 
 #: src/ptyxis-preferences-window.ui:442 src/ptyxis-profile-editor.ui:294
-#, fuzzy
 msgid "Scroll to the bottom when new content is available"
-msgstr "Pomaknite se na dno, ko je na voljo nova vsebina"
+msgstr "Drsenje na dno, ko je na voljo nova vsebina"
 
 #: src/ptyxis-preferences-window.ui:452 src/ptyxis-profile-editor.ui:304
-#, fuzzy
 msgid "Restrict the number of lines saved for scrollback"
-msgstr "Omejite število vrstic, shranjenih za pomikanje nazaj"
+msgstr "Omeji število vrstic, shranjenih za drsenje nazaj"
 
 #: src/ptyxis-preferences-window.ui:461 src/ptyxis-profile-editor.ui:313
-#, fuzzy
 msgid "The number of lines to keep for scrollback"
 msgstr "Število shranjenih vrstic zgodovine drsnika"
 
@@ -1307,9 +1286,8 @@ msgid "Open a new tab in a new window"
 msgstr "Odpri nov zavihek v novem oknu"
 
 #: src/ptyxis-preferences-window.ui:690
-#, fuzzy
 msgid "View Tab Overview"
-msgstr "Pregled zavihka »Pogled«"
+msgstr "Pokaži pregled zavihkov"
 
 #: src/ptyxis-preferences-window.ui:691
 msgid "Show an overview of all tabs within the window"
@@ -1421,16 +1399,14 @@ msgid "Control-H"
 msgstr "Krmilka-H"
 
 #: src/ptyxis-preferences-window.ui:909 src/ptyxis-profile-editor.ui:413
-#, fuzzy
 msgid "ASCII DEL"
-msgstr "ASCII DEL"
+msgstr "Brisalka ASCII DEL"
 
 #: src/ptyxis-preferences-window.ui:915 src/ptyxis-profile-editor.ui:419
 msgid "Escape Sequence"
 msgstr "Ubežno zaporedje"
 
 #: src/ptyxis-preferences-window.ui:921 src/ptyxis-profile-editor.ui:425
-#, fuzzy
 msgid "TTY Erase"
 msgstr "Brisanje TTY"
 
@@ -1485,18 +1461,17 @@ msgid "Proxy"
 msgstr "Posredovalni strežnik"
 
 #: src/ptyxis-profile-editor.ui:147
-#, fuzzy
 msgid "Applies the network proxy settings to the container environment"
-msgstr "Uporabi nastavitve omrežnega proxyja v okolju vsebnika"
+msgstr ""
+"Uveljavi nastavitve omrežnega posredovalnega strežnika v okolju vsebnika"
 
 #: src/ptyxis-profile-editor.ui:182
 msgid "The default container to use with this profile"
 msgstr "Privzeti vsebnik za uporabo s tem profilom"
 
 #: src/ptyxis-profile-editor.ui:191
-#, fuzzy
 msgid "Preserve the current container when opening new tabs and windows"
-msgstr "Ohranjanje trenutnega vsebnika pri odpiranju novih zavihkov in oken"
+msgstr "Ohrani trenutni vsebnik pri odpiranju novih zavihkov in oken"
 
 #: src/ptyxis-profile-editor.ui:384
 msgid "Remove Profile"
@@ -1551,9 +1526,9 @@ msgid "disabled"
 msgstr "onemogočeno"
 
 #: src/ptyxis-tab.c:279
-#, fuzzy, c-format
+#, c-format
 msgid "Process Exited from Signal %d"
-msgstr "Proces, ki je bil izpuščen iz signalne %d"
+msgstr "Proces, ki je izstopil s signala %d"
 
 #: src/ptyxis-tab.c:282 src/ptyxis-tab.c:305
 msgid "_Restart"
@@ -1564,9 +1539,8 @@ msgstr "_Znova zaženi"
 #. * restored into the window.
 #.
 #: src/ptyxis-tab.c:304
-#, fuzzy
 msgid "Process Exited"
-msgstr "Proces se je zaključil"
+msgstr "Proces je izstopil"
 
 #: src/ptyxis-tab.c:368
 msgid "Failed to launch terminal"
@@ -1663,9 +1637,8 @@ msgstr "Temna tema"
 
 #. translators: Builder Terminal means this is a terminal bundled with GNOME Builder
 #: src/ptyxis-util.c:309
-#, fuzzy
 msgid "Builder Terminal"
-msgstr "Gradbeni terminal"
+msgstr "Terminal gradnje"
 
 #: src/ptyxis-util.c:313
 msgid "Ptyxis"
