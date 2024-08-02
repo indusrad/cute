@@ -52,20 +52,6 @@ G_DEFINE_FINAL_TYPE (PtyxisWindowDressing, ptyxis_window_dressing, G_TYPE_OBJECT
 static GParamSpec *properties[N_PROPS];
 static guint last_sequence;
 
-static gboolean
-rgba_is_dark (const GdkRGBA *rgba)
-{
-  /* http://alienryderflex.com/hsp.html */
-  double r = rgba->red * 255.0;
-  double g = rgba->green * 255.0;
-  double b = rgba->blue * 255.0;
-  double hsp = sqrt (0.299 * (r * r) +
-                     0.587 * (g * g) +
-                     0.114 * (b * b));
-
-  return hsp <= 127.5;
-}
-
 static void
 ptyxis_window_dressing_update (PtyxisWindowDressing *self)
 {
@@ -140,9 +126,8 @@ ptyxis_window_dressing_update (PtyxisWindowDressing *self)
                               "window.%s .window-contents toolbarview.overview tabthumbnail .icon-title-box { color: %s; }\n",
                               self->css_class, fg);
       g_string_append_printf (string,
-                              "window.%s .window-contents toolbarview.overview.background { background-color: shade(%s,%s); }\n",
-                              self->css_class, bg,
-                              rgba_is_dark (&face->background) ? "1.2" : ".95");
+                              "window.%s .window-contents toolbarview.overview.background { background-color: %s; color: %s; }\n",
+                              self->css_class, titlebar_bg, titlebar_fg);
       g_string_append_printf (string,
                               "window.%s .window-contents revealer.raised.top-bar { background-color: %s; color: %s; }\n",
                               self->css_class, titlebar_bg, titlebar_fg);
