@@ -3,7 +3,7 @@ Name=GNOME
 Primary=true
 
 [Light]
-Foreground=#1e1e1e
+Foreground=#000000
 Background=#ffffff
 Color0=#1e1e1e
 Color1=#c01c28
@@ -12,8 +12,8 @@ Color3=#a2734c
 Color4=#12488b
 Color5=#a347ba
 Color6=#2aa1b3
-Color7=#d0cfcc
-Color8=#5e5c64
+Color7=#cfcfcf
+Color8=#5d5d5d
 Color9=#f66151
 Color10=#33d17a
 Color11=#e9ad0c
@@ -24,7 +24,8 @@ Color15=#ffffff
 
 [Dark]
 Foreground=#ffffff
-Background=#1e1e1e
+Background=#000000
+TitlebarBackground=#1e1e1e
 Color0=#1e1e1e
 Color1=#c01c28
 Color2=#26a269
@@ -32,8 +33,8 @@ Color3=#a2734c
 Color4=#12488b
 Color5=#a347ba
 Color6=#2aa1b3
-Color7=#d0cfcc
-Color8=#5e5c64
+Color7=#cfcfcf
+Color8=#5d5d5d
 Color9=#f66151
 Color10=#33d17a
 Color11=#e9ad0c
