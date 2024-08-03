@@ -1,3 +1,17 @@
+# Ptyxis 47.beta
+
+This is a beta release for GNOME 47
+
+Chances since 47.alpha
+
+ * Ptyxis no longer requires patches to VTE when using a recent VTE
+   git tag for GNOME 47.
+ * Legacy libc compat was dropped for 32-bit x86 as it is unnecessary.
+ * Window pallete and styling improvements to match GNOME 47 styling.
+ * A new gsetting to disable padding around the terminal, at the cost
+   of runtime performance.
+ * Translation updates.
+
 # Ptyxis 47.alpha
 
 This is our first pre-release for GNOME 47 as part of 47.alpha.
