@@ -152,7 +152,7 @@ ptyxis_window_dressing_update (PtyxisWindowDressing *self)
       visual_process_leader = ptyxis_settings_get_visual_process_leader (settings);
 
       g_string_append_printf (string,
-                              "window.%s .window-contents > revealer > windowhandle { color: %s; background-color: %s; }\n",
+                              "window.%s .window-contents > revealer windowhandle { color: %s; background-color: %s; }\n",
                               self->css_class, titlebar_fg, titlebar_bg);
 
       if (visual_process_leader)
