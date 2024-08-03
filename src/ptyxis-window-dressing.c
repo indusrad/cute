@@ -154,6 +154,9 @@ ptyxis_window_dressing_update (PtyxisWindowDressing *self)
       g_string_append_printf (string,
                               "window.%s .window-contents > revealer windowhandle { color: %s; background-color: %s; }\n",
                               self->css_class, titlebar_fg, titlebar_bg);
+      g_string_append_printf (string,
+                              "window.%s:backdrop .window-contents revealer > windowhandle { color: mix(%s,%s,.2); background-color: mix(%s,%s,.06); }\n",
+                              self->css_class, titlebar_fg, titlebar_bg, titlebar_bg, titlebar_fg);
 
       if (visual_process_leader)
         {
