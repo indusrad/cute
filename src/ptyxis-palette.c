@@ -327,7 +327,7 @@ ptyxis_palette_load_face (const char         *path,
   if (!ptyxis_palette_load_color (path, &face->titlebar_foreground, key_file, scheme, "TitlebarForeground", NULL))
     face->titlebar_foreground = _gdk_rgba_shade (&face->foreground, dark ? 1.25 : .95);
   if (!ptyxis_palette_load_color (path, &face->titlebar_background, key_file, scheme, "TitlebarBackground", NULL))
-    face->titlebar_background = _gdk_rgba_shade (&face->background, dark ? 1.25 : .95);
+    face->titlebar_background = dark ? _gdk_rgba_shade (&face->background, 1.25) : face->background;
 
   if (!ptyxis_palette_load_color (path, &face->visual_bell.foreground, key_file, scheme, "BellForeground", NULL))
     face->visual_bell.foreground = face->titlebar_foreground;

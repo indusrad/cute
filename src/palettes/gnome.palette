@@ -5,8 +5,8 @@ Primary=true
 [Light]
 Foreground=#1e1e1e
 Background=#ffffff
-TitlebarBackground=#f2f2f2
-TitlebarForeground=#1e1e1e
+TitlebarBackground=#ffffff
+TitlebarForeground=#333333
 Color0=#1e1e1e
 Color1=#c01c28
 Color2=#26a269
