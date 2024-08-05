@@ -9,9 +9,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/chergert/ptyxis/issues\n"
-"POT-Creation-Date: 2024-07-08 20:52+0000\n"
-"PO-Revision-Date: 2024-07-30 08:00+0300\n"
-"Last-Translator: Emin Tufan Çetin <etcetin@gmail.com>\n"
+"POT-Creation-Date: 2024-07-29 21:00+0000\n"
+"PO-Revision-Date: 2024-08-05 00:30+0300\n"
+"Last-Translator: Sabri Ünal <yakushabb@gmail.com>\n"
 "Language-Team: Turkish <takim@gnome.org.tr>\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
@@ -206,7 +206,7 @@ msgstr "Yeni sekmelerin nereye konumlandırılacağı"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:113 src/ptyxis-preferences-window.ui:383
 msgid "Audible Bell"
-msgstr "Sesli Sil"
+msgstr "Sesli Zil"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:114
 msgid "If an audible bell should be used"
@@ -1730,9 +1730,3 @@ msgstr "Sekmeyi _Kapat"
 #: src/ptyxis-window.ui:584
 msgid "_My Computer"
 msgstr "_Bilgisayarım"
-
-#~ msgid "A container oriented terminal for GNOME"
-#~ msgstr "GNOME için konteyner odaklı uçbirim"
-
-#~ msgid "Christian Hergert"
-#~ msgstr "Christian Hergert"
