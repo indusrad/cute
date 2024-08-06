@@ -274,9 +274,60 @@ ptyxis_process_impl_handle_has_foreground_process (PtyxisIpcProcess      *proces
   return TRUE;
 }
 
+static gboolean
+ptyxis_process_impl_handle_get_working_directory (PtyxisIpcProcess      *process,
+                                                  GDBusMethodInvocation *invocation,
+                                                  GUnixFDList           *in_fd_list,
+                                                  GVariant              *in_pty_fd)
+{
+  PtyxisProcessImpl *self = (PtyxisProcessImpl *)process;
+  _g_autofd int pty_fd = -1;
+  int pty_fd_handle;
+  GPid pid;
+
+  g_assert (PTYXIS_IS_PROCESS_IMPL (self));
+  g_assert (G_IS_DBUS_METHOD_INVOCATION (invocation));
+
+  pty_fd_handle = g_variant_get_handle (in_pty_fd);
+
+  if (in_fd_list != NULL)
+    pty_fd = g_unix_fd_list_get (in_fd_list, pty_fd_handle, NULL);
+
+  if (pty_fd != -1)
+    pid = tcgetpgrp (pty_fd);
+  else
+    pid = self->pid;
+
+  if (pid > 0)
+    {
+      /* TODO: This might need alternatives for non-Linux based kernels,
+       *       if that matters at all in places where it can be used.
+       */
+      g_autofree char *proc_path = g_strdup_printf ("/proc/%d/cwd", pid);
+      g_autofree char *cwd = g_file_read_link (proc_path, NULL);
+
+      if (cwd != NULL)
+        {
+          ptyxis_ipc_process_complete_get_working_directory (process,
+                                                             g_steal_pointer (&invocation),
+                                                             NULL,
+                                                             cwd);
+          return TRUE;
+        }
+    }
+
+  ptyxis_ipc_process_complete_get_working_directory (process,
+                                                     g_steal_pointer (&invocation),
+                                                     NULL,
+                                                     "/");
+
+  return TRUE;
+}
+
 static void
 process_iface_init (PtyxisIpcProcessIface *iface)
 {
   iface->handle_send_signal = ptyxis_process_impl_handle_send_signal;
   iface->handle_has_foreground_process = ptyxis_process_impl_handle_has_foreground_process;
+  iface->handle_get_working_directory = ptyxis_process_impl_handle_get_working_directory;
 }

@@ -236,5 +236,17 @@
     <method name="SendSignal">
       <arg name="signum" direction="in" type="i"/>
     </method>
+
+    <!--
+      GetWorkingDirectory:
+
+      This RPC is unused by Ptyxis upstream but provides a way to peek
+      at the current working directory of the process.
+    -->
+    <method name="GetWorkingDirectory">
+      <annotation name="org.gtk.GDBus.C.UnixFD" value="true"/>
+      <arg name="pty_fd" direction="in" type="h"/>
+      <arg name="path" direction="out" type="ay"/>
+    </method>
   </interface>
 </node>
