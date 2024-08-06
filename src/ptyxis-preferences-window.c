@@ -61,6 +61,7 @@ struct _PtyxisPreferencesWindow
   GtkLabel             *font_name;
   AdwActionRow         *font_name_row;
   AdwSwitchRow         *limit_scrollback;
+  AdwSwitchRow         *login_shell;
   GtkAdjustment        *opacity_adjustment;
   GtkLabel             *opacity_label;
   GtkFlowBox           *palette_previews;
@@ -446,6 +447,9 @@ ptyxis_preferences_window_notify_default_profile_cb (PtyxisPreferencesWindow *se
                           G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
   g_object_bind_property (profile, "bold-is-bright",
                           self->bold_is_bright, "active",
+                          G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
+  g_object_bind_property (profile, "login-shell",
+                          self->login_shell, "active",
                           G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
 
   g_settings_bind_with_mapping (gsettings,
@@ -926,6 +930,7 @@ ptyxis_preferences_window_class_init (PtyxisPreferencesWindowClass *klass)
   gtk_widget_class_bind_template_child (widget_class, PtyxisPreferencesWindow, font_name);
   gtk_widget_class_bind_template_child (widget_class, PtyxisPreferencesWindow, font_name_row);
   gtk_widget_class_bind_template_child (widget_class, PtyxisPreferencesWindow, limit_scrollback);
+  gtk_widget_class_bind_template_child (widget_class, PtyxisPreferencesWindow, login_shell);
   gtk_widget_class_bind_template_child (widget_class, PtyxisPreferencesWindow, opacity_adjustment);
   gtk_widget_class_bind_template_child (widget_class, PtyxisPreferencesWindow, opacity_label);
   gtk_widget_class_bind_template_child (widget_class, PtyxisPreferencesWindow, palette_previews);
