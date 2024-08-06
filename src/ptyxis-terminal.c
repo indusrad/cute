@@ -1261,11 +1261,6 @@ ptyxis_terminal_class_init (PtyxisTerminalClass *klass)
                    error->message,
                    url_regexes_str[i]);
     }
-
-  vte_install_termprop (VTE_TERMPROP_FEDORA_CONTAINER_NAME, VTE_PROPERTY_STRING, VTE_PROPERTY_FLAG_NONE);
-  vte_install_termprop (VTE_TERMPROP_FEDORA_CONTAINER_RUNTIME, VTE_PROPERTY_STRING, VTE_PROPERTY_FLAG_NONE);
-  vte_install_termprop (VTE_TERMPROP_FEDORA_SHELL_PRECMD, VTE_PROPERTY_VALUELESS, VTE_PROPERTY_FLAG_NONE);
-  vte_install_termprop (VTE_TERMPROP_FEDORA_SHELL_PREEXEC, VTE_PROPERTY_VALUELESS, VTE_PROPERTY_FLAG_NONE);
 }
 
 static void
@@ -1312,11 +1307,11 @@ ptyxis_terminal_init (PtyxisTerminal *self)
   gtk_drop_target_async_set_formats (self->drop_target, formats);
 
   g_signal_connect (self,
-                    "termprop-changed::" VTE_TERMPROP_FEDORA_SHELL_PRECMD,
+                    "termprop-changed::" VTE_TERMPROP_SHELL_PRECMD,
                     G_CALLBACK (ptyxis_terminal_emit_shell_precmd),
                     NULL);
   g_signal_connect (self,
-                    "termprop-changed::" VTE_TERMPROP_FEDORA_SHELL_PREEXEC,
+                    "termprop-changed::" VTE_TERMPROP_SHELL_PREEXEC,
                     G_CALLBACK (ptyxis_terminal_emit_shell_preexec),
                     NULL);
 }
@@ -1350,7 +1345,7 @@ ptyxis_terminal_get_current_container_name (PtyxisTerminal *self)
   g_return_val_if_fail (PTYXIS_IS_TERMINAL (self), NULL);
 
   return vte_terminal_get_termprop_string (VTE_TERMINAL (self),
-                                           VTE_TERMPROP_FEDORA_CONTAINER_NAME,
+                                           VTE_TERMPROP_CONTAINER_NAME,
                                            &len);
 }
 
@@ -1362,7 +1357,7 @@ ptyxis_terminal_get_current_container_runtime (PtyxisTerminal *self)
   g_return_val_if_fail (PTYXIS_IS_TERMINAL (self), NULL);
 
   return vte_terminal_get_termprop_string (VTE_TERMINAL (self),
-                                           VTE_TERMPROP_FEDORA_CONTAINER_RUNTIME,
+                                           VTE_TERMPROP_CONTAINER_RUNTIME,
                                            &len);
 }
 
