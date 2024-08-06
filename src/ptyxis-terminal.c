@@ -72,6 +72,8 @@ struct _PtyxisTerminal
 
 enum {
   PROP_0,
+  PROP_CURRENT_CONTAINER_NAME,
+  PROP_CURRENT_CONTAINER_RUNTIME,
   PROP_PALETTE,
   PROP_SHORTCUTS,
   N_PROPS
@@ -1069,6 +1071,14 @@ ptyxis_terminal_emit_shell_preexec (PtyxisTerminal *self)
 }
 
 static void
+notify_property_changed (PtyxisTerminal *self,
+                         const char     *termprop,
+                         GParamSpec     *property)
+{
+  g_object_notify_by_pspec (G_OBJECT (self), property);
+}
+
+static void
 ptyxis_terminal_constructed (GObject *object)
 {
   PtyxisTerminal *self = (PtyxisTerminal *)object;
@@ -1115,6 +1125,20 @@ ptyxis_terminal_get_property (GObject    *object,
 
   switch (prop_id)
     {
+    case PROP_CURRENT_CONTAINER_NAME:
+      g_value_set_string (value,
+                          vte_terminal_get_termprop_string_by_id (VTE_TERMINAL (self),
+                                                                  VTE_PROPERTY_ID_CONTAINER_NAME,
+                                                                  NULL));
+      break;
+
+    case PROP_CURRENT_CONTAINER_RUNTIME:
+      g_value_set_string (value,
+                          vte_terminal_get_termprop_string_by_id (VTE_TERMINAL (self),
+                                                                  VTE_PROPERTY_ID_CONTAINER_RUNTIME,
+                                                                  NULL));
+      break;
+
     case PROP_PALETTE:
       g_value_set_object (value, ptyxis_terminal_get_palette (self));
       break;
@@ -1165,6 +1189,18 @@ ptyxis_terminal_class_init (PtyxisTerminalClass *klass)
 
   terminal_class->selection_changed = ptyxis_terminal_selection_changed;
   terminal_class->setup_context_menu = ptyxis_terminal_setup_context_menu;
+
+  properties[PROP_CURRENT_CONTAINER_NAME] =
+    g_param_spec_string ("current-container-name", NULL, NULL,
+                         NULL,
+                         (G_PARAM_READABLE |
+                          G_PARAM_STATIC_STRINGS));
+
+  properties[PROP_CURRENT_CONTAINER_RUNTIME] =
+    g_param_spec_string ("current-container-runtime", NULL, NULL,
+                         NULL,
+                         (G_PARAM_READABLE |
+                          G_PARAM_STATIC_STRINGS));
 
   properties[PROP_PALETTE] =
     g_param_spec_object ("palette", NULL, NULL,
@@ -1314,6 +1350,14 @@ ptyxis_terminal_init (PtyxisTerminal *self)
                     "termprop-changed::" VTE_TERMPROP_SHELL_PREEXEC,
                     G_CALLBACK (ptyxis_terminal_emit_shell_preexec),
                     NULL);
+  g_signal_connect (self,
+                    "termprop-changed::" VTE_TERMPROP_CONTAINER_NAME,
+                    G_CALLBACK (notify_property_changed),
+                    properties[PROP_CURRENT_CONTAINER_NAME]);
+  g_signal_connect (self,
+                    "termprop-changed::" VTE_TERMPROP_CONTAINER_RUNTIME,
+                    G_CALLBACK (notify_property_changed),
+                    properties[PROP_CURRENT_CONTAINER_RUNTIME]);
 }
 
 PtyxisPalette *
