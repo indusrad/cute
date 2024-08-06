@@ -109,5 +109,6 @@ gboolean            ptyxis_tab_poll_agent_finish                  (PtyxisTab    
                                                                    GError              **error);
 void                ptyxis_tab_open_uri                           (PtyxisTab            *self,
                                                                    const char           *uri);
+char               *ptyxis_tab_query_working_directory_from_agent (PtyxisTab            *self);
 
 G_END_DECLS

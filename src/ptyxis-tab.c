@@ -1865,3 +1865,32 @@ ptyxis_tab_open_uri (PtyxisTab  *self,
   G_GNUC_END_IGNORE_DEPRECATIONS
 }
 #endif
+
+char *
+ptyxis_tab_query_working_directory_from_agent (PtyxisTab *self)
+{
+  g_autofree char *path = NULL;
+  g_autoptr(GUnixFDList) fd_list = NULL;
+  VtePty *pty;
+  int pty_fd;
+  int handle;
+
+  g_return_val_if_fail (PTYXIS_IS_TAB (self), NULL);
+
+  if (self->process == NULL)
+    return NULL;
+
+  pty = vte_terminal_get_pty (VTE_TERMINAL (self->terminal));
+  pty_fd = vte_pty_get_fd (pty);
+  fd_list = g_unix_fd_list_new ();
+  handle = g_unix_fd_list_append (fd_list, pty_fd, NULL);
+
+  if (ptyxis_ipc_process_call_get_working_directory_sync (self->process,
+                                                          g_variant_new_handle (handle),
+                                                          fd_list,
+                                                          &path,
+                                                          NULL, NULL, NULL))
+    return g_steal_pointer (&path);
+
+  return NULL;
+}
