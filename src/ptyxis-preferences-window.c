@@ -112,7 +112,7 @@ struct _PtyxisPreferencesWindow
   PtyxisShortcutRow    *shortcut_zoom_in;
   PtyxisShortcutRow    *shortcut_zoom_one;
   PtyxisShortcutRow    *shortcut_zoom_out;
-  GtkLinkButton        *show_more;
+  AdwButtonContent     *show_more_palettes;
   AdwComboRow          *tab_position;
   GListModel           *tab_positions;
   AdwComboRow          *text_blink_mode;
@@ -280,17 +280,23 @@ ptyxis_preferences_window_profile_row_activated_cb (PtyxisPreferencesWindow *sel
 
 static gboolean
 ptyxis_preferences_window_show_all_cb (PtyxisPreferencesWindow *self,
-                                       GtkLinkButton           *button)
+                                       GtkButton               *button)
 {
   g_assert (PTYXIS_IS_PREFERENCES_WINDOW (self));
-  g_assert (GTK_IS_LINK_BUTTON (button));
+  g_assert (GTK_IS_BUTTON (button));
 
   self->filter_show_more = !self->filter_show_more;
 
   if (self->filter_show_more)
-    gtk_button_set_label (GTK_BUTTON (self->show_more), _("Show fewer…"));
+    {
+      adw_button_content_set_label (self->show_more_palettes, _("Show Fewer Palettes"));
+      adw_button_content_set_icon_name (self->show_more_palettes, "up-small-symbolic");
+    }
   else
-    gtk_button_set_label (GTK_BUTTON (self->show_more), _("Show more…"));
+    {
+      adw_button_content_set_label (self->show_more_palettes, _("Show All Palettes"));
+      adw_button_content_set_icon_name (self->show_more_palettes, "down-small-symbolic");
+    }
 
   gtk_filter_changed (GTK_FILTER (self->filter), GTK_FILTER_CHANGE_DIFFERENT);
 
@@ -981,7 +987,7 @@ ptyxis_preferences_window_class_init (PtyxisPreferencesWindowClass *klass)
   gtk_widget_class_bind_template_child (widget_class, PtyxisPreferencesWindow, shortcut_zoom_in);
   gtk_widget_class_bind_template_child (widget_class, PtyxisPreferencesWindow, shortcut_zoom_one);
   gtk_widget_class_bind_template_child (widget_class, PtyxisPreferencesWindow, shortcut_zoom_out);
-  gtk_widget_class_bind_template_child (widget_class, PtyxisPreferencesWindow, show_more);
+  gtk_widget_class_bind_template_child (widget_class, PtyxisPreferencesWindow, show_more_palettes);
   gtk_widget_class_bind_template_child (widget_class, PtyxisPreferencesWindow, tab_position);
   gtk_widget_class_bind_template_child (widget_class, PtyxisPreferencesWindow, tab_positions);
   gtk_widget_class_bind_template_child (widget_class, PtyxisPreferencesWindow, text_blink_mode);
