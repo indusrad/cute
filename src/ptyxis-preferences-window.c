@@ -34,6 +34,12 @@
 #include "ptyxis-shortcut-row.h"
 #include "ptyxis-util.h"
 
+/* This will not transition to AdwDialog until there is a way for
+ * toplevel windows _with_ transient-for set to maintain window
+ * group ordering.
+ */
+G_GNUC_BEGIN_IGNORE_DEPRECATIONS
+
 struct _PtyxisPreferencesWindow
 {
   AdwPreferencesWindow  parent_instance;
@@ -1087,3 +1093,5 @@ ptyxis_preferences_window_edit_shortcuts (PtyxisPreferencesWindow *self)
   adw_preferences_window_pop_subpage (ADW_PREFERENCES_WINDOW (self));
   adw_preferences_window_set_visible_page_name (ADW_PREFERENCES_WINDOW (self), "shortcuts");
 }
+
+G_GNUC_END_IGNORE_DEPRECATIONS

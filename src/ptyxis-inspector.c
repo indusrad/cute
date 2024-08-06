@@ -25,6 +25,12 @@
 #include "ptyxis-inspector.h"
 #include "ptyxis-palette-preview-color.h"
 
+/* This will not transition to AdwDialog until there is a way for
+ * toplevel windows _with_ transient-for set to maintain window
+ * group ordering.
+ */
+G_GNUC_BEGIN_IGNORE_DEPRECATIONS
+
 struct _PtyxisInspector
 {
   AdwPreferencesWindow       parent_instance;
@@ -591,3 +597,5 @@ ptyxis_inspector_new (PtyxisTab *tab)
                        "tab", tab,
                        NULL);
 }
+
+G_GNUC_END_IGNORE_DEPRECATIONS

@@ -151,6 +151,8 @@ ptyxis_profile_editor_profile_delete (GtkWidget  *widget,
                                       const char *action_name,
                                       GVariant   *param)
 {
+G_GNUC_BEGIN_IGNORE_DEPRECATIONS
+
   PtyxisProfileEditor *self = (PtyxisProfileEditor *)widget;
   AdwPreferencesWindow *window;
   AdwToast *toast;
@@ -158,8 +160,6 @@ ptyxis_profile_editor_profile_delete (GtkWidget  *widget,
   g_assert (PTYXIS_IS_PROFILE_EDITOR (self));
 
   g_object_ref (self);
-
-
 
   window = ADW_PREFERENCES_WINDOW (gtk_widget_get_ancestor (widget, ADW_TYPE_PREFERENCES_WINDOW));
   toast = adw_toast_new_format (_("Removed profile “%s”"),
@@ -179,6 +179,8 @@ ptyxis_profile_editor_profile_delete (GtkWidget  *widget,
   adw_preferences_window_pop_subpage (window);
 
   g_object_unref (self);
+
+G_GNUC_END_IGNORE_DEPRECATIONS
 }
 
 static char *

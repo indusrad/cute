@@ -1239,7 +1239,11 @@ ptyxis_tab_dup_title (PtyxisTab *self)
 
   gstr = g_string_new (self->title_prefix);
 
-  if ((window_title = vte_terminal_get_window_title (VTE_TERMINAL (self->terminal))) && window_title[0])
+  G_GNUC_BEGIN_IGNORE_DEPRECATIONS
+  window_title = vte_terminal_get_window_title (VTE_TERMINAL (self->terminal));
+  G_GNUC_END_IGNORE_DEPRECATIONS
+
+  if (window_title && window_title[0])
     g_string_append (gstr, window_title);
   else if (self->command != NULL && self->command[0] != NULL)
     g_string_append (gstr, self->command[0]);

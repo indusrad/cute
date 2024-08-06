@@ -58,6 +58,8 @@ ptyxis_profile_row_duplicate (GtkWidget  *widget,
   profile = ptyxis_profile_duplicate (self->profile);
 }
 
+G_GNUC_BEGIN_IGNORE_DEPRECATIONS
+
 static void
 ptyxis_profile_row_edit (GtkWidget  *widget,
                          const char *action_name,
@@ -113,6 +115,8 @@ ptyxis_profile_row_remove (GtkWidget  *widget,
 
   adw_preferences_window_add_toast (window, toast);
 }
+
+G_GNUC_END_IGNORE_DEPRECATIONS
 
 static void
 ptyxis_profile_row_make_default (GtkWidget  *widget,

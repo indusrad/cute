@@ -103,8 +103,11 @@ ptyxis_session_save (PtyxisApplication *app)
                   columns = vte_terminal_get_column_count (VTE_TERMINAL (terminal));
                   rows = vte_terminal_get_row_count (VTE_TERMINAL (terminal));
                   cwd = ptyxis_terminal_dup_current_directory_uri (terminal);
-                  window_title = vte_terminal_get_window_title (VTE_TERMINAL (terminal));
                   zoom = ptyxis_tab_get_zoom (tab);
+
+                  G_GNUC_BEGIN_IGNORE_DEPRECATIONS
+                  window_title = vte_terminal_get_window_title (VTE_TERMINAL (terminal));
+                  G_GNUC_END_IGNORE_DEPRECATIONS
 
                   if (container != NULL)
                     container_id = ptyxis_ipc_container_get_id (container);
