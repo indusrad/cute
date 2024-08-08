@@ -63,6 +63,7 @@ struct _PtyxisPreferencesWindow
   AdwSwitchRow         *limit_scrollback;
   AdwSwitchRow         *login_shell;
   GtkAdjustment        *opacity_adjustment;
+  AdwPreferencesGroup  *opacity_group;
   GtkLabel             *opacity_label;
   GtkFlowBox           *palette_previews;
   AdwComboRow          *preserve_directory;
@@ -403,6 +404,13 @@ ptyxis_preferences_window_notify_default_profile_cb (PtyxisPreferencesWindow *se
                            G_CALLBACK (invalidate_filter),
                            self,
                            G_CONNECT_SWAPPED);
+
+  /* If the user changed things in gsettings, show the toggle. This
+   * also helps on installations where the distributor may have changed
+   * the default value for the opacity gsetting.
+   */
+  gtk_widget_set_visible (GTK_WIDGET (self->opacity_group),
+                          ptyxis_profile_get_opacity (profile) < 1.);
 
   invalidate_filter (self);
 
@@ -932,6 +940,7 @@ ptyxis_preferences_window_class_init (PtyxisPreferencesWindowClass *klass)
   gtk_widget_class_bind_template_child (widget_class, PtyxisPreferencesWindow, limit_scrollback);
   gtk_widget_class_bind_template_child (widget_class, PtyxisPreferencesWindow, login_shell);
   gtk_widget_class_bind_template_child (widget_class, PtyxisPreferencesWindow, opacity_adjustment);
+  gtk_widget_class_bind_template_child (widget_class, PtyxisPreferencesWindow, opacity_group);
   gtk_widget_class_bind_template_child (widget_class, PtyxisPreferencesWindow, opacity_label);
   gtk_widget_class_bind_template_child (widget_class, PtyxisPreferencesWindow, palette_previews);
   gtk_widget_class_bind_template_child (widget_class, PtyxisPreferencesWindow, preserve_directories);
