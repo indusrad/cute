@@ -1,3 +1,14 @@
+# Ptyxis 46.6
+
+Changes since 46.5
+
+ * Use a lower value for CSS provider so inspector CSS changes can
+   occur at a higher priority.
+ * Drop libc compat mode for x86, this is unnecessary now.
+ * Fix login-shell toggle in preferences
+ * Show opacity control if the value is currently < 100%
+ * Translation updates
+
 # Ptyxis 46.5
 
 Changes since 46.4
