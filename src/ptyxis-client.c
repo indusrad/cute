@@ -536,6 +536,30 @@ ptyxis_client_spawn_cb (GObject      *object,
                                   g_object_ref (task));
 }
 
+static const char *
+maybe_extract_path_from_uri (GFile      *file,
+                             const char *original_uri)
+{
+  if (file == NULL)
+    return NULL;
+
+  /*
+   * Special-case handling for URIs which are file:// but GVFS
+   * translated them into something like `sftp://.../` even though
+   * they are local on disk (`/run/user/1000/gvfs/.../`).
+   */
+  if (!g_file_is_native (file))
+    {
+      if (original_uri == NULL)
+        return NULL;
+
+      if (!(original_uri[0] != '/' || g_str_has_prefix (original_uri, "file://")))
+        return NULL;
+    }
+
+  return g_file_peek_path (file);
+}
+
 void
 ptyxis_client_spawn_async (PtyxisClient        *self,
                            PtyxisIpcContainer  *container,
@@ -678,8 +702,7 @@ ptyxis_client_spawn_async (PtyxisClient        *self,
           G_GNUC_FALLTHROUGH;
 
         case PTYXIS_PRESERVE_DIRECTORY_ALWAYS:
-          if (last_directory != NULL && g_file_is_native (last_directory))
-            cwd = g_file_peek_path (last_directory);
+          cwd = maybe_extract_path_from_uri (last_directory, last_working_directory_uri);
           break;
 
         default:
