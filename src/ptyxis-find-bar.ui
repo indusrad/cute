@@ -35,7 +35,7 @@
                 <property name="width-chars">10</property>
                 <property name="hexpand">true</property>
                 <property name="primary-icon-name">edit-find-symbolic</property>
-                <property name="placeholder-text">Search History…</property>
+                <property name="placeholder-text" translatable="yes">Search History</property>
                 <signal name="changed" handler="ptyxis_find_bar_entry_changed_cb" swapped="1"/>
                 <child>
                   <object class="GtkShortcutController">
