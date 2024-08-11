@@ -396,7 +396,7 @@ ptyxis_tab_respawn (PtyxisTab *self)
   g_autoptr(VtePty) new_pty = NULL;
   PtyxisApplication *app;
   const char *profile_uuid;
-  const char *cwd;
+  const char *cwd_uri;
   VtePty *pty;
 
   g_assert (PTYXIS_IS_TAB (self));
@@ -458,14 +458,14 @@ ptyxis_tab_respawn (PtyxisTab *self)
       pty = new_pty;
     }
 
-  cwd = self->previous_working_directory_uri;
+  cwd_uri = self->previous_working_directory_uri;
   if (self->initial_working_directory_uri)
-    cwd = self->initial_working_directory_uri;
+    cwd_uri = self->initial_working_directory_uri;
 
   ptyxis_application_spawn_async (PTYXIS_APPLICATION_DEFAULT,
                                   container,
                                   self->profile,
-                                  cwd,
+                                  cwd_uri,
                                   pty,
                                   (const char * const *)self->command,
                                   NULL,
