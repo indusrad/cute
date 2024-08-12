@@ -223,6 +223,7 @@ ptyxis_tab_monitor_key_pressed_cb (PtyxisTabMonitor      *self,
       low_delay = TRUE;
       break;
 
+    case GDK_KEY_c:
     case GDK_KEY_d:
       low_delay = !!(state & GDK_CONTROL_MASK);
       break;
