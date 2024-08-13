@@ -272,6 +272,27 @@ ptyxis_preferences_window_add_profile (GtkWidget  *widget,
 }
 
 static void
+ptyxis_preferences_window_add_toast (GtkWidget  *widget,
+                                     const char *action_name,
+                                     GVariant   *param)
+{
+  PtyxisPreferencesWindow *self = PTYXIS_PREFERENCES_WINDOW (widget);
+  AdwToast *toast;
+  GVariant *title;
+  GVariant *timeout;
+
+  title = g_variant_lookup_value (param, "title", G_VARIANT_TYPE_STRING);
+  timeout = g_variant_lookup_value (param, "timeout", G_VARIANT_TYPE_UINT32);
+
+  toast = g_object_new (ADW_TYPE_TOAST,
+                        "title", g_variant_get_string (title, NULL),
+                        "timeout", (guint)g_variant_get_uint32 (timeout),
+                        NULL);
+
+  adw_preferences_window_add_toast (ADW_PREFERENCES_WINDOW (self), toast);
+}
+
+static void
 ptyxis_preferences_window_profile_row_activated_cb (PtyxisPreferencesWindow *self,
                                                     PtyxisProfileRow        *row)
 {
@@ -1021,6 +1042,10 @@ ptyxis_preferences_window_class_init (PtyxisPreferencesWindowClass *klass)
                                    "settings.select-custom-font",
                                    NULL,
                                    ptyxis_preferences_window_select_custom_font);
+  gtk_widget_class_install_action (widget_class,
+                                   "toast.add",
+                                   NULL,
+                                   ptyxis_preferences_window_add_toast);
 
   g_type_ensure (PTYXIS_TYPE_PREFERENCES_LIST_ITEM);
   g_type_ensure (PTYXIS_TYPE_PROFILE_EDITOR);

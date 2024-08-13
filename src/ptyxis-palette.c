@@ -31,6 +31,7 @@
 #include "ptyxis-palette.h"
 #include "ptyxis-preferences-list-item.h"
 #include "ptyxis-user-palettes.h"
+#include "ptyxis-util.h"
 
 typedef struct _PtyxisPaletteData
 {
@@ -152,6 +153,35 @@ ptyxis_palette_get_face (PtyxisPalette *self,
   return &self->palette->faces[!!dark];
 }
 
+static const char *
+get_host_user_data_dir(void)
+{
+  static const char *host_user_data_dir = NULL;
+
+  const char * const *environ;
+
+  if (host_user_data_dir)
+    return host_user_data_dir;
+
+  environ = ptyxis_host_environ();
+
+  for (guint i = 0; environ[i]; ++i)
+    {
+      const char *e = environ[i];
+
+      if (!g_str_has_prefix (e, "XDG_DATA_HOME="))
+        continue;
+
+      host_user_data_dir = e + sizeof ("XDG_DATA_HOME=") - 1;
+
+      return host_user_data_dir;
+    }
+
+  host_user_data_dir = g_build_filename(g_get_home_dir (), ".local", "share", NULL);
+
+  return host_user_data_dir;
+}
+
 GListModel *
 ptyxis_palette_get_all (void)
 {
@@ -168,6 +198,17 @@ ptyxis_palette_get_all (void)
 
       g_list_store_append (models, builtin);
       g_list_store_append (models, user_palettes);
+
+      /* If we are running in a flatpak, check the user's real data directory
+       * for palettes.
+       */
+      if (g_file_test ("/.flatpak-info", G_FILE_TEST_EXISTS))
+        {
+          g_autofree char *host_user_palletes_dir = g_build_filename (get_host_user_data_dir (), APP_ID, "palettes", NULL);
+          g_autoptr(PtyxisUserPalettes) host_user_palettes = ptyxis_user_palettes_new (host_user_palletes_dir);
+
+          g_list_store_append (models, host_user_palettes);
+        }
 
       for (guint i = 0; resources[i]; i++)
         {
