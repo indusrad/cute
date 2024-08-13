@@ -183,12 +183,8 @@ ptyxis_window_dressing_update (PtyxisWindowDressing *self)
           new_tab_fg_str = gdk_rgba_to_string (&new_tab_fg);
 
           g_string_append_printf (string,
-                                  "window.%s taboverview button.new-tab-button { background-color: %s; color: %s; }\n"
-                                  "window.%s taboverview button.new-tab-button:hover { background-color: shade(%s,.95); }\n"
-                                  "window.%s taboverview button.new-tab-button:active { background-color: shade(%s,.90); }\n",
-                                  self->css_class, new_tab_bg_str, new_tab_fg_str,
-                                  self->css_class, new_tab_bg_str,
-                                  self->css_class, new_tab_bg_str);
+                                  "window.%s { --accent-fg-color: %s; --accent-bg-color: %s; }\n",
+                                  self->css_class, new_tab_fg_str, new_tab_bg_str);
         }
     }
 
