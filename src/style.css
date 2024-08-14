@@ -66,7 +66,7 @@ themeselector checkbutton {
 themeselector checkbutton.follow:checked,
 themeselector checkbutton.light:checked,
 themeselector checkbutton.dark:checked {
-  box-shadow: inset 0 0 0 2px @theme_selected_bg_color;
+  box-shadow: inset 0 0 0 2px var(--accent-bg-color);
 }
 themeselector checkbutton.follow {
   background-image: linear-gradient(to bottom right, #fff 49.99%, #202020 50.01%);
@@ -87,10 +87,10 @@ themeselector checkbutton radio {
   transform: translate(27px, 14px);
   padding: 2px;
 }
-window.org-gnome-TextEditor checkbutton.theme-selector radio:checked {
+window checkbutton.theme-selector radio:checked {
   -gtk-icon-source: -gtk-icontheme("object-select-symbolic");
-  background-color: @theme_selected_bg_color;
-  color: @theme_selected_fg_color;
+  background-color: var(--accent-bg-color);
+  color: var(--accent-fg-color);
 }
 
 button.palette {
@@ -100,7 +100,7 @@ button.palette {
   padding: 0;
 }
 button.palette.selected {
-  box-shadow: 0 0 0 2px @theme_selected_bg_color;
+  box-shadow: 0 0 0 2px var(--accent-bg-color);
 }
 button.palette image {
   border-radius: 99px;
@@ -110,8 +110,8 @@ button.palette image {
   margin: -3px -3px 0 0;
 }
 button.palette.selected image {
-  background-color: @theme_selected_bg_color;
-  color: @theme_selected_fg_color;
+  background-color: var(--accent-bg-color);
+  color: var(--accent-fg-color);
 }
 palettepreview > box {
   padding: 12px 12px;
