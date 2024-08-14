@@ -5,6 +5,7 @@ Primary=true
 [Light]
 Foreground=#777777
 Background=#f3f3f3
+TitlebarForeground=#444444
 Color0=#0c0c0c
 Color1=#c50f1f
 Color2=#13a10e
@@ -25,6 +26,8 @@ Color15=#0d0d0d
 [Dark]
 Foreground=#777777
 Background=#0c0c0c
+TitlebarForeground=#cccccc
+TitlebarBackground=#202020
 Color0=#0c0c0c
 Color1=#c50f1f
 Color2=#13a10e
