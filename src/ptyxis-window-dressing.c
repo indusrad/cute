@@ -77,14 +77,12 @@ ptyxis_window_dressing_update (PtyxisWindowDressing *self)
       g_autofree char *rm_bg = NULL;
       g_autofree char *bell_fg = NULL;
       g_autofree char *bell_bg = NULL;
-      g_autofree char *new_tab_bg_str = NULL;
-      g_autofree char *new_tab_fg_str = NULL;
+      g_autofree char *accent_mix_str = NULL;
       g_autofree char *revealer_bg = NULL;
       char window_alpha_str[G_ASCII_DTOSTR_BUF_SIZE];
       char popover_alpha_str[G_ASCII_DTOSTR_BUF_SIZE];
       gboolean visual_process_leader;
-      GdkRGBA new_tab_bg;
-      GdkRGBA new_tab_fg;
+      GdkRGBA accent_mix;
       double window_alpha;
       double popover_alpha;
 
@@ -177,14 +175,15 @@ ptyxis_window_dressing_update (PtyxisWindowDressing *self)
 
       if (!ptyxis_palette_use_adwaita (self->palette))
         {
-          new_tab_bg = face->indexed[4];
-          new_tab_fg = face->indexed[7];
-          new_tab_bg_str = gdk_rgba_to_string (&new_tab_bg);
-          new_tab_fg_str = gdk_rgba_to_string (&new_tab_fg);
+          accent_mix = face->indexed[4];
+          accent_mix_str = gdk_rgba_to_string (&accent_mix);
 
           g_string_append_printf (string,
-                                  "window.%s { --accent-fg-color: %s; --accent-bg-color: %s; }\n",
-                                  self->css_class, new_tab_fg_str, new_tab_bg_str);
+                                  "window.%s { --accent-fg-color: %s; --accent-bg-color: mix(%s,%s,.15); }\n",
+                                  self->css_class,
+                                  dark ? titlebar_fg : titlebar_bg,
+                                  accent_mix_str,
+                                  bg);
         }
     }
 
