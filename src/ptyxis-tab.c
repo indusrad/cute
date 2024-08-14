@@ -649,6 +649,8 @@ ptyxis_tab_notify_palette_cb (PtyxisTab      *self,
 
   g_clear_object (&self->cached_texture);
 
+  gtk_widget_queue_draw (GTK_WIDGET (self));
+
   if ((view = gtk_widget_get_ancestor (GTK_WIDGET (self), ADW_TYPE_TAB_VIEW)) &&
       (page = adw_tab_view_get_page (ADW_TAB_VIEW (view), GTK_WIDGET (self))))
     adw_tab_page_invalidate_thumbnail (page);
