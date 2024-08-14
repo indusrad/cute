@@ -637,15 +637,12 @@ ptyxis_tab_dup_icon (PtyxisTab *self)
 }
 
 static void
-ptyxis_tab_notify_palette_cb (PtyxisTab      *self,
-                              GParamSpec     *pspec,
-                              PtyxisTerminal *terminal)
+ptyxis_tab_invalidate_thumbnail (PtyxisTab *self)
 {
   GtkWidget *view;
   AdwTabPage *page;
 
   g_assert (PTYXIS_IS_TAB (self));
-  g_assert (PTYXIS_IS_TERMINAL (terminal));
 
   g_clear_object (&self->cached_texture);
 
@@ -654,6 +651,17 @@ ptyxis_tab_notify_palette_cb (PtyxisTab      *self,
   if ((view = gtk_widget_get_ancestor (GTK_WIDGET (self), ADW_TYPE_TAB_VIEW)) &&
       (page = adw_tab_view_get_page (ADW_TAB_VIEW (view), GTK_WIDGET (self))))
     adw_tab_page_invalidate_thumbnail (page);
+}
+
+static void
+ptyxis_tab_notify_palette_cb (PtyxisTab      *self,
+                              GParamSpec     *pspec,
+                              PtyxisTerminal *terminal)
+{
+  g_assert (PTYXIS_IS_TAB (self));
+  g_assert (PTYXIS_IS_TERMINAL (terminal));
+
+  ptyxis_tab_invalidate_thumbnail (self);
 }
 
 static void
@@ -1179,6 +1187,15 @@ ptyxis_tab_init (PtyxisTab *self)
                     G_CALLBACK (on_scroll_end_cb),
                     self);
   gtk_widget_add_controller (GTK_WIDGET (self), controller);
+
+  /* Ensure we redraw when the dark-mode changes so that if the user
+   * goes to the tab-overview all the tabs look correct.
+   */
+  g_signal_connect_object (adw_style_manager_get_default (),
+                           "notify::dark",
+                           G_CALLBACK (ptyxis_tab_invalidate_thumbnail),
+                           self,
+                           G_CONNECT_SWAPPED);
 }
 
 PtyxisTab *
