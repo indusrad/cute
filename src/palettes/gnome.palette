@@ -1,6 +1,7 @@
 [Palette]
 Name=GNOME
 Primary=true
+UseSystemAccent=true
 
 [Light]
 Foreground=#1e1e1e

@@ -69,7 +69,7 @@ const char              *ptyxis_palette_get_id                 (PtyxisPalette  *
 const char              *ptyxis_palette_get_name               (PtyxisPalette  *self);
 const PtyxisPaletteFace *ptyxis_palette_get_face               (PtyxisPalette  *self,
                                                                 gboolean        dark);
-gboolean                 ptyxis_palette_use_adwaita            (PtyxisPalette  *self);
+gboolean                 ptyxis_palette_use_system_accent      (PtyxisPalette  *self);
 gboolean                 ptyxis_palette_is_primary             (PtyxisPalette  *self);
 gboolean                 ptyxis_palette_has_dark               (PtyxisPalette  *self);
 gboolean                 ptyxis_palette_has_light              (PtyxisPalette  *self);

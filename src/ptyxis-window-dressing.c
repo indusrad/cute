@@ -173,7 +173,7 @@ ptyxis_window_dressing_update (PtyxisWindowDressing *self)
                                   self->css_class, su_bg, su_fg);
         }
 
-      if (!ptyxis_palette_use_adwaita (self->palette))
+      if (!ptyxis_palette_use_system_accent (self->palette))
         {
           accent_mix = face->indexed[4];
           accent_mix_str = gdk_rgba_to_string (&accent_mix);
