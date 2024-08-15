@@ -1,5 +1,6 @@
 [Palette]
 Name=GNOME Terminal
+UseSystemAccent=true
 
 [Light]
 Background=#ffffff

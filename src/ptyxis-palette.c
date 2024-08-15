@@ -47,6 +47,7 @@ struct _PtyxisPalette
   guint is_primary : 1;
   guint has_dark : 1;
   guint has_light : 1;
+  guint use_system_accent : 1;
 };
 
 G_DEFINE_FINAL_TYPE (PtyxisPalette, ptyxis_palette, G_TYPE_OBJECT)
@@ -501,6 +502,7 @@ ptyxis_palette_new_from_resource (const char  *path,
   self->allocated = g_memdup2 (&data, sizeof data);
   self->palette = self->allocated;
   self->is_primary = g_key_file_get_boolean (key_file, "Palette", "Primary", NULL);
+  self->use_system_accent = g_key_file_get_boolean (key_file, "Palette", "UseSystemAccent", NULL);
   self->has_dark = has_dark;
   self->has_light = has_light;
 
@@ -508,9 +510,9 @@ ptyxis_palette_new_from_resource (const char  *path,
 }
 
 gboolean
-ptyxis_palette_use_adwaita (PtyxisPalette *self)
+ptyxis_palette_use_system_accent (PtyxisPalette *self)
 {
-  return strstr (self->palette->id, "gnome") != NULL;
+  return self->use_system_accent;
 }
 
 gboolean
