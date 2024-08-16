@@ -97,7 +97,7 @@ check_early_opts (int        *argc,
                   VTE_MAJOR_VERSION, VTE_MINOR_VERSION, VTE_MICRO_VERSION);
 
       g_print ("\n\
-Copyright 2020-2023 Christian Hergert, et al.\n\
+Copyright 2020-2024 Christian Hergert, et al.\n\
 This is free software; see the source for copying conditions. There is NO\n\
 warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\
 ");
