@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ptyxis main\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/chergert/ptyxis/issues\n"
-"POT-Creation-Date: 2024-07-09 17:54+0000\n"
-"PO-Revision-Date: 2024-07-10 16:42+0530\n"
+"POT-Creation-Date: 2024-08-06 18:17+0000\n"
+"PO-Revision-Date: 2024-08-09 12:32+0530\n"
 "Last-Translator: Scrambled777 <weblate.scrambled777@simplelogin.com>\n"
 "Language-Team: Hindi <indlinux-hindi@lists.sourceforge.net>\n"
 "Language: hi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Generator: Gtranslator 46.1\n"
 
 #: data/org.gnome.Ptyxis.desktop.in.in:3
@@ -27,7 +27,7 @@ msgstr "@APP_NAME@"
 msgid "A container-oriented terminal for GNOME"
 msgstr "गनोम के लिए एक कंटेनर-उन्मुख टर्मिनल"
 
-#: data/org.gnome.Ptyxis.desktop.in.in:13 src/ptyxis-preferences-window.ui:610
+#: data/org.gnome.Ptyxis.desktop.in.in:13 src/ptyxis-preferences-window.ui:618
 #: src/ptyxis-tab.c:1249 src/ptyxis-util.c:311
 msgid "Terminal"
 msgstr "टर्मिनल"
@@ -41,17 +41,17 @@ msgstr ""
 "टर्मिनल;प्रॉम्प्ट;ptyxis;शैल;कमांड;कमांडलाइन;cmd;cli;कंटेनर;पॉडमैन;टूलबॉक्स;डिस्ट्रोबॉक्स;"
 
 #: data/org.gnome.Ptyxis.desktop.in.in:21
-#: src/org.gnome.Ptyxis.gschema.xml.in:363 src/ptyxis-preferences-window.ui:680
+#: src/org.gnome.Ptyxis.gschema.xml.in:363 src/ptyxis-preferences-window.ui:688
 msgid "New Window"
 msgstr "नई विंडो"
 
 #: data/org.gnome.Ptyxis.desktop.in.in:25
-#: src/org.gnome.Ptyxis.gschema.xml.in:357 src/ptyxis-preferences-window.ui:674
+#: src/org.gnome.Ptyxis.gschema.xml.in:357 src/ptyxis-preferences-window.ui:682
 msgid "New Tab"
 msgstr "नया टैब"
 
 #: data/org.gnome.Ptyxis.desktop.in.in:29
-#: src/org.gnome.Ptyxis.gschema.xml.in:375 src/ptyxis-preferences-window.ui:849
+#: src/org.gnome.Ptyxis.gschema.xml.in:375 src/ptyxis-preferences-window.ui:857
 msgid "Preferences"
 msgstr "प्राथमिकताएं"
 
@@ -187,7 +187,7 @@ msgstr "सभी प्रोफाइलों के UUID"
 msgid "A list of UUID for every profile"
 msgstr "प्रत्येक प्रोफाइल के लिए UUID की सूची"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:107 src/ptyxis-preferences-window.ui:291
+#: src/org.gnome.Ptyxis.gschema.xml.in:107 src/ptyxis-preferences-window.ui:299
 msgid "New Tab Position"
 msgstr "नया टैब स्थान"
 
@@ -195,7 +195,7 @@ msgstr "नया टैब स्थान"
 msgid "Where to place new tabs"
 msgstr "नये टैब कहां रखें"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:113 src/ptyxis-preferences-window.ui:383
+#: src/org.gnome.Ptyxis.gschema.xml.in:113 src/ptyxis-preferences-window.ui:391
 msgid "Audible Bell"
 msgstr "श्रव्य घंटी"
 
@@ -241,7 +241,7 @@ msgstr ""
 "यदि use-system-font को False पर निर्धारित किया गया है तो प्रयोग करने के लिए फॉन्ट "
 "विवरण"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:143 src/ptyxis-preferences-window.ui:218
+#: src/org.gnome.Ptyxis.gschema.xml.in:143 src/ptyxis-preferences-window.ui:226
 msgid "Cursor Shape"
 msgstr "कर्सर आकार"
 
@@ -281,7 +281,7 @@ msgstr "इंटरफ़ेस शैली"
 msgid "If light or dark interface style should be used"
 msgstr "क्या हल्की या गहरी इंटरफ़ेस शैली का प्रयोग किया जाना चाहिए"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:173 src/ptyxis-preferences-window.ui:320
+#: src/org.gnome.Ptyxis.gschema.xml.in:173 src/ptyxis-preferences-window.ui:328
 msgid "Restore Session"
 msgstr "सत्र बहाल करें"
 
@@ -289,7 +289,7 @@ msgstr "सत्र बहाल करें"
 msgid "Restore tabs from previous session when starting Ptyxis"
 msgstr "Ptyxis प्रारंभ करते समय पिछले सत्र से टैब पुनर्स्थापित करें"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:179 src/ptyxis-preferences-window.ui:326
+#: src/org.gnome.Ptyxis.gschema.xml.in:179 src/ptyxis-preferences-window.ui:334
 msgid "Restore Window Size"
 msgstr "विंडो का आकार पुनर्स्थापित करें"
 
@@ -358,7 +358,7 @@ msgstr "लॉगिन शैल"
 msgid "Use a login shell"
 msgstr "लॉगिन शैल का प्रयोग करें"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:237 src/ptyxis-preferences-window.ui:451
+#: src/org.gnome.Ptyxis.gschema.xml.in:237 src/ptyxis-preferences-window.ui:459
 #: src/ptyxis-profile-editor.ui:303
 msgid "Limit Scrollback"
 msgstr "स्क्रॉलबैक सीमित करें"
@@ -367,7 +367,7 @@ msgstr "स्क्रॉलबैक सीमित करें"
 msgid "Limit the number of lines to keep for scrollback"
 msgstr "स्क्रॉलबैक के लिए रखी जाने वाली पंक्तियों की संख्या सीमित करें"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:244 src/ptyxis-preferences-window.ui:460
+#: src/org.gnome.Ptyxis.gschema.xml.in:244 src/ptyxis-preferences-window.ui:468
 #: src/ptyxis-profile-editor.ui:312
 msgid "Scrollback Lines"
 msgstr "स्क्रॉलबैक पंक्तियां"
@@ -376,7 +376,7 @@ msgstr "स्क्रॉलबैक पंक्तियां"
 msgid "The number of lines to keep in the scrollback, zero for no scrollback"
 msgstr "स्क्रॉलबैक में रखी जाने वाली पंक्तियों की संख्या, स्क्रॉलबैक न होने पर शून्य"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:250 src/ptyxis-preferences-window.ui:441
+#: src/org.gnome.Ptyxis.gschema.xml.in:250 src/ptyxis-preferences-window.ui:449
 #: src/ptyxis-profile-editor.ui:293
 msgid "Scroll on Output"
 msgstr "आउटपुट पर स्क्रॉल करें"
@@ -385,7 +385,7 @@ msgstr "आउटपुट पर स्क्रॉल करें"
 msgid "Scroll to the bottom upon new output"
 msgstr "नये आउटपुट पर नीचे स्क्रॉल करें"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:256 src/ptyxis-preferences-window.ui:435
+#: src/org.gnome.Ptyxis.gschema.xml.in:256 src/ptyxis-preferences-window.ui:443
 #: src/ptyxis-profile-editor.ui:287
 msgid "Scroll on Keystroke"
 msgstr "कीस्ट्रोक पर स्क्रॉल करें"
@@ -434,7 +434,7 @@ msgstr "कंटेनर संरक्षण"
 msgid "Preserve the active container when creating new tabs and windows"
 msgstr "नए टैब और विंडो बनाते समय सक्रिय कंटेनर को संरक्षित रखें"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:292 src/ptyxis-preferences-window.ui:520
+#: src/org.gnome.Ptyxis.gschema.xml.in:292 src/ptyxis-preferences-window.ui:528
 #: src/ptyxis-profile-editor.ui:251
 msgid "Exit Action"
 msgstr "बाहर निकलने की कार्रवाई"
@@ -498,7 +498,7 @@ msgstr "बैकस्पेस बाइंडिंग"
 msgid "What to send to the PTY when a backspace is entered"
 msgstr "बैकस्पेस दर्ज करने पर PTY को क्या भेजना है"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:345 src/ptyxis-preferences-window.ui:613
+#: src/org.gnome.Ptyxis.gschema.xml.in:345 src/ptyxis-preferences-window.ui:621
 msgid "Copy to Clipboard"
 msgstr "क्लिपबोर्ड पर कॉपी करें"
 
@@ -506,7 +506,7 @@ msgstr "क्लिपबोर्ड पर कॉपी करें"
 msgid "The shortcut to copy to clipboard"
 msgstr "क्लिपबोर्ड पर कॉपी करने का शॉर्टकट"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:351 src/ptyxis-preferences-window.ui:618
+#: src/org.gnome.Ptyxis.gschema.xml.in:351 src/ptyxis-preferences-window.ui:626
 msgid "Paste from Clipboard"
 msgstr "क्लिपबोर्ड से चिपकाएं"
 
@@ -534,7 +534,7 @@ msgstr "टैब अवलोकन दिखाने का शॉर्ट�
 msgid "The shortcut to show application preferences"
 msgstr "अनुप्रयोग प्राथमिकताएं दिखाने का शॉर्टकट"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:381 src/ptyxis-preferences-window.ui:818
+#: src/org.gnome.Ptyxis.gschema.xml.in:381 src/ptyxis-preferences-window.ui:826
 #: src/ptyxis-window.c:1239 src/ptyxis-window.c:1247
 msgid "Zoom Out"
 msgstr "छोटा करें"
@@ -543,7 +543,7 @@ msgstr "छोटा करें"
 msgid "The shortcut to zoom out"
 msgstr "छोटा करने का शॉर्टकट"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:387 src/ptyxis-preferences-window.ui:823
+#: src/org.gnome.Ptyxis.gschema.xml.in:387 src/ptyxis-preferences-window.ui:831
 #: src/ptyxis-window.c:1256
 msgid "Reset Zoom"
 msgstr "ज़ूम रीसेट करें"
@@ -552,7 +552,7 @@ msgstr "ज़ूम रीसेट करें"
 msgid "The shortcut to reset zoom"
 msgstr "ज़ूम रीसेट करने का शॉर्टकट"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:393 src/ptyxis-preferences-window.ui:813
+#: src/org.gnome.Ptyxis.gschema.xml.in:393 src/ptyxis-preferences-window.ui:821
 #: src/ptyxis-window.c:1224 src/ptyxis-window.c:1232
 msgid "Zoom In"
 msgstr "बड़ा करें"
@@ -561,7 +561,7 @@ msgstr "बड़ा करें"
 msgid "The shortcut to zoom in"
 msgstr "बड़ा करने का शॉर्टकट"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:399 src/ptyxis-preferences-window.ui:833
+#: src/org.gnome.Ptyxis.gschema.xml.in:399 src/ptyxis-preferences-window.ui:841
 msgid "Toggle Fullscreen"
 msgstr "पूर्णस्क्रीन टॉगल करें"
 
@@ -585,7 +585,7 @@ msgstr "टर्मिनल रीसेट करें और इतिह�
 msgid "Reset the terminal state and clear history for misbehaving clients"
 msgstr "टर्मिनल स्थिति को रीसेट करें और गलत व्यवहार करने वाले क्लाइंट का इतिहास साफ़ करें"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:417 src/ptyxis-preferences-window.ui:655
+#: src/org.gnome.Ptyxis.gschema.xml.in:417 src/ptyxis-preferences-window.ui:663
 msgid "Search History"
 msgstr "खोज इतिहास"
 
@@ -593,7 +593,7 @@ msgstr "खोज इतिहास"
 msgid "Shortcut to begin searching the terminal history"
 msgstr "टर्मिनल इतिहास की खोज शुरू करने के लिए शॉर्टकट"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:423 src/ptyxis-preferences-window.ui:627
+#: src/org.gnome.Ptyxis.gschema.xml.in:423 src/ptyxis-preferences-window.ui:635
 msgid "Select All"
 msgstr "सभी चुनें"
 
@@ -625,7 +625,7 @@ msgstr "प्राथमिक मेनू"
 msgid "Shortcut to show the primary menu for the window"
 msgstr "विंडो के लिए प्राथमिक मेनू दिखाने का शॉर्टकट"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:447 src/ptyxis-preferences-window.ui:722
+#: src/org.gnome.Ptyxis.gschema.xml.in:447 src/ptyxis-preferences-window.ui:730
 msgid "Move to Previous Tab"
 msgstr "पिछले टैब पर जाएं"
 
@@ -633,7 +633,7 @@ msgstr "पिछले टैब पर जाएं"
 msgid "Shortcut to move to the previous tab"
 msgstr "पिछले टैब पर जाने के लिए शॉर्टकट"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:453 src/ptyxis-preferences-window.ui:727
+#: src/org.gnome.Ptyxis.gschema.xml.in:453 src/ptyxis-preferences-window.ui:735
 msgid "Move to Next Tab"
 msgstr "अगले टैब पर जाएं"
 
@@ -641,7 +641,7 @@ msgstr "अगले टैब पर जाएं"
 msgid "Shortcut to move to the next tab"
 msgstr "अगले टैब पर जाने के लिए शॉर्टकट"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:459 src/ptyxis-preferences-window.ui:736
+#: src/org.gnome.Ptyxis.gschema.xml.in:459 src/ptyxis-preferences-window.ui:744
 msgid "Move Tab Left"
 msgstr "टैब बाएं ले जाएं"
 
@@ -649,7 +649,7 @@ msgstr "टैब बाएं ले जाएं"
 msgid "Shortcut to move the current tab to the left one position"
 msgstr "वर्तमान टैब को बायीं ओर ले जाने का शॉर्टकट"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:465 src/ptyxis-preferences-window.ui:742
+#: src/org.gnome.Ptyxis.gschema.xml.in:465 src/ptyxis-preferences-window.ui:750
 msgid "Move Tab Right"
 msgstr "टैब दाएं ले जाएं"
 
@@ -657,7 +657,7 @@ msgstr "टैब दाएं ले जाएं"
 msgid "Shortcut to move the current tab to the right one position"
 msgstr "वर्तमान टैब को दायीं ओर ले जाने का शॉर्टकट"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:471 src/ptyxis-preferences-window.ui:748
+#: src/org.gnome.Ptyxis.gschema.xml.in:471 src/ptyxis-preferences-window.ui:756
 msgid "Move Tab to New Window"
 msgstr "टैब को नई विंडो में ले जाएं"
 
@@ -665,7 +665,7 @@ msgstr "टैब को नई विंडो में ले जाएं"
 msgid "Shortcut to move the current tab into a new window"
 msgstr "वर्तमान टैब को नई विंडो में ले जाने का शॉर्टकट"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:477 src/ptyxis-preferences-window.ui:700
+#: src/org.gnome.Ptyxis.gschema.xml.in:477 src/ptyxis-preferences-window.ui:708
 msgid "Close Tab"
 msgstr "टैब बंद करें"
 
@@ -673,7 +673,7 @@ msgstr "टैब बंद करें"
 msgid "Shortcut to close the current tab"
 msgstr "वर्तमान टैब बंद करने का शॉर्टकट"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:483 src/ptyxis-preferences-window.ui:706
+#: src/org.gnome.Ptyxis.gschema.xml.in:483 src/ptyxis-preferences-window.ui:714
 msgid "Close Other Tabs"
 msgstr "अन्य टैब बंद करें"
 
@@ -761,7 +761,7 @@ msgstr "टैब 10 पर ध्यान केंद्रित करे�
 msgid "Shortcut to focus tab 10"
 msgstr "टैब 10 पर ध्यान केंद्रित करने का शॉर्टकट"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:549 src/ptyxis-preferences-window.ui:712
+#: src/org.gnome.Ptyxis.gschema.xml.in:549 src/ptyxis-preferences-window.ui:720
 msgid "Undo Close Tab"
 msgstr "टैब बंद करने को पूर्ववत करें"
 
@@ -901,7 +901,7 @@ msgstr "संपूर्ण शब्द (_W)"
 msgid "Use _Regular Expressions"
 msgstr "नियमित अभिव्यक्तियों का प्रयोग करें (_R)"
 
-#: src/ptyxis-find-bar.ui:127 src/ptyxis-preferences-window.ui:541
+#: src/ptyxis-find-bar.ui:127 src/ptyxis-preferences-window.ui:549
 #: src/ptyxis-profile-editor.ui:272
 msgid "Close"
 msgstr "बंद करें"
@@ -931,7 +931,7 @@ msgstr "कॉलम"
 #. * show the proper `tcgetpgrp()` foreground.
 #.
 #: src/ptyxis-inspector.c:171 src/ptyxis-inspector.c:191
-#: src/ptyxis-preferences-window.ui:477 src/ptyxis-profile-editor.ui:154
+#: src/ptyxis-preferences-window.ui:485 src/ptyxis-profile-editor.ui:154
 msgid "Shell"
 msgstr "शैल"
 
@@ -988,7 +988,7 @@ msgstr "ग्रिड आकार"
 msgid "Colors"
 msgstr "रंग"
 
-#: src/ptyxis-inspector.ui:225 src/ptyxis-preferences-window.ui:122
+#: src/ptyxis-inspector.ui:225 src/ptyxis-preferences-window.ui:130
 msgid "Font"
 msgstr "फॉन्ट"
 
@@ -1000,7 +1000,7 @@ msgstr "सेल आकार"
 msgid "Input"
 msgstr "इनपुट"
 
-#: src/ptyxis-inspector.ui:246 src/ptyxis-preferences-window.ui:215
+#: src/ptyxis-inspector.ui:246 src/ptyxis-preferences-window.ui:223
 msgid "Cursor"
 msgstr "कर्सर"
 
@@ -1022,382 +1022,382 @@ msgstr ""
 "ऋषियों को सताने वाले दुष्ट राक्षसों के राजा रावण का सर्वनाश करने वाले विष्णुवतार भगवान "
 "श्रीराम, अयोध्या के महाराज दशरथ के बड़े सपुत्र थे"
 
-#: src/ptyxis-preferences-window.c:240
+#: src/ptyxis-preferences-window.c:241
 msgid "Select Font"
 msgstr "फॉन्ट चुनें"
 
-#: src/ptyxis-preferences-window.c:290
-msgid "Show fewer…"
-msgstr "कम दिखाएं…"
+#: src/ptyxis-preferences-window.c:292
+msgid "Show Fewer Palettes"
+msgstr "कम पैलेट दिखाएं"
 
-#: src/ptyxis-preferences-window.c:292 src/ptyxis-preferences-window.ui:43
-msgid "Show more…"
-msgstr "अधिक दिखाएं…"
+#: src/ptyxis-preferences-window.c:297 src/ptyxis-preferences-window.ui:46
+msgid "Show All Palettes"
+msgstr "सभी पैलेट दिखाएं"
 
-#: src/ptyxis-preferences-window.ui:64 src/ptyxis-profile-editor.ui:76
+#: src/ptyxis-preferences-window.ui:72 src/ptyxis-profile-editor.ui:76
 msgid "Transparency"
 msgstr "पारदर्शिता"
 
-#: src/ptyxis-preferences-window.ui:65 src/ptyxis-profile-editor.ui:77
+#: src/ptyxis-preferences-window.ui:73 src/ptyxis-profile-editor.ui:77
 msgid "Reduces the opacity of the background window"
 msgstr "पृष्ठभूमि विंडो की अपारदर्शिता कम करता है"
 
-#: src/ptyxis-preferences-window.ui:126
+#: src/ptyxis-preferences-window.ui:134
 msgid "Use System _Font"
 msgstr "सिस्टम फॉन्ट का प्रयोग करें"
 
-#: src/ptyxis-preferences-window.ui:138
+#: src/ptyxis-preferences-window.ui:146
 msgid "Custom Font"
 msgstr "तदनुकूल फॉन्ट"
 
-#: src/ptyxis-preferences-window.ui:167 src/ptyxis-profile-editor.ui:136
+#: src/ptyxis-preferences-window.ui:175 src/ptyxis-profile-editor.ui:136
 msgid "Use Bright Colors for Bold"
 msgstr "बोल्ड के लिए चमकीले रंगों का प्रयोग करें"
 
-#: src/ptyxis-preferences-window.ui:176
+#: src/ptyxis-preferences-window.ui:184
 msgid "Blinking Text"
 msgstr "निमिष पाठ"
 
-#: src/ptyxis-preferences-window.ui:185 src/ptyxis-preferences-window.ui:409
-#: src/ptyxis-preferences-window.ui:498 src/ptyxis-profile-editor.ui:200
+#: src/ptyxis-preferences-window.ui:193 src/ptyxis-preferences-window.ui:417
+#: src/ptyxis-preferences-window.ui:506 src/ptyxis-profile-editor.ui:200
 #: src/ptyxis-profile-editor.ui:229
 msgid "Never"
 msgstr "कभी नहीं"
 
-#: src/ptyxis-preferences-window.ui:191
+#: src/ptyxis-preferences-window.ui:199
 msgid "Focused"
 msgstr "केंद्रित"
 
-#: src/ptyxis-preferences-window.ui:197
+#: src/ptyxis-preferences-window.ui:205
 msgid "Unfocused"
 msgstr "विकेन्द्रित"
 
-#: src/ptyxis-preferences-window.ui:203 src/ptyxis-preferences-window.ui:421
-#: src/ptyxis-preferences-window.ui:510 src/ptyxis-profile-editor.ui:206
+#: src/ptyxis-preferences-window.ui:211 src/ptyxis-preferences-window.ui:429
+#: src/ptyxis-preferences-window.ui:518 src/ptyxis-profile-editor.ui:206
 #: src/ptyxis-profile-editor.ui:241
 msgid "Always"
 msgstr "हमेशा"
 
-#: src/ptyxis-preferences-window.ui:227
+#: src/ptyxis-preferences-window.ui:235
 msgid "Block"
 msgstr "ब्लॉक"
 
-#: src/ptyxis-preferences-window.ui:233
+#: src/ptyxis-preferences-window.ui:241
 msgid "I-Beam"
 msgstr "आई-बीम"
 
-#: src/ptyxis-preferences-window.ui:239
+#: src/ptyxis-preferences-window.ui:247
 msgid "Underline"
 msgstr "रेखांकन"
 
-#: src/ptyxis-preferences-window.ui:249
+#: src/ptyxis-preferences-window.ui:257
 msgid "Cursor Blinking"
 msgstr "कर्सर निमिष"
 
-#: src/ptyxis-preferences-window.ui:258 src/ptyxis-preferences-window.ui:415
+#: src/ptyxis-preferences-window.ui:266 src/ptyxis-preferences-window.ui:423
 msgid "Follow System"
 msgstr "सिस्टम का पालन करें"
 
-#: src/ptyxis-preferences-window.ui:264
+#: src/ptyxis-preferences-window.ui:272
 msgid "Enabled"
 msgstr "सक्षम"
 
-#: src/ptyxis-preferences-window.ui:270
+#: src/ptyxis-preferences-window.ui:278
 msgid "Disabled"
 msgstr "अक्षम"
 
-#: src/ptyxis-preferences-window.ui:284
+#: src/ptyxis-preferences-window.ui:292
 msgid "Behavior"
 msgstr "व्यवहार"
 
-#: src/ptyxis-preferences-window.ui:288
+#: src/ptyxis-preferences-window.ui:296
 msgid "Interface"
 msgstr "इंटरफ़ेस"
 
-#: src/ptyxis-preferences-window.ui:300
+#: src/ptyxis-preferences-window.ui:308
 msgid "Next"
 msgstr "अगला"
 
-#: src/ptyxis-preferences-window.ui:306
+#: src/ptyxis-preferences-window.ui:314
 msgid "Last"
 msgstr "अंतिम"
 
-#: src/ptyxis-preferences-window.ui:321
+#: src/ptyxis-preferences-window.ui:329
 msgid "Attempt to restore previous tabs when Ptyxis starts"
 msgstr "Ptyxis प्रारंभ होने पर पिछले टैब को पुनर्स्थापित करने का प्रयास करें"
 
-#: src/ptyxis-preferences-window.ui:327
+#: src/ptyxis-preferences-window.ui:335
 msgid "Restore the previous window size when creating a new window"
 msgstr "नई विंडो बनाते समय पिछली विंडो का आकार पुनर्स्थापित करें"
 
-#: src/ptyxis-preferences-window.ui:337
+#: src/ptyxis-preferences-window.ui:345
 msgid "Columns"
 msgstr "कॉलम"
 
-#: src/ptyxis-preferences-window.ui:351
+#: src/ptyxis-preferences-window.ui:359
 msgid "Rows"
 msgstr "पंक्तियां"
 
-#: src/ptyxis-preferences-window.ui:369
+#: src/ptyxis-preferences-window.ui:377
 msgid "Accessibility"
 msgstr "अभिगम्यता"
 
-#: src/ptyxis-preferences-window.ui:372
+#: src/ptyxis-preferences-window.ui:380
 msgid "Allow Screen Readers"
 msgstr "स्क्रीन पाठक को अनुमति दें"
 
-#: src/ptyxis-preferences-window.ui:373
+#: src/ptyxis-preferences-window.ui:381
 msgid ""
 "Permit screen readers such as Orca to read terminal content and typed text"
 msgstr ""
 "ओर्का जैसे स्क्रीन पाठक को टर्मिनल सामग्री और टाइप किए गए पाठ को पढ़ने की अनुमति दें"
 
-#: src/ptyxis-preferences-window.ui:380
+#: src/ptyxis-preferences-window.ui:388
 msgid "Bell"
 msgstr "घंटी"
 
-#: src/ptyxis-preferences-window.ui:384
+#: src/ptyxis-preferences-window.ui:392
 msgid "Emit an audible bell when requested by active tab"
 msgstr "सक्रिय टैब द्वारा अनुरोध किए जाने पर श्रव्य घंटी बजाएं"
 
-#: src/ptyxis-preferences-window.ui:389
+#: src/ptyxis-preferences-window.ui:397
 msgid "Visual Bell"
 msgstr "दृश्यमान घंटी"
 
-#: src/ptyxis-preferences-window.ui:390
+#: src/ptyxis-preferences-window.ui:398
 msgid "Emit a visual bell when requested by active tab"
 msgstr "सक्रिय टैब द्वारा अनुरोध किए जाने पर दृश्यमान घंटी बजाएं"
 
-#: src/ptyxis-preferences-window.ui:397 src/ptyxis-profile-editor.ui:284
+#: src/ptyxis-preferences-window.ui:405 src/ptyxis-profile-editor.ui:284
 msgid "Scrolling"
 msgstr "स्क्रॉलिंग"
 
-#: src/ptyxis-preferences-window.ui:400
+#: src/ptyxis-preferences-window.ui:408
 msgid "Use Scrollbars"
 msgstr "स्क्रॉलबार का प्रयोग करें"
 
-#: src/ptyxis-preferences-window.ui:436 src/ptyxis-profile-editor.ui:288
+#: src/ptyxis-preferences-window.ui:444 src/ptyxis-profile-editor.ui:288
 msgid "Scroll to the bottom upon input keystroke"
 msgstr "इनपुट कुंजीस्ट्रोक पर नीचे स्क्रॉल करें"
 
-#: src/ptyxis-preferences-window.ui:442 src/ptyxis-profile-editor.ui:294
+#: src/ptyxis-preferences-window.ui:450 src/ptyxis-profile-editor.ui:294
 msgid "Scroll to the bottom when new content is available"
 msgstr "नई सामग्री उपलब्ध होने पर नीचे तक स्क्रॉल करें"
 
-#: src/ptyxis-preferences-window.ui:452 src/ptyxis-profile-editor.ui:304
+#: src/ptyxis-preferences-window.ui:460 src/ptyxis-profile-editor.ui:304
 msgid "Restrict the number of lines saved for scrollback"
 msgstr "स्क्रॉलबैक के लिए सहेजी गई पंक्तियों की संख्या सीमित करें"
 
-#: src/ptyxis-preferences-window.ui:461 src/ptyxis-profile-editor.ui:313
+#: src/ptyxis-preferences-window.ui:469 src/ptyxis-profile-editor.ui:313
 msgid "The number of lines to keep for scrollback"
 msgstr "स्क्रॉलबैक के लिए रखी जाने वाली पंक्तियों की संख्या"
 
-#: src/ptyxis-preferences-window.ui:480 src/ptyxis-profile-editor.ui:172
+#: src/ptyxis-preferences-window.ui:488 src/ptyxis-profile-editor.ui:172
 msgid "Use Login Shell"
 msgstr "लॉगिन शैल का प्रयोग करें"
 
-#: src/ptyxis-preferences-window.ui:489 src/ptyxis-profile-editor.ui:220
+#: src/ptyxis-preferences-window.ui:497 src/ptyxis-profile-editor.ui:220
 msgid "Preserve Working Directory"
 msgstr "कार्यशील निर्देशिका को संरक्षित करें"
 
-#: src/ptyxis-preferences-window.ui:504 src/ptyxis-profile-editor.ui:235
+#: src/ptyxis-preferences-window.ui:512 src/ptyxis-profile-editor.ui:235
 msgid "Safe"
 msgstr "सुरक्षित"
 
-#: src/ptyxis-preferences-window.ui:529 src/ptyxis-profile-editor.ui:260
+#: src/ptyxis-preferences-window.ui:537 src/ptyxis-profile-editor.ui:260
 msgid "No Action"
 msgstr "कोई कार्रवाई नहीं"
 
-#: src/ptyxis-preferences-window.ui:535 src/ptyxis-profile-editor.ui:266
+#: src/ptyxis-preferences-window.ui:543 src/ptyxis-profile-editor.ui:266
 msgid "Restart"
 msgstr "पुनः प्रारंभ करें"
 
-#: src/ptyxis-preferences-window.ui:553 src/ptyxis-profile-editor.ui:329
+#: src/ptyxis-preferences-window.ui:561 src/ptyxis-profile-editor.ui:329
 msgid "Compatibility"
 msgstr "अनुकूलता"
 
-#: src/ptyxis-preferences-window.ui:556 src/ptyxis-profile-editor.ui:332
+#: src/ptyxis-preferences-window.ui:564 src/ptyxis-profile-editor.ui:332
 msgid "Backspace Key"
 msgstr "बैकस्पेस कुंजी"
 
-#: src/ptyxis-preferences-window.ui:557 src/ptyxis-profile-editor.ui:333
+#: src/ptyxis-preferences-window.ui:565 src/ptyxis-profile-editor.ui:333
 msgid "Sequence to send for Backspace key"
 msgstr "बैकस्पेस कुंजी के लिए भेजने का अनुक्रम"
 
-#: src/ptyxis-preferences-window.ui:566 src/ptyxis-profile-editor.ui:342
+#: src/ptyxis-preferences-window.ui:574 src/ptyxis-profile-editor.ui:342
 msgid "Delete Key"
 msgstr "डिलीट कुंजी"
 
-#: src/ptyxis-preferences-window.ui:567 src/ptyxis-profile-editor.ui:343
+#: src/ptyxis-preferences-window.ui:575 src/ptyxis-profile-editor.ui:343
 msgid "Sequence to send for Delete key"
 msgstr "डिलीट कुंजी के लिए भेजे जाने वाला अनुक्रम"
 
-#: src/ptyxis-preferences-window.ui:576 src/ptyxis-profile-editor.ui:352
+#: src/ptyxis-preferences-window.ui:584 src/ptyxis-profile-editor.ui:352
 msgid "Ambiguous-width Characters"
 msgstr "अस्पष्ट-चौड़ाई वाले वर्ण"
 
-#: src/ptyxis-preferences-window.ui:585 src/ptyxis-profile-editor.ui:361
+#: src/ptyxis-preferences-window.ui:593 src/ptyxis-profile-editor.ui:361
 msgid "Narrow"
 msgstr "संकीर्ण"
 
-#: src/ptyxis-preferences-window.ui:591 src/ptyxis-profile-editor.ui:367
+#: src/ptyxis-preferences-window.ui:599 src/ptyxis-profile-editor.ui:367
 msgid "Wide"
 msgstr "चौड़ा"
 
-#: src/ptyxis-preferences-window.ui:606
+#: src/ptyxis-preferences-window.ui:614
 msgid "Shortcuts"
 msgstr "शॉर्टकट"
 
-#: src/ptyxis-preferences-window.ui:632
+#: src/ptyxis-preferences-window.ui:640
 msgid "Clear Selection"
 msgstr "चयन साफ़ करें"
 
-#: src/ptyxis-preferences-window.ui:641 src/ptyxis-terminal.ui:202
+#: src/ptyxis-preferences-window.ui:649 src/ptyxis-terminal.ui:202
 msgid "Reset"
 msgstr "रीसेट करें"
 
-#: src/ptyxis-preferences-window.ui:646 src/ptyxis-terminal.ui:208
+#: src/ptyxis-preferences-window.ui:654 src/ptyxis-terminal.ui:208
 msgid "Reset and Clear"
 msgstr "रीसेट और साफ करें"
 
-#: src/ptyxis-preferences-window.ui:664
+#: src/ptyxis-preferences-window.ui:672
 msgid "Show Context Menu"
 msgstr "संदर्भ मेनू दिखाएं"
 
-#: src/ptyxis-preferences-window.ui:671
+#: src/ptyxis-preferences-window.ui:679
 msgid "Tabs"
 msgstr "टैब"
 
-#: src/ptyxis-preferences-window.ui:675
+#: src/ptyxis-preferences-window.ui:683
 msgid "Open a new tab in the current window"
 msgstr "वर्तमान विंडो में नया टैब खोलें"
 
-#: src/ptyxis-preferences-window.ui:681
+#: src/ptyxis-preferences-window.ui:689
 msgid "Open a new tab in a new window"
 msgstr "नई विंडो में नया टैब खोलें"
 
-#: src/ptyxis-preferences-window.ui:690
+#: src/ptyxis-preferences-window.ui:698
 msgid "View Tab Overview"
 msgstr "टैब अवलोकन देखें"
 
-#: src/ptyxis-preferences-window.ui:691
+#: src/ptyxis-preferences-window.ui:699
 msgid "Show an overview of all tabs within the window"
 msgstr "विंडो के भीतर सभी टैब का अवलोकन दिखाएं"
 
-#: src/ptyxis-preferences-window.ui:701
+#: src/ptyxis-preferences-window.ui:709
 msgid "Close the current tab"
 msgstr "वर्तमान टैब बंद करें"
 
-#: src/ptyxis-preferences-window.ui:707
+#: src/ptyxis-preferences-window.ui:715
 msgid "Close all tabs except the active tab"
 msgstr "सक्रिय टैब को छोड़कर सभी टैब बंद करें"
 
-#: src/ptyxis-preferences-window.ui:713
+#: src/ptyxis-preferences-window.ui:721
 msgid "Undo closing the last tab"
 msgstr "अंतिम टैब बंद करना पूर्ववत करें"
 
-#: src/ptyxis-preferences-window.ui:737
+#: src/ptyxis-preferences-window.ui:745
 msgid "Move the tab one position to the left"
 msgstr "टैब को एक स्थान बायीं ओर ले जाएं"
 
-#: src/ptyxis-preferences-window.ui:743
+#: src/ptyxis-preferences-window.ui:751
 msgid "Move the tab one position to the right"
 msgstr "टैब को एक स्थान दायीं ओर ले जाएं"
 
-#: src/ptyxis-preferences-window.ui:749
+#: src/ptyxis-preferences-window.ui:757
 msgid "Detach the current tab and move it to a new window"
 msgstr "वर्तमान टैब को अलग करें और उसे नई विंडो पर ले जाएं"
 
-#: src/ptyxis-preferences-window.ui:758
+#: src/ptyxis-preferences-window.ui:766
 msgid "Switch to Tab 1"
 msgstr "टैब 1 पर जाएं"
 
-#: src/ptyxis-preferences-window.ui:763
+#: src/ptyxis-preferences-window.ui:771
 msgid "Switch to Tab 2"
 msgstr "टैब 2 पर जाएं"
 
-#: src/ptyxis-preferences-window.ui:768
+#: src/ptyxis-preferences-window.ui:776
 msgid "Switch to Tab 3"
 msgstr "टैब 3 पर जाएं"
 
-#: src/ptyxis-preferences-window.ui:773
+#: src/ptyxis-preferences-window.ui:781
 msgid "Switch to Tab 4"
 msgstr "टैब 4 पर जाएं"
 
-#: src/ptyxis-preferences-window.ui:778
+#: src/ptyxis-preferences-window.ui:786
 msgid "Switch to Tab 5"
 msgstr "टैब 5 पर जाएं"
 
-#: src/ptyxis-preferences-window.ui:783
+#: src/ptyxis-preferences-window.ui:791
 msgid "Switch to Tab 6"
 msgstr "टैब 6 पर जाएं"
 
-#: src/ptyxis-preferences-window.ui:788
+#: src/ptyxis-preferences-window.ui:796
 msgid "Switch to Tab 7"
 msgstr "टैब 7 पर जाएं"
 
-#: src/ptyxis-preferences-window.ui:793
+#: src/ptyxis-preferences-window.ui:801
 msgid "Switch to Tab 8"
 msgstr "टैब 8 पर जाएं"
 
-#: src/ptyxis-preferences-window.ui:798
+#: src/ptyxis-preferences-window.ui:806
 msgid "Switch to Tab 9"
 msgstr "टैब 9 पर जाएं"
 
-#: src/ptyxis-preferences-window.ui:803
+#: src/ptyxis-preferences-window.ui:811
 msgid "Switch to Tab 10"
 msgstr "टैब 10 पर जाएं"
 
-#: src/ptyxis-preferences-window.ui:810
+#: src/ptyxis-preferences-window.ui:818
 msgid "Zoom"
 msgstr "ज़ूम"
 
-#: src/ptyxis-preferences-window.ui:830
+#: src/ptyxis-preferences-window.ui:838
 msgid "Application"
 msgstr "अनुप्रयोग"
 
-#: src/ptyxis-preferences-window.ui:834
+#: src/ptyxis-preferences-window.ui:842
 msgid "Toggle in and out of fullscreen"
 msgstr "पूर्णस्क्रीन के अंदर और बाहर टॉगल करें"
 
-#: src/ptyxis-preferences-window.ui:843
+#: src/ptyxis-preferences-window.ui:851
 msgid "Show Primary Menu"
 msgstr "प्राथमिक मेनू दिखाएं"
 
-#: src/ptyxis-preferences-window.ui:844
+#: src/ptyxis-preferences-window.ui:852
 msgid "Displays the primary menu for the terminal window"
 msgstr "टर्मिनल विंडो के लिए प्राथमिक मेनू प्रदर्शित करता है"
 
-#: src/ptyxis-preferences-window.ui:850
+#: src/ptyxis-preferences-window.ui:858
 msgid "Show this preferences window"
 msgstr "यह प्राथमिकता विंडो दिखाएं"
 
-#: src/ptyxis-preferences-window.ui:859 src/ptyxis-preferences-window.ui:863
+#: src/ptyxis-preferences-window.ui:867 src/ptyxis-preferences-window.ui:871
 #: src/ptyxis-window.c:1337
 msgid "Profiles"
 msgstr "प्रोफाइल"
 
-#: src/ptyxis-preferences-window.ui:870
+#: src/ptyxis-preferences-window.ui:878
 msgid "_Add Profile"
 msgstr "प्रोफाइल जोड़ें (_A)"
 
-#: src/ptyxis-preferences-window.ui:897 src/ptyxis-profile-editor.ui:401
+#: src/ptyxis-preferences-window.ui:905 src/ptyxis-profile-editor.ui:401
 msgid "Automatic"
 msgstr "स्वचालित"
 
-#: src/ptyxis-preferences-window.ui:903 src/ptyxis-profile-editor.ui:407
+#: src/ptyxis-preferences-window.ui:911 src/ptyxis-profile-editor.ui:407
 msgid "Control-H"
 msgstr "Control-H"
 
-#: src/ptyxis-preferences-window.ui:909 src/ptyxis-profile-editor.ui:413
+#: src/ptyxis-preferences-window.ui:917 src/ptyxis-profile-editor.ui:413
 msgid "ASCII DEL"
 msgstr "ASCII DEL"
 
-#: src/ptyxis-preferences-window.ui:915 src/ptyxis-profile-editor.ui:419
+#: src/ptyxis-preferences-window.ui:923 src/ptyxis-profile-editor.ui:419
 msgid "Escape Sequence"
 msgstr "एस्केप अनुक्रम"
 
-#: src/ptyxis-preferences-window.ui:921 src/ptyxis-profile-editor.ui:425
+#: src/ptyxis-preferences-window.ui:929 src/ptyxis-profile-editor.ui:425
 msgid "TTY Erase"
 msgstr "TTY मिटाएं"
 
