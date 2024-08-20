@@ -473,7 +473,7 @@
     </key>
 
     <key name="close-tab" type="s">
-      <default>''</default>
+      <default>'&lt;ctrl&gt;&lt;shift&gt;w'</default>
       <summary>Close Tab</summary>
       <description>Shortcut to close the current tab</description>
     </key>
