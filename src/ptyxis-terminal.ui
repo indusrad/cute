@@ -85,6 +85,28 @@
             <property name="arguments">false</property>
           </object>
         </child>
+        <child>
+          <object class="GtkShortcut">
+            <binding name="trigger">
+              <lookup name="reset" type="PtyxisShortcuts">
+                <lookup name="shortcuts">PtyxisTerminal</lookup>
+              </lookup>
+            </binding>
+            <property name="action">action(tab.reset)</property>
+            <property name="arguments">false</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkShortcut">
+            <binding name="trigger">
+              <lookup name="reset-and-clear" type="PtyxisShortcuts">
+                <lookup name="shortcuts">PtyxisTerminal</lookup>
+              </lookup>
+            </binding>
+            <property name="action">action(tab.reset)</property>
+            <property name="arguments">true</property>
+          </object>
+        </child>
       </object>
     </child>
     <child>
