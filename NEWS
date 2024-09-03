@@ -1,3 +1,25 @@
+# Ptyxis 47.rc
+
+This is a release for GNOME 47.rc
+
+ * Ctrl+shift+w now set as default shortcut for closing a tab, matching
+   GNOME Terminal.
+ * Preferences window improvements.
+ * Updated GNOME Terminal palettes.
+ * UI changes to improve screen reader support.
+ * Make CSS provider priority less than the GTK inspector.
+ * Styling improvements to match Builder and Text Editor.
+ * Fix support for enabling login shells.
+ * Convenience API for distros which require downstream patching for
+   current directory tracking (such as Debian).
+ * Fix container tracking and notifications via termprops.
+ * Show opacity toggle if the setting has been changed.
+ * Handle new tab creation when directory is in a GVFS FUSE path.
+ * Reduce agent poll priority when ^C is pressed.
+ * Overview styling and live-preview improvements to updated immediately
+   when preferences changes.
+ * Fix missing shortcut bindings for reset and reset-and-clear.
+
 # Ptyxis 47.beta
 
 This is a beta release for GNOME 47
