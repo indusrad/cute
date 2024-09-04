@@ -111,7 +111,7 @@ main (int   argc,
       char *argv[])
 {
   g_autoptr(PtyxisApplication) app = NULL;
-  GApplicationFlags flags = G_APPLICATION_HANDLES_COMMAND_LINE;
+  GApplicationFlags flags = G_APPLICATION_HANDLES_COMMAND_LINE | G_APPLICATION_HANDLES_OPEN;
   gboolean standalone = FALSE;
   int ret;
 

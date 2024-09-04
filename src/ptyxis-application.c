@@ -80,6 +80,8 @@ static void ptyxis_application_preferences       (GSimpleAction *action,
 static void ptyxis_application_focus_tab_by_uuid (GSimpleAction *action,
                                                   GVariant      *param,
                                                   gpointer       user_data);
+static void ptyxis_application_apply_default_size(PtyxisApplication *self,
+                                                  PtyxisTerminal    *terminal);
 
 static GActionEntry action_entries[] = {
   { "about", ptyxis_application_about },
@@ -145,6 +147,51 @@ ptyxis_application_restore (PtyxisApplication *self)
   self->has_restored_session = TRUE;
 
   return ptyxis_session_restore (self, self->session);
+}
+
+static void
+ptyxis_application_open (GApplication  *app,
+                         GFile        **files,
+                         int            n_files,
+                         const char    *hint)
+{
+  PtyxisApplication *self = (PtyxisApplication *)app;
+  g_autoptr(PtyxisProfile) profile = NULL;
+  PtyxisWindow *window = NULL;
+
+  g_assert (PTYXIS_IS_APPLICATION (self));
+  g_assert (PTYXIS_IS_CLIENT (self->client));
+  g_assert (files != NULL);
+
+  if (n_files == 0)
+    return;
+
+  /* Ignoring the session here will mean we just show the
+   * requested window, but at the cost of loosing the most
+   * recent session.
+   *
+   * Probably okay, but this is where things are tricky with
+   * Text Editor too.
+   */
+
+  window = ptyxis_window_new_empty ();
+  profile = ptyxis_application_dup_default_profile (self);
+
+  for (guint i = 0; i < n_files; i++)
+    {
+      PtyxisTab *tab = ptyxis_tab_new (profile);
+      PtyxisTerminal *terminal = ptyxis_tab_get_terminal (tab);
+      g_autofree char *uri = g_file_get_uri (files[i]);
+
+      ptyxis_application_apply_default_size (self, terminal);
+      ptyxis_tab_set_initial_working_directory_uri (tab, uri);
+      ptyxis_window_add_tab (window, tab);
+
+      if (i == 0)
+        ptyxis_window_set_active_tab (window, tab);
+    }
+
+  gtk_window_present (GTK_WINDOW (window));
 }
 
 static void
@@ -811,6 +858,7 @@ ptyxis_application_class_init (PtyxisApplicationClass *klass)
   app_class->startup = ptyxis_application_startup;
   app_class->shutdown = ptyxis_application_shutdown;
   app_class->command_line = ptyxis_application_command_line;
+  app_class->open = ptyxis_application_open;
 
   properties[PROP_DEFAULT_PROFILE] =
     g_param_spec_object ("default-profile", NULL, NULL,
