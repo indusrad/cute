@@ -166,15 +166,27 @@ ptyxis_application_open (GApplication  *app,
   if (n_files == 0)
     return;
 
-  /* Ignoring the session here will mean we just show the
-   * requested window, but at the cost of loosing the most
-   * recent session.
-   *
-   * Probably okay, but this is where things are tricky with
-   * Text Editor too.
+  /* We want to restore the session so the user doesn't lose it. Only in that
+   * case do we want to add a tab to an existing window because otherwise we
+   * might added it to a window on another workspace we cannot bring-to-front.
    */
+  if (ptyxis_application_restore (self))
+    {
+      for (const GList *windows = gtk_application_get_windows (GTK_APPLICATION (app));
+           windows != NULL;
+           windows = windows->next)
+        {
+          if (PTYXIS_IS_WINDOW (windows->data))
+            {
+              window = windows->data;
+              break;
+            }
+        }
+    }
 
-  window = ptyxis_window_new_empty ();
+  if (window == NULL)
+    window = ptyxis_window_new_empty ();
+
   profile = ptyxis_application_dup_default_profile (self);
 
   for (guint i = 0; i < n_files; i++)
