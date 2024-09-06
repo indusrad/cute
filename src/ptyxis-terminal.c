@@ -1263,6 +1263,8 @@ ptyxis_terminal_init (PtyxisTerminal *self)
                                      (GDK_ACTION_COPY |
                                       GDK_ACTION_MOVE));
   gtk_drop_target_async_set_formats (self->drop_target, formats);
+
+  ptyxis_terminal_update_clipboard_actions (self);
 }
 
 PtyxisPalette *
