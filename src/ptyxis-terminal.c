@@ -1358,6 +1358,8 @@ ptyxis_terminal_init (PtyxisTerminal *self)
                     "termprop-changed::" VTE_TERMPROP_CONTAINER_RUNTIME,
                     G_CALLBACK (notify_property_changed),
                     properties[PROP_CURRENT_CONTAINER_RUNTIME]);
+
+  ptyxis_terminal_update_clipboard_actions (self);
 }
 
 PtyxisPalette *
