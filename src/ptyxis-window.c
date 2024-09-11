@@ -127,6 +127,10 @@ ptyxis_window_close_page_dialog_cb (GObject      *object,
 
   ptyxis_parking_lot_push (self->parking_lot, tab);
   adw_tab_view_close_page_finish (self->tab_view, page, TRUE);
+
+  /* Resize if we are going from 2->1 tabs */
+  if (adw_tab_view_get_n_pages (self->tab_view) == 1)
+    gtk_window_set_default_size (GTK_WINDOW (self), -1, -1);
 }
 
 static gboolean
@@ -148,6 +152,7 @@ ptyxis_window_close_page_cb (PtyxisWindow *self,
   if (!ptyxis_tab_is_running (tab, NULL))
     {
       ptyxis_parking_lot_push (self->parking_lot, tab);
+      gtk_window_set_default_size (GTK_WINDOW (self), -1, -1);
       return GDK_EVENT_PROPAGATE;
     }
 
@@ -1833,6 +1838,10 @@ ptyxis_window_add_tab (PtyxisWindow *self,
     }
 
   adw_tab_view_insert (self->tab_view, GTK_WIDGET (tab), position);
+
+  /* Resize if we are going from 1->2 tabs */
+  if (adw_tab_view_get_n_pages (self->tab_view) == 2)
+    gtk_window_set_default_size (GTK_WINDOW (self), -1, -1);
 
   gtk_widget_grab_focus (GTK_WIDGET (tab));
 }
