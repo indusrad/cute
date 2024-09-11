@@ -160,10 +160,10 @@ ptyxis_window_close_page_cb (PtyxisWindow *self,
   g_ptr_array_add (tabs, g_object_ref (tab));
 
   _ptyxis_close_dialog_run_async (GTK_WINDOW (self),
-                                   tabs,
-                                   NULL,
-                                   ptyxis_window_close_page_dialog_cb,
-                                   g_object_ref (tab));
+                                  tabs,
+                                  NULL,
+                                  ptyxis_window_close_page_dialog_cb,
+                                  g_object_ref (tab));
 
   return GDK_EVENT_STOP;
 }
