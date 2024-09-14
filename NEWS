@@ -1,3 +1,12 @@
+# Ptyxis 47.0
+
+ * Implement application open file vfunc to work with Nautilus
+ * Fix inintial clipboard action state
+ * Fix various styling issues
+ * Rename Clone of Ubuntu to Ubuntu at request of Ubuntu
+ * Try to adjust window size to keep grid size the same when
+   adding or removing tabs
+
 # Ptyxis 47.rc
 
 This is a release for GNOME 47.rc
