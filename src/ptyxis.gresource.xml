@@ -127,7 +127,6 @@
     <file>palettes/Gotham.palette</file>
     <file>palettes/Grape.palette</file>
     <file>palettes/Grass.palette</file>
-    <file>palettes/Gruvbox Dark.palette</file>
     <file>palettes/Gruvbox Material.palette</file>
     <file>palettes/Gruvbox.palette</file>
     <file>palettes/Hardcore.palette</file>
@@ -295,3 +294,4 @@
     <file>palettes/Zenburn.palette</file>
   </gresource>
 </gresources>
+
