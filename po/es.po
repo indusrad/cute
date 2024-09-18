@@ -16,16 +16,17 @@
 # Alberto H Sande <albertohsande@gmail.com>, 2022.
 # Daniel Mustieles <daniel.mustieles@gmail.com>, 2021-2024.
 # Daniel Mustieles García <daniel.mustieles@gmail.com>, 2024.
+# Julián Villodre <jvillodrede@gmail.com>, 2024.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-terminal.master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/chergert/ptyxis/issues\n"
-"POT-Creation-Date: 2024-09-16 09:45+0000\n"
-"PO-Revision-Date: 2024-09-16 12:06+0200\n"
-"Last-Translator: Daniel Mustieles García <daniel.mustieles@gmail.com>\n"
+"POT-Creation-Date: 2024-09-16 20:04+0000\n"
+"PO-Revision-Date: 2024-09-18 13:23+0200\n"
+"Last-Translator: Julián Villodre <jvillodrede@gmail.com>\n"
 "Language-Team: Spanish - Spain <gnome-es-list@gnome.org>\n"
-"Language: es_ES\n"
+"Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -38,7 +39,7 @@ msgstr "@APP_NAME@"
 
 #: data/org.gnome.Ptyxis.desktop.in.in:4
 msgid "A container-oriented terminal for GNOME"
-msgstr ""
+msgstr "Una terminal para GNOME orientada al trabajo con contenedores"
 
 #: data/org.gnome.Ptyxis.desktop.in.in:13 src/ptyxis-preferences-window.ui:610
 #: src/ptyxis-tab.c:1229 src/ptyxis-util.c:308
@@ -47,10 +48,8 @@ msgstr "Terminal"
 
 #. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
 #: data/org.gnome.Ptyxis.desktop.in.in:15
-#, fuzzy
-#| msgid "shell;prompt;command;commandline;cmd;"
 msgid "terminal;prompt;ptyxis;shell;command;commandline;cmd;cli;"
-msgstr "shell;prompt;comando;línea de comandos;cmd;"
+msgstr "terminal;prompt;ptyxis;shell;comando;línea de comandos;cmd;cli;"
 
 #: data/org.gnome.Ptyxis.desktop.in.in:21
 #: src/org.gnome.Ptyxis.gschema.xml.in:357 src/ptyxis-preferences-window.ui:680
@@ -72,16 +71,16 @@ msgid "Ptyxis"
 msgstr "Ptyxis"
 
 #: data/org.gnome.Ptyxis.metainfo.xml.in.in:7
-#, fuzzy
-#| msgid "Whether to ring the terminal bell"
 msgid "Container-oriented terminal"
-msgstr "Indica si debe sonar la campana de la terminal"
+msgstr "Terminal orientada al trabajo con contenedores"
 
 #: data/org.gnome.Ptyxis.metainfo.xml.in.in:9
 msgid ""
 "Ptyxis is a terminal for GNOME that focuses on ease-of-use in a world of "
 "containers."
 msgstr ""
+"Ptyxis es una terminal para GNOME centrada en la facilidad de uso en un "
+"mundo de contenedores."
 
 #: data/org.gnome.Ptyxis.metainfo.xml.in.in:13
 msgid "Features:"
@@ -92,117 +91,123 @@ msgid ""
 "Remembers current container when opening a new tab with support for podman, "
 "toolbox, distrobox, and more"
 msgstr ""
+"Recuerda el contenedor actual al abrir una nueva pestaña, con soporte para "
+"podman, toolbox, distrobox y más"
 
 #: data/org.gnome.Ptyxis.metainfo.xml.in.in:16
-#, fuzzy
-#| msgid "Keyboard Shortcuts"
 msgid "Configurable keyboard shortcuts"
-msgstr "Combinaciones de teclas"
+msgstr "Atajos de teclado configurables"
 
 #: data/org.gnome.Ptyxis.metainfo.xml.in.in:17
 msgid "Modern interface which integrates the palette with the window styling"
-msgstr ""
+msgstr "Interfaz moderna que integra la paleta con el estilo de la ventana"
 
 #: data/org.gnome.Ptyxis.metainfo.xml.in.in:18
 msgid "User-installable color palettes"
-msgstr ""
+msgstr "Paletas de colores personalizables por el usuario"
 
 #: data/org.gnome.Ptyxis.metainfo.xml.in.in:19
 msgid "Support for preferences profiles with container integration"
 msgstr ""
+"Compatibilidad para perfiles de configuración con integración para "
+"contenedores"
 
 #: data/org.gnome.Ptyxis.metainfo.xml.in.in:20
 msgid "Integrated color palettes with light and dark support"
-msgstr ""
+msgstr "Paletas de colores integradas con soporte para claros y oscuros"
 
 #: data/org.gnome.Ptyxis.metainfo.xml.in.in:21
 msgid "Tabbed interface with tab overviews"
-msgstr ""
+msgstr "Interfaz de pestañas con vista previa"
 
 #: data/org.gnome.Ptyxis.metainfo.xml.in.in:22
 msgid "Efficient foreground process tracking denoting sudo and SSH"
 msgstr ""
+"Seguimiento eficiente de procesos en primer plano resaltando sudo y SSH"
 
 #: data/org.gnome.Ptyxis.metainfo.xml.in.in:23
-#, fuzzy
-#| msgid "S_hade transparent or image background:"
 msgid "Support for transparent terminal backgrounds"
-msgstr "So_mbra transparente o imagen de fondo:"
+msgstr "Soporte para fondos transparentes"
 
 #: data/org.gnome.Ptyxis.metainfo.xml.in.in:24
-#, fuzzy
-#| msgid "Palette for terminal applications"
 msgid "Separate process mode for terminal-based applications"
-msgstr "Paleta para la aplicaciones de la terminal"
+msgstr "Modo de proceso independiente para aplicaciones basadas en terminal"
 
 #: data/org.gnome.Ptyxis.metainfo.xml.in.in:25
 msgid "Support for pinned tabs and saved sessions"
-msgstr ""
+msgstr "Compatibilidad con pestañas fijadas y guardado de sesión"
 
 #: data/org.gnome.Ptyxis.metainfo.xml.in.in:26
 msgid "Terminal tabs are run within separate cgroups"
-msgstr ""
+msgstr "Las pestañas de Terminal se ejecutan dentro de cgroups independientes"
 
 #: data/org.gnome.Ptyxis.metainfo.xml.in.in:27
-#, fuzzy
-#| msgid "Palette for terminal applications"
 msgid "Terminal inspector to help when writing terminal-based applications"
-msgstr "Paleta para la aplicaciones de la terminal"
+msgstr ""
+"El inspector de Terminal le ayuda cuando escribe aplicaciones basadas en "
+"terminal"
 
 #: data/org.gnome.Ptyxis.metainfo.xml.in.in:72
 msgid "A column and row size indicator is displayed when resizing the window"
 msgstr ""
+"Se muestra un indicador de tamaño de columna y fila al cambiar el tamaño de "
+"la ventana"
 
 #: data/org.gnome.Ptyxis.metainfo.xml.in.in:77
 msgid "Containers are automatically discovered and displayed"
-msgstr ""
+msgstr "Los contenedores se reconocen y muestran automáticamente"
 
 #: data/org.gnome.Ptyxis.metainfo.xml.in.in:82
 msgid "Many behaviors of the terminal may be tweaked to user preference"
 msgstr ""
+"Muchos comportamientos de la terminal pueden ajustarse según las "
+"preferencias del usuario"
 
 #: data/org.gnome.Ptyxis.metainfo.xml.in.in:87
 msgid "You may rename a tab by providing a prefix to the title"
 msgstr ""
+"Puede cambiar el nombre de una pestaña proporcionando un prefijo al título"
 
 #: data/org.gnome.Ptyxis.metainfo.xml.in.in:92
 msgid "Palettes provide an integrated dark mode"
-msgstr ""
+msgstr "Las paletas proporcionan un modo oscuro integrado"
 
 #: data/org.gnome.Ptyxis.metainfo.xml.in.in:97
 msgid "You can see an overview of your tabs at any time"
-msgstr ""
+msgstr "Puede visualizar una vista de sus pestañas en cualquier momento"
 
 #: data/org.gnome.Ptyxis.metainfo.xml.in.in:102
 msgid "Many shortcuts may be remapped to user preference"
-msgstr ""
+msgstr "Muchos atajos pueden reasignarse según las preferencias del usuario"
 
 #: data/org.gnome.Ptyxis.metainfo.xml.in.in:107
 msgid "Built-in color palettes provide both dark and light mode variants"
 msgstr ""
+"Las paletas de colores integradas proporcionan variantes para el modo oscuro "
+"y claro"
 
 #: data/org.gnome.Ptyxis.metainfo.xml.in.in:112
 msgid ""
 "Profiles allow for overriding a number of features such as default container"
 msgstr ""
+"Los perfiles permiten controlar una serie de características, como el "
+"contenedor predeterminado"
 
 #: data/org.gnome.Ptyxis.metainfo.xml.in.in:117
 msgid "The terminal will remind you when you're root on the local system"
-msgstr ""
+msgstr "La terminal le recordará si ha iniciado sesión como root en el sistema"
 
 #: data/org.gnome.Ptyxis.metainfo.xml.in.in:122
 msgid "The terminal will remind you when you're on a remote system"
-msgstr ""
+msgstr "La terminal le recordará si ha iniciado sesión en un sistema remoto"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:95
 msgid "Default Profile UUID"
 msgstr "UUID del perfil predeterminado"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:96
-#, fuzzy
-#| msgid "This is the default profile"
 msgid "The UUID of the default profile"
-msgstr "Este es el perfil predeterminado"
+msgstr "Este es el UUID del perfil predeterminado"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:101
 msgid "UUIDs of all Profiles"
@@ -238,23 +243,24 @@ msgstr "Indica si se debe usar una campana visible"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:125
 msgid "Visual Process Leader"
-msgstr ""
+msgstr "Visualización del líder de proceso"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:126
 msgid ""
 "Display a visual window highlight when process leader is SSH, sudo, or other "
 "specialized tooling"
 msgstr ""
+"Muestra una ventana destacada cuando el líder de proceso es SSH, sudo u otra "
+"herramienta especializada"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:131
 msgid "Use System Font"
 msgstr "Usar la tipografía del sistema"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:132
-#, fuzzy
-#| msgid "Whether to use the system monospace font"
 msgid "If the default system monospace font should be used"
-msgstr "Indica si se debe usar la tipografía monoespaciada del sistema"
+msgstr ""
+"Indica si se debe usar la tipografía monoespaciada predeterminada del sistema"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:137
 msgid "Font Name"
@@ -263,16 +269,16 @@ msgstr "Tipografía"
 #: src/org.gnome.Ptyxis.gschema.xml.in:138
 msgid "The font description to use if use-system-font is set to False"
 msgstr ""
+"La descripción de la tipografía que se usará si use-system-font se ha "
+"establecido como falso"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:143 src/ptyxis-preferences-window.ui:218
 msgid "Cursor Shape"
 msgstr "Forma del cursor"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:144
-#, fuzzy
-#| msgid "Whether to blink the cursor"
 msgid "The default shape of the cursor"
-msgstr "Indica si el cursor debe parpadear"
+msgstr "La forma predeterminada del cursor"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:149
 msgid "Cursor Blink Mode"
@@ -288,23 +294,23 @@ msgstr "Política de desplazamiento"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:156
 msgid "If scrollbars should be displayed"
-msgstr ""
+msgstr "Indica si se deben mostrar las barras de desplazamiento"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:161
 msgid "Text Blink Mode"
-msgstr ""
+msgstr "Parpadeo de texto"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:162
 msgid "When text blinking is allowed"
-msgstr ""
+msgstr "Indica cuándo se permite el parpadeo de texto"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:167
 msgid "Interface Style"
-msgstr "Estilo de la interfaz"
+msgstr "Estilo de interfaz"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:168
 msgid "If light or dark interface style should be used"
-msgstr ""
+msgstr "Indica si se debe usar un estilo de interfaz claro u oscuro"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:173 src/ptyxis-preferences-window.ui:320
 msgid "Restore Session"
@@ -312,15 +318,15 @@ msgstr "Restaurar la sesión"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:174
 msgid "Restore tabs from previous session when starting Ptyxis"
-msgstr ""
+msgstr "Restaurar pestañas de la sesión anterior al iniciar Ptyxis"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:179 src/ptyxis-preferences-window.ui:326
 msgid "Restore Window Size"
-msgstr ""
+msgstr "Restaurar el tamaño de la ventana"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:180
 msgid "Restore the previous window size when creating new windows"
-msgstr ""
+msgstr "Restaurar el tamaño de ventana anterior al crear nuevas ventanas"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:190
 msgid "Default Column Size"
@@ -330,6 +336,8 @@ msgstr "Tamaño predeterminado de la columna"
 #: src/org.gnome.Ptyxis.gschema.xml.in:198
 msgid "Default window size when restore-window-size is not true."
 msgstr ""
+"Tamaño de ventana predeterminado cuando restore-window-size no se ha "
+"establecido como verdadero."
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:197
 msgid "Default Row Size"
@@ -337,11 +345,11 @@ msgstr "Tamaño predeterminado de la fila"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:203
 msgid "Toast on Copy Clipboard"
-msgstr ""
+msgstr "Un vistazo al portapapeles"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:204
 msgid "Show the user when text has copied to the clipboard."
-msgstr ""
+msgstr "Avisar al usuario cuando el texto se ha copiado al portapapeles."
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:209
 msgid "Enable Accessibility"
@@ -352,6 +360,8 @@ msgid ""
 "Currently expirmental feature to send accessibility information to screen "
 "readers."
 msgstr ""
+"Función experimental para enviar información de accesibilidad a los lectores "
+"de pantalla."
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:219
 msgid "Label"
@@ -363,77 +373,58 @@ msgstr "La etiqueta para el perfil"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:225
 msgid "Login Shell"
-msgstr ""
+msgstr "Shell de inicio de sesión"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:226
-#, fuzzy
-#| msgid "_Run command as a login shell"
 msgid "Use a login shell"
-msgstr "_Ejecutar el comando como un intérprete de conexión"
+msgstr "Usar un shell de inicio de sesión"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:231 src/ptyxis-preferences-window.ui:451
 #: src/ptyxis-profile-editor.ui:294
-#, fuzzy
-#| msgid "_Limit scrollback to:"
 msgid "Limit Scrollback"
-msgstr "_Limitar el desplazamiento hacia atrás a:"
+msgstr "Limitar el desplazamiento hacia atrás"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:232
-#, fuzzy
-#| msgid "Number of lines to keep in scrollback"
 msgid "Limit the number of lines to keep for scrollback"
-msgstr "Cantidad de líneas a mantener en el desplazamiento"
+msgstr ""
+"Limitar la cantidad de líneas a mantener en el desplazamiento hacia atrás"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:238 src/ptyxis-preferences-window.ui:460
 #: src/ptyxis-profile-editor.ui:303
-#, fuzzy
-#| msgid "Scrolling"
 msgid "Scrollback Lines"
-msgstr "Desplazamiento"
+msgstr "Líneas de desplazamiento hacia atrás"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:239
-#, fuzzy
-#| msgid "Number of lines to keep in scrollback"
 msgid "The number of lines to keep in the scrollback, zero for no scrollback"
-msgstr "Cantidad de líneas a mantener en el desplazamiento"
+msgstr ""
+"Cantidad de líneas que se mantendrán en el desplazamiento hacia atrás, cero "
+"para no realizar ningún desplazamiento"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:244 src/ptyxis-preferences-window.ui:441
 #: src/ptyxis-profile-editor.ui:284
-#, fuzzy
-#| msgid "Scroll on _output"
 msgid "Scroll on Output"
-msgstr "Desplazar en la _salida"
+msgstr "Desplazar por resultados"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:245
-#, fuzzy
-#| msgid "Whether to scroll to the bottom when there’s new output"
 msgid "Scroll to the bottom upon new output"
-msgstr "Indica si se debe desplazar hasta el final cuando hay una salida nueva"
+msgstr "Desplazar a la parte inferior hasta que aparezca un nuevo resultado"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:250 src/ptyxis-preferences-window.ui:435
 #: src/ptyxis-profile-editor.ui:278
-#, fuzzy
-#| msgid "Scroll on _keystroke"
 msgid "Scroll on Keystroke"
-msgstr "Desplazar al pulsar _teclas"
+msgstr "Desplazar al pulsar una tecla"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:251
-#, fuzzy
-#| msgid "Scroll on _keystroke"
 msgid "Scroll to the bottom upon user keystroke"
-msgstr "Desplazar al pulsar _teclas"
+msgstr "Desplazar a la parte inferior al pulsar una tecla"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:256 src/ptyxis-profile-editor.ui:148
-#, fuzzy
-#| msgid "Custom co_mmand:"
 msgid "Use Custom Command"
-msgstr "Comando _personalizado:"
+msgstr "Usar comando personalizado"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:257
-#, fuzzy
-#| msgid "Ru_n a custom command instead of my shell"
 msgid "If a custom command should be used"
-msgstr "Ejec_utar un comando personalizado en vez de mi intérprete"
+msgstr "Indica si se debe usar un comando personalizado"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:262
 msgid "Use Proxy"
@@ -441,62 +432,48 @@ msgstr "Usar proxy"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:263
 msgid "Apply proxy settings from the host in the container"
-msgstr ""
+msgstr "Aplicar la configuración del proxy del equipo en el contenedor"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:268 src/ptyxis-profile-editor.ui:153
-#, fuzzy
-#| msgid "Custom co_mmand:"
 msgid "Custom Command"
-msgstr "Comando _personalizado:"
+msgstr "Comando personalizado"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:269
-#, fuzzy
-#| msgid "Custom command to use instead of the shell"
 msgid "A custom command for the shell"
-msgstr "Comando personalizado a utilizar en lugar del intérprete"
+msgstr "Un comando personalizado para el shell"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:274 src/ptyxis-profile-editor.ui:172
-#, fuzzy
-#| msgid "Default size:"
 msgid "Default Container"
-msgstr "Tamaño predeterminado:"
+msgstr "Contenedor predeterminado"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:275
 msgid "The default container to run the command in"
-msgstr ""
+msgstr "El contenedor predeterminado para ejecutar el comando"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:280 src/ptyxis-profile-editor.ui:181
-#, fuzzy
-#| msgid "_Preserve working directory:"
 msgid "Preserve Container"
-msgstr "_Mantener la carpeta de trabajo:"
+msgstr "Mantener el contenedor"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:281
 msgid "Preserve the active container when creating new tabs and windows"
-msgstr ""
+msgstr "Mantener el contenedor activo al crear nuevas pestañas y ventanas"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:286 src/ptyxis-preferences-window.ui:520
 #: src/ptyxis-profile-editor.ui:242
-#, fuzzy
-#| msgid "_Action"
 msgid "Exit Action"
-msgstr "_Acción"
+msgstr "Acción de salida"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:287
 msgid "The action to take when the shell exits"
-msgstr ""
+msgstr "Lo que ocurre cuando sale del shell"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:292
-#, fuzzy
-#| msgid "_Preserve working directory:"
 msgid "Preserve Directory"
-msgstr "_Mantener la carpeta de trabajo:"
+msgstr "Mantener la carpeta"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:293
-#, fuzzy
-#| msgid "Profile to use for new terminals"
 msgid "If the directory should be preserved for new terminals"
-msgstr "Perfil a utilizar para las terminales nuevas"
+msgstr "Indica si la carpeta se debe mantener para nuevas terminales"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:298 src/ptyxis-inspector.ui:102
 #: src/ptyxis-preferences-window.ui:40 src/ptyxis-profile-editor.ui:69
@@ -505,11 +482,11 @@ msgstr "Paleta"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:299
 msgid "The color palette to use for the profile, by name"
-msgstr ""
+msgstr "La paleta de colores a usar para el perfil, por nombre"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:305
 msgid "Opacity"
-msgstr ""
+msgstr "Opacidad"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:306
 #, fuzzy
@@ -1022,7 +999,8 @@ msgstr ""
 #: src/ptyxis-application.c:1071
 msgid "translator-credits"
 msgstr ""
-"Daniel Mustieles, <daniel.mustieles@gmail.com>\n"
+"Julián Villodre <jvillodrede@gmail.com>, 2024\n"
+"Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Jorge González <jorgegonz@svn.gnome.org>, 2007-2010\n"
 "Francisco Javier F. Serrador <serrador@cvs.gnome.org>, 2003-2006\n"
 "Pablo Gonzalo del Campo <pablodc@bigfoot.com>, 2002-2003"
