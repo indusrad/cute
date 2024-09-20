@@ -573,7 +573,7 @@ ptyxis_podman_container_handle_find_program_in_path (PtyxisIpcContainer    *cont
                                                      const char            *program)
 {
   FindContainerInPath *state;
-  const char *id;
+  G_GNUC_UNUSED const char *id;
 
   g_assert (PTYXIS_IS_PODMAN_CONTAINER (container));
   g_assert (G_IS_DBUS_METHOD_INVOCATION (invocation));

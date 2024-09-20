@@ -1249,7 +1249,7 @@ ptyxis_application_help_overlay (GSimpleAction *action,
                                  gpointer       user_data)
 {
   PtyxisPreferencesWindow *window;
-  PtyxisApplication *self = user_data;
+  G_GNUC_UNUSED PtyxisApplication *self = user_data;
 
   g_assert (PTYXIS_IS_APPLICATION (self));
 
@@ -1607,7 +1607,7 @@ ptyxis_application_get_preferred_shell_cb (GObject      *object,
   g_autofree char *default_shell = NULL;
   g_autofree char *default_shell_base = NULL;
   g_autoptr(GTask) task = user_data;
-  PtyxisApplication *self;
+  G_GNUC_UNUSED PtyxisApplication *self;
   Spawn *spawn;
 
   g_assert (PTYXIS_IS_CLIENT (client));
