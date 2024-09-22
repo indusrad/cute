@@ -253,14 +253,14 @@ gboolean
 ptyxis_is_shell (const char *arg0)
 {
   static const char * const builtin_shells[] = {
-    "/bin/sh", "/usr/bin/sh",
-    "/bin/bash", "/usr/bin/bash",
-    "/bin/dash", "/usr/bin/dash",
-    "/bin/zsh", "/usr/bin/zsh",
-    "/bin/fish", "/usr/bin/fish",
-    "/bin/tcsh", "/usr/bin/tcsh",
-    "/bin/csh", "/usr/bin/csh",
-    "/bin/tmux", "/usr/bin/tmux",
+    "sh", "/bin/sh", "/usr/bin/sh",
+    "bash", "/bin/bash", "/usr/bin/bash",
+    "dash", "/bin/dash", "/usr/bin/dash",
+    "zsh", "/bin/zsh", "/usr/bin/zsh",
+    "fish", "/bin/fish", "/usr/bin/fish",
+    "tcsh", "/bin/tcsh", "/usr/bin/tcsh",
+    "csh", "/bin/csh", "/usr/bin/csh",
+    "tmux", "/bin/tmux", "/usr/bin/tmux",
   };
   const char *etc_shells_path = "/etc/shells";
   g_autofree char *etc_shells = NULL;
