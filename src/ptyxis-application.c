@@ -22,6 +22,7 @@
 
 #include <glib/gi18n.h>
 
+#include <stdlib.h>
 #include <sys/utsname.h>
 #include <sys/wait.h>
 
@@ -566,8 +567,15 @@ ptyxis_application_client_closed_cb (PtyxisApplication *self,
   g_assert (PTYXIS_IS_APPLICATION (self));
   g_assert (PTYXIS_IS_CLIENT (client));
 
-  /* We want a stack trace generated because this should not happen */
-  g_error ("ptyxis-agent exited unexpectedly. exiting too.");
+  /* We can reach this in two cases. The first is the case where the
+   * desktop session is exiting and our `ptyxis-agent` got nuked before
+   * we did.
+   *
+   * The second is if there was a crash by the client. For that, we
+   * should get a crash report _anyway_ so just exit cleanly here.
+   */
+
+  exit (EXIT_SUCCESS);
 }
 
 static void
