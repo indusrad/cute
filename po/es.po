@@ -22,8 +22,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-terminal.master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/chergert/ptyxis/issues\n"
-"POT-Creation-Date: 2024-09-16 20:04+0000\n"
-"PO-Revision-Date: 2024-09-18 13:23+0200\n"
+"POT-Creation-Date: 2024-09-21 09:28+0000\n"
+"PO-Revision-Date: 2024-09-22 20:54+0200\n"
 "Last-Translator: Julián Villodre <jvillodrede@gmail.com>\n"
 "Language-Team: Spanish - Spain <gnome-es-list@gnome.org>\n"
 "Language: es\n"
@@ -377,7 +377,7 @@ msgstr "Shell de inicio de sesión"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:226
 msgid "Use a login shell"
-msgstr "Usar un shell de inicio de sesión"
+msgstr "Usar una shell de inicio de sesión"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:231 src/ptyxis-preferences-window.ui:451
 #: src/ptyxis-profile-editor.ui:294
@@ -440,7 +440,7 @@ msgstr "Comando personalizado"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:269
 msgid "A custom command for the shell"
-msgstr "Un comando personalizado para el shell"
+msgstr "Un comando personalizado para la shell"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:274 src/ptyxis-profile-editor.ui:172
 msgid "Default Container"
@@ -465,7 +465,7 @@ msgstr "Acción de salida"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:287
 msgid "The action to take when the shell exits"
-msgstr "Lo que ocurre cuando sale del shell"
+msgstr "Lo que ocurre cuando sale de la shell"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:292
 msgid "Preserve Directory"
@@ -489,97 +489,74 @@ msgid "Opacity"
 msgstr "Opacidad"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:306
-#, fuzzy
-#| msgid "The position of the tab bar"
 msgid "The opacity of the palette background"
-msgstr "La posición de la barra de pestañas"
+msgstr "La opacidad del fondo de la paleta"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:311
 msgid "Bold is Bright"
-msgstr ""
+msgstr "Negrita brillante"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:312
-#, fuzzy
-#| msgid ""
-#| "If true, setting bold on the first 8 colors also switches to their bright "
-#| "variants."
 msgid ""
 "Setting bold on one of the lower 8 colors in the palette will use bright "
 "variant (upper 8 colors)"
 msgstr ""
-"Si es cierto establecer a negrita los 8 primeros colores también cambia a "
-"sus variantes brillantes."
+"Si se establece en negrita uno de los 8 colores inferiores de la paleta, se "
+"utilizará la variante brillante (8 colores superiores)"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:317
 msgid "CJK Ambiguous Width"
-msgstr ""
+msgstr "Anchura ambigua CJK"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:318
-#, fuzzy
-#| msgid "Ambiguous-_width characters:"
 msgid "The size to apply to ambiguous width characters"
-msgstr "Caracteres de _anchura ambigua:"
+msgstr "El tamaño que se aplicará a los caracteres de anchura ambigua"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:323
 #: src/org.gnome.Ptyxis.gschema.xml.in:329
 msgid "Backspace Binding"
-msgstr ""
+msgstr "Asociación de la tecla de retroceso"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:324
 #: src/org.gnome.Ptyxis.gschema.xml.in:330
-#, fuzzy
-#| msgid "Whether to scroll to the bottom when a key is pressed"
 msgid "What to send to the PTY when a backspace is entered"
-msgstr ""
-"Indica si se debe desplazar hasta el final cuando se presione una tecla"
+msgstr "Qué se enviará a la PTY cuando se inserta un retroceso"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:339 src/ptyxis-preferences-window.ui:613
 msgid "Copy to Clipboard"
 msgstr "Copiar al portapapeles"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:340
-#, fuzzy
-#| msgid "Keyboard shortcut to copy text"
 msgid "The shortcut to copy to clipboard"
-msgstr "Atajo del teclado para copiar texto"
+msgstr "El atajo para copiar al portapapeles"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:345 src/ptyxis-preferences-window.ui:618
 msgid "Paste from Clipboard"
 msgstr "Pegar desde el portapapeles"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:346
-#, fuzzy
-#| msgid "Keyboard shortcut to make font larger"
 msgid "The shortcut to paste from the clipboard"
-msgstr "Atajo del teclado para agrandar la tipografía"
+msgstr "El atajo para pegar desde el portapapeles"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:352
-#, fuzzy
-#| msgid "Keyboard shortcut to create a new profile"
 msgid "The shortcut to create a new tab in the current window"
-msgstr "Combinación de teclas para crear un perfil nuevo"
+msgstr "El atajo para crear una nueva pestaña en la ventana actual"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:358
-#, fuzzy
-#| msgid "Keyboard shortcut to open a new window"
 msgid "The shortcut to create a new tab in a new window"
-msgstr "Atajo del teclado para abrir una ventana nueva"
+msgstr "El atajo para crear una nueva pestaña en una nueva ventana"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:363
 msgid "Tab Overview"
-msgstr ""
+msgstr "Vista de pestañas"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:364
-#, fuzzy
-#| msgid "Keyboard shortcut to show the primary menu"
 msgid "The shortcut to show the tab overview"
-msgstr "Atajo del teclado para mostrar el menú primario"
+msgstr "El atajo para mostrar la vista previa de las pestañas"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:370
-#, fuzzy
-#| msgid "Keyboard shortcut to open the Preferences dialog"
 msgid "The shortcut to show application preferences"
-msgstr "Atajo de teclado para abrir el diálogo de preferencias"
+msgstr "El atajo para mostrar las preferencias de la aplicación"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:375 src/ptyxis-preferences-window.ui:818
 #: src/ptyxis-window.c:1239 src/ptyxis-window.c:1247
@@ -587,23 +564,17 @@ msgid "Zoom Out"
 msgstr "Reducir"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:376
-#, fuzzy
-#| msgid "Keyboard shortcut to copy text"
 msgid "The shortcut to zoom out"
-msgstr "Atajo del teclado para copiar texto"
+msgstr "El atajo para reducir"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:381 src/ptyxis-preferences-window.ui:823
 #: src/ptyxis-window.c:1256
-#, fuzzy
-#| msgid "Reset"
 msgid "Reset Zoom"
-msgstr "Reiniciar"
+msgstr "Reiniciar ampliación"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:382
-#, fuzzy
-#| msgid "Keyboard shortcut to reset the terminal"
 msgid "The shortcut to reset zoom"
-msgstr "Atajo del teclado para reiniciar la terminal"
+msgstr "El atajo para reiniciar la ampliación"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:387 src/ptyxis-preferences-window.ui:813
 #: src/ptyxis-window.c:1224 src/ptyxis-window.c:1232
@@ -611,54 +582,43 @@ msgid "Zoom In"
 msgstr "Ampliar"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:388
-#, fuzzy
-#| msgid "Keyboard shortcut to close a window"
 msgid "The shortcut to zoom in"
-msgstr "Atajo del teclado para cerrar una ventana"
+msgstr "El atajo para ampliar"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:393 src/ptyxis-preferences-window.ui:833
-#, fuzzy
-#| msgid "Full Screen"
 msgid "Toggle Fullscreen"
-msgstr "Pantalla completa"
+msgstr "Cambiar a pantalla completa"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:394
-#, fuzzy
-#| msgid "Keyboard shortcut to toggle full screen mode"
 msgid "The shortcut to toggle fullscreen"
-msgstr "Atajo del teclado para cambiar al modo de pantalla completa"
+msgstr "Atajo para cambiar al modo de pantalla completa"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:399
-#, fuzzy
-#| msgid "_Next Terminal"
 msgid "Reset Terminal"
-msgstr "_Siguiente terminal"
+msgstr "Reiniciar terminal"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:400
 msgid "Reset the terminal state for misbehaving clients"
 msgstr ""
+"Reiniciar el estado de la terminal para clientes que experimenten problemas"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:405
-#, fuzzy
-#| msgid "Reset and Clear"
 msgid "Reset Terminal and Clear History"
-msgstr "Reiniciar y limpiar"
+msgstr "Reiniciar terminal y vaciar historial"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:406
 msgid "Reset the terminal state and clear history for misbehaving clients"
 msgstr ""
+"Reiniciar el estado de la terminal y vaciar el historial para clientes que "
+"experimenten problemas"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:411 src/ptyxis-preferences-window.ui:655
-#, fuzzy
-#| msgid "Search"
 msgid "Search History"
-msgstr "Buscar"
+msgstr "Buscar historial"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:412
-#, fuzzy
-#| msgid "Keyboard shortcut to reset the terminal"
 msgid "Shortcut to begin searching the terminal history"
-msgstr "Atajo del teclado para reiniciar la terminal"
+msgstr "Atajo para comenzar a buscar en el historial de la terminal"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:417 src/ptyxis-preferences-window.ui:627
 msgid "Select All"
@@ -667,258 +627,184 @@ msgstr "Seleccionar todo"
 #: src/org.gnome.Ptyxis.gschema.xml.in:418
 msgid "Shortcut to select all the entire terminal scrollback"
 msgstr ""
+"Atajo para seleccionar todo el desplazamiento hacia atrás de la terminal"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:423
-#, fuzzy
-#| msgid "Select All"
 msgid "Select None"
-msgstr "Seleccionar todo"
+msgstr "No seleccionar"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:424
-#, fuzzy
-#| msgid "Keyboard shortcut to reset and clear the terminal"
 msgid "Shortcut to clear the terminal selection"
-msgstr "Atajo del teclado para reiniciar y limpiar la terminal"
+msgstr "Atajo para limpiar la selección de la terminal"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:429
 msgid "Popup Menu"
 msgstr "Menú emergente"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:430
-#, fuzzy
-#| msgid "Keyboard shortcut to reset and clear the terminal"
 msgid "Shortcut to show the popup menu for the terminal"
-msgstr "Atajo del teclado para reiniciar y limpiar la terminal"
+msgstr "Atajo para mostrar el menú emergente de la terminal"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:435
-#, fuzzy
-#| msgid "Show Primary Menu"
 msgid "Primary Menu"
-msgstr "Mostrar el menú primario"
+msgstr "Menú principal"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:436
-#, fuzzy
-#| msgid "Keyboard shortcut to show the primary menu"
 msgid "Shortcut to show the primary menu for the window"
-msgstr "Atajo del teclado para mostrar el menú primario"
+msgstr "Atajo para mostrar el menú principal de la ventana"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:441 src/ptyxis-preferences-window.ui:722
-#, fuzzy
-#| msgid "Switch to Previous Tab"
 msgid "Move to Previous Tab"
 msgstr "Cambiar a la pestaña anterior"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:442
-#, fuzzy
-#| msgid "Keyboard shortcut to switch to the previous tab"
 msgid "Shortcut to move to the previous tab"
-msgstr "Atajo del teclado para cambiar a la pestaña anterior"
+msgstr "Atajo para cambiar a la pestaña anterior"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:447 src/ptyxis-preferences-window.ui:727
-#, fuzzy
-#| msgid "Switch to Next Tab"
 msgid "Move to Next Tab"
 msgstr "Cambiar a la siguiente pestaña"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:448
-#, fuzzy
-#| msgid "Keyboard shortcut to switch to the next tab"
 msgid "Shortcut to move to the next tab"
-msgstr "Atajo del teclado para cambiar a la pestaña siguiente"
+msgstr "Atajo para cambiar a la siguiente pestaña"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:453 src/ptyxis-preferences-window.ui:736
-#, fuzzy
-#| msgid "Move Tab _Left"
 msgid "Move Tab Left"
-msgstr "Mover la pestaña a la _izquierda"
+msgstr "Mover la pestaña a la izquierda"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:454
-#, fuzzy
-#| msgid "Keyboard shortcut to move the current tab to the left"
 msgid "Shortcut to move the current tab to the left one position"
-msgstr "Atajo de teclado para mover la pestaña actual a la izquierda"
+msgstr "Atajo para mover la pestaña actual una posición hacia la izquierda"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:459 src/ptyxis-preferences-window.ui:742
-#, fuzzy
-#| msgid "Move Tab _Right"
 msgid "Move Tab Right"
-msgstr "Mover la pestaña a la de_recha"
-
-#: src/org.gnome.Ptyxis.gschema.xml.in:460
-#, fuzzy
-#| msgid "Keyboard shortcut to move the current tab to the right"
-msgid "Shortcut to move the current tab to the right one position"
-msgstr "Atajo de teclado para mover la pestaña actual a la derecha"
-
-#: src/org.gnome.Ptyxis.gschema.xml.in:465 src/ptyxis-preferences-window.ui:748
-#, fuzzy
-#| msgid "Move Tab to the Right"
-msgid "Move Tab to New Window"
 msgstr "Mover la pestaña a la derecha"
 
+#: src/org.gnome.Ptyxis.gschema.xml.in:460
+msgid "Shortcut to move the current tab to the right one position"
+msgstr "Atajo para mover la pestaña actual una posición hacia la derecha"
+
+#: src/org.gnome.Ptyxis.gschema.xml.in:465 src/ptyxis-preferences-window.ui:748
+msgid "Move Tab to New Window"
+msgstr "Mover la pestaña a una nueva ventana"
+
 #: src/org.gnome.Ptyxis.gschema.xml.in:466
-#, fuzzy
-#| msgid "Keyboard shortcut to move the current tab to the right"
 msgid "Shortcut to move the current tab into a new window"
-msgstr "Atajo de teclado para mover la pestaña actual a la derecha"
+msgstr "Atajo para mover la pestaña actual a una nueva ventana"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:471 src/ptyxis-preferences-window.ui:700
 msgid "Close Tab"
 msgstr "Cerrar pestaña"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:472
-#, fuzzy
-#| msgid "Keyboard shortcut to detach current tab"
 msgid "Shortcut to close the current tab"
-msgstr "Atajo de teclado para desacoplar la pestaña actual"
+msgstr "Atajo para cerrar la pestaña actual"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:477 src/ptyxis-preferences-window.ui:706
-#, fuzzy
-#| msgid "Close Tab"
 msgid "Close Other Tabs"
-msgstr "Cerrar pestaña"
+msgstr "Cerrar otras pestañas"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:478
 msgid "Shortcut to close all tabs in the window but the current one"
-msgstr ""
+msgstr "Atajo para cerrar todas las pestañas excepto la actual"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:483
-#, fuzzy
-#| msgid "Close Tab"
 msgid "Focus Tab 1"
-msgstr "Cerrar pestaña"
+msgstr "Dar el foco a la pestaña 1"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:484
-#, fuzzy
-#| msgid "Keyboard shortcut to close a tab"
 msgid "Shortcut to focus tab 1"
-msgstr "Atajo del teclado para cerrar una pestaña"
+msgstr "Atajo para dar el foco a la pestaña 1"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:489
-#, fuzzy
-#| msgid "Close Tab"
 msgid "Focus Tab 2"
-msgstr "Cerrar pestaña"
+msgstr "Dar el foco a la pestaña 2"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:490
-#, fuzzy
-#| msgid "Keyboard shortcut to close a tab"
 msgid "Shortcut to focus tab 2"
-msgstr "Atajo del teclado para cerrar una pestaña"
+msgstr "Atajo para dar el foco a la pestaña 2"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:495
-#, fuzzy
-#| msgid "Close Tab"
 msgid "Focus Tab 3"
-msgstr "Cerrar pestaña"
+msgstr "Dar el foco a la pestaña 3"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:496
-#, fuzzy
-#| msgid "Keyboard shortcut to close a tab"
 msgid "Shortcut to focus tab 3"
-msgstr "Atajo del teclado para cerrar una pestaña"
+msgstr "Atajo para dar el foco a la pestaña 3"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:501
-#, fuzzy
-#| msgid "Close Tab"
 msgid "Focus Tab 4"
-msgstr "Cerrar pestaña"
+msgstr "Dar el foco a la pestaña 4"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:502
-#, fuzzy
-#| msgid "Keyboard shortcut to close a tab"
 msgid "Shortcut to focus tab 4"
-msgstr "Atajo del teclado para cerrar una pestaña"
+msgstr "Atajo para dar el foco a la pestaña 4"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:507
-#, fuzzy
-#| msgid "Close Tab"
 msgid "Focus Tab 5"
-msgstr "Cerrar pestaña"
+msgstr "Dar el foco a la pestaña 5"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:508
-#, fuzzy
-#| msgid "Keyboard shortcut to close a tab"
 msgid "Shortcut to focus tab 5"
-msgstr "Atajo del teclado para cerrar una pestaña"
+msgstr "Atajo para dar el foco a la pestaña 5"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:513
-#, fuzzy
-#| msgid "Close Tab"
 msgid "Focus Tab 6"
-msgstr "Cerrar pestaña"
+msgstr "Dar el foco a la pestaña 6"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:514
-#, fuzzy
-#| msgid "Keyboard shortcut to close a tab"
 msgid "Shortcut to focus tab 6"
-msgstr "Atajo del teclado para cerrar una pestaña"
+msgstr "Atajo para dar el foco a la pestaña 6"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:519
-#, fuzzy
-#| msgid "Close Tab"
 msgid "Focus Tab 7"
-msgstr "Cerrar pestaña"
+msgstr "Dar el foco a la pestaña 7"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:520
-#, fuzzy
-#| msgid "Keyboard shortcut to close a tab"
 msgid "Shortcut to focus tab 7"
-msgstr "Atajo del teclado para cerrar una pestaña"
+msgstr "Atajo para dar el foco a la pestaña 7"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:525
-#, fuzzy
-#| msgid "Close Tab"
 msgid "Focus Tab 8"
-msgstr "Cerrar pestaña"
+msgstr "Dar el foco a la pestaña 8"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:526
-#, fuzzy
-#| msgid "Keyboard shortcut to close a tab"
 msgid "Shortcut to focus tab 8"
-msgstr "Atajo del teclado para cerrar una pestaña"
+msgstr "Atajo para dar el foco a la pestaña 8"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:531
-#, fuzzy
-#| msgid "Close Tab"
 msgid "Focus Tab 9"
-msgstr "Cerrar pestaña"
+msgstr "Dar el foco a la pestaña 9"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:532
-#, fuzzy
-#| msgid "Keyboard shortcut to close a tab"
 msgid "Shortcut to focus tab 9"
-msgstr "Atajo del teclado para cerrar una pestaña"
+msgstr "Atajo para dar el foco a la pestaña 9"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:537
 msgid "Focus Tab 10"
-msgstr ""
+msgstr "Dar el foco a la pestaña 10"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:538
-#, fuzzy
-#| msgid "Keyboard shortcut to switch to tab 10"
 msgid "Shortcut to focus tab 10"
-msgstr "Combinación de teclas para cambiar a la pestaña 10"
+msgstr "Atajo para dar el foco a la pestaña 10"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:543 src/ptyxis-preferences-window.ui:712
-#, fuzzy
-#| msgid "Close Tab"
 msgid "Undo Close Tab"
-msgstr "Cerrar pestaña"
+msgstr "Deshacer el cierre de la pestaña"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:544
 msgid "Undo closing of last tab"
-msgstr ""
+msgstr "Deshacer el cierre de la última pestaña"
 
 #: src/ptyxis-application.c:244
 msgid "--tab, --tab-with-profile, or --new-window may not be used together"
-msgstr ""
+msgstr "--tab, --tab-with-profile, o --new-window no se pueden usar juntos"
 
 #: src/ptyxis-application.c:290
-#, fuzzy, c-format
-#| msgid "Error parsing command: %s"
+#, c-format
 msgid "Cannot parse command: %s"
-msgstr "Error al analizar el comando: %s"
+msgstr "No se pudo analizar el comando: %s"
 
 #: src/ptyxis-application.c:796
 msgid "Examples:"
@@ -931,70 +817,54 @@ msgstr "Mostrar las preferencias de la aplicación"
 #. Used for new tabs/windows/etc when specified
 #: src/ptyxis-application.c:801
 msgid "Use DIR for --tab, --tab-with-profile, --new-window, or -x"
-msgstr ""
+msgstr "Use DIR para --tab, --tab-with-profile, --new-window, o -x"
 
 #: src/ptyxis-application.c:801
-#, fuzzy
-#| msgid "DIRNAME"
 msgid "DIR"
-msgstr "NOMBREDIR"
+msgstr "DIR"
 
 #. By default, this implies a new ptyxis instance unless the options
 #. * below are provided to override that.
 #.
 #: src/ptyxis-application.c:806
-#, fuzzy
-#| msgid "Keyboard shortcut to open a new window"
 msgid "Command to execute in new window"
-msgstr "Atajo del teclado para abrir una ventana nueva"
+msgstr "Comando que ejecutar en nueva ventana"
 
 #. These options all imply we're using a shared Ptyxis instance. We do not support
 #. * short command options for these to make it easier to sniff them in early args
 #. * checking from `main.c`.
 #.
 #: src/ptyxis-application.c:812
-#, fuzzy
-#| msgid "New Terminal in New Window"
 msgid "New terminal window"
-msgstr "Nueva terminal en una ventana nueva"
+msgstr "Nueva ventana de la terminal"
 
 #: src/ptyxis-application.c:813
-#, fuzzy
-#| msgid "New Terminal in New Window"
 msgid "New terminal tab in active window"
-msgstr "Nueva terminal en una ventana nueva"
+msgstr "Nueva pestaña de la terminal en una ventana activa"
 
 #: src/ptyxis-application.c:814
-#, fuzzy
-#| msgid "New Terminal in New Window"
 msgid "New terminal tab in active window using PROFILE"
-msgstr "Nueva terminal en una ventana nueva"
+msgstr "Nueva pestaña de la terminal en una ventana activa usando PERFIL"
 
 #: src/ptyxis-application.c:814
-#, fuzzy
-#| msgid "PROFILEID"
 msgid "PROFILE"
-msgstr "IDPERFIL"
+msgstr "PERFIL"
 
 #: src/ptyxis-application.c:821
 msgid "Run Separate Instance"
 msgstr "Ejecutar instancia separada"
 
 #: src/ptyxis-application.c:825
-#, fuzzy
-#| msgid "Preferences"
 msgid "Open Preferences"
-msgstr "Preferencias"
+msgstr "Abrir preferencias"
 
 #: src/ptyxis-application.c:829
-#, fuzzy
-#| msgid "Ru_n a custom command instead of my shell"
 msgid "Run Custom Command in New Window"
-msgstr "Ejec_utar un comando personalizado en vez de mi intérprete"
+msgstr "Ejecutar un comando personalizado en una nueva ventana"
 
 #: src/ptyxis-application.c:833
 msgid "[-- COMMAND ARGUMENTS]"
-msgstr ""
+msgstr "[-- COMANDO ARGUMENTOS]"
 
 #: src/ptyxis-application.c:1071
 msgid "translator-credits"
@@ -1006,22 +876,18 @@ msgstr ""
 "Pablo Gonzalo del Campo <pablodc@bigfoot.com>, 2002-2003"
 
 #: src/ptyxis-close-dialog.c:110
-#, fuzzy
-#| msgid "Close Tab"
 msgid "_Close"
-msgstr "Cerrar pestaña"
+msgstr "_Cerrar"
 
 #: src/ptyxis-close-dialog.c:110
-#, fuzzy
-#| msgid "Close All _Tabs"
 msgid "_Close All"
-msgstr "Cerrar _todas las pestañas"
+msgstr "_Cerrar todo"
 
 #: src/ptyxis-close-dialog.c:112
 #, fuzzy
 #| msgid "Close Window"
 msgid "Close Window?"
-msgstr "Cerrar ventana"
+msgstr "¿Cerrar la ventana?"
 
 #: src/ptyxis-close-dialog.c:113
 msgid "Some processes are still running."
@@ -3923,9 +3789,8 @@ msgstr "_Mi equipo"
 #~ "Si la aplicación en la configuración de la terminal define el título (la "
 #~ "mayoría de la gente deja que su intérprete haga esto), el título definido "
 #~ "dinámicamente puede eliminar el título configurado, puede ir antes de "
-#~ "éste, después de éste, o reemplazarlo. Los valores posibles son "
-#~ "«replace» (reemplazar), «before» (antes), «after» (después) e "
-#~ "«ignore» (ignorar)."
+#~ "éste, después de éste, o reemplazarlo. Los valores posibles son «replace» "
+#~ "(reemplazar), «before» (antes), «after» (después) e «ignore» (ignorar)."
 
 #~ msgid "When terminal commands set their o_wn titles:"
 #~ msgstr "Cuando los comandos de la terminal establecen sus p_ropios títulos:"
@@ -4605,8 +4470,8 @@ msgstr "_Mi equipo"
 #~ "\"right\", and \"hidden\"."
 #~ msgstr ""
 #~ "Indica dónde colocar la barra de desplazamiento de la terminal. Las "
-#~ "posibilidades son «left» (izquierda), «right» (derecha), y "
-#~ "«hidden» (oculta)."
+#~ "posibilidades son «left» (izquierda), «right» (derecha), y «hidden» "
+#~ "(oculta)."
 
 #~ msgid ""
 #~ "Whether to ask for confirmation when closing a terminal window which has "
