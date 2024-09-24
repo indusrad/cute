@@ -1264,6 +1264,12 @@ ptyxis_terminal_init (PtyxisTerminal *self)
                                       GDK_ACTION_MOVE));
   gtk_drop_target_async_set_formats (self->drop_target, formats);
 
+  g_signal_connect_object (gtk_widget_get_clipboard (GTK_WIDGET (self)),
+                           "changed",
+                           G_CALLBACK (ptyxis_terminal_update_clipboard_actions),
+                           self,
+                           G_CONNECT_SWAPPED);
+
   ptyxis_terminal_update_clipboard_actions (self);
 }
 
