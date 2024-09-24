@@ -1359,6 +1359,12 @@ ptyxis_terminal_init (PtyxisTerminal *self)
                     G_CALLBACK (notify_property_changed),
                     properties[PROP_CURRENT_CONTAINER_RUNTIME]);
 
+  g_signal_connect_object (gtk_widget_get_clipboard (GTK_WIDGET (self)),
+                           "changed",
+                           G_CALLBACK (ptyxis_terminal_update_clipboard_actions),
+                           self,
+                           G_CONNECT_SWAPPED);
+
   ptyxis_terminal_update_clipboard_actions (self);
 }
 
