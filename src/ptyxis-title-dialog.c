@@ -50,7 +50,7 @@ ptyxis_title_dialog_activate_cb (PtyxisTitleDialog *self,
   g_assert (PTYXIS_IS_TITLE_DIALOG (self));
   g_assert (GTK_IS_ENTRY (entry));
 
-  gtk_window_destroy (GTK_WINDOW (self));
+  adw_dialog_close (ADW_DIALOG (self));
 }
 
 static void
