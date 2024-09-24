@@ -1,3 +1,17 @@
+# Ptyxis 46.7
+
+Changes since 46.6
+
+ * Special-case fixes for GVFS fuse mounts
+ * Fix initial copy/paste activation state
+ * Handle shell detection without directory slashes
+ * Make app exit cleanly when agent exits
+ * Fix find-bar warnings with VteRegex
+ * Fix potential leak of VteTerminal instance
+ * Translation updates
+
+Thanks to everyone who filed reproducible issues!
+
 # Ptyxis 46.6
 
 Changes since 46.5
