@@ -42,7 +42,7 @@ It's probably not the fastest thing out there, but it should be close enough
 that other features are of more value.  Some of those include robust
 clipboard support, drag-n-drop integration, scrollbars, kinetic scrolling,
 tabs with overviews, a modern interface, configurable color palettes, menus,
-accessibility, you get the idea.
+accessibility, encrypted scrollback buffers, you get the idea.
 
 
 ## Installation
