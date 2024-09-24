@@ -191,7 +191,8 @@ ptyxis_find_bar_set_property (GObject      *object,
   switch (prop_id)
     {
     case PROP_TERMINAL:
-      self->terminal = g_value_dup_object (value);
+      if (g_set_object (&self->terminal, g_value_get_object (value)))
+        g_object_notify_by_pspec (object, pspec);
       break;
 
     default:
