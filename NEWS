@@ -1,3 +1,13 @@
+# Ptyxis 47.1
+
+ * More clipboard fixes for initial state tracking
+ * Handle shell detection when directory slash is omitted
+ * Exit cleanly when ptyxis-agent exits
+ * Fix VteRegex warning from the search bar
+ * Fix potential leak of VteTerminal instances
+ * Update gruvbox light/dark scheme
+ * Translation updates
+
 # Ptyxis 47.0
 
  * Implement application open file vfunc to work with Nautilus
