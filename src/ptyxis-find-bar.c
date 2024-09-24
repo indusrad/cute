@@ -133,6 +133,10 @@ ptyxis_find_bar_entry_changed_cb (PtyxisFindBar *self,
 
   g_assert (PTYXIS_IS_FIND_BAR (self));
   g_assert (GTK_IS_ENTRY (entry));
+  g_assert (!self->terminal || VTE_IS_TERMINAL (self->terminal));
+
+  if (self->terminal == NULL)
+    return;
 
   if ((query = ptyxis_find_bar_get_search (self, &flags)))
     regex = vte_regex_new_for_search (query, -1, flags, &error);
