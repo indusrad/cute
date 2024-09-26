@@ -117,6 +117,13 @@ should_drop_shift (guint keyval_was,
 }
 
 static gboolean
+skip_keycode (guint keycode)
+{
+  /* macbook fn key */
+  return keycode == 0x01D8;
+}
+
+static gboolean
 ptyxis_shortcut_accel_dialog_key_pressed (GtkWidget             *widget,
                                           guint                  keyval,
                                           guint                  keycode,
@@ -127,6 +134,9 @@ ptyxis_shortcut_accel_dialog_key_pressed (GtkWidget             *widget,
 
   g_assert (PTYXIS_IS_SHORTCUT_ACCEL_DIALOG (self));
   g_assert (GTK_IS_EVENT_CONTROLLER_KEY (controller));
+
+  if (skip_keycode (keycode))
+    return GDK_EVENT_PROPAGATE;
 
   if (ptyxis_shortcut_accel_dialog_is_editing (self))
     {
@@ -216,6 +226,9 @@ ptyxis_shortcut_accel_dialog_key_released (GtkWidget             *widget,
 
   g_assert (PTYXIS_IS_SHORTCUT_ACCEL_DIALOG (self));
   g_assert (GTK_IS_EVENT_CONTROLLER_KEY (controller));
+
+  if (skip_keycode (keycode))
+    return;
 
   if (self->editing)
     {
