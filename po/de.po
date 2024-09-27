@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ptyxis gnome-46\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/chergert/ptyxis/issues\n"
-"POT-Creation-Date: 2024-09-24 19:13+0000\n"
-"PO-Revision-Date: 2024-09-25 13:48+0200\n"
+"POT-Creation-Date: 2024-09-25 14:03+0000\n"
+"PO-Revision-Date: 2024-09-26 14:50+0200\n"
 "Last-Translator: Jürgen Benvenuti <gastornis@posteo.org>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "Language: de\n"
@@ -115,7 +115,7 @@ msgstr ""
 
 #: data/org.gnome.Ptyxis.metainfo.xml.in.in:23
 msgid "Support for transparent terminal backgrounds"
-msgstr "Unterstützung von transparenten Terminalhintergründen"
+msgstr "Unterstützung von transparenten Terminal-Hintergründen"
 
 #: data/org.gnome.Ptyxis.metainfo.xml.in.in:24
 msgid "Separate process mode for terminal-based applications"
@@ -132,7 +132,7 @@ msgstr "Terminal-Reiter werden in separaten cgroups ausgeführt"
 #: data/org.gnome.Ptyxis.metainfo.xml.in.in:27
 msgid "Terminal inspector to help when writing terminal-based applications"
 msgstr ""
-"Terminalinspektor als Hilfe beim Schreiben terminalbasierter Anwendungen"
+"Terminal-Inspektor als Hilfe beim Schreiben terminalbasierter Anwendungen"
 
 #: data/org.gnome.Ptyxis.metainfo.xml.in.in:77
 msgid "A column and row size indicator is displayed when resizing the window"
@@ -592,7 +592,8 @@ msgstr "Terminal zurücksetzen"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:400
 msgid "Reset the terminal state for misbehaving clients"
-msgstr "Terminalstatus für sich fehlerhaft verhaltene Anwendungen zurücksetzen"
+msgstr ""
+"Terminal-Status für sich fehlerhaft verhaltende Anwendungen zurücksetzen"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:405
 msgid "Reset Terminal and Clear History"
@@ -601,7 +602,7 @@ msgstr "Terminal zurücksetzen und Chronik leeren"
 #: src/org.gnome.Ptyxis.gschema.xml.in:406
 msgid "Reset the terminal state and clear history for misbehaving clients"
 msgstr ""
-"Terminalstatus für sich fehlerhaft verhaltene Anwendungen zurücksetzen und "
+"Terminal-Status für sich fehlerhaft verhaltende Anwendungen zurücksetzen und "
 "Chronik leeren"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:411 src/ptyxis-preferences-window.ui:655
@@ -610,7 +611,7 @@ msgstr "Suchchronik"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:412
 msgid "Shortcut to begin searching the terminal history"
-msgstr "Tastenkürzel, um das Durchsuchen des Terminalverlaufs zu beginnen"
+msgstr "Tastenkürzel, um das Durchsuchen der Terminal-Chronik zu beginnen"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:417 src/ptyxis-preferences-window.ui:627
 msgid "Select All"
@@ -626,7 +627,7 @@ msgstr "Nichts auswählen"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:424
 msgid "Shortcut to clear the terminal selection"
-msgstr "Tastenkürzel, um die Terminalauswahl zu leeren"
+msgstr "Tastenkürzel, um die Terminal-Auswahl zu leeren"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:429
 msgid "Popup Menu"
@@ -837,15 +838,15 @@ msgstr "In neuem Fenster auszuführender Befehl"
 #.
 #: src/ptyxis-application.c:820
 msgid "New terminal window"
-msgstr "Neues Terminalfenster"
+msgstr "Neues Terminal-Fenster"
 
 #: src/ptyxis-application.c:821
 msgid "New terminal tab in active window"
-msgstr "Neuer Terminalreiter im aktiven Fenster"
+msgstr "Neuer Terminal-Reiter im aktiven Fenster"
 
 #: src/ptyxis-application.c:822
 msgid "New terminal tab in active window using PROFILE"
-msgstr "Neuer Terminalreiter im aktiven Fenster unter Verwendung von PROFIL"
+msgstr "Neuer Terminal-Reiter im aktiven Fenster unter Verwendung von PROFIL"
 
 #: src/ptyxis-application.c:822
 msgid "PROFILE"
@@ -1175,8 +1176,8 @@ msgstr "Bildschirmleser zulassen"
 msgid ""
 "Permit screen readers such as Orca to read terminal content and typed text"
 msgstr ""
-"Bildschirmlesern wie Orca erlauben, den Terminalinhalt und eingetippten Text "
-"zu lesen"
+"Bildschirmlesern wie Orca erlauben, den Terminal-Inhalt und eingetippten "
+"Text zu lesen"
 
 #: src/ptyxis-preferences-window.ui:380
 msgid "Bell"
@@ -1393,7 +1394,7 @@ msgstr "Primäres Menü anzeigen"
 
 #: src/ptyxis-preferences-window.ui:844
 msgid "Displays the primary menu for the terminal window"
-msgstr "Zeigt das Hauptmenü für das Terminalfenster an"
+msgstr "Zeigt das Hauptmenü für das Terminal-Fenster an"
 
 #: src/ptyxis-preferences-window.ui:850
 msgid "Show this preferences window"
@@ -1463,7 +1464,7 @@ msgstr "Farbe"
 
 #: src/ptyxis-profile-editor.ui:173
 msgid "The default container to use with this profile"
-msgstr "Der Vorgabe-Container zur Nutzung mit diesem Profil"
+msgstr "Der Standard-Container zur Nutzung mit diesem Profil"
 
 #: src/ptyxis-profile-editor.ui:182
 msgid "Preserve the current container when opening new tabs and windows"
@@ -1554,7 +1555,7 @@ msgstr "Container »%s« konnte nicht gefunden werden"
 
 #: src/ptyxis-tab.c:448
 msgid "Failed to create pseudo terminal device"
-msgstr "Pseudo-Terminalgerät konnte nicht erstellt werden"
+msgstr "Pseudo-Terminal-Gerät konnte nicht erstellt werden"
 
 #: src/ptyxis-tab.c:1232
 msgid "Exited"
