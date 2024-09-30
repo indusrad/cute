@@ -22,8 +22,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-terminal.master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/chergert/ptyxis/issues\n"
-"POT-Creation-Date: 2024-09-21 09:28+0000\n"
-"PO-Revision-Date: 2024-09-22 20:54+0200\n"
+"POT-Creation-Date: 2024-09-27 05:33+0000\n"
+"PO-Revision-Date: 2024-09-27 22:43+0200\n"
 "Last-Translator: Julián Villodre <jvillodrede@gmail.com>\n"
 "Language-Team: Spanish - Spain <gnome-es-list@gnome.org>\n"
 "Language: es\n"
@@ -147,57 +147,57 @@ msgstr ""
 "El inspector de Terminal le ayuda cuando escribe aplicaciones basadas en "
 "terminal"
 
-#: data/org.gnome.Ptyxis.metainfo.xml.in.in:72
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:77
 msgid "A column and row size indicator is displayed when resizing the window"
 msgstr ""
 "Se muestra un indicador de tamaño de columna y fila al cambiar el tamaño de "
 "la ventana"
 
-#: data/org.gnome.Ptyxis.metainfo.xml.in.in:77
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:82
 msgid "Containers are automatically discovered and displayed"
 msgstr "Los contenedores se reconocen y muestran automáticamente"
 
-#: data/org.gnome.Ptyxis.metainfo.xml.in.in:82
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:87
 msgid "Many behaviors of the terminal may be tweaked to user preference"
 msgstr ""
 "Muchos comportamientos de la terminal pueden ajustarse según las "
 "preferencias del usuario"
 
-#: data/org.gnome.Ptyxis.metainfo.xml.in.in:87
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:92
 msgid "You may rename a tab by providing a prefix to the title"
 msgstr ""
 "Puede cambiar el nombre de una pestaña proporcionando un prefijo al título"
 
-#: data/org.gnome.Ptyxis.metainfo.xml.in.in:92
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:97
 msgid "Palettes provide an integrated dark mode"
 msgstr "Las paletas proporcionan un modo oscuro integrado"
 
-#: data/org.gnome.Ptyxis.metainfo.xml.in.in:97
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:102
 msgid "You can see an overview of your tabs at any time"
 msgstr "Puede visualizar una vista de sus pestañas en cualquier momento"
 
-#: data/org.gnome.Ptyxis.metainfo.xml.in.in:102
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:107
 msgid "Many shortcuts may be remapped to user preference"
 msgstr "Muchos atajos pueden reasignarse según las preferencias del usuario"
 
-#: data/org.gnome.Ptyxis.metainfo.xml.in.in:107
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:112
 msgid "Built-in color palettes provide both dark and light mode variants"
 msgstr ""
 "Las paletas de colores integradas proporcionan variantes para el modo oscuro "
 "y claro"
 
-#: data/org.gnome.Ptyxis.metainfo.xml.in.in:112
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:117
 msgid ""
 "Profiles allow for overriding a number of features such as default container"
 msgstr ""
 "Los perfiles permiten controlar una serie de características, como el "
 "contenedor predeterminado"
 
-#: data/org.gnome.Ptyxis.metainfo.xml.in.in:117
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:122
 msgid "The terminal will remind you when you're root on the local system"
 msgstr "La terminal le recordará si ha iniciado sesión como root en el sistema"
 
-#: data/org.gnome.Ptyxis.metainfo.xml.in.in:122
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:127
 msgid "The terminal will remind you when you're on a remote system"
 msgstr "La terminal le recordará si ha iniciado sesión en un sistema remoto"
 
@@ -797,36 +797,36 @@ msgstr "Deshacer el cierre de la pestaña"
 msgid "Undo closing of last tab"
 msgstr "Deshacer el cierre de la última pestaña"
 
-#: src/ptyxis-application.c:244
+#: src/ptyxis-application.c:245
 msgid "--tab, --tab-with-profile, or --new-window may not be used together"
 msgstr "--tab, --tab-with-profile, o --new-window no se pueden usar juntos"
 
-#: src/ptyxis-application.c:290
+#: src/ptyxis-application.c:291
 #, c-format
 msgid "Cannot parse command: %s"
 msgstr "No se pudo analizar el comando: %s"
 
-#: src/ptyxis-application.c:796
+#: src/ptyxis-application.c:804
 msgid "Examples:"
 msgstr "Ejemplos:"
 
-#: src/ptyxis-application.c:798
+#: src/ptyxis-application.c:806
 msgid "Show the application preferences"
 msgstr "Mostrar las preferencias de la aplicación"
 
 #. Used for new tabs/windows/etc when specified
-#: src/ptyxis-application.c:801
+#: src/ptyxis-application.c:809
 msgid "Use DIR for --tab, --tab-with-profile, --new-window, or -x"
 msgstr "Use DIR para --tab, --tab-with-profile, --new-window, o -x"
 
-#: src/ptyxis-application.c:801
+#: src/ptyxis-application.c:809
 msgid "DIR"
 msgstr "DIR"
 
 #. By default, this implies a new ptyxis instance unless the options
 #. * below are provided to override that.
 #.
-#: src/ptyxis-application.c:806
+#: src/ptyxis-application.c:814
 msgid "Command to execute in new window"
 msgstr "Comando que ejecutar en nueva ventana"
 
@@ -834,39 +834,39 @@ msgstr "Comando que ejecutar en nueva ventana"
 #. * short command options for these to make it easier to sniff them in early args
 #. * checking from `main.c`.
 #.
-#: src/ptyxis-application.c:812
+#: src/ptyxis-application.c:820
 msgid "New terminal window"
 msgstr "Nueva ventana de la terminal"
 
-#: src/ptyxis-application.c:813
+#: src/ptyxis-application.c:821
 msgid "New terminal tab in active window"
 msgstr "Nueva pestaña de la terminal en una ventana activa"
 
-#: src/ptyxis-application.c:814
+#: src/ptyxis-application.c:822
 msgid "New terminal tab in active window using PROFILE"
 msgstr "Nueva pestaña de la terminal en una ventana activa usando PERFIL"
 
-#: src/ptyxis-application.c:814
+#: src/ptyxis-application.c:822
 msgid "PROFILE"
 msgstr "PERFIL"
 
-#: src/ptyxis-application.c:821
+#: src/ptyxis-application.c:829
 msgid "Run Separate Instance"
 msgstr "Ejecutar instancia separada"
 
-#: src/ptyxis-application.c:825
+#: src/ptyxis-application.c:833
 msgid "Open Preferences"
 msgstr "Abrir preferencias"
 
-#: src/ptyxis-application.c:829
+#: src/ptyxis-application.c:837
 msgid "Run Custom Command in New Window"
 msgstr "Ejecutar un comando personalizado en una nueva ventana"
 
-#: src/ptyxis-application.c:833
+#: src/ptyxis-application.c:841
 msgid "[-- COMMAND ARGUMENTS]"
 msgstr "[-- COMANDO ARGUMENTOS]"
 
-#: src/ptyxis-application.c:1071
+#: src/ptyxis-application.c:1079
 msgid "translator-credits"
 msgstr ""
 "Julián Villodre <jvillodrede@gmail.com>, 2024\n"
@@ -884,14 +884,12 @@ msgid "_Close All"
 msgstr "_Cerrar todo"
 
 #: src/ptyxis-close-dialog.c:112
-#, fuzzy
-#| msgid "Close Window"
 msgid "Close Window?"
 msgstr "¿Cerrar la ventana?"
 
 #: src/ptyxis-close-dialog.c:113
 msgid "Some processes are still running."
-msgstr ""
+msgstr "Algunos procesos todavía se están ejecutando."
 
 #: src/ptyxis-close-dialog.c:117
 msgid "_Cancel"
@@ -908,21 +906,17 @@ msgstr "Contenedor desconocido"
 
 #: src/ptyxis-find-bar.ui:68
 msgid "Search up to next result"
-msgstr ""
+msgstr "Buscar hacia adelante el siguiente resultado"
 
 #: src/ptyxis-find-bar.ui:75
 msgid "Search down to next result"
-msgstr ""
+msgstr "Buscar hacia atrás el siguiente resultado"
 
 #: src/ptyxis-find-bar.ui:84
-#, fuzzy
-#| msgid "Toggle search options"
 msgid "Search Options"
-msgstr "Conmutar las opciones de búsqueda"
+msgstr "Opciones de búsqueda"
 
 #: src/ptyxis-find-bar.ui:95
-#, fuzzy
-#| msgid "_Match case"
 msgid "Match _Case"
 msgstr "_Coincidir mayúsculas y minúsculas"
 
@@ -931,23 +925,17 @@ msgid "Whole _Words"
 msgstr "Palabras _completas"
 
 #: src/ptyxis-find-bar.ui:107
-#, fuzzy
-#| msgid "Match as _regular expression"
 msgid "Use _Regular Expressions"
-msgstr "Coincidir con expresión _regular"
+msgstr "Usar expresiones _regulares"
 
 #: src/ptyxis-find-bar.ui:127 src/ptyxis-preferences-window.ui:541
 #: src/ptyxis-profile-editor.ui:263
-#, fuzzy
-#| msgid "Close Tab"
 msgid "Close"
-msgstr "Cerrar pestaña"
+msgstr "Cerrar"
 
 #: src/ptyxis-find-bar.ui:128
-#, fuzzy
-#| msgid "Close tab"
 msgid "Close the search bar"
-msgstr "Cerrar pestaña"
+msgstr "Cerrar la barra de búsqueda"
 
 #: src/ptyxis-inspector.c:89 src/ptyxis-inspector.c:351
 msgid "unset"
@@ -958,10 +946,8 @@ msgid "Row"
 msgstr "Fila"
 
 #: src/ptyxis-inspector.c:110 src/ptyxis-inspector.c:268
-#, fuzzy
-#| msgid "columns"
 msgid "Column"
-msgstr "columnas"
+msgstr "columna"
 
 #. NOTE: If we are in a container that also supports VTE patches
 #. * then it will send shell-precmd via escape sequences. The reality
@@ -973,46 +959,36 @@ msgstr "columnas"
 #.
 #: src/ptyxis-inspector.c:171 src/ptyxis-inspector.c:191
 #: src/ptyxis-preferences-window.ui:477 src/ptyxis-profile-editor.ui:145
-#, fuzzy
-#| msgid "Shell only"
 msgid "Shell"
-msgstr "Sólo shell"
+msgstr "Shell"
 
 #: src/ptyxis-inspector.c:270
 msgid "untracked"
 msgstr "sin registrar"
 
 #: src/ptyxis-inspector.ui:4
-#, fuzzy
-#| msgid "_Inspector"
 msgid "Inspector"
-msgstr "_Inspector"
+msgstr "Inspector"
 
 #: src/ptyxis-inspector.ui:7
 msgid "Process"
 msgstr "Proceso"
 
 #: src/ptyxis-inspector.ui:13
-#, fuzzy
-#| msgid "Foreground"
 msgid "Foreground Process"
-msgstr "Fondo"
+msgstr "Proceso en primer plano"
 
 #: src/ptyxis-inspector.ui:33
-#, fuzzy
-#| msgid "Window"
 msgid "Window Title"
-msgstr "Ventana"
+msgstr "Título de la ventana"
 
 #: src/ptyxis-inspector.ui:45
 msgid "Current Directory"
 msgstr "Carpeta actual"
 
 #: src/ptyxis-inspector.ui:53
-#, fuzzy
-#| msgid "Current Locale"
 msgid "Current File"
-msgstr "Configuración regional actual"
+msgstr "Archivo actual"
 
 #: src/ptyxis-inspector.ui:63
 msgid "Container"
@@ -1028,16 +1004,12 @@ msgid "Name"
 msgstr "Nombre"
 
 #: src/ptyxis-inspector.ui:86 src/ptyxis-preferences-window.ui:36
-#, fuzzy
-#| msgid "Text Appearance"
 msgid "Appearance"
-msgstr "Apariencia del texto"
+msgstr "Apariencia"
 
 #: src/ptyxis-inspector.ui:92
-#, fuzzy
-#| msgid "Normal Size"
 msgid "Grid Size"
-msgstr "Tamaño normal"
+msgstr "Tamaño de la cuadrícula"
 
 #: src/ptyxis-inspector.ui:105
 msgid "Colors"
@@ -1048,10 +1020,8 @@ msgid "Font"
 msgstr "Tipografía"
 
 #: src/ptyxis-inspector.ui:233
-#, fuzzy
-#| msgid "Normal Size"
 msgid "Cell Size"
-msgstr "Tamaño normal"
+msgstr "Tamaño de celda"
 
 #: src/ptyxis-inspector.ui:242
 msgid "Input"
@@ -1062,30 +1032,25 @@ msgid "Cursor"
 msgstr "Cursor"
 
 #: src/ptyxis-inspector.ui:249 src/ptyxis-inspector.ui:262
-#, fuzzy
-#| msgid "_Description"
 msgid "Position"
-msgstr "_Descripción"
+msgstr "Posición"
 
 #: src/ptyxis-inspector.ui:259
 msgid "Mouse"
 msgstr "Ratón"
 
 #: src/ptyxis-inspector.ui:270
-#, fuzzy
-#| msgid "Open _Hyperlink"
 msgid "Hyperlink"
-msgstr "Abrir _hiperenlace"
+msgstr "Hiperenlace"
 
 #: src/ptyxis-palette-preview.ui:12
 msgid "The quick brown fox jumps over the lazy dog"
 msgstr ""
+"Un jugoso zumo de piña y kiwi bien frío es exquisito y no lleva alcohol"
 
 #: src/ptyxis-preferences-window.c:242
-#, fuzzy
-#| msgid "Select All"
 msgid "Select Font"
-msgstr "Seleccionar todo"
+msgstr "Seleccionar tipografía"
 
 #: src/ptyxis-preferences-window.c:292
 msgid "Show fewer…"
@@ -1096,34 +1061,28 @@ msgid "Show more…"
 msgstr "Mostrar más…"
 
 #: src/ptyxis-preferences-window.ui:64 src/ptyxis-profile-editor.ui:78
-#, fuzzy
-#| msgid "_Transparent background"
 msgid "Transparency"
-msgstr "Fondo _transparente"
+msgstr "Transparencia"
 
 #: src/ptyxis-preferences-window.ui:65 src/ptyxis-profile-editor.ui:79
 msgid "Reduces the opacity of the background window"
-msgstr ""
+msgstr "Reduce la opacidad de la ventana de fondo"
 
 #: src/ptyxis-preferences-window.ui:126
 msgid "Use System _Font"
 msgstr "Usar la tipogra_fía del sistema"
 
 #: src/ptyxis-preferences-window.ui:138
-#, fuzzy
-#| msgid "Custom _font:"
 msgid "Custom Font"
-msgstr "_Tipografía personalizada:"
+msgstr "Tipografía personalizada"
 
 #: src/ptyxis-preferences-window.ui:167 src/ptyxis-profile-editor.ui:138
 msgid "Use Bright Colors for Bold"
-msgstr ""
+msgstr "Usar colores brillantes para la negrita"
 
 #: src/ptyxis-preferences-window.ui:176
-#, fuzzy
-#| msgid "Allow b_linking text:"
 msgid "Blinking Text"
-msgstr "Permitir texto _parpadeante:"
+msgstr "Texto parpadeante"
 
 #: src/ptyxis-preferences-window.ui:185 src/ptyxis-preferences-window.ui:409
 #: src/ptyxis-preferences-window.ui:498 src/ptyxis-profile-editor.ui:191
@@ -1132,16 +1091,12 @@ msgid "Never"
 msgstr "Nunca"
 
 #: src/ptyxis-preferences-window.ui:191
-#, fuzzy
-#| msgid "When focused"
 msgid "Focused"
 msgstr "Con el foco"
 
 #: src/ptyxis-preferences-window.ui:197
-#, fuzzy
-#| msgid "When focused"
 msgid "Unfocused"
-msgstr "Con el foco"
+msgstr "Sin el foco"
 
 #: src/ptyxis-preferences-window.ui:203 src/ptyxis-preferences-window.ui:421
 #: src/ptyxis-preferences-window.ui:510 src/ptyxis-profile-editor.ui:197
@@ -1162,15 +1117,10 @@ msgid "Underline"
 msgstr "Subrayado"
 
 #: src/ptyxis-preferences-window.ui:249
-#, fuzzy
-#| msgid "Cursor blin_king:"
 msgid "Cursor Blinking"
-msgstr "Par_padeo del cursor:"
+msgstr "Parpadeo del cursor"
 
 #: src/ptyxis-preferences-window.ui:258 src/ptyxis-preferences-window.ui:415
-#, fuzzy
-#| msgctxt "theme variant"
-#| msgid "Follow system style"
 msgid "Follow System"
 msgstr "Seguir el estilo del sistema"
 
@@ -1200,17 +1150,15 @@ msgstr "Última"
 
 #: src/ptyxis-preferences-window.ui:321
 msgid "Attempt to restore previous tabs when Ptyxis starts"
-msgstr ""
+msgstr "Intentar restaurar pestañas anteriores cuando se inicia Ptyxis"
 
 #: src/ptyxis-preferences-window.ui:327
 msgid "Restore the previous window size when creating a new window"
-msgstr ""
+msgstr "Restaurar el tamaño de ventana anterior al crear una nueva ventana"
 
 #: src/ptyxis-preferences-window.ui:337
-#, fuzzy
-#| msgid "columns"
 msgid "Columns"
-msgstr "columnas"
+msgstr "Columnas"
 
 #: src/ptyxis-preferences-window.ui:351
 msgid "Rows"
@@ -1222,12 +1170,14 @@ msgstr "Accesibilidad"
 
 #: src/ptyxis-preferences-window.ui:372
 msgid "Allow Screen Readers"
-msgstr ""
+msgstr "Permitir lectores de pantalla"
 
 #: src/ptyxis-preferences-window.ui:373
 msgid ""
 "Permit screen readers such as Orca to read terminal content and typed text"
 msgstr ""
+"Permitir que los lectores de pantalla como Orca lean el contenido de la "
+"terminal y el texto escrito"
 
 #: src/ptyxis-preferences-window.ui:380
 msgid "Bell"
@@ -1235,7 +1185,7 @@ msgstr "Campana"
 
 #: src/ptyxis-preferences-window.ui:384
 msgid "Emit an audible bell when requested by active tab"
-msgstr ""
+msgstr "Emitir un sonido de campana cuando lo solicite la pestaña activa"
 
 #: src/ptyxis-preferences-window.ui:389
 msgid "Visual Bell"
@@ -1243,17 +1193,15 @@ msgstr "Campana visual"
 
 #: src/ptyxis-preferences-window.ui:390
 msgid "Emit a visual bell when requested by active tab"
-msgstr ""
+msgstr "Emitir una campana visual cuando lo solicite la pestaña activa"
 
 #: src/ptyxis-preferences-window.ui:397 src/ptyxis-profile-editor.ui:275
 msgid "Scrolling"
 msgstr "Desplazamiento"
 
 #: src/ptyxis-preferences-window.ui:400
-#, fuzzy
-#| msgid "_Show scrollbar"
 msgid "Use Scrollbars"
-msgstr "_Mostrar la barra de desplazamiento"
+msgstr "Usar barra de desplazamiento"
 
 #: src/ptyxis-preferences-window.ui:436 src/ptyxis-profile-editor.ui:279
 #, fuzzy
@@ -3789,8 +3737,9 @@ msgstr "_Mi equipo"
 #~ "Si la aplicación en la configuración de la terminal define el título (la "
 #~ "mayoría de la gente deja que su intérprete haga esto), el título definido "
 #~ "dinámicamente puede eliminar el título configurado, puede ir antes de "
-#~ "éste, después de éste, o reemplazarlo. Los valores posibles son «replace» "
-#~ "(reemplazar), «before» (antes), «after» (después) e «ignore» (ignorar)."
+#~ "éste, después de éste, o reemplazarlo. Los valores posibles son "
+#~ "«replace» (reemplazar), «before» (antes), «after» (después) e "
+#~ "«ignore» (ignorar)."
 
 #~ msgid "When terminal commands set their o_wn titles:"
 #~ msgstr "Cuando los comandos de la terminal establecen sus p_ropios títulos:"
@@ -4470,8 +4419,8 @@ msgstr "_Mi equipo"
 #~ "\"right\", and \"hidden\"."
 #~ msgstr ""
 #~ "Indica dónde colocar la barra de desplazamiento de la terminal. Las "
-#~ "posibilidades son «left» (izquierda), «right» (derecha), y «hidden» "
-#~ "(oculta)."
+#~ "posibilidades son «left» (izquierda), «right» (derecha), y "
+#~ "«hidden» (oculta)."
 
 #~ msgid ""
 #~ "Whether to ask for confirmation when closing a terminal window which has "
