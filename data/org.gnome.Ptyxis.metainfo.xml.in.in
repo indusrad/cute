@@ -43,6 +43,11 @@
   <launchable type="desktop-id">@APP_ID@.desktop</launchable>
 
   <releases>
+    <release version="47.2" date="2024-10-04">
+      <description>
+        <p>Fix shortcuts with Fn-key usage along with translation and palette updates.</p>
+      </description>
+    </release>
     <release version="47.1" date="2024-09-24"/>
     <release version="47.0" date="2024-09-13"/>
   </releases>

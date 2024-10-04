@@ -1,3 +1,11 @@
+# Ptyxis 47.2
+
+ * Fix closing window title dialog with Return/Enter
+ * Fix naming of Ubuntu palette
+ * Allow setting shortcuts with Fn keys on Macbooks
+ * Fix some solarized palette inconsistencies
+ * Translation updates
+
 # Ptyxis 47.1
 
  * More clipboard fixes for initial state tracking
