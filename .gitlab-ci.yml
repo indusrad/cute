@@ -28,6 +28,82 @@ flatpak@aarch64:
   variables:
     BUNDLE: "org.gnome.Ptyxis.Devel-aarch64.flatpak"
 
+fedora:
+  image: "registry.fedoraproject.org/fedora:41"
+  stage: test
+  needs: []
+  script:
+    - sudo dnf install -y gtk4-devel
+        ccache
+        desktop-file-utils
+        expat-devel
+        gcc
+        gcc-c++
+        gettext
+        gi-docgen
+        gi-docgen-fonts
+        git
+        glib2-devel
+        gobject-introspection-devel
+        gtk4-devel
+        gtksourceview5-devel
+        itstool
+        json-glib-devel
+        libXcursor-devel
+        libXdamage-devel
+        libXi-devel
+        libXinerama-devel
+        libXrandr-devel
+        libadwaita-devel
+        libdrm-devel
+        libglvnd-devel
+        libicu-devel
+        libjpeg-turbo-devel
+        libpng-devel
+        libportal-gtk4-devel
+        libxkbcommon-devel
+        glslc
+        mesa-vulkan-drivers
+        meson
+        ninja-build
+        redhat-rpm-config
+        shared-mime-info
+        vala
+        xorg-x11-server-Xvfb
+        vte291-gtk4-devel
+        vulkan-devel
+        vulkan-headers
+        vulkan-loader-devel
+    - mkdir -p pfx/
+    - meson --prefix=${PWD}/pfx _build
+        -Dglib:werror=false
+        -Dgtk:broadway-backend=false
+        -Dgtk:build-demos=false
+        -Dgtk:build-examples=false
+        -Dgtk:build-tests=false
+        -Dgtk:build-testsuite=false
+        -Dgtk:media-gstreamer=disabled
+        -Dgtk:werror=false
+        -Dicu:werror=false
+        -Dlibadwaita:examples=false
+        -Dlibadwaita:gtk_doc=false
+        -Dlibadwaita:introspection=disabled
+        -Dlibadwaita:tests=false
+        -Dlibadwaita:vapi=false
+        -Dlibadwaita:werror=false
+        -Dpango:gtk_doc=false
+        -Dpango:introspection=disabled
+        -Dpango:werror=false
+        -Dwayland-protocols:tests=false
+        -Dwayland:documentation=false
+        -Dwayland:dtd_validation=false
+        -Dwayland:tests=false
+        -Dwerror=false
+    - cd _build
+    - ninja
+    - meson test --suite ptyxis
+    - ninja install
+
 nightly@x86_64:
   extends: ".publish_nightly"
   needs: ["flatpak@x86_64"]
