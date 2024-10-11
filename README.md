@@ -59,10 +59,6 @@ flatpak install --user --from https://nightly.gnome.org/repo/appstream/org.gnome
 
 Ptyxis is designed for Flatpak.
 
-If you wish to install Ptyxis on your host system, you'll need some patches
-applied to VTE (in build-aux/) until an upstream solution is provided for
-container tracking. We do expect this in the not-too-distant future.
-
 The easiest way to build and test your changes to Ptyxis is by opening the
 project in GNOME Builder and clicking the Run button.
 
