@@ -39,7 +39,6 @@
                 "-Dtests=false"
             ],
             "buildsystem" : "meson",
-            "builddir" : true,
             "sources" : [
                 {
                     "type" : "archive",
@@ -49,8 +48,24 @@
             ]
         },
         {
+            "name" : "fast_float",
+            "buildsystem" : "cmake-ninja",
+            "sources" : [
+                {
+                    "type" : "git",
+                    "url" : "https://github.com/fastfloat/fast_float.git",
+                    "branch" : "main"
+                }
+            ]
+        },
+        {
             "name" : "vte",
             "buildsystem" : "meson",
+            "build-options" : {
+                "env" : {
+                    "CXXFLAGS" : "-I/app/include/fast_float"
+                }
+            },
             "config-opts" : [
                 "--buildtype=release",
                 "-Dgtk3=false",
