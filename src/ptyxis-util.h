@@ -62,6 +62,8 @@ GListModel         *ptyxis_parse_shells          (const char *etc_shells);
 const char         *ptyxis_app_name              (void) G_GNUC_CONST;
 GVariant           *ptyxis_variant_new_toast     (const char *title,
                                                   guint       timeout);
+gboolean            ptyxis_is_default            (void);
+gboolean            ptyxis_make_default          (void);
 
 static inline void
 ptyxis_take_str (char **out_str,

@@ -40,7 +40,11 @@
 
 #include "gconstructor.h"
 
+#include "line-reader-private.h"
+
 #include "ptyxis-util.h"
+
+#define APP_ID_DESKTOP APP_ID ".desktop"
 
 static PtyxisProcessKind kind = PTYXIS_PROCESS_KIND_HOST;
 
@@ -325,4 +329,75 @@ ptyxis_variant_new_toast (const char *title,
   g_variant_builder_add (&b, "{sv}", "timeout", g_variant_new_uint32 (timeout));
 
   return g_variant_builder_end (&b);
+}
+
+static gboolean
+line_is_ptyxis (const char *line)
+{
+  return strcmp (line, APP_ID_DESKTOP) == 0 && line[strlen(APP_ID_DESKTOP)] == 0;
+}
+
+gboolean
+ptyxis_is_default (void)
+{
+  g_autofree char *path = g_build_filename (g_get_user_config_dir (), "xdg-terminals.list", NULL);
+  g_autofree char *contents = NULL;
+  LineReader reader;
+  gsize contents_len = 0;
+  char *line;
+  gsize len;
+
+  if (!g_file_get_contents (path, &contents, &contents_len, NULL))
+    return FALSE;
+
+  line_reader_init (&reader, contents, contents_len);
+
+  while ((line = line_reader_next (&reader, &len)))
+    {
+      line[len] = 0;
+
+      g_strchug (line);
+
+      if (line[0] == '#')
+        continue;
+
+      return line_is_ptyxis (line);
+    }
+
+  return FALSE;
+}
+
+gboolean
+ptyxis_make_default (void)
+{
+  g_autofree char *path = g_build_filename (g_get_user_config_dir (), "xdg-terminals.list", NULL);
+  g_autoptr(GString) replace = g_string_new (APP_ID_DESKTOP "\n");
+  g_autofree char *contents = NULL;
+  gsize contents_len = 0;
+
+  if (g_file_get_contents (path, &contents, &contents_len, NULL))
+    {
+      LineReader reader;
+      gsize len;
+      char *line;
+
+      line_reader_init (&reader, contents, contents_len);
+
+      while ((line = line_reader_next (&reader, &len)))
+        {
+          line[len] = 0;
+
+          g_strchug (line);
+
+          if (line_is_ptyxis (line))
+            continue;
+
+          g_string_append (replace, line);
+          g_string_append_c (replace, '\n');
+        }
+    }
+
+  g_file_set_contents (path, replace->str, replace->len, NULL);
+
+  return ptyxis_is_default ();
 }
