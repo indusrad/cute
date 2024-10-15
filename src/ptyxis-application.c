@@ -55,6 +55,7 @@ struct _PtyxisApplication
   GDBusProxy          *portal;
   PtyxisClient        *client;
   GVariant            *session;
+  GFileMonitor        *xdg_terminals_list_monitor;
   guint                has_restored_session : 1;
   guint                overlay_scrollbars : 1;
   guint                client_is_fallback : 1;
@@ -639,6 +640,24 @@ filter_session_container (gpointer item,
   return g_strcmp0 ("session", ptyxis_ipc_container_get_id (item)) != 0;
 }
 
+static void
+xdg_terminals_list_changed_cb (PtyxisApplication *self,
+                               GFile             *file,
+                               GFile             *other_file,
+                               GFileMonitorEvent  event,
+                               GFileMonitor      *monitor)
+{
+  GAction *action;
+
+  g_assert (PTYXIS_IS_APPLICATION (self));
+  g_assert (G_IS_FILE (file));
+  g_assert (G_IS_FILE_MONITOR (monitor));
+
+  if ((action = g_action_map_lookup_action (G_ACTION_MAP (self), "make-default")) &&
+      G_IS_SIMPLE_ACTION (action))
+    g_simple_action_set_enabled (G_SIMPLE_ACTION (action), !ptyxis_is_default ());
+}
+
 static gboolean
 ptyxis_application_should_sandbox_agent (PtyxisApplication *self)
 {
@@ -699,10 +718,13 @@ ptyxis_application_startup (GApplication *application)
   g_autoptr(GFile) session_file = get_session_file ();
   g_autoptr(GBytes) session_bytes = NULL;
   g_autoptr(GError) error = NULL;
+  g_autoptr(GFile) xdg_terminals_list = NULL;
   AdwStyleManager *style_manager;
   gboolean sandbox_agent;
 
   g_assert (PTYXIS_IS_APPLICATION (self));
+
+  xdg_terminals_list = g_file_new_build_filename (g_get_user_config_dir (), "xdg-terminals.list", NULL);
 
   g_application_set_default (application);
   g_application_set_resource_base_path (G_APPLICATION (self), "/org/gnome/Ptyxis");
@@ -710,6 +732,7 @@ ptyxis_application_startup (GApplication *application)
   self->profiles = g_list_store_new (PTYXIS_TYPE_PROFILE);
   self->settings = ptyxis_settings_new ();
   self->shortcuts = ptyxis_shortcuts_new (NULL);
+  self->xdg_terminals_list_monitor = g_file_monitor (xdg_terminals_list, 0, NULL, NULL);
 
   /* Load the session state so it's available if we need it */
   if ((session_bytes = g_file_load_bytes (session_file, NULL, NULL, NULL)))
@@ -770,6 +793,20 @@ ptyxis_application_startup (GApplication *application)
                                          "app.help-overlay",
                                          (const char * const []) {"<ctrl>question", NULL});
 
+  if (self->xdg_terminals_list_monitor != NULL)
+    {
+      g_signal_connect_object (self->xdg_terminals_list_monitor,
+                               "changed",
+                               G_CALLBACK (xdg_terminals_list_changed_cb),
+                               self,
+                               G_CONNECT_SWAPPED);
+      xdg_terminals_list_changed_cb (self,
+                                     xdg_terminals_list,
+                                     NULL,
+                                     G_FILE_MONITOR_EVENT_CHANGED,
+                                     self->xdg_terminals_list_monitor);
+    }
+
   /* Setup portal to get settings */
   self->portal = g_dbus_proxy_new_for_bus_sync (G_BUS_TYPE_SESSION,
                                                 G_DBUS_PROXY_FLAGS_NONE,
@@ -828,6 +865,7 @@ ptyxis_application_shutdown (GApplication *application)
 
   G_APPLICATION_CLASS (ptyxis_application_parent_class)->shutdown (application);
 
+  g_clear_object (&self->xdg_terminals_list_monitor);
   g_clear_object (&self->profile_menu);
   g_clear_object (&self->profiles);
   g_clear_object (&self->portal);
