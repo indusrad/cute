@@ -63,7 +63,7 @@
                 {
                     "type" : "git",
                     "url" : "https://gitlab.gnome.org/GNOME/vte.git",
-                    "branch" : "master"
+                    "branch" : "vte-0-78"
                 }
             ]
         },
@@ -78,7 +78,7 @@
                 {
                     "type" : "git",
                     "url" : "https://gitlab.gnome.org/GNOME/ptyxis.git",
-                    "branch" : "main"
+                    "branch" : "gnome-47"
                 }
             ]
         }
