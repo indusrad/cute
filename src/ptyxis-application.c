@@ -69,6 +69,9 @@ static void ptyxis_application_edit_profile      (GSimpleAction *action,
 static void ptyxis_application_help_overlay      (GSimpleAction *action,
                                                   GVariant      *param,
                                                   gpointer       user_data);
+static void ptyxis_application_make_default      (GSimpleAction *action,
+                                                  GVariant      *param,
+                                                  gpointer       user_data);
 static void ptyxis_application_new_window_action (GSimpleAction *action,
                                                   GVariant      *param,
                                                   gpointer       user_data);
@@ -92,6 +95,7 @@ static GActionEntry action_entries[] = {
   { "focus-tab-by-uuid", ptyxis_application_focus_tab_by_uuid, "s" },
   { "new-window", ptyxis_application_new_window_action },
   { "new-tab", ptyxis_application_new_tab_action },
+  { "make-default", ptyxis_application_make_default },
 };
 
 G_DEFINE_FINAL_TYPE (PtyxisApplication, ptyxis_application, ADW_TYPE_APPLICATION)
@@ -1950,4 +1954,14 @@ ptyxis_application_get_user_data_dir (PtyxisApplication *self)
   g_return_val_if_fail (PTYXIS_IS_APPLICATION (self), NULL);
 
   return ptyxis_client_get_user_data_dir (self->client);
+}
+
+static void
+ptyxis_application_make_default (GSimpleAction *action,
+                                 GVariant      *param,
+                                 gpointer       user_data)
+{
+  g_assert (PTYXIS_IS_APPLICATION (user_data));
+
+  ptyxis_make_default ();
 }
