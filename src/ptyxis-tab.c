@@ -262,7 +262,9 @@ ptyxis_tab_wait_cb (GObject      *object,
 
   exit_code = ptyxis_application_wait_finish (app, result, &error);
 
-  g_debug ("Process completed with exit-code 0x%x", exit_code);
+  g_debug ("Process completed with exit-code 0x%x %s",
+           exit_code,
+           error ? error->message : "");
 
   if (error == NULL && WIFEXITED (exit_code) && WEXITSTATUS (exit_code) == 0)
     self->state = PTYXIS_TAB_STATE_EXITED;
