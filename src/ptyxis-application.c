@@ -1793,7 +1793,25 @@ ptyxis_application_has_foreground_process_cb (GObject      *object,
   g_assert (G_IS_TASK (task));
 
   if (!ptyxis_ipc_process_call_has_foreground_process_finish (process, NULL, NULL, NULL, NULL, NULL, result, &error))
-    wait_complete (task, 0, 0, g_steal_pointer (&error));
+    {
+      /* Return without the GError here which is non-NULL
+       * because the process already died before we could
+       * subscribe to it.
+       *
+       * This does not happen very often, but can certainly
+       * happen when the application starts up and we were
+       * busy blocking in shader compilation.
+       *
+       * Realistically, the more appropriate way to fix this
+       * in the future is to allow for subscriptions to exit
+       * failures immediately by providing the agent a reverse
+       * proxy D-Bus address for notification that we can
+       * associate with the process.
+       *
+       * Fixes: #157
+       */
+      wait_complete (task, 0, 0, NULL);
+    }
 }
 
 void
