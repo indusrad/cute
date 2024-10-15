@@ -54,6 +54,7 @@ struct _PtyxisApplication
   char                *system_font_name;
   GDBusProxy          *portal;
   PtyxisClient        *client;
+  GHashTable          *exited;
   GVariant            *session;
   guint                has_restored_session : 1;
   guint                overlay_scrollbars : 1;
@@ -686,6 +687,25 @@ ptyxis_application_client_closed_cb (PtyxisApplication *self,
 }
 
 static void
+ptyxis_application_client_process_exited_cb (PtyxisApplication *self,
+                                             const char        *process_object_path,
+                                             int                exit_code,
+                                             PtyxisClient      *client)
+{
+  g_assert (PTYXIS_IS_APPLICATION (self));
+  g_assert (PTYXIS_IS_CLIENT (client));
+
+  /* Store information about how the process exited. We will use this if
+   * we race to figure out how the process exited otherwise.  It is
+   * removed from the hash table when doing so (or when we get the real
+   * value outside of a race condition).
+   */
+  g_hash_table_insert (self->exited,
+                       g_strdup (process_object_path),
+                       GINT_TO_POINTER (exit_code));
+}
+
+static void
 ptyxis_application_startup (GApplication *application)
 {
   static const char *patterns[] = { "org.gnome.*", NULL };
@@ -703,6 +723,7 @@ ptyxis_application_startup (GApplication *application)
   g_application_set_default (application);
   g_application_set_resource_base_path (G_APPLICATION (self), "/org/gnome/Ptyxis");
 
+  self->exited = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
   self->profiles = g_list_store_new (PTYXIS_TYPE_PROFILE);
   self->settings = ptyxis_settings_new ();
   self->shortcuts = ptyxis_shortcuts_new (NULL);
@@ -747,6 +768,12 @@ ptyxis_application_startup (GApplication *application)
   g_signal_connect_object (self->client,
                            "closed",
                            G_CALLBACK (ptyxis_application_client_closed_cb),
+                           self,
+                           G_CONNECT_SWAPPED);
+
+  g_signal_connect_object (self->client,
+                           "process-exited",
+                           G_CALLBACK (ptyxis_application_client_process_exited_cb),
                            self,
                            G_CONNECT_SWAPPED);
 
@@ -831,6 +858,7 @@ ptyxis_application_shutdown (GApplication *application)
   g_clear_object (&self->settings);
   g_clear_object (&self->client);
   g_clear_pointer (&self->next_title_prefix, g_free);
+  g_clear_pointer (&self->exited, g_hash_table_unref);
 
   g_clear_pointer (&self->system_font_name, g_free);
 }
@@ -1723,6 +1751,9 @@ ptyxis_application_process_exited_cb (PtyxisIpcProcess *process,
   g_assert (PTYXIS_IPC_IS_PROCESS (process));
   g_assert (G_IS_TASK (task));
 
+  g_hash_table_remove (PTYXIS_APPLICATION_DEFAULT->exited,
+                       g_dbus_proxy_get_object_path (G_DBUS_PROXY (process)));
+
   wait_complete (task, exit_status, 0, NULL);
 }
 
@@ -1734,6 +1765,9 @@ ptyxis_application_process_signaled_cb (PtyxisIpcProcess *process,
   g_assert (PTYXIS_IPC_IS_PROCESS (process));
   g_assert (G_IS_TASK (task));
 
+  g_hash_table_remove (PTYXIS_APPLICATION_DEFAULT->exited,
+                       g_dbus_proxy_get_object_path (G_DBUS_PROXY (process)));
+
   wait_complete (task, 0, term_sig, NULL);
 }
 
@@ -1742,6 +1776,7 @@ ptyxis_application_has_foreground_process_cb (GObject      *object,
                                               GAsyncResult *result,
                                               gpointer      user_data)
 {
+  PtyxisApplication *self = PTYXIS_APPLICATION_DEFAULT;
   PtyxisIpcProcess *process = (PtyxisIpcProcess *)object;
   g_autoptr(GError) error = NULL;
   g_autoptr(GTask) task = user_data;
@@ -1752,23 +1787,26 @@ ptyxis_application_has_foreground_process_cb (GObject      *object,
 
   if (!ptyxis_ipc_process_call_has_foreground_process_finish (process, NULL, NULL, NULL, NULL, NULL, result, &error))
     {
-      /* Return without the GError here which is non-NULL
-       * because the process already died before we could
-       * subscribe to it.
-       *
-       * This does not happen very often, but can certainly
-       * happen when the application starts up and we were
-       * busy blocking in shader compilation.
-       *
-       * Realistically, the more appropriate way to fix this
-       * in the future is to allow for subscriptions to exit
-       * failures immediately by providing the agent a reverse
-       * proxy D-Bus address for notification that we can
-       * associate with the process.
-       *
-       * Fixes: #157
-       */
-      wait_complete (task, 0, 0, NULL);
+      const char *object_path = g_dbus_proxy_get_object_path (G_DBUS_PROXY (process));
+      gpointer value;
+      int exit_status = 0;
+      int term_sig = 0;
+
+      if (g_hash_table_lookup_extended (self->exited, object_path, NULL, &value))
+        {
+          int exit_code = GPOINTER_TO_INT (value);
+
+          if (WIFEXITED (exit_code))
+            exit_status = WEXITSTATUS (exit_code);
+          else
+            term_sig = WTERMSIG (exit_code);
+
+          g_clear_error (&error);
+
+          g_hash_table_remove (self->exited, object_path);
+        }
+
+      wait_complete (task, exit_status, term_sig, g_steal_pointer (&error));
     }
 }
 

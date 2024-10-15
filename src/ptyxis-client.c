@@ -51,6 +51,7 @@ enum {
 
 enum {
   CLOSED,
+  PROCESS_EXITED,
   N_SIGNALS
 };
 
@@ -161,12 +162,36 @@ ptyxis_client_class_init (PtyxisClientClass *klass)
                   NULL, NULL,
                   NULL,
                   G_TYPE_NONE, 0);
+
+  signals[PROCESS_EXITED] =
+    g_signal_new ("process-exited",
+                  G_TYPE_FROM_CLASS (klass),
+                  G_SIGNAL_RUN_LAST,
+                  0,
+                  NULL, NULL,
+                  NULL,
+                  G_TYPE_NONE,
+                  2,
+                  G_TYPE_STRING | G_SIGNAL_TYPE_STATIC_SCOPE,
+                  G_TYPE_INT);
 }
 
 static void
 ptyxis_client_init (PtyxisClient *self)
 {
   self->containers = g_ptr_array_new_with_free_func (g_object_unref);
+}
+
+static void
+ptyxis_client_process_exited_cb (PtyxisClient   *self,
+                                 const char     *process_object_path,
+                                 int             exit_code,
+                                 PtyxisIpcAgent *agent)
+{
+  g_assert (PTYXIS_IS_CLIENT (self));
+  g_assert (PTYXIS_IPC_IS_AGENT (agent));
+
+  g_signal_emit (self, signals[PROCESS_EXITED], 0, process_object_path, exit_code);
 }
 
 static void
@@ -402,6 +427,12 @@ ptyxis_client_new (gboolean   in_sandbox,
   g_signal_connect_object (self->proxy,
                            "containers-changed",
                            G_CALLBACK (ptyxis_client_containers_changed_cb),
+                           self,
+                           G_CONNECT_SWAPPED);
+
+  g_signal_connect_object (self->proxy,
+                           "process-exited",
+                           G_CALLBACK (ptyxis_client_process_exited_cb),
                            self,
                            G_CONNECT_SWAPPED);
 

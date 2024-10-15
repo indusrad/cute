@@ -113,6 +113,20 @@
       <arg name="proxy_environment" direction="out" type="as"/>
     </method>
 
+    <!--
+      ProcessExited:
+      @process: the object path of the process
+      @exit_code: the exit code of the process
+
+      This signal allows a client to monitor for exits of multiple
+      processes. That is useful in situations where you might otherwise
+      race to connect to the processes exit signal.
+    -->
+    <signal name="ProcessExited">
+      <arg name="process" direction="in" type="o"/>
+      <arg name="exit_code" direction="in" type="i"/>
+    </signal>
+
   </interface>
 
   <interface name="org.gnome.Ptyxis.Container">

@@ -30,10 +30,12 @@ G_BEGIN_DECLS
 
 G_DECLARE_FINAL_TYPE (PtyxisAgentImpl, ptyxis_agent_impl, PTYXIS, AGENT_IMPL, PtyxisIpcAgentSkeleton)
 
+PtyxisAgentImpl *ptyxis_agent_impl_get_default   (void);
 PtyxisAgentImpl *ptyxis_agent_impl_new           (GError                  **error);
 void             ptyxis_agent_impl_add_container (PtyxisAgentImpl          *self,
                                                   PtyxisIpcContainer       *container);
 void             ptyxis_agent_impl_add_provider  (PtyxisAgentImpl          *self,
                                                   PtyxisContainerProvider  *provider);
+
 
 G_END_DECLS

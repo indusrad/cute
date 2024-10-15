@@ -28,6 +28,7 @@
 #include <glib/gstdio.h>
 
 #include "ptyxis-agent-compat.h"
+#include "ptyxis-agent-impl.h"
 #include "ptyxis-process-impl.h"
 
 struct _PtyxisProcessImpl
@@ -95,6 +96,10 @@ ptyxis_process_impl_wait_cb (GObject      *object,
   g_assert (G_IS_ASYNC_RESULT (result));
 
   g_subprocess_wait_finish (subprocess, result, &error);
+
+  ptyxis_ipc_agent_emit_process_exited (PTYXIS_IPC_AGENT (ptyxis_agent_impl_get_default ()),
+                                        g_dbus_interface_skeleton_get_object_path (G_DBUS_INTERFACE_SKELETON (self)),
+                                        g_subprocess_get_status (subprocess));
 
   if (g_subprocess_get_if_signaled (subprocess))
     ptyxis_ipc_process_emit_signaled (PTYXIS_IPC_PROCESS (self),
