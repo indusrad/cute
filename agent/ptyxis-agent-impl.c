@@ -117,9 +117,20 @@ ptyxis_agent_impl_init (PtyxisAgentImpl *self)
 }
 
 PtyxisAgentImpl *
+ptyxis_agent_impl_get_default (void)
+{
+  static PtyxisAgentImpl *instance;
+
+  if (g_once_init_enter (&instance))
+    g_once_init_leave (&instance, g_object_new (PTYXIS_TYPE_AGENT_IMPL, NULL));
+
+  return instance;
+}
+
+PtyxisAgentImpl *
 ptyxis_agent_impl_new (GError **error)
 {
-  return g_object_new (PTYXIS_TYPE_AGENT_IMPL, NULL);
+  return g_object_ref (ptyxis_agent_impl_get_default ());
 }
 
 static void
