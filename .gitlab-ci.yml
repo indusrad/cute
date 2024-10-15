@@ -37,6 +37,7 @@ fedora:
         ccache
         desktop-file-utils
         expat-devel
+        fast_float-devel
         gcc
         gcc-c++
         gettext
