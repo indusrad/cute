@@ -616,7 +616,7 @@
                 </style>
                 <property name="action-name">app.make-default</property>
                 <property name="halign">center</property>
-                <property name="label" translatable="yes">Make Default Terminal</property>
+                <property name="label" translatable="yes">Set as Default Terminal</property>
               </object>
             </child>
           </object>
