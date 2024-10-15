@@ -606,6 +606,21 @@
             </child>
           </object>
         </child>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <child>
+              <object class="GtkButton">
+                <style>
+                  <class name="pill"/>
+                  <class name="suggested-action"/>
+                </style>
+                <property name="action-name">app.make-default</property>
+                <property name="halign">center</property>
+                <property name="label" translatable="yes">Make Default Terminal</property>
+              </object>
+            </child>
+          </object>
+        </child>
       </object>
     </child>
     <child>
