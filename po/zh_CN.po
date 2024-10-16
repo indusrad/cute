@@ -8,15 +8,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ptyxis main\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/chergert/ptyxis/issues\n"
-"POT-Creation-Date: 2024-08-14 18:32+0000\n"
-"PO-Revision-Date: 2024-08-21 12:07+0800\n"
+"POT-Creation-Date: 2024-10-15 19:14+0000\n"
+"PO-Revision-Date: 2024-10-16 18:14+0800\n"
 "Last-Translator: lumingzh <lumingzh@qq.com>\n"
 "Language-Team: Chinese (China) <i18n-zh@googlegroups.com>\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Gtranslator 46.1\n"
+"X-Generator: Gtranslator 47.0\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #: data/org.gnome.Ptyxis.desktop.in.in:3
@@ -28,32 +28,32 @@ msgstr "@APP_NAME@"
 msgid "A container-oriented terminal for GNOME"
 msgstr "一款面向容器的 GNOME 终端"
 
-#: data/org.gnome.Ptyxis.desktop.in.in:13 src/ptyxis-preferences-window.ui:618
-#: src/ptyxis-tab.c:1272 src/ptyxis-util.c:311
+#: data/org.gnome.Ptyxis.desktop.in.in:13 src/ptyxis-preferences-window.ui:633
+#: src/ptyxis-tab.c:1272 src/ptyxis-util.c:315
 msgid "Terminal"
 msgstr "终端"
 
 #. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
 #: data/org.gnome.Ptyxis.desktop.in.in:15
 msgid ""
-"terminal;prompt;ptyxis;shell;command;commandline;cmd;cli;container;podman;"
-"toolbox;distrobox;"
+"terminal;prompt;ptyxis;shell;command;commandline;cmd;cli;console;container;"
+"podman;toolbox;distrobox;"
 msgstr ""
-"terminal;prompt;ptyxis;shell;command;commandline;cmd;cli;container;podman;"
-"toolbox;distrobox;终端;提示符;命令;命令行;容器;"
+"terminal;prompt;ptyxis;shell;command;commandline;cmd;cli;console;container;"
+"podman;toolbox;distrobox;终端;提示符;命令;命令行;控制台;容器;"
 
 #: data/org.gnome.Ptyxis.desktop.in.in:21
-#: src/org.gnome.Ptyxis.gschema.xml.in:363 src/ptyxis-preferences-window.ui:688
+#: src/org.gnome.Ptyxis.gschema.xml.in:363 src/ptyxis-preferences-window.ui:703
 msgid "New Window"
 msgstr "新建窗口"
 
 #: data/org.gnome.Ptyxis.desktop.in.in:25
-#: src/org.gnome.Ptyxis.gschema.xml.in:357 src/ptyxis-preferences-window.ui:682
+#: src/org.gnome.Ptyxis.gschema.xml.in:357 src/ptyxis-preferences-window.ui:697
 msgid "New Tab"
 msgstr "新建标签页"
 
 #: data/org.gnome.Ptyxis.desktop.in.in:29
-#: src/org.gnome.Ptyxis.gschema.xml.in:375 src/ptyxis-preferences-window.ui:857
+#: src/org.gnome.Ptyxis.gschema.xml.in:375 src/ptyxis-preferences-window.ui:872
 msgid "Preferences"
 msgstr "首选项"
 
@@ -126,48 +126,48 @@ msgstr "终端标签页运行在各自的 cgroup 内"
 msgid "Terminal inspector to help when writing terminal-based applications"
 msgstr "终端检查器可帮助编写基于终端的应用程序"
 
-#: data/org.gnome.Ptyxis.metainfo.xml.in.in:52
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:58
 msgid "A column and row size indicator is displayed when resizing the window"
 msgstr "调整窗口大小时会显示列和行的大小指示器"
 
-#: data/org.gnome.Ptyxis.metainfo.xml.in.in:57
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:63
 msgid "Containers are automatically discovered and displayed"
 msgstr "自动发现并显示容器"
 
-#: data/org.gnome.Ptyxis.metainfo.xml.in.in:62
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:68
 msgid "Many behaviors of the terminal may be tweaked to user preference"
 msgstr "终端的很多行为都可以根据用户首选项进行调整"
 
-#: data/org.gnome.Ptyxis.metainfo.xml.in.in:67
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:73
 msgid "You may rename a tab by providing a prefix to the title"
 msgstr "您可以通过为标题添加前缀来重命名标签页"
 
-#: data/org.gnome.Ptyxis.metainfo.xml.in.in:72
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:78
 msgid "Palettes provide an integrated dark mode"
 msgstr "调色板提供集成的暗色模式"
 
-#: data/org.gnome.Ptyxis.metainfo.xml.in.in:77
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:83
 msgid "You can see an overview of your tabs at any time"
 msgstr "您可以在任何时候查看所有标签页的总览"
 
-#: data/org.gnome.Ptyxis.metainfo.xml.in.in:82
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:88
 msgid "Many shortcuts may be remapped to user preference"
 msgstr "很多快捷键可根据用户首选项重新映射"
 
-#: data/org.gnome.Ptyxis.metainfo.xml.in.in:87
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:93
 msgid "Built-in color palettes provide both dark and light mode variants"
 msgstr "内置调色板同时提供暗色和亮色模式变种"
 
-#: data/org.gnome.Ptyxis.metainfo.xml.in.in:92
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:98
 msgid ""
 "Profiles allow for overriding a number of features such as default container"
 msgstr "配置文件允许覆盖一些功能如默认容器"
 
-#: data/org.gnome.Ptyxis.metainfo.xml.in.in:97
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:103
 msgid "The terminal will remind you when you're root on the local system"
 msgstr "当您是本地系统的 root 用户时终端会提醒您"
 
-#: data/org.gnome.Ptyxis.metainfo.xml.in.in:102
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:108
 msgid "The terminal will remind you when you're on a remote system"
 msgstr "当您在远程系统中时终端会提醒您"
 
@@ -489,7 +489,7 @@ msgstr "退格键绑定"
 msgid "What to send to the PTY when a backspace is entered"
 msgstr "当退格键按下时发送到伪终端的事件"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:345 src/ptyxis-preferences-window.ui:621
+#: src/org.gnome.Ptyxis.gschema.xml.in:345 src/ptyxis-preferences-window.ui:636
 msgid "Copy to Clipboard"
 msgstr "复制到剪贴板"
 
@@ -497,7 +497,7 @@ msgstr "复制到剪贴板"
 msgid "The shortcut to copy to clipboard"
 msgstr "复制到剪贴板的快捷键"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:351 src/ptyxis-preferences-window.ui:626
+#: src/org.gnome.Ptyxis.gschema.xml.in:351 src/ptyxis-preferences-window.ui:641
 msgid "Paste from Clipboard"
 msgstr "从剪贴板粘贴"
 
@@ -525,8 +525,8 @@ msgstr "显示标签页总览的快捷键"
 msgid "The shortcut to show application preferences"
 msgstr "显示应用程序首选项的快捷键"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:381 src/ptyxis-preferences-window.ui:826
-#: src/ptyxis-window.c:1239 src/ptyxis-window.c:1247
+#: src/org.gnome.Ptyxis.gschema.xml.in:381 src/ptyxis-preferences-window.ui:841
+#: src/ptyxis-window.c:1244 src/ptyxis-window.c:1252
 msgid "Zoom Out"
 msgstr "缩小"
 
@@ -534,8 +534,8 @@ msgstr "缩小"
 msgid "The shortcut to zoom out"
 msgstr "缩小视图的快捷键"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:387 src/ptyxis-preferences-window.ui:831
-#: src/ptyxis-window.c:1256
+#: src/org.gnome.Ptyxis.gschema.xml.in:387 src/ptyxis-preferences-window.ui:846
+#: src/ptyxis-window.c:1261
 msgid "Reset Zoom"
 msgstr "重置缩放"
 
@@ -543,8 +543,8 @@ msgstr "重置缩放"
 msgid "The shortcut to reset zoom"
 msgstr "重置缩放的快捷键"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:393 src/ptyxis-preferences-window.ui:821
-#: src/ptyxis-window.c:1224 src/ptyxis-window.c:1232
+#: src/org.gnome.Ptyxis.gschema.xml.in:393 src/ptyxis-preferences-window.ui:836
+#: src/ptyxis-window.c:1229 src/ptyxis-window.c:1237
 msgid "Zoom In"
 msgstr "放大"
 
@@ -552,7 +552,7 @@ msgstr "放大"
 msgid "The shortcut to zoom in"
 msgstr "放大视图的快捷键"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:399 src/ptyxis-preferences-window.ui:841
+#: src/org.gnome.Ptyxis.gschema.xml.in:399 src/ptyxis-preferences-window.ui:856
 msgid "Toggle Fullscreen"
 msgstr "切换全屏"
 
@@ -577,7 +577,7 @@ msgid "Reset the terminal state and clear history for misbehaving clients"
 msgstr "为行为失常客户端重置终端状态并清除历史"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:417 src/ptyxis-find-bar.ui:38
-#: src/ptyxis-preferences-window.ui:663
+#: src/ptyxis-preferences-window.ui:678
 msgid "Search History"
 msgstr "搜索历史"
 
@@ -585,7 +585,7 @@ msgstr "搜索历史"
 msgid "Shortcut to begin searching the terminal history"
 msgstr "开始搜索终端历史记录的快捷键"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:423 src/ptyxis-preferences-window.ui:635
+#: src/org.gnome.Ptyxis.gschema.xml.in:423 src/ptyxis-preferences-window.ui:650
 msgid "Select All"
 msgstr "全选"
 
@@ -617,7 +617,7 @@ msgstr "主菜单"
 msgid "Shortcut to show the primary menu for the window"
 msgstr "显示窗口主菜单的快捷键"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:447 src/ptyxis-preferences-window.ui:730
+#: src/org.gnome.Ptyxis.gschema.xml.in:447 src/ptyxis-preferences-window.ui:745
 msgid "Move to Previous Tab"
 msgstr "移至上个标签页"
 
@@ -625,7 +625,7 @@ msgstr "移至上个标签页"
 msgid "Shortcut to move to the previous tab"
 msgstr "切换到上一个标签页的快捷键"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:453 src/ptyxis-preferences-window.ui:735
+#: src/org.gnome.Ptyxis.gschema.xml.in:453 src/ptyxis-preferences-window.ui:750
 msgid "Move to Next Tab"
 msgstr "移至下个标签页"
 
@@ -633,7 +633,7 @@ msgstr "移至下个标签页"
 msgid "Shortcut to move to the next tab"
 msgstr "切换到下一个标签页的快捷键"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:459 src/ptyxis-preferences-window.ui:744
+#: src/org.gnome.Ptyxis.gschema.xml.in:459 src/ptyxis-preferences-window.ui:759
 msgid "Move Tab Left"
 msgstr "左移标签页"
 
@@ -641,7 +641,7 @@ msgstr "左移标签页"
 msgid "Shortcut to move the current tab to the left one position"
 msgstr "将当前标签页向左移动一个位置的快捷键"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:465 src/ptyxis-preferences-window.ui:750
+#: src/org.gnome.Ptyxis.gschema.xml.in:465 src/ptyxis-preferences-window.ui:765
 msgid "Move Tab Right"
 msgstr "右移标签页"
 
@@ -649,7 +649,7 @@ msgstr "右移标签页"
 msgid "Shortcut to move the current tab to the right one position"
 msgstr "将当前标签页向右移动一个位置的快捷键"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:471 src/ptyxis-preferences-window.ui:756
+#: src/org.gnome.Ptyxis.gschema.xml.in:471 src/ptyxis-preferences-window.ui:771
 msgid "Move Tab to New Window"
 msgstr "移动标签页至新窗口"
 
@@ -657,7 +657,7 @@ msgstr "移动标签页至新窗口"
 msgid "Shortcut to move the current tab into a new window"
 msgstr "将当前标签页移动至一个新建窗口的快捷键"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:477 src/ptyxis-preferences-window.ui:708
+#: src/org.gnome.Ptyxis.gschema.xml.in:477 src/ptyxis-preferences-window.ui:723
 msgid "Close Tab"
 msgstr "关闭标签页"
 
@@ -665,7 +665,7 @@ msgstr "关闭标签页"
 msgid "Shortcut to close the current tab"
 msgstr "关闭当前标签页的快捷键"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:483 src/ptyxis-preferences-window.ui:714
+#: src/org.gnome.Ptyxis.gschema.xml.in:483 src/ptyxis-preferences-window.ui:729
 msgid "Close Other Tabs"
 msgstr "关闭其它标签页"
 
@@ -753,7 +753,7 @@ msgstr "聚焦标签页 10"
 msgid "Shortcut to focus tab 10"
 msgstr "聚焦标签页 10 的快捷键"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:549 src/ptyxis-preferences-window.ui:720
+#: src/org.gnome.Ptyxis.gschema.xml.in:549 src/ptyxis-preferences-window.ui:735
 msgid "Undo Close Tab"
 msgstr "撤消关闭标签页"
 
@@ -761,36 +761,36 @@ msgstr "撤消关闭标签页"
 msgid "Undo closing of last tab"
 msgstr "撤消关闭上个标签页的动作"
 
-#: src/ptyxis-application.c:273
+#: src/ptyxis-application.c:338
 msgid "--tab, --tab-with-profile, or --new-window may not be used together"
 msgstr "--tab、--tab-with-profile 或 --new-window 可能无法同时使用"
 
-#: src/ptyxis-application.c:319
+#: src/ptyxis-application.c:384
 #, c-format
 msgid "Cannot parse command: %s"
 msgstr "无法解析命令：%s"
 
-#: src/ptyxis-application.c:845
+#: src/ptyxis-application.c:955
 msgid "Examples:"
 msgstr "示例："
 
-#: src/ptyxis-application.c:847
+#: src/ptyxis-application.c:957
 msgid "Show the application preferences"
 msgstr "显示应用程序首选项"
 
 #. Used for new tabs/windows/etc when specified
-#: src/ptyxis-application.c:850
+#: src/ptyxis-application.c:960
 msgid "Use DIR for --tab, --tab-with-profile, --new-window, or -x"
 msgstr "为 --tab、--tab-with-profile、--new-window 或 -x 使用目录"
 
-#: src/ptyxis-application.c:850
+#: src/ptyxis-application.c:960
 msgid "DIR"
 msgstr "目录"
 
 #. By default, this implies a new ptyxis instance unless the options
 #. * below are provided to override that.
 #.
-#: src/ptyxis-application.c:855
+#: src/ptyxis-application.c:965
 msgid "Command to execute in new window"
 msgstr "新建窗口中执行的命令"
 
@@ -798,43 +798,43 @@ msgstr "新建窗口中执行的命令"
 #. * short command options for these to make it easier to sniff them in early args
 #. * checking from `main.c`.
 #.
-#: src/ptyxis-application.c:861
+#: src/ptyxis-application.c:971
 msgid "New terminal window"
 msgstr "新建终端窗口"
 
-#: src/ptyxis-application.c:862
+#: src/ptyxis-application.c:972
 msgid "New terminal tab in active window"
 msgstr "在活动窗口中新建标签页"
 
-#: src/ptyxis-application.c:863
+#: src/ptyxis-application.c:973
 msgid "New terminal tab in active window using PROFILE"
 msgstr "在活动窗口中使用配置文件新建标签页"
 
-#: src/ptyxis-application.c:863
+#: src/ptyxis-application.c:973
 msgid "PROFILE"
 msgstr "配置文件"
 
-#: src/ptyxis-application.c:865
+#: src/ptyxis-application.c:975
 msgid "Set title for new tab"
 msgstr "为新标签页设置标题"
 
-#: src/ptyxis-application.c:872
+#: src/ptyxis-application.c:982
 msgid "Run Separate Instance"
 msgstr "运行单独实例"
 
-#: src/ptyxis-application.c:876
+#: src/ptyxis-application.c:986
 msgid "Open Preferences"
 msgstr "打开首选项"
 
-#: src/ptyxis-application.c:880
+#: src/ptyxis-application.c:990
 msgid "Run Custom Command in New Window"
 msgstr "在新建窗口中运行自定义命令"
 
-#: src/ptyxis-application.c:884
+#: src/ptyxis-application.c:994
 msgid "[-- COMMAND ARGUMENTS]"
 msgstr "[-- 命令参数]"
 
-#: src/ptyxis-application.c:1122
+#: src/ptyxis-application.c:1232
 msgid "translator-credits"
 msgstr ""
 "SuGotLand <sugotland@outlook.com>, 2024.\n"
@@ -1233,160 +1233,164 @@ msgstr "窄"
 msgid "Wide"
 msgstr "宽"
 
-#: src/ptyxis-preferences-window.ui:614
+#: src/ptyxis-preferences-window.ui:619
+msgid "Set as Default Terminal"
+msgstr "设为默认终端"
+
+#: src/ptyxis-preferences-window.ui:629
 msgid "Shortcuts"
 msgstr "快捷键"
 
-#: src/ptyxis-preferences-window.ui:640
+#: src/ptyxis-preferences-window.ui:655
 msgid "Clear Selection"
 msgstr "清除选区"
 
-#: src/ptyxis-preferences-window.ui:649 src/ptyxis-terminal.ui:202
+#: src/ptyxis-preferences-window.ui:664 src/ptyxis-terminal.ui:224
 msgid "Reset"
 msgstr "重置"
 
-#: src/ptyxis-preferences-window.ui:654 src/ptyxis-terminal.ui:208
+#: src/ptyxis-preferences-window.ui:669 src/ptyxis-terminal.ui:230
 msgid "Reset and Clear"
 msgstr "重置并清除"
 
-#: src/ptyxis-preferences-window.ui:672
+#: src/ptyxis-preferences-window.ui:687
 msgid "Show Context Menu"
 msgstr "显示上下文菜单"
 
-#: src/ptyxis-preferences-window.ui:679
+#: src/ptyxis-preferences-window.ui:694
 msgid "Tabs"
 msgstr "标签页"
 
-#: src/ptyxis-preferences-window.ui:683
+#: src/ptyxis-preferences-window.ui:698
 msgid "Open a new tab in the current window"
 msgstr "在当前窗口中打开新标签页"
 
-#: src/ptyxis-preferences-window.ui:689
+#: src/ptyxis-preferences-window.ui:704
 msgid "Open a new tab in a new window"
 msgstr "在新建窗口中打开新标签页"
 
-#: src/ptyxis-preferences-window.ui:698
+#: src/ptyxis-preferences-window.ui:713
 msgid "View Tab Overview"
 msgstr "查看标签页总览"
 
-#: src/ptyxis-preferences-window.ui:699
+#: src/ptyxis-preferences-window.ui:714
 msgid "Show an overview of all tabs within the window"
 msgstr "在窗口内显示所有标签页的总览"
 
-#: src/ptyxis-preferences-window.ui:709
+#: src/ptyxis-preferences-window.ui:724
 msgid "Close the current tab"
 msgstr "关闭当前标签页"
 
-#: src/ptyxis-preferences-window.ui:715
+#: src/ptyxis-preferences-window.ui:730
 msgid "Close all tabs except the active tab"
 msgstr "关闭其它标签页"
 
-#: src/ptyxis-preferences-window.ui:721
+#: src/ptyxis-preferences-window.ui:736
 msgid "Undo closing the last tab"
 msgstr "撤销关闭上个标签页"
 
-#: src/ptyxis-preferences-window.ui:745
+#: src/ptyxis-preferences-window.ui:760
 msgid "Move the tab one position to the left"
 msgstr "将标签页左移一个位置"
 
-#: src/ptyxis-preferences-window.ui:751
+#: src/ptyxis-preferences-window.ui:766
 msgid "Move the tab one position to the right"
 msgstr "将标签页右移一个位置"
 
-#: src/ptyxis-preferences-window.ui:757
+#: src/ptyxis-preferences-window.ui:772
 msgid "Detach the current tab and move it to a new window"
 msgstr "分离当前标签页并将其移至新窗口"
 
-#: src/ptyxis-preferences-window.ui:766
+#: src/ptyxis-preferences-window.ui:781
 msgid "Switch to Tab 1"
 msgstr "切换到标签页 1"
 
-#: src/ptyxis-preferences-window.ui:771
+#: src/ptyxis-preferences-window.ui:786
 msgid "Switch to Tab 2"
 msgstr "切换到标签页 2"
 
-#: src/ptyxis-preferences-window.ui:776
+#: src/ptyxis-preferences-window.ui:791
 msgid "Switch to Tab 3"
 msgstr "切换到标签页 3"
 
-#: src/ptyxis-preferences-window.ui:781
+#: src/ptyxis-preferences-window.ui:796
 msgid "Switch to Tab 4"
 msgstr "切换到标签页 4"
 
-#: src/ptyxis-preferences-window.ui:786
+#: src/ptyxis-preferences-window.ui:801
 msgid "Switch to Tab 5"
 msgstr "切换到标签页 5"
 
-#: src/ptyxis-preferences-window.ui:791
+#: src/ptyxis-preferences-window.ui:806
 msgid "Switch to Tab 6"
 msgstr "切换到标签页 6"
 
-#: src/ptyxis-preferences-window.ui:796
+#: src/ptyxis-preferences-window.ui:811
 msgid "Switch to Tab 7"
 msgstr "切换到标签页 7"
 
-#: src/ptyxis-preferences-window.ui:801
+#: src/ptyxis-preferences-window.ui:816
 msgid "Switch to Tab 8"
 msgstr "切换到标签页 8"
 
-#: src/ptyxis-preferences-window.ui:806
+#: src/ptyxis-preferences-window.ui:821
 msgid "Switch to Tab 9"
 msgstr "切换到标签页 9"
 
-#: src/ptyxis-preferences-window.ui:811
+#: src/ptyxis-preferences-window.ui:826
 msgid "Switch to Tab 10"
 msgstr "切换到标签页 10"
 
-#: src/ptyxis-preferences-window.ui:818
+#: src/ptyxis-preferences-window.ui:833
 msgid "Zoom"
 msgstr "缩放"
 
-#: src/ptyxis-preferences-window.ui:838
+#: src/ptyxis-preferences-window.ui:853
 msgid "Application"
 msgstr "应用程序"
 
-#: src/ptyxis-preferences-window.ui:842
+#: src/ptyxis-preferences-window.ui:857
 msgid "Toggle in and out of fullscreen"
 msgstr "切换进入和退出全屏"
 
-#: src/ptyxis-preferences-window.ui:851
+#: src/ptyxis-preferences-window.ui:866
 msgid "Show Primary Menu"
 msgstr "显示主菜单"
 
-#: src/ptyxis-preferences-window.ui:852
+#: src/ptyxis-preferences-window.ui:867
 msgid "Displays the primary menu for the terminal window"
 msgstr "显示终端窗口的主菜单"
 
-#: src/ptyxis-preferences-window.ui:858
+#: src/ptyxis-preferences-window.ui:873
 msgid "Show this preferences window"
 msgstr "显示该首选项窗口"
 
-#: src/ptyxis-preferences-window.ui:867 src/ptyxis-preferences-window.ui:871
-#: src/ptyxis-window.c:1337
+#: src/ptyxis-preferences-window.ui:882 src/ptyxis-preferences-window.ui:886
+#: src/ptyxis-window.c:1342
 msgid "Profiles"
 msgstr "配置文件"
 
-#: src/ptyxis-preferences-window.ui:878
+#: src/ptyxis-preferences-window.ui:893
 msgid "_Add Profile"
 msgstr "添加配置文件(_A)"
 
-#: src/ptyxis-preferences-window.ui:905 src/ptyxis-profile-editor.ui:397
+#: src/ptyxis-preferences-window.ui:920 src/ptyxis-profile-editor.ui:397
 msgid "Automatic"
 msgstr "自动"
 
-#: src/ptyxis-preferences-window.ui:911 src/ptyxis-profile-editor.ui:403
+#: src/ptyxis-preferences-window.ui:926 src/ptyxis-profile-editor.ui:403
 msgid "Control-H"
 msgstr "Control-H"
 
-#: src/ptyxis-preferences-window.ui:917 src/ptyxis-profile-editor.ui:409
+#: src/ptyxis-preferences-window.ui:932 src/ptyxis-profile-editor.ui:409
 msgid "ASCII DEL"
 msgstr "ASCII DEL"
 
-#: src/ptyxis-preferences-window.ui:923 src/ptyxis-profile-editor.ui:415
+#: src/ptyxis-preferences-window.ui:938 src/ptyxis-profile-editor.ui:415
 msgid "Escape Sequence"
 msgstr "Esc 序列"
 
-#: src/ptyxis-preferences-window.ui:929 src/ptyxis-profile-editor.ui:421
+#: src/ptyxis-preferences-window.ui:944 src/ptyxis-profile-editor.ui:421
 msgid "TTY Erase"
 msgstr "TTY 擦除"
 
@@ -1477,7 +1481,7 @@ msgid "_Remove"
 msgstr "移除(_R)"
 
 #. Translators: <b>%s</b> is used to show the provided text in bold
-#: src/ptyxis-shortcut-accel-dialog.c:442
+#: src/ptyxis-shortcut-accel-dialog.c:455
 #, c-format
 msgid "Enter new shortcut to change <b>%s</b>."
 msgstr "输入更改 <b>%s</b> 的新快捷键。"
@@ -1550,55 +1554,55 @@ msgstr "打开链接失败"
 msgid "Command completed"
 msgstr "命令已完成"
 
-#: src/ptyxis-terminal.ui:148
+#: src/ptyxis-terminal.ui:170
 msgid "Search…"
 msgstr "搜索…"
 
-#: src/ptyxis-terminal.ui:154
+#: src/ptyxis-terminal.ui:176
 msgid "_Open Link"
 msgstr "打开链接(_O)"
 
-#: src/ptyxis-terminal.ui:162
+#: src/ptyxis-terminal.ui:184
 msgid "_Copy"
 msgstr "复制(_C)"
 
-#: src/ptyxis-terminal.ui:163
+#: src/ptyxis-terminal.ui:185
 msgid "Copy selection from terminal to clipboard"
 msgstr "从终端复制选区到剪贴板"
 
-#: src/ptyxis-terminal.ui:167
+#: src/ptyxis-terminal.ui:189
 msgid "_Copy Link"
 msgstr "复制链接(_C)"
 
-#: src/ptyxis-terminal.ui:173
+#: src/ptyxis-terminal.ui:195
 msgid "_Paste"
 msgstr "粘贴(_P)"
 
-#: src/ptyxis-terminal.ui:174
+#: src/ptyxis-terminal.ui:196
 msgid "Paste from clipboard into the terminal"
 msgstr "从剪贴板粘贴到终端"
 
-#: src/ptyxis-terminal.ui:181
+#: src/ptyxis-terminal.ui:203
 msgid "Select _All"
 msgstr "全选(_A)"
 
-#: src/ptyxis-terminal.ui:182
+#: src/ptyxis-terminal.ui:204
 msgid "Selection all text from terminal including scrollback"
 msgstr "选择终端上包括回滚的所有文本"
 
-#: src/ptyxis-terminal.ui:188
+#: src/ptyxis-terminal.ui:210
 msgid "Select _None"
 msgstr "不选(_N)"
 
-#: src/ptyxis-terminal.ui:195
+#: src/ptyxis-terminal.ui:217
 msgid "Read-Only"
 msgstr "只读"
 
-#: src/ptyxis-terminal.ui:216 src/ptyxis-window.ui:512
+#: src/ptyxis-terminal.ui:238 src/ptyxis-window.ui:512
 msgid "Leave Fullscreen"
 msgstr "退出全屏"
 
-#: src/ptyxis-terminal.ui:222
+#: src/ptyxis-terminal.ui:244
 msgid "_Inspect Terminal"
 msgstr "检查终端(_I)"
 
@@ -1615,27 +1619,27 @@ msgid "Dark style"
 msgstr "暗色样式"
 
 #. translators: Builder Terminal means this is a terminal bundled with GNOME Builder
-#: src/ptyxis-util.c:309
+#: src/ptyxis-util.c:313
 msgid "Builder Terminal"
 msgstr "构建器终端"
 
-#: src/ptyxis-util.c:313
+#: src/ptyxis-util.c:317
 msgid "Ptyxis"
 msgstr "Ptyxis"
 
-#: src/ptyxis-window.c:986 src/ptyxis-window.ui:565
+#: src/ptyxis-window.c:991 src/ptyxis-window.ui:565
 msgid "Set Title"
 msgstr "设置标题"
 
-#: src/ptyxis-window.c:1235
+#: src/ptyxis-window.c:1240
 msgid "Zoom in"
 msgstr "放大"
 
-#: src/ptyxis-window.c:1250
+#: src/ptyxis-window.c:1255
 msgid "Zoom out"
 msgstr "缩小"
 
-#: src/ptyxis-window.c:1340
+#: src/ptyxis-window.c:1345
 msgid "Containers"
 msgstr "容器"
 
