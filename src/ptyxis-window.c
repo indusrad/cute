@@ -514,6 +514,8 @@ ptyxis_window_new_window_action (GtkWidget  *widget,
   const char *profile_uuid = "";
   const char *container_id = "";
   PtyxisTab *tab;
+  GdkToplevel *toplevel;
+  GdkToplevelState state;
   guint columns, rows;
 
   g_assert (PTYXIS_IS_WINDOW (self));
@@ -536,12 +538,16 @@ ptyxis_window_new_window_action (GtkWidget  *widget,
         ptyxis_tab_set_container (tab, container);
     }
 
+  toplevel = GDK_TOPLEVEL (gtk_native_get_surface (GTK_NATIVE (self)));
+  state = gdk_toplevel_get_state (toplevel);
+
   /* If the current window is maximized, don't maximize this window as
    * it's most likely they're just doing a temporary thing or would like
    * to move the window elsewhere.
    */
-  if (gtk_window_is_maximized (GTK_WINDOW (self)) ||
-      gtk_window_is_fullscreen (GTK_WINDOW (self)))
+  if (!!(state & (GDK_TOPLEVEL_STATE_MAXIMIZED |
+                  GDK_TOPLEVEL_STATE_FULLSCREEN |
+                  GDK_TOPLEVEL_STATE_TILED)))
     {
       PtyxisTerminal *terminal = ptyxis_tab_get_terminal (tab);
       ptyxis_settings_get_default_size (settings, &columns, &rows);
