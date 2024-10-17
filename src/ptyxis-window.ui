@@ -191,8 +191,7 @@
                 <lookup name="shortcuts">PtyxisWindow</lookup>
               </lookup>
             </binding>
-            <property name="action">action(win.new-tab)</property>
-            <property name="arguments">''</property>
+            <property name="action">action(page.detach)</property>
           </object>
         </child>
         <child>
