@@ -63,7 +63,7 @@ ptyxis_distrobox_container_run_context_cb (PtyxisRunContext    *run_context,
    * Pass down to the process N additional file descriptors (in addition to
    * 0, 1, 2).  The total FDs will be 3+N.
    */
-  if ((max_dest_fd = ptyxis_unix_fd_map_get_max_dest_fd (unix_fd_map)) >= 2)
+  if ((max_dest_fd = ptyxis_unix_fd_map_get_max_dest_fd (unix_fd_map)) > 2)
     g_string_append_printf (additional_flags, "--preserve-fds=%d ", max_dest_fd-2);
 
   /* Make sure we can pass the FDs down */
