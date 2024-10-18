@@ -1,3 +1,14 @@
+# Ptyxis 47.3
+
+ * Fix race condition in connecting to exited/signaled D-Bus
+   signals from PtyxisIpcProcess. This fixes situations where
+   quick running scripts exit before attaching to said signals,
+   generally during application startup.
+ * Fix --preserve-fds=0 error on distrobox.
+ * Check tiled state in new-window action to start in windowed mode.
+ * Fix detach-tab shortcut.
+ * Translation updates
+
 # Ptyxis 47.2
 
  * Fix closing window title dialog with Return/Enter
