@@ -65,14 +65,14 @@
                 <child>
                   <object class="GtkButton">
                     <property name="icon-name">go-up-symbolic</property>
-                    <property name="tooltip-text" translatable="yes">Search up to next result</property>
+                    <property name="tooltip-text" translatable="yes">Search Up</property>
                     <property name="action-name">search.up</property>
                   </object>
                 </child>
                 <child>
                   <object class="GtkButton">
                     <property name="icon-name">go-down-symbolic</property>
-                    <property name="tooltip-text" translatable="yes">Search down to next result</property>
+                    <property name="tooltip-text" translatable="yes">Search Down</property>
                     <property name="action-name">search.down</property>
                   </object>
                 </child>
