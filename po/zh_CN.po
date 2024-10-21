@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ptyxis main\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/chergert/ptyxis/issues\n"
-"POT-Creation-Date: 2024-10-15 19:14+0000\n"
-"PO-Revision-Date: 2024-10-16 18:14+0800\n"
+"POT-Creation-Date: 2024-10-20 15:05+0000\n"
+"PO-Revision-Date: 2024-10-21 19:08+0800\n"
 "Last-Translator: lumingzh <lumingzh@qq.com>\n"
 "Language-Team: Chinese (China) <i18n-zh@googlegroups.com>\n"
 "Language: zh_CN\n"
@@ -29,7 +29,7 @@ msgid "A container-oriented terminal for GNOME"
 msgstr "一款面向容器的 GNOME 终端"
 
 #: data/org.gnome.Ptyxis.desktop.in.in:13 src/ptyxis-preferences-window.ui:633
-#: src/ptyxis-tab.c:1272 src/ptyxis-util.c:315
+#: src/ptyxis-tab.c:1274 src/ptyxis-util.c:315
 msgid "Terminal"
 msgstr "终端"
 
@@ -125,6 +125,11 @@ msgstr "终端标签页运行在各自的 cgroup 内"
 #: data/org.gnome.Ptyxis.metainfo.xml.in.in:27
 msgid "Terminal inspector to help when writing terminal-based applications"
 msgstr "终端检查器可帮助编写基于终端的应用程序"
+
+#. developer_name tag deprecated with Appstream 1.0
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:32
+msgid "Christian Hergert"
+msgstr "Christian Hergert"
 
 #: data/org.gnome.Ptyxis.metainfo.xml.in.in:58
 msgid "A column and row size indicator is displayed when resizing the window"
@@ -526,7 +531,7 @@ msgid "The shortcut to show application preferences"
 msgstr "显示应用程序首选项的快捷键"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:381 src/ptyxis-preferences-window.ui:841
-#: src/ptyxis-window.c:1244 src/ptyxis-window.c:1252
+#: src/ptyxis-window.c:1250 src/ptyxis-window.c:1258
 msgid "Zoom Out"
 msgstr "缩小"
 
@@ -535,7 +540,7 @@ msgid "The shortcut to zoom out"
 msgstr "缩小视图的快捷键"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:387 src/ptyxis-preferences-window.ui:846
-#: src/ptyxis-window.c:1261
+#: src/ptyxis-window.c:1267
 msgid "Reset Zoom"
 msgstr "重置缩放"
 
@@ -544,7 +549,7 @@ msgid "The shortcut to reset zoom"
 msgstr "重置缩放的快捷键"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:393 src/ptyxis-preferences-window.ui:836
-#: src/ptyxis-window.c:1229 src/ptyxis-window.c:1237
+#: src/ptyxis-window.c:1235 src/ptyxis-window.c:1243
 msgid "Zoom In"
 msgstr "放大"
 
@@ -761,36 +766,36 @@ msgstr "撤消关闭标签页"
 msgid "Undo closing of last tab"
 msgstr "撤消关闭上个标签页的动作"
 
-#: src/ptyxis-application.c:338
+#: src/ptyxis-application.c:339
 msgid "--tab, --tab-with-profile, or --new-window may not be used together"
 msgstr "--tab、--tab-with-profile 或 --new-window 可能无法同时使用"
 
-#: src/ptyxis-application.c:384
+#: src/ptyxis-application.c:385
 #, c-format
 msgid "Cannot parse command: %s"
 msgstr "无法解析命令：%s"
 
-#: src/ptyxis-application.c:955
+#: src/ptyxis-application.c:983
 msgid "Examples:"
 msgstr "示例："
 
-#: src/ptyxis-application.c:957
+#: src/ptyxis-application.c:985
 msgid "Show the application preferences"
 msgstr "显示应用程序首选项"
 
 #. Used for new tabs/windows/etc when specified
-#: src/ptyxis-application.c:960
+#: src/ptyxis-application.c:988
 msgid "Use DIR for --tab, --tab-with-profile, --new-window, or -x"
 msgstr "为 --tab、--tab-with-profile、--new-window 或 -x 使用目录"
 
-#: src/ptyxis-application.c:960
+#: src/ptyxis-application.c:988
 msgid "DIR"
 msgstr "目录"
 
 #. By default, this implies a new ptyxis instance unless the options
 #. * below are provided to override that.
 #.
-#: src/ptyxis-application.c:965
+#: src/ptyxis-application.c:993
 msgid "Command to execute in new window"
 msgstr "新建窗口中执行的命令"
 
@@ -798,43 +803,43 @@ msgstr "新建窗口中执行的命令"
 #. * short command options for these to make it easier to sniff them in early args
 #. * checking from `main.c`.
 #.
-#: src/ptyxis-application.c:971
+#: src/ptyxis-application.c:999
 msgid "New terminal window"
 msgstr "新建终端窗口"
 
-#: src/ptyxis-application.c:972
+#: src/ptyxis-application.c:1000
 msgid "New terminal tab in active window"
 msgstr "在活动窗口中新建标签页"
 
-#: src/ptyxis-application.c:973
+#: src/ptyxis-application.c:1001
 msgid "New terminal tab in active window using PROFILE"
 msgstr "在活动窗口中使用配置文件新建标签页"
 
-#: src/ptyxis-application.c:973
+#: src/ptyxis-application.c:1001
 msgid "PROFILE"
 msgstr "配置文件"
 
-#: src/ptyxis-application.c:975
+#: src/ptyxis-application.c:1003
 msgid "Set title for new tab"
 msgstr "为新标签页设置标题"
 
-#: src/ptyxis-application.c:982
+#: src/ptyxis-application.c:1010
 msgid "Run Separate Instance"
 msgstr "运行单独实例"
 
-#: src/ptyxis-application.c:986
+#: src/ptyxis-application.c:1014
 msgid "Open Preferences"
 msgstr "打开首选项"
 
-#: src/ptyxis-application.c:990
+#: src/ptyxis-application.c:1018
 msgid "Run Custom Command in New Window"
 msgstr "在新建窗口中运行自定义命令"
 
-#: src/ptyxis-application.c:994
+#: src/ptyxis-application.c:1022
 msgid "[-- COMMAND ARGUMENTS]"
 msgstr "[-- 命令参数]"
 
-#: src/ptyxis-application.c:1232
+#: src/ptyxis-application.c:1260
 msgid "translator-credits"
 msgstr ""
 "SuGotLand <sugotland@outlook.com>, 2024.\n"
@@ -870,12 +875,12 @@ msgid "Unknown Container"
 msgstr "未知容器"
 
 #: src/ptyxis-find-bar.ui:68
-msgid "Search up to next result"
-msgstr "移至上个搜索结果"
+msgid "Search Up"
+msgstr "向上搜索"
 
 #: src/ptyxis-find-bar.ui:75
-msgid "Search down to next result"
-msgstr "移至下个搜索结果"
+msgid "Search Down"
+msgstr "向下搜索"
 
 #: src/ptyxis-find-bar.ui:84
 msgid "Search Options"
@@ -1366,7 +1371,7 @@ msgid "Show this preferences window"
 msgstr "显示该首选项窗口"
 
 #: src/ptyxis-preferences-window.ui:882 src/ptyxis-preferences-window.ui:886
-#: src/ptyxis-window.c:1342
+#: src/ptyxis-window.c:1348
 msgid "Profiles"
 msgstr "配置文件"
 
@@ -1416,7 +1421,7 @@ msgstr "撤消"
 msgid "My Computer"
 msgstr "我的计算机"
 
-#: src/ptyxis-profile-editor.ui:22 src/ptyxis-tab.c:369 src/ptyxis-tab.c:426
+#: src/ptyxis-profile-editor.ui:22 src/ptyxis-tab.c:371 src/ptyxis-tab.c:428
 msgid "Edit Profile"
 msgstr "编辑配置文件"
 
@@ -1508,12 +1513,12 @@ msgstr "设置快捷键"
 msgid "disabled"
 msgstr "已禁用"
 
-#: src/ptyxis-tab.c:279
+#: src/ptyxis-tab.c:281
 #, c-format
 msgid "Process Exited from Signal %d"
 msgstr "进程已从信号 %d 退出"
 
-#: src/ptyxis-tab.c:282 src/ptyxis-tab.c:305
+#: src/ptyxis-tab.c:284 src/ptyxis-tab.c:307
 msgid "_Restart"
 msgstr "重启(_R)"
 
@@ -1521,32 +1526,32 @@ msgstr "重启(_R)"
 #. * display it again if the tab is removed from the parking lot and
 #. * restored into the window.
 #.
-#: src/ptyxis-tab.c:304
+#: src/ptyxis-tab.c:306
 msgid "Process Exited"
 msgstr "进程已退出"
 
-#: src/ptyxis-tab.c:368
+#: src/ptyxis-tab.c:370
 msgid "Failed to launch terminal"
 msgstr "启动终端失败"
 
-#: src/ptyxis-tab.c:424
+#: src/ptyxis-tab.c:426
 #, c-format
 msgid "Cannot locate container “%s”"
 msgstr "无法定位容器“%s”"
 
-#: src/ptyxis-tab.c:448
+#: src/ptyxis-tab.c:450
 msgid "Failed to create pseudo terminal device"
 msgstr "创建伪终端设备失败"
 
-#: src/ptyxis-tab.c:1275
+#: src/ptyxis-tab.c:1277
 msgid "Exited"
 msgstr "已退出"
 
-#: src/ptyxis-tab.c:1277
+#: src/ptyxis-tab.c:1279
 msgid "Failed"
 msgstr "已失败"
 
-#: src/ptyxis-tab.c:1813
+#: src/ptyxis-tab.c:1815
 msgid "Failed to open link"
 msgstr "打开链接失败"
 
@@ -1598,7 +1603,7 @@ msgstr "不选(_N)"
 msgid "Read-Only"
 msgstr "只读"
 
-#: src/ptyxis-terminal.ui:238 src/ptyxis-window.ui:512
+#: src/ptyxis-terminal.ui:238 src/ptyxis-window.ui:511
 msgid "Leave Fullscreen"
 msgstr "退出全屏"
 
@@ -1606,15 +1611,27 @@ msgstr "退出全屏"
 msgid "_Inspect Terminal"
 msgstr "检查终端(_I)"
 
-#: src/ptyxis-theme-selector.ui:21 src/ptyxis-theme-selector.ui:23
+#: src/ptyxis-theme-selector.ui:21
+msgid "Follow System Style"
+msgstr "跟随系统样式"
+
+#: src/ptyxis-theme-selector.ui:23
 msgid "Follow system style"
 msgstr "跟随系统样式"
 
-#: src/ptyxis-theme-selector.ui:37 src/ptyxis-theme-selector.ui:39
+#: src/ptyxis-theme-selector.ui:37
+msgid "Light Style"
+msgstr "亮色样式"
+
+#: src/ptyxis-theme-selector.ui:39
 msgid "Light style"
 msgstr "亮色样式"
 
-#: src/ptyxis-theme-selector.ui:54 src/ptyxis-theme-selector.ui:56
+#: src/ptyxis-theme-selector.ui:54
+msgid "Dark Style"
+msgstr "暗色样式"
+
+#: src/ptyxis-theme-selector.ui:56
 msgid "Dark style"
 msgstr "暗色样式"
 
@@ -1627,90 +1644,96 @@ msgstr "构建器终端"
 msgid "Ptyxis"
 msgstr "Ptyxis"
 
-#: src/ptyxis-window.c:991 src/ptyxis-window.ui:565
+#: src/ptyxis-window.c:997 src/ptyxis-window.ui:564
 msgid "Set Title"
 msgstr "设置标题"
 
-#: src/ptyxis-window.c:1240
+#: src/ptyxis-window.c:1246
 msgid "Zoom in"
 msgstr "放大"
 
-#: src/ptyxis-window.c:1255
+#: src/ptyxis-window.c:1261
 msgid "Zoom out"
 msgstr "缩小"
 
-#: src/ptyxis-window.c:1345
+#: src/ptyxis-window.c:1351
 msgid "Containers"
 msgstr "容器"
 
-#: src/ptyxis-window.ui:359
+#: src/ptyxis-window.ui:358
 msgid "New Terminal"
 msgstr "新建终端"
 
-#: src/ptyxis-window.ui:372
+#: src/ptyxis-window.ui:371
 msgid "Show Profiles and Containers"
 msgstr "显示配置文件和容器"
 
-#: src/ptyxis-window.ui:413
+#: src/ptyxis-window.ui:412
 msgid "Main Menu"
 msgstr "主菜单"
 
-#: src/ptyxis-window.ui:421 src/ptyxis-window.ui:498
+#: src/ptyxis-window.ui:420 src/ptyxis-window.ui:497
 msgid "Show Open Tabs"
 msgstr "显示打开的标签页"
 
-#: src/ptyxis-window.ui:482
+#: src/ptyxis-window.ui:481
 msgid "New _Tab"
 msgstr "新建标签页(_T)"
 
-#: src/ptyxis-window.ui:489
+#: src/ptyxis-window.ui:488
 msgid "New _Window"
 msgstr "新建窗口(_W)"
 
-#: src/ptyxis-window.ui:506
+#: src/ptyxis-window.ui:505
 msgid "Fullscreen"
 msgstr "全屏"
 
-#: src/ptyxis-window.ui:520
+#: src/ptyxis-window.ui:519
 msgid "_Preferences"
 msgstr "首选项(_P)"
 
-#: src/ptyxis-window.ui:524
+#: src/ptyxis-window.ui:523
 msgid "_Keyboard Shortcuts"
 msgstr "键盘快捷键(_K)"
 
-#: src/ptyxis-window.ui:528
+#: src/ptyxis-window.ui:527
 msgid "_About"
 msgstr "关于(_A)"
 
-#: src/ptyxis-window.ui:537
+#: src/ptyxis-window.ui:536
 msgid "Move _Left"
 msgstr "左移(_L)"
 
-#: src/ptyxis-window.ui:542
+#: src/ptyxis-window.ui:541
 msgid "Move _Right"
 msgstr "右移(_R)"
 
-#: src/ptyxis-window.ui:547
+#: src/ptyxis-window.ui:546
 msgid "Move to New _Window"
 msgstr "移到新窗口(_W)"
 
-#: src/ptyxis-window.ui:553
+#: src/ptyxis-window.ui:552
 msgid "_Pin Tab"
 msgstr "固定标签页(_P)"
 
-#: src/ptyxis-window.ui:558
+#: src/ptyxis-window.ui:557
 msgid "Un_pin Tab"
 msgstr "取消固定标签页(_P)"
 
-#: src/ptyxis-window.ui:572
+#: src/ptyxis-window.ui:571
 msgid "Close _Other Tabs"
 msgstr "关闭其它标签页(_O)"
 
-#: src/ptyxis-window.ui:577
+#: src/ptyxis-window.ui:576
 msgid "_Close Tab"
 msgstr "关闭标签页(_C)"
 
-#: src/ptyxis-window.ui:584
+#: src/ptyxis-window.ui:583
 msgid "_My Computer"
 msgstr "我的计算机(_M)"
+
+#~ msgid "Search up to next result"
+#~ msgstr "移至上个搜索结果"
+
+#~ msgid "Search down to next result"
+#~ msgstr "移至下个搜索结果"
