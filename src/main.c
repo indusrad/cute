@@ -127,6 +127,8 @@ main (int   argc,
   if (standalone)
     flags |= G_APPLICATION_NON_UNIQUE;
 
+  gtk_init ();
+
   app = ptyxis_application_new (APP_ID, flags);
   ret = g_application_run (G_APPLICATION (app), argc, argv);
 
