@@ -86,6 +86,13 @@ ptyxis_window_dressing_update (PtyxisWindowDressing *self)
       double window_alpha;
       double popover_alpha;
 
+      /* Force clear any background applied to terminals from distro,
+       * theme, or user settings so we can be sure our palettes work.
+       *
+       * See #241 for details
+       */
+      g_string_append (string, "vte-terminal { background: none; }\n");
+
       bg = gdk_rgba_to_string (&face->background);
       fg = gdk_rgba_to_string (&face->foreground);
       titlebar_bg = gdk_rgba_to_string (&face->titlebar_background);
