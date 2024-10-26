@@ -1968,6 +1968,7 @@ ptyxis_window_focus_tab_by_uuid (PtyxisWindow *self,
       if (0 == g_strcmp0 (uuid, ptyxis_tab_get_uuid (tab)))
         {
           ptyxis_window_set_active_tab (self, tab);
+          gtk_window_present (GTK_WINDOW (self));
           return TRUE;
         }
     }
