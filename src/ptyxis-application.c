@@ -1931,6 +1931,8 @@ ptyxis_application_focus_tab_by_uuid (GSimpleAction *action,
 
   uuid = g_variant_get_string (param, NULL);
 
+  g_debug ("Looking for tab \"%s\"\n", uuid);
+
   for (const GList *windows = gtk_application_get_windows (GTK_APPLICATION (self));
        windows != NULL;
        windows = windows->next)
