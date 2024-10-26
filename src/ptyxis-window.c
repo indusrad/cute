@@ -1980,6 +1980,8 @@ ptyxis_window_focus_tab_by_uuid (PtyxisWindow *self,
       g_autoptr(AdwTabPage) page = g_list_model_get_item (G_LIST_MODEL (model), i);
       PtyxisTab *tab = PTYXIS_TAB (adw_tab_page_get_child (page));
 
+      g_debug ("Window has tab \"%s\"", ptyxis_tab_get_uuid (tab));
+
       if (0 == g_strcmp0 (uuid, ptyxis_tab_get_uuid (tab)))
         {
           ptyxis_window_set_active_tab (self, tab);
