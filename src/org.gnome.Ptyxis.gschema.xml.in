@@ -207,7 +207,7 @@
     <key name="enable-a11y" type="b">
       <default>false</default>
       <summary>Enable Accessibility</summary>
-      <description>Currently experimental feature to send accessibility information to screen readers.</description>
+      <description>Currently expirmental feature to send accessibility information to screen readers.</description>
     </key>
 
   </schema>
