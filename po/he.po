@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ptyxis main\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/chergert/ptyxis/issues\n"
-"POT-Creation-Date: 2024-07-09 17:54+0000\n"
-"PO-Revision-Date: 2024-07-10 19:16+0300\n"
+"POT-Creation-Date: 2024-10-27 10:05+0000\n"
+"PO-Revision-Date: 2024-10-27 17:11+0200\n"
 "Last-Translator: Yosef Or Boczko <yoseforb@gmail.com>\n"
 "Language-Team: Hebrew\n"
 "Language: he\n"
@@ -16,8 +16,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=(n==1 ? 0 : n==2 ? 1 : n>10 && n%10==0 ? "
-"2 : 3)\n"
-"X-Generator: Gtranslator 46.1\n"
+"2 : 3);\n"
+"X-Generator: Poedit 3.5\n"
 
 #: data/org.gnome.Ptyxis.desktop.in.in:3
 #: data/org.gnome.Ptyxis.metainfo.xml.in.in:6
@@ -26,32 +26,32 @@ msgstr "@APP_NAME@"
 
 #: data/org.gnome.Ptyxis.desktop.in.in:4
 msgid "A container-oriented terminal for GNOME"
-msgstr ""
+msgstr "מסוף מוכוון מכולות ל־GNOME"
 
-#: data/org.gnome.Ptyxis.desktop.in.in:13 src/ptyxis-preferences-window.ui:610
-#: src/ptyxis-tab.c:1249 src/ptyxis-util.c:311
+#: data/org.gnome.Ptyxis.desktop.in.in:13 src/ptyxis-preferences-window.ui:633
+#: src/ptyxis-tab.c:1274 src/ptyxis-util.c:315
 msgid "Terminal"
 msgstr "מסוף"
 
 #. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
 #: data/org.gnome.Ptyxis.desktop.in.in:15
 msgid ""
-"terminal;prompt;ptyxis;shell;command;commandline;cmd;cli;container;podman;"
-"toolbox;distrobox;"
+"terminal;prompt;ptyxis;shell;command;commandline;cmd;cli;console;container;"
+"podman;toolbox;distrobox;"
 msgstr ""
 
 #: data/org.gnome.Ptyxis.desktop.in.in:21
-#: src/org.gnome.Ptyxis.gschema.xml.in:363 src/ptyxis-preferences-window.ui:680
+#: src/org.gnome.Ptyxis.gschema.xml.in:363 src/ptyxis-preferences-window.ui:703
 msgid "New Window"
 msgstr "חלון חדש"
 
 #: data/org.gnome.Ptyxis.desktop.in.in:25
-#: src/org.gnome.Ptyxis.gschema.xml.in:357 src/ptyxis-preferences-window.ui:674
+#: src/org.gnome.Ptyxis.gschema.xml.in:357 src/ptyxis-preferences-window.ui:697
 msgid "New Tab"
 msgstr "לשונית חדשה"
 
 #: data/org.gnome.Ptyxis.desktop.in.in:29
-#: src/org.gnome.Ptyxis.gschema.xml.in:375 src/ptyxis-preferences-window.ui:849
+#: src/org.gnome.Ptyxis.gschema.xml.in:375 src/ptyxis-preferences-window.ui:872
 msgid "Preferences"
 msgstr "העדפות"
 
@@ -123,48 +123,53 @@ msgstr ""
 msgid "Terminal inspector to help when writing terminal-based applications"
 msgstr ""
 
-#: data/org.gnome.Ptyxis.metainfo.xml.in.in:52
+#. developer_name tag deprecated with Appstream 1.0
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:32
+msgid "Christian Hergert"
+msgstr ""
+
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:58
 msgid "A column and row size indicator is displayed when resizing the window"
 msgstr ""
 
-#: data/org.gnome.Ptyxis.metainfo.xml.in.in:57
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:63
 msgid "Containers are automatically discovered and displayed"
 msgstr ""
 
-#: data/org.gnome.Ptyxis.metainfo.xml.in.in:62
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:68
 msgid "Many behaviors of the terminal may be tweaked to user preference"
 msgstr ""
 
-#: data/org.gnome.Ptyxis.metainfo.xml.in.in:67
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:73
 msgid "You may rename a tab by providing a prefix to the title"
 msgstr ""
 
-#: data/org.gnome.Ptyxis.metainfo.xml.in.in:72
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:78
 msgid "Palettes provide an integrated dark mode"
 msgstr ""
 
-#: data/org.gnome.Ptyxis.metainfo.xml.in.in:77
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:83
 msgid "You can see an overview of your tabs at any time"
 msgstr ""
 
-#: data/org.gnome.Ptyxis.metainfo.xml.in.in:82
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:88
 msgid "Many shortcuts may be remapped to user preference"
 msgstr ""
 
-#: data/org.gnome.Ptyxis.metainfo.xml.in.in:87
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:93
 msgid "Built-in color palettes provide both dark and light mode variants"
 msgstr ""
 
-#: data/org.gnome.Ptyxis.metainfo.xml.in.in:92
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:98
 msgid ""
 "Profiles allow for overriding a number of features such as default container"
 msgstr ""
 
-#: data/org.gnome.Ptyxis.metainfo.xml.in.in:97
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:103
 msgid "The terminal will remind you when you're root on the local system"
 msgstr ""
 
-#: data/org.gnome.Ptyxis.metainfo.xml.in.in:102
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:108
 msgid "The terminal will remind you when you're on a remote system"
 msgstr ""
 
@@ -184,7 +189,7 @@ msgstr "UUIDs of all Profiles"
 msgid "A list of UUID for every profile"
 msgstr "A list of UUID for every profile"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:107 src/ptyxis-preferences-window.ui:291
+#: src/org.gnome.Ptyxis.gschema.xml.in:107 src/ptyxis-preferences-window.ui:299
 msgid "New Tab Position"
 msgstr "מיקום לשונית חדשה"
 
@@ -192,21 +197,21 @@ msgstr "מיקום לשונית חדשה"
 msgid "Where to place new tabs"
 msgstr "היכן למקם לשונית חדשה"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:113 src/ptyxis-preferences-window.ui:383
+#: src/org.gnome.Ptyxis.gschema.xml.in:113 src/ptyxis-preferences-window.ui:391
 msgid "Audible Bell"
-msgstr ""
+msgstr "פעמון שמיעתי"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:114
 msgid "If an audible bell should be used"
-msgstr ""
+msgstr "האם להשתמש בפעמון שמיעתי"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:119
 msgid "Visible Bell"
-msgstr ""
+msgstr "פעמון חזותי"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:120
 msgid "If a visual bell should be used"
-msgstr ""
+msgstr "האם להשתמש בפעמון חזותי"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:125
 msgid "Visual Process Leader"
@@ -234,37 +239,37 @@ msgstr "שם גופן"
 msgid "The font description to use if use-system-font is set to False"
 msgstr ""
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:143 src/ptyxis-preferences-window.ui:218
+#: src/org.gnome.Ptyxis.gschema.xml.in:143 src/ptyxis-preferences-window.ui:226
 msgid "Cursor Shape"
-msgstr ""
+msgstr "צורת סמן"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:144
 msgid "The default shape of the cursor"
-msgstr ""
+msgstr "צורת ברירת המחדל של הסמן"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:149
 msgid "Cursor Blink Mode"
-msgstr ""
+msgstr "מצב הבהוב סמן"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:150
 msgid "The default blink mode cursor"
-msgstr ""
+msgstr "מצב הבהוב ברירת המחדל של הסמן"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:155
 msgid "Scrollbar Policy"
-msgstr ""
+msgstr "מדיניות פס גלילה"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:156
 msgid "If scrollbars should be displayed"
-msgstr ""
+msgstr "האם להציג פסי גלילה"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:161
 msgid "Text Blink Mode"
-msgstr ""
+msgstr "מצב הבהוב טקסט"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:162
 msgid "When text blinking is allowed"
-msgstr ""
+msgstr "האם מותר להבהב טקסט"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:167
 msgid "Interface Style"
@@ -274,7 +279,7 @@ msgstr "סגנון הממשק"
 msgid "If light or dark interface style should be used"
 msgstr ""
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:173 src/ptyxis-preferences-window.ui:320
+#: src/org.gnome.Ptyxis.gschema.xml.in:173 src/ptyxis-preferences-window.ui:328
 msgid "Restore Session"
 msgstr "שחזור הפעלה"
 
@@ -282,7 +287,7 @@ msgstr "שחזור הפעלה"
 msgid "Restore tabs from previous session when starting Ptyxis"
 msgstr ""
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:179 src/ptyxis-preferences-window.ui:326
+#: src/org.gnome.Ptyxis.gschema.xml.in:179 src/ptyxis-preferences-window.ui:334
 msgid "Restore Window Size"
 msgstr "שחזור גודל חלון"
 
@@ -347,8 +352,8 @@ msgstr ""
 msgid "Use a login shell"
 msgstr ""
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:237 src/ptyxis-preferences-window.ui:451
-#: src/ptyxis-profile-editor.ui:303
+#: src/org.gnome.Ptyxis.gschema.xml.in:237 src/ptyxis-preferences-window.ui:459
+#: src/ptyxis-profile-editor.ui:301
 msgid "Limit Scrollback"
 msgstr ""
 
@@ -356,8 +361,8 @@ msgstr ""
 msgid "Limit the number of lines to keep for scrollback"
 msgstr ""
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:244 src/ptyxis-preferences-window.ui:460
-#: src/ptyxis-profile-editor.ui:312
+#: src/org.gnome.Ptyxis.gschema.xml.in:244 src/ptyxis-preferences-window.ui:468
+#: src/ptyxis-profile-editor.ui:310
 msgid "Scrollback Lines"
 msgstr ""
 
@@ -365,8 +370,8 @@ msgstr ""
 msgid "The number of lines to keep in the scrollback, zero for no scrollback"
 msgstr ""
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:250 src/ptyxis-preferences-window.ui:441
-#: src/ptyxis-profile-editor.ui:293
+#: src/org.gnome.Ptyxis.gschema.xml.in:250 src/ptyxis-preferences-window.ui:449
+#: src/ptyxis-profile-editor.ui:291
 msgid "Scroll on Output"
 msgstr ""
 
@@ -374,8 +379,8 @@ msgstr ""
 msgid "Scroll to the bottom upon new output"
 msgstr ""
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:256 src/ptyxis-preferences-window.ui:435
-#: src/ptyxis-profile-editor.ui:287
+#: src/org.gnome.Ptyxis.gschema.xml.in:256 src/ptyxis-preferences-window.ui:443
+#: src/ptyxis-profile-editor.ui:285
 msgid "Scroll on Keystroke"
 msgstr ""
 
@@ -383,7 +388,7 @@ msgstr ""
 msgid "Scroll to the bottom upon user keystroke"
 msgstr ""
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:262 src/ptyxis-profile-editor.ui:157
+#: src/org.gnome.Ptyxis.gschema.xml.in:262 src/ptyxis-profile-editor.ui:155
 msgid "Use Custom Command"
 msgstr "שימוש בפקודה מותאמת"
 
@@ -399,7 +404,7 @@ msgstr "שימוש במתווך"
 msgid "Apply proxy settings from the host in the container"
 msgstr ""
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:274 src/ptyxis-profile-editor.ui:162
+#: src/org.gnome.Ptyxis.gschema.xml.in:274 src/ptyxis-profile-editor.ui:160
 msgid "Custom Command"
 msgstr "פקודה מותאמת"
 
@@ -407,7 +412,7 @@ msgstr "פקודה מותאמת"
 msgid "A custom command for the shell"
 msgstr ""
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:280 src/ptyxis-profile-editor.ui:181
+#: src/org.gnome.Ptyxis.gschema.xml.in:280 src/ptyxis-profile-editor.ui:179
 msgid "Default Container"
 msgstr "מיכל ברירת מחדל"
 
@@ -415,7 +420,7 @@ msgstr "מיכל ברירת מחדל"
 msgid "The default container to run the command in"
 msgstr ""
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:286 src/ptyxis-profile-editor.ui:190
+#: src/org.gnome.Ptyxis.gschema.xml.in:286 src/ptyxis-profile-editor.ui:188
 msgid "Preserve Container"
 msgstr ""
 
@@ -423,8 +428,8 @@ msgstr ""
 msgid "Preserve the active container when creating new tabs and windows"
 msgstr ""
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:292 src/ptyxis-preferences-window.ui:520
-#: src/ptyxis-profile-editor.ui:251
+#: src/org.gnome.Ptyxis.gschema.xml.in:292 src/ptyxis-preferences-window.ui:528
+#: src/ptyxis-profile-editor.ui:249
 msgid "Exit Action"
 msgstr "פעולה ביציאה"
 
@@ -441,7 +446,7 @@ msgid "If the directory should be preserved for new terminals"
 msgstr ""
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:304 src/ptyxis-inspector.ui:102
-#: src/ptyxis-preferences-window.ui:40 src/ptyxis-profile-editor.ui:67
+#: src/ptyxis-preferences-window.ui:40 src/ptyxis-profile-editor.ui:65
 msgid "Palette"
 msgstr "לוח צבעים"
 
@@ -485,7 +490,7 @@ msgstr ""
 msgid "What to send to the PTY when a backspace is entered"
 msgstr ""
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:345 src/ptyxis-preferences-window.ui:613
+#: src/org.gnome.Ptyxis.gschema.xml.in:345 src/ptyxis-preferences-window.ui:636
 msgid "Copy to Clipboard"
 msgstr "העתקה ללוח הגזירים"
 
@@ -493,7 +498,7 @@ msgstr "העתקה ללוח הגזירים"
 msgid "The shortcut to copy to clipboard"
 msgstr ""
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:351 src/ptyxis-preferences-window.ui:618
+#: src/org.gnome.Ptyxis.gschema.xml.in:351 src/ptyxis-preferences-window.ui:641
 msgid "Paste from Clipboard"
 msgstr "הדבקה מלוח הגזירים"
 
@@ -521,8 +526,8 @@ msgstr ""
 msgid "The shortcut to show application preferences"
 msgstr ""
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:381 src/ptyxis-preferences-window.ui:818
-#: src/ptyxis-window.c:1239 src/ptyxis-window.c:1247
+#: src/org.gnome.Ptyxis.gschema.xml.in:381 src/ptyxis-preferences-window.ui:841
+#: src/ptyxis-window.c:1250 src/ptyxis-window.c:1258
 msgid "Zoom Out"
 msgstr "התרחקות"
 
@@ -530,8 +535,8 @@ msgstr "התרחקות"
 msgid "The shortcut to zoom out"
 msgstr ""
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:387 src/ptyxis-preferences-window.ui:823
-#: src/ptyxis-window.c:1256
+#: src/org.gnome.Ptyxis.gschema.xml.in:387 src/ptyxis-preferences-window.ui:846
+#: src/ptyxis-window.c:1267
 msgid "Reset Zoom"
 msgstr "איפוס התקריב"
 
@@ -539,8 +544,8 @@ msgstr "איפוס התקריב"
 msgid "The shortcut to reset zoom"
 msgstr ""
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:393 src/ptyxis-preferences-window.ui:813
-#: src/ptyxis-window.c:1224 src/ptyxis-window.c:1232
+#: src/org.gnome.Ptyxis.gschema.xml.in:393 src/ptyxis-preferences-window.ui:836
+#: src/ptyxis-window.c:1235 src/ptyxis-window.c:1243
 msgid "Zoom In"
 msgstr "התקרבות"
 
@@ -548,7 +553,7 @@ msgstr "התקרבות"
 msgid "The shortcut to zoom in"
 msgstr ""
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:399 src/ptyxis-preferences-window.ui:833
+#: src/org.gnome.Ptyxis.gschema.xml.in:399 src/ptyxis-preferences-window.ui:856
 msgid "Toggle Fullscreen"
 msgstr "שינוי מצב מסך מלא"
 
@@ -572,7 +577,8 @@ msgstr ""
 msgid "Reset the terminal state and clear history for misbehaving clients"
 msgstr ""
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:417 src/ptyxis-preferences-window.ui:655
+#: src/org.gnome.Ptyxis.gschema.xml.in:417 src/ptyxis-find-bar.ui:38
+#: src/ptyxis-preferences-window.ui:678
 msgid "Search History"
 msgstr "חיפוש בהיסטורייה"
 
@@ -580,7 +586,7 @@ msgstr "חיפוש בהיסטורייה"
 msgid "Shortcut to begin searching the terminal history"
 msgstr ""
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:423 src/ptyxis-preferences-window.ui:627
+#: src/org.gnome.Ptyxis.gschema.xml.in:423 src/ptyxis-preferences-window.ui:650
 msgid "Select All"
 msgstr "בחירה של הכול"
 
@@ -612,7 +618,7 @@ msgstr "תפריט עיקרי"
 msgid "Shortcut to show the primary menu for the window"
 msgstr ""
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:447 src/ptyxis-preferences-window.ui:722
+#: src/org.gnome.Ptyxis.gschema.xml.in:447 src/ptyxis-preferences-window.ui:745
 msgid "Move to Previous Tab"
 msgstr "מעבר ללשונית הקודמת"
 
@@ -620,7 +626,7 @@ msgstr "מעבר ללשונית הקודמת"
 msgid "Shortcut to move to the previous tab"
 msgstr ""
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:453 src/ptyxis-preferences-window.ui:727
+#: src/org.gnome.Ptyxis.gschema.xml.in:453 src/ptyxis-preferences-window.ui:750
 msgid "Move to Next Tab"
 msgstr "מעבר ללשונית הבאה"
 
@@ -628,45 +634,45 @@ msgstr "מעבר ללשונית הבאה"
 msgid "Shortcut to move to the next tab"
 msgstr ""
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:459 src/ptyxis-preferences-window.ui:736
+#: src/org.gnome.Ptyxis.gschema.xml.in:459 src/ptyxis-preferences-window.ui:759
 msgid "Move Tab Left"
 msgstr "הזזת לשונית ימינה"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:460
 msgid "Shortcut to move the current tab to the left one position"
-msgstr ""
+msgstr "קיצור מקשים להעברת הלשונית הנוכחית מקום אחד שמאלה"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:465 src/ptyxis-preferences-window.ui:742
+#: src/org.gnome.Ptyxis.gschema.xml.in:465 src/ptyxis-preferences-window.ui:765
 msgid "Move Tab Right"
 msgstr "הזזת לשונית שמאלה"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:466
 msgid "Shortcut to move the current tab to the right one position"
-msgstr ""
+msgstr "קיצור מקשים להעברת הלשונית הנוכחית מקום אחד ימינה"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:471 src/ptyxis-preferences-window.ui:748
+#: src/org.gnome.Ptyxis.gschema.xml.in:471 src/ptyxis-preferences-window.ui:771
 msgid "Move Tab to New Window"
 msgstr "העברת לשונית לחלון חדש"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:472
 msgid "Shortcut to move the current tab into a new window"
-msgstr ""
+msgstr "קיצור מקשים להעברת הלשונית הנוכחית לחלון חדש"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:477 src/ptyxis-preferences-window.ui:700
+#: src/org.gnome.Ptyxis.gschema.xml.in:477 src/ptyxis-preferences-window.ui:723
 msgid "Close Tab"
 msgstr "סגירת לשונית"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:478
 msgid "Shortcut to close the current tab"
-msgstr ""
+msgstr "קיצור מקשים לסגירת הלשונית הנוכחית"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:483 src/ptyxis-preferences-window.ui:706
+#: src/org.gnome.Ptyxis.gschema.xml.in:483 src/ptyxis-preferences-window.ui:729
 msgid "Close Other Tabs"
 msgstr "סגירת שאר הלשוניות"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:484
 msgid "Shortcut to close all tabs in the window but the current one"
-msgstr ""
+msgstr "קיצור מקשים לסגירת כל הלשוניות בחלון למעט הנוכחית"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:489
 msgid "Focus Tab 1"
@@ -748,7 +754,7 @@ msgstr "מיקוד בלשונית 10"
 msgid "Shortcut to focus tab 10"
 msgstr "קיצורי מקשים למיקוד בלשונית 10"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:549 src/ptyxis-preferences-window.ui:712
+#: src/org.gnome.Ptyxis.gschema.xml.in:549 src/ptyxis-preferences-window.ui:735
 msgid "Undo Close Tab"
 msgstr "ביטול סגירת לשונית"
 
@@ -756,36 +762,36 @@ msgstr "ביטול סגירת לשונית"
 msgid "Undo closing of last tab"
 msgstr "שחזור הלשונית האחרונה שנסגרה"
 
-#: src/ptyxis-application.c:273
+#: src/ptyxis-application.c:339
 msgid "--tab, --tab-with-profile, or --new-window may not be used together"
 msgstr "--tab, --tab-with-profile, or --new-window may not be used together"
 
-#: src/ptyxis-application.c:319
+#: src/ptyxis-application.c:385
 #, c-format
 msgid "Cannot parse command: %s"
-msgstr "Cannot parse command: %s"
+msgstr "לא ניתן לפענח את הפקודה: %s"
 
-#: src/ptyxis-application.c:845
+#: src/ptyxis-application.c:983
 msgid "Examples:"
-msgstr "Examples:"
+msgstr "דוגמאות:"
 
-#: src/ptyxis-application.c:847
+#: src/ptyxis-application.c:985
 msgid "Show the application preferences"
-msgstr "Show the application preferences"
+msgstr "הצגת העדפות היישום"
 
 #. Used for new tabs/windows/etc when specified
-#: src/ptyxis-application.c:850
+#: src/ptyxis-application.c:988
 msgid "Use DIR for --tab, --tab-with-profile, --new-window, or -x"
 msgstr "Use DIR for --tab, --tab-with-profile, --new-window, or -x"
 
-#: src/ptyxis-application.c:850
+#: src/ptyxis-application.c:988
 msgid "DIR"
 msgstr "DIR"
 
 #. By default, this implies a new ptyxis instance unless the options
 #. * below are provided to override that.
 #.
-#: src/ptyxis-application.c:855
+#: src/ptyxis-application.c:993
 msgid "Command to execute in new window"
 msgstr "Command to execute in new window"
 
@@ -793,43 +799,43 @@ msgstr "Command to execute in new window"
 #. * short command options for these to make it easier to sniff them in early args
 #. * checking from `main.c`.
 #.
-#: src/ptyxis-application.c:861
+#: src/ptyxis-application.c:999
 msgid "New terminal window"
 msgstr "New terminal window"
 
-#: src/ptyxis-application.c:862
+#: src/ptyxis-application.c:1000
 msgid "New terminal tab in active window"
 msgstr "New terminal tab in active window"
 
-#: src/ptyxis-application.c:863
+#: src/ptyxis-application.c:1001
 msgid "New terminal tab in active window using PROFILE"
 msgstr "New terminal tab in active window using PROFILE"
 
-#: src/ptyxis-application.c:863
+#: src/ptyxis-application.c:1001
 msgid "PROFILE"
 msgstr "PROFILE"
 
-#: src/ptyxis-application.c:865
+#: src/ptyxis-application.c:1003
 msgid "Set title for new tab"
-msgstr "Set title for new tab"
+msgstr "הגדרת כותרת ללשונית חדשה"
 
-#: src/ptyxis-application.c:872
+#: src/ptyxis-application.c:1010
 msgid "Run Separate Instance"
-msgstr "Run Separate Instance"
+msgstr "הרצת מופע נפרד"
 
-#: src/ptyxis-application.c:876
+#: src/ptyxis-application.c:1014
 msgid "Open Preferences"
-msgstr "Open Preferences"
+msgstr "פתיחת העדפות"
 
-#: src/ptyxis-application.c:880
+#: src/ptyxis-application.c:1018
 msgid "Run Custom Command in New Window"
-msgstr "Run Custom Command in New Window"
+msgstr "הרצת פקודה מותאמת אישית בחלון חדש"
 
-#: src/ptyxis-application.c:884
+#: src/ptyxis-application.c:1022
 msgid "[-- COMMAND ARGUMENTS]"
 msgstr "[-- COMMAND ARGUMENTS]"
 
-#: src/ptyxis-application.c:1122
+#: src/ptyxis-application.c:1260
 msgid "translator-credits"
 msgstr ""
 "יוסף אור בוצ׳קו <yoseforb@gmail.com>\n"
@@ -841,7 +847,7 @@ msgstr "_סגירה"
 
 #: src/ptyxis-close-dialog.c:110
 msgid "_Close All"
-msgstr "_סגירת הכל"
+msgstr "_סגירה של הכול"
 
 #: src/ptyxis-close-dialog.c:112
 msgid "Close Window?"
@@ -865,12 +871,12 @@ msgid "Unknown Container"
 msgstr "מיכל לא ידוע"
 
 #: src/ptyxis-find-bar.ui:68
-msgid "Search up to next result"
-msgstr "מעבר מעלה לתוצאה הבאה"
+msgid "Search Up"
+msgstr "חיפוש למעלה"
 
 #: src/ptyxis-find-bar.ui:75
-msgid "Search down to next result"
-msgstr "מעבר מטה לתוצאה הבאה"
+msgid "Search Down"
+msgstr "חיפוש למטה"
 
 #: src/ptyxis-find-bar.ui:84
 msgid "Search Options"
@@ -888,8 +894,8 @@ msgstr "התאמה למילים _שלמות"
 msgid "Use _Regular Expressions"
 msgstr "שימוש ב_ביטויים רגולרים"
 
-#: src/ptyxis-find-bar.ui:127 src/ptyxis-preferences-window.ui:541
-#: src/ptyxis-profile-editor.ui:272
+#: src/ptyxis-find-bar.ui:127 src/ptyxis-preferences-window.ui:549
+#: src/ptyxis-profile-editor.ui:270
 msgid "Close"
 msgstr "סגירה"
 
@@ -897,15 +903,15 @@ msgstr "סגירה"
 msgid "Close the search bar"
 msgstr "סגירת סרגל החיפוש"
 
-#: src/ptyxis-inspector.c:89 src/ptyxis-inspector.c:351
+#: src/ptyxis-inspector.c:95 src/ptyxis-inspector.c:357
 msgid "unset"
 msgstr "לא מוגדר"
 
-#: src/ptyxis-inspector.c:110 src/ptyxis-inspector.c:268
+#: src/ptyxis-inspector.c:116 src/ptyxis-inspector.c:274
 msgid "Row"
 msgstr "שורה"
 
-#: src/ptyxis-inspector.c:110 src/ptyxis-inspector.c:268
+#: src/ptyxis-inspector.c:116 src/ptyxis-inspector.c:274
 msgid "Column"
 msgstr "עמודה"
 
@@ -917,12 +923,12 @@ msgstr "עמודה"
 #. * This is fine for now, but I'd like it to be better and actually
 #. * show the proper `tcgetpgrp()` foreground.
 #.
-#: src/ptyxis-inspector.c:171 src/ptyxis-inspector.c:191
-#: src/ptyxis-preferences-window.ui:477 src/ptyxis-profile-editor.ui:154
+#: src/ptyxis-inspector.c:177 src/ptyxis-inspector.c:197
+#: src/ptyxis-preferences-window.ui:485 src/ptyxis-profile-editor.ui:152
 msgid "Shell"
 msgstr "מעטפת"
 
-#: src/ptyxis-inspector.c:270
+#: src/ptyxis-inspector.c:276
 msgid "untracked"
 msgstr "לא במעקב"
 
@@ -936,7 +942,7 @@ msgstr "תהליך"
 
 #: src/ptyxis-inspector.ui:13
 msgid "Foreground Process"
-msgstr ""
+msgstr "תהליך חזית"
 
 #: src/ptyxis-inspector.ui:33
 msgid "Window Title"
@@ -959,7 +965,7 @@ msgid "Runtime"
 msgstr "זמן ריצה"
 
 #: src/ptyxis-inspector.ui:74 src/ptyxis-inspector.ui:228
-#: src/ptyxis-profile-editor.ui:38
+#: src/ptyxis-profile-editor.ui:36
 msgid "Name"
 msgstr "שם"
 
@@ -975,7 +981,7 @@ msgstr "גודל רשת"
 msgid "Colors"
 msgstr "צבעים"
 
-#: src/ptyxis-inspector.ui:225 src/ptyxis-preferences-window.ui:122
+#: src/ptyxis-inspector.ui:225 src/ptyxis-preferences-window.ui:130
 msgid "Font"
 msgstr "גופן"
 
@@ -987,7 +993,7 @@ msgstr "גודל תא"
 msgid "Input"
 msgstr "קלט"
 
-#: src/ptyxis-inspector.ui:246 src/ptyxis-preferences-window.ui:215
+#: src/ptyxis-inspector.ui:246 src/ptyxis-preferences-window.ui:223
 msgid "Cursor"
 msgstr "סמן"
 
@@ -1005,383 +1011,387 @@ msgstr "קישור"
 
 #: src/ptyxis-palette-preview.ui:12
 msgid "The quick brown fox jumps over the lazy dog"
-msgstr ""
+msgstr "עטלף אבק נס דרך מזגן שהתפוצץ כי חם"
 
-#: src/ptyxis-preferences-window.c:240
+#: src/ptyxis-preferences-window.c:248
 msgid "Select Font"
 msgstr "בחירת גופן"
 
-#: src/ptyxis-preferences-window.c:290
-msgid "Show fewer…"
-msgstr "להציג פחות…"
+#: src/ptyxis-preferences-window.c:323
+msgid "Show Fewer Palettes"
+msgstr "להציג פחות ערכות צבע"
 
-#: src/ptyxis-preferences-window.c:292 src/ptyxis-preferences-window.ui:43
-msgid "Show more…"
-msgstr "להציג עוד…"
+#: src/ptyxis-preferences-window.c:328 src/ptyxis-preferences-window.ui:46
+msgid "Show All Palettes"
+msgstr "להציג את כל ערכות הצבע"
 
-#: src/ptyxis-preferences-window.ui:64 src/ptyxis-profile-editor.ui:76
+#: src/ptyxis-preferences-window.ui:72 src/ptyxis-profile-editor.ui:74
 msgid "Transparency"
 msgstr "שקיפות"
 
-#: src/ptyxis-preferences-window.ui:65 src/ptyxis-profile-editor.ui:77
+#: src/ptyxis-preferences-window.ui:73 src/ptyxis-profile-editor.ui:75
 msgid "Reduces the opacity of the background window"
 msgstr "הפחתת האטימות של רקע החלון"
 
-#: src/ptyxis-preferences-window.ui:126
+#: src/ptyxis-preferences-window.ui:134
 msgid "Use System _Font"
 msgstr "שימוש ב_גופן מערכת"
 
-#: src/ptyxis-preferences-window.ui:138
+#: src/ptyxis-preferences-window.ui:146
 msgid "Custom Font"
 msgstr "גופן מותאם אישית"
 
-#: src/ptyxis-preferences-window.ui:167 src/ptyxis-profile-editor.ui:136
+#: src/ptyxis-preferences-window.ui:175 src/ptyxis-profile-editor.ui:134
 msgid "Use Bright Colors for Bold"
 msgstr "שימוש בצבעים בהירים להדגשה"
 
-#: src/ptyxis-preferences-window.ui:176
+#: src/ptyxis-preferences-window.ui:184
 msgid "Blinking Text"
 msgstr "הבהוב טקסט"
 
-#: src/ptyxis-preferences-window.ui:185 src/ptyxis-preferences-window.ui:409
-#: src/ptyxis-preferences-window.ui:498 src/ptyxis-profile-editor.ui:200
-#: src/ptyxis-profile-editor.ui:229
+#: src/ptyxis-preferences-window.ui:193 src/ptyxis-preferences-window.ui:417
+#: src/ptyxis-preferences-window.ui:506 src/ptyxis-profile-editor.ui:198
+#: src/ptyxis-profile-editor.ui:227
 msgid "Never"
 msgstr "אף פעם"
 
-#: src/ptyxis-preferences-window.ui:191
+#: src/ptyxis-preferences-window.ui:199
 msgid "Focused"
 msgstr "ממוקד"
 
-#: src/ptyxis-preferences-window.ui:197
+#: src/ptyxis-preferences-window.ui:205
 msgid "Unfocused"
 msgstr "לא ממוקד"
 
-#: src/ptyxis-preferences-window.ui:203 src/ptyxis-preferences-window.ui:421
-#: src/ptyxis-preferences-window.ui:510 src/ptyxis-profile-editor.ui:206
-#: src/ptyxis-profile-editor.ui:241
+#: src/ptyxis-preferences-window.ui:211 src/ptyxis-preferences-window.ui:429
+#: src/ptyxis-preferences-window.ui:518 src/ptyxis-profile-editor.ui:204
+#: src/ptyxis-profile-editor.ui:239
 msgid "Always"
 msgstr "תמיד"
 
-#: src/ptyxis-preferences-window.ui:227
+#: src/ptyxis-preferences-window.ui:235
 msgid "Block"
-msgstr "בלוק"
+msgstr "מקטע"
 
-#: src/ptyxis-preferences-window.ui:233
+#: src/ptyxis-preferences-window.ui:241
 msgid "I-Beam"
 msgstr "סמן הטקסט"
 
-#: src/ptyxis-preferences-window.ui:239
+#: src/ptyxis-preferences-window.ui:247
 msgid "Underline"
 msgstr "קו תחתי"
 
-#: src/ptyxis-preferences-window.ui:249
+#: src/ptyxis-preferences-window.ui:257
 msgid "Cursor Blinking"
 msgstr "הבהוב סמן"
 
-#: src/ptyxis-preferences-window.ui:258 src/ptyxis-preferences-window.ui:415
+#: src/ptyxis-preferences-window.ui:266 src/ptyxis-preferences-window.ui:423
 msgid "Follow System"
-msgstr "על פי המערכת"
+msgstr "כמו המערכת"
 
-#: src/ptyxis-preferences-window.ui:264
+#: src/ptyxis-preferences-window.ui:272
 msgid "Enabled"
 msgstr "מאופשר"
 
-#: src/ptyxis-preferences-window.ui:270
+#: src/ptyxis-preferences-window.ui:278
 msgid "Disabled"
 msgstr "מושבת"
 
-#: src/ptyxis-preferences-window.ui:284
+#: src/ptyxis-preferences-window.ui:292
 msgid "Behavior"
 msgstr "התנהגות"
 
-#: src/ptyxis-preferences-window.ui:288
+#: src/ptyxis-preferences-window.ui:296
 msgid "Interface"
 msgstr "ממשק"
 
-#: src/ptyxis-preferences-window.ui:300
+#: src/ptyxis-preferences-window.ui:308
 msgid "Next"
 msgstr "הבא"
 
-#: src/ptyxis-preferences-window.ui:306
+#: src/ptyxis-preferences-window.ui:314
 msgid "Last"
 msgstr "אחרון"
 
-#: src/ptyxis-preferences-window.ui:321
+#: src/ptyxis-preferences-window.ui:329
 msgid "Attempt to restore previous tabs when Ptyxis starts"
-msgstr ""
+msgstr "לנסות לשחזר את הלשוניות הקודמות עם הפעלת Ptyxis"
 
-#: src/ptyxis-preferences-window.ui:327
+#: src/ptyxis-preferences-window.ui:335
 msgid "Restore the previous window size when creating a new window"
 msgstr "שחזור הגודל הקודם של החלון בזמן יצירת חלון חדש"
 
-#: src/ptyxis-preferences-window.ui:337
+#: src/ptyxis-preferences-window.ui:345
 msgid "Columns"
 msgstr "עמודות"
 
-#: src/ptyxis-preferences-window.ui:351
+#: src/ptyxis-preferences-window.ui:359
 msgid "Rows"
 msgstr "שורות"
 
-#: src/ptyxis-preferences-window.ui:369
+#: src/ptyxis-preferences-window.ui:377
 msgid "Accessibility"
 msgstr "נגישות"
 
-#: src/ptyxis-preferences-window.ui:372
+#: src/ptyxis-preferences-window.ui:380
 msgid "Allow Screen Readers"
 msgstr "לאפשר מקריא מסך"
 
-#: src/ptyxis-preferences-window.ui:373
+#: src/ptyxis-preferences-window.ui:381
 msgid ""
 "Permit screen readers such as Orca to read terminal content and typed text"
-msgstr ""
+msgstr "לאפשר לקוראי מסך כגון Orca לקרוא את תוכן המסוף והטקסט המוקלד"
 
-#: src/ptyxis-preferences-window.ui:380
+#: src/ptyxis-preferences-window.ui:388
 msgid "Bell"
 msgstr "פעמון"
 
-#: src/ptyxis-preferences-window.ui:384
+#: src/ptyxis-preferences-window.ui:392
 msgid "Emit an audible bell when requested by active tab"
-msgstr ""
+msgstr "להפעיל פעמון שמיעתי שהלשונית הפעילה מבקשת"
 
-#: src/ptyxis-preferences-window.ui:389
+#: src/ptyxis-preferences-window.ui:397
 msgid "Visual Bell"
 msgstr "פעמון חזותי"
 
-#: src/ptyxis-preferences-window.ui:390
+#: src/ptyxis-preferences-window.ui:398
 msgid "Emit a visual bell when requested by active tab"
-msgstr ""
+msgstr "להפעיל פעמון חזותי כשהלשונית הפעילה מבקשת"
 
-#: src/ptyxis-preferences-window.ui:397 src/ptyxis-profile-editor.ui:284
+#: src/ptyxis-preferences-window.ui:405 src/ptyxis-profile-editor.ui:282
 msgid "Scrolling"
 msgstr "גלילה"
 
-#: src/ptyxis-preferences-window.ui:400
+#: src/ptyxis-preferences-window.ui:408
 msgid "Use Scrollbars"
 msgstr "שימוש בפסי גלילה"
 
-#: src/ptyxis-preferences-window.ui:436 src/ptyxis-profile-editor.ui:288
+#: src/ptyxis-preferences-window.ui:444 src/ptyxis-profile-editor.ui:286
 msgid "Scroll to the bottom upon input keystroke"
-msgstr ""
+msgstr "לגלול לתחתית עם הקלדה כלשהי"
 
-#: src/ptyxis-preferences-window.ui:442 src/ptyxis-profile-editor.ui:294
+#: src/ptyxis-preferences-window.ui:450 src/ptyxis-profile-editor.ui:292
 msgid "Scroll to the bottom when new content is available"
-msgstr ""
+msgstr "לגלול לתחתית כשתוכן חדש זמין"
 
-#: src/ptyxis-preferences-window.ui:452 src/ptyxis-profile-editor.ui:304
+#: src/ptyxis-preferences-window.ui:460 src/ptyxis-profile-editor.ui:302
 msgid "Restrict the number of lines saved for scrollback"
-msgstr ""
+msgstr "הגבלת מספר השורות שנשמרות לגלילה אחורה"
 
-#: src/ptyxis-preferences-window.ui:461 src/ptyxis-profile-editor.ui:313
+#: src/ptyxis-preferences-window.ui:469 src/ptyxis-profile-editor.ui:311
 msgid "The number of lines to keep for scrollback"
 msgstr "מספר השורות לשמירה לגלילה לאחור"
 
-#: src/ptyxis-preferences-window.ui:480 src/ptyxis-profile-editor.ui:172
+#: src/ptyxis-preferences-window.ui:488 src/ptyxis-profile-editor.ui:170
 msgid "Use Login Shell"
 msgstr "שימוש בהתחברות מאובטחת"
 
-#: src/ptyxis-preferences-window.ui:489 src/ptyxis-profile-editor.ui:220
+#: src/ptyxis-preferences-window.ui:497 src/ptyxis-profile-editor.ui:218
 msgid "Preserve Working Directory"
-msgstr ""
+msgstr "שימור תיקיית העבודה"
 
-#: src/ptyxis-preferences-window.ui:504 src/ptyxis-profile-editor.ui:235
+#: src/ptyxis-preferences-window.ui:512 src/ptyxis-profile-editor.ui:233
 msgid "Safe"
 msgstr "בטוח"
 
-#: src/ptyxis-preferences-window.ui:529 src/ptyxis-profile-editor.ui:260
+#: src/ptyxis-preferences-window.ui:537 src/ptyxis-profile-editor.ui:258
 msgid "No Action"
 msgstr "אין פעולה"
 
-#: src/ptyxis-preferences-window.ui:535 src/ptyxis-profile-editor.ui:266
+#: src/ptyxis-preferences-window.ui:543 src/ptyxis-profile-editor.ui:264
 msgid "Restart"
 msgstr "הפעלה מחדש"
 
-#: src/ptyxis-preferences-window.ui:553 src/ptyxis-profile-editor.ui:329
+#: src/ptyxis-preferences-window.ui:561 src/ptyxis-profile-editor.ui:327
 msgid "Compatibility"
 msgstr "תאימות"
 
-#: src/ptyxis-preferences-window.ui:556 src/ptyxis-profile-editor.ui:332
+#: src/ptyxis-preferences-window.ui:564 src/ptyxis-profile-editor.ui:330
 msgid "Backspace Key"
 msgstr "מקש Backspace"
 
-#: src/ptyxis-preferences-window.ui:557 src/ptyxis-profile-editor.ui:333
+#: src/ptyxis-preferences-window.ui:565 src/ptyxis-profile-editor.ui:331
 msgid "Sequence to send for Backspace key"
 msgstr "רצפים לשליחה עבור מקש Backspace"
 
-#: src/ptyxis-preferences-window.ui:566 src/ptyxis-profile-editor.ui:342
+#: src/ptyxis-preferences-window.ui:574 src/ptyxis-profile-editor.ui:340
 msgid "Delete Key"
 msgstr "מקש Delete"
 
-#: src/ptyxis-preferences-window.ui:567 src/ptyxis-profile-editor.ui:343
+#: src/ptyxis-preferences-window.ui:575 src/ptyxis-profile-editor.ui:341
 msgid "Sequence to send for Delete key"
 msgstr "רצפים לשליחה עבור מקש Delete"
 
-#: src/ptyxis-preferences-window.ui:576 src/ptyxis-profile-editor.ui:352
+#: src/ptyxis-preferences-window.ui:584 src/ptyxis-profile-editor.ui:350
 msgid "Ambiguous-width Characters"
-msgstr ""
+msgstr "תווים ברוחב משתנה"
 
-#: src/ptyxis-preferences-window.ui:585 src/ptyxis-profile-editor.ui:361
+#: src/ptyxis-preferences-window.ui:593 src/ptyxis-profile-editor.ui:359
 msgid "Narrow"
 msgstr "צר"
 
-#: src/ptyxis-preferences-window.ui:591 src/ptyxis-profile-editor.ui:367
+#: src/ptyxis-preferences-window.ui:599 src/ptyxis-profile-editor.ui:365
 msgid "Wide"
 msgstr "רחב"
 
-#: src/ptyxis-preferences-window.ui:606
+#: src/ptyxis-preferences-window.ui:619
+msgid "Set as Default Terminal"
+msgstr "הגדרה כמסוף ברירת המחדל"
+
+#: src/ptyxis-preferences-window.ui:629
 msgid "Shortcuts"
 msgstr "צירופי מקשים"
 
-#: src/ptyxis-preferences-window.ui:632
+#: src/ptyxis-preferences-window.ui:655
 msgid "Clear Selection"
 msgstr "ניקוי הבחירה"
 
-#: src/ptyxis-preferences-window.ui:641 src/ptyxis-terminal.ui:202
+#: src/ptyxis-preferences-window.ui:664 src/ptyxis-terminal.ui:224
 msgid "Reset"
 msgstr "איפוס"
 
-#: src/ptyxis-preferences-window.ui:646 src/ptyxis-terminal.ui:208
+#: src/ptyxis-preferences-window.ui:669 src/ptyxis-terminal.ui:230
 msgid "Reset and Clear"
 msgstr "איפוס וניקוי"
 
-#: src/ptyxis-preferences-window.ui:664
+#: src/ptyxis-preferences-window.ui:687
 msgid "Show Context Menu"
 msgstr "הצגת תפריט ההקשר"
 
-#: src/ptyxis-preferences-window.ui:671
+#: src/ptyxis-preferences-window.ui:694
 msgid "Tabs"
 msgstr "לשוניות"
 
-#: src/ptyxis-preferences-window.ui:675
+#: src/ptyxis-preferences-window.ui:698
 msgid "Open a new tab in the current window"
 msgstr "פתיחת לשונית חדשה בחלון הנוכחי"
 
-#: src/ptyxis-preferences-window.ui:681
+#: src/ptyxis-preferences-window.ui:704
 msgid "Open a new tab in a new window"
 msgstr "פתיחת לשונית חדשה בחלון חדש"
 
-#: src/ptyxis-preferences-window.ui:690
+#: src/ptyxis-preferences-window.ui:713
 msgid "View Tab Overview"
 msgstr "הצגת תצוגה מקדימה של הלשוניות"
 
-#: src/ptyxis-preferences-window.ui:691
+#: src/ptyxis-preferences-window.ui:714
 msgid "Show an overview of all tabs within the window"
 msgstr "הצגת תצוגה מקדימה של כל הלשוניות בחלון זה"
 
-#: src/ptyxis-preferences-window.ui:701
+#: src/ptyxis-preferences-window.ui:724
 msgid "Close the current tab"
 msgstr "סגירת הלשונית הנוכחית"
 
-#: src/ptyxis-preferences-window.ui:707
+#: src/ptyxis-preferences-window.ui:730
 msgid "Close all tabs except the active tab"
 msgstr "סגירת כל הלשוניות מלבד הלשונית הפעילה"
 
-#: src/ptyxis-preferences-window.ui:713
+#: src/ptyxis-preferences-window.ui:736
 msgid "Undo closing the last tab"
 msgstr "ביטול סגירת הלשונית האחרונה"
 
-#: src/ptyxis-preferences-window.ui:737
+#: src/ptyxis-preferences-window.ui:760
 msgid "Move the tab one position to the left"
 msgstr "העברת הלשונית מקום אחד ימינה"
 
-#: src/ptyxis-preferences-window.ui:743
+#: src/ptyxis-preferences-window.ui:766
 msgid "Move the tab one position to the right"
 msgstr "העברת הלשונית מקום אחד שמאלה"
 
-#: src/ptyxis-preferences-window.ui:749
+#: src/ptyxis-preferences-window.ui:772
 msgid "Detach the current tab and move it to a new window"
 msgstr "ניתוק הלשונית הנוכחית והעברתה לחלון חדש"
 
-#: src/ptyxis-preferences-window.ui:758
+#: src/ptyxis-preferences-window.ui:781
 msgid "Switch to Tab 1"
 msgstr "מעבר ללשונית 1"
 
-#: src/ptyxis-preferences-window.ui:763
+#: src/ptyxis-preferences-window.ui:786
 msgid "Switch to Tab 2"
 msgstr "מעבר ללשונית 2"
 
-#: src/ptyxis-preferences-window.ui:768
+#: src/ptyxis-preferences-window.ui:791
 msgid "Switch to Tab 3"
 msgstr "מעבר ללשונית 3"
 
-#: src/ptyxis-preferences-window.ui:773
+#: src/ptyxis-preferences-window.ui:796
 msgid "Switch to Tab 4"
 msgstr "מעבר ללשונית 4"
 
-#: src/ptyxis-preferences-window.ui:778
+#: src/ptyxis-preferences-window.ui:801
 msgid "Switch to Tab 5"
 msgstr "מעבר ללשונית 5"
 
-#: src/ptyxis-preferences-window.ui:783
+#: src/ptyxis-preferences-window.ui:806
 msgid "Switch to Tab 6"
 msgstr "מעבר ללשונית 6"
 
-#: src/ptyxis-preferences-window.ui:788
+#: src/ptyxis-preferences-window.ui:811
 msgid "Switch to Tab 7"
 msgstr "מעבר ללשונית 7"
 
-#: src/ptyxis-preferences-window.ui:793
+#: src/ptyxis-preferences-window.ui:816
 msgid "Switch to Tab 8"
 msgstr "מעבר ללשונית 8"
 
-#: src/ptyxis-preferences-window.ui:798
+#: src/ptyxis-preferences-window.ui:821
 msgid "Switch to Tab 9"
 msgstr "מעבר ללשונית 9"
 
-#: src/ptyxis-preferences-window.ui:803
+#: src/ptyxis-preferences-window.ui:826
 msgid "Switch to Tab 10"
 msgstr "מעבר ללשונית 10"
 
-#: src/ptyxis-preferences-window.ui:810
+#: src/ptyxis-preferences-window.ui:833
 msgid "Zoom"
 msgstr "תקריב"
 
-#: src/ptyxis-preferences-window.ui:830
+#: src/ptyxis-preferences-window.ui:853
 msgid "Application"
 msgstr "יישום"
 
-#: src/ptyxis-preferences-window.ui:834
+#: src/ptyxis-preferences-window.ui:857
 msgid "Toggle in and out of fullscreen"
 msgstr "שינוי מצב מסך מלא"
 
-#: src/ptyxis-preferences-window.ui:843
+#: src/ptyxis-preferences-window.ui:866
 msgid "Show Primary Menu"
 msgstr "הצגת התפריט העיקרי"
 
-#: src/ptyxis-preferences-window.ui:844
+#: src/ptyxis-preferences-window.ui:867
 msgid "Displays the primary menu for the terminal window"
 msgstr "הצגת התפריט העיקרי של חלון המסוף"
 
-#: src/ptyxis-preferences-window.ui:850
+#: src/ptyxis-preferences-window.ui:873
 msgid "Show this preferences window"
 msgstr "הצגת חלון העדפות זה"
 
-#: src/ptyxis-preferences-window.ui:859 src/ptyxis-preferences-window.ui:863
-#: src/ptyxis-window.c:1337
+#: src/ptyxis-preferences-window.ui:882 src/ptyxis-preferences-window.ui:886
+#: src/ptyxis-window.c:1348
 msgid "Profiles"
 msgstr "פרופילים"
 
-#: src/ptyxis-preferences-window.ui:870
+#: src/ptyxis-preferences-window.ui:893
 msgid "_Add Profile"
 msgstr "_הוספת פרופיל"
 
-#: src/ptyxis-preferences-window.ui:897 src/ptyxis-profile-editor.ui:401
+#: src/ptyxis-preferences-window.ui:920 src/ptyxis-profile-editor.ui:397
 msgid "Automatic"
 msgstr "אוטומטי"
 
-#: src/ptyxis-preferences-window.ui:903 src/ptyxis-profile-editor.ui:407
+#: src/ptyxis-preferences-window.ui:926 src/ptyxis-profile-editor.ui:403
 msgid "Control-H"
 msgstr "Control-H"
 
-#: src/ptyxis-preferences-window.ui:909 src/ptyxis-profile-editor.ui:413
+#: src/ptyxis-preferences-window.ui:932 src/ptyxis-profile-editor.ui:409
 msgid "ASCII DEL"
 msgstr "ASCII DEL"
 
-#: src/ptyxis-preferences-window.ui:915 src/ptyxis-profile-editor.ui:419
+#: src/ptyxis-preferences-window.ui:938 src/ptyxis-profile-editor.ui:415
 msgid "Escape Sequence"
 msgstr "רצף יציאה"
 
-#: src/ptyxis-preferences-window.ui:921 src/ptyxis-profile-editor.ui:425
+#: src/ptyxis-preferences-window.ui:944 src/ptyxis-profile-editor.ui:421
 msgid "TTY Erase"
 msgstr "מחיקת ה־TTY"
 
@@ -1389,65 +1399,65 @@ msgstr "מחיקת ה־TTY"
 msgid "Untitled Profile"
 msgstr "פרופיל ללא שם"
 
-#: src/ptyxis-profile-editor.c:133 src/ptyxis-terminal.c:413
-#: src/ptyxis-terminal.c:448
+#: src/ptyxis-profile-editor.c:131 src/ptyxis-terminal.c:415
+#: src/ptyxis-terminal.c:450
 msgid "Copied to clipboard"
 msgstr "הועתק ללוח הגזירים"
 
-#: src/ptyxis-profile-editor.c:165 src/ptyxis-profile-row.c:102
+#: src/ptyxis-profile-editor.c:160 src/ptyxis-profile-row.c:104
 #, c-format
 msgid "Removed profile “%s”"
 msgstr "הסרת הפרופיל „%s“"
 
-#: src/ptyxis-profile-editor.c:167 src/ptyxis-profile-row.c:104
+#: src/ptyxis-profile-editor.c:162 src/ptyxis-profile-row.c:106
 msgid "Undo"
 msgstr "ביטול"
 
-#: src/ptyxis-profile-editor.c:196
+#: src/ptyxis-profile-editor.c:193
 msgid "My Computer"
 msgstr "המחשב שלי ‏"
 
-#: src/ptyxis-profile-editor.ui:22 src/ptyxis-tab.c:369 src/ptyxis-tab.c:426
+#: src/ptyxis-profile-editor.ui:22 src/ptyxis-tab.c:371 src/ptyxis-tab.c:428
 msgid "Edit Profile"
 msgstr "עריכת פרופיל"
 
-#: src/ptyxis-profile-editor.ui:33
+#: src/ptyxis-profile-editor.ui:31
 msgid "Profile"
 msgstr "פרופיל"
 
-#: src/ptyxis-profile-editor.ui:43
+#: src/ptyxis-profile-editor.ui:41
 msgid "Identifier"
 msgstr "מזהה"
 
-#: src/ptyxis-profile-editor.ui:52
+#: src/ptyxis-profile-editor.ui:50
 msgid "Copy"
 msgstr "העתקה"
 
-#: src/ptyxis-profile-editor.ui:64
+#: src/ptyxis-profile-editor.ui:62
 msgid "Color"
 msgstr "צבע"
 
-#: src/ptyxis-profile-editor.ui:143
+#: src/ptyxis-profile-editor.ui:141
 msgid "Network"
 msgstr "רשת"
 
-#: src/ptyxis-profile-editor.ui:146
+#: src/ptyxis-profile-editor.ui:144
 msgid "Proxy"
 msgstr "מתווך"
 
-#: src/ptyxis-profile-editor.ui:147
+#: src/ptyxis-profile-editor.ui:145
 msgid "Applies the network proxy settings to the container environment"
 msgstr "החלת הגדרות מתווך הרשת לסביבת ה"
 
-#: src/ptyxis-profile-editor.ui:182
+#: src/ptyxis-profile-editor.ui:180
 msgid "The default container to use with this profile"
 msgstr "מיכל ברירת המחדל לשימוש עם פרופיל זה"
 
-#: src/ptyxis-profile-editor.ui:191
+#: src/ptyxis-profile-editor.ui:189
 msgid "Preserve the current container when opening new tabs and windows"
 msgstr "שמירת המיכל הנוכחי עם פתיחת לשוניות חדשות וחלונות חדשים"
 
-#: src/ptyxis-profile-editor.ui:384
+#: src/ptyxis-profile-editor.ui:382
 msgid "Remove Profile"
 msgstr "הסרת פרופיל"
 
@@ -1457,7 +1467,7 @@ msgstr "להציג עוד"
 
 #: src/ptyxis-profile-row.ui:43
 msgid "_Make Default"
-msgstr "_הגדרה כברירת מחדל"
+msgstr "ה_גדרה כברירת מחדל"
 
 #: src/ptyxis-profile-row.ui:49
 msgid "_Duplicate…"
@@ -1469,10 +1479,10 @@ msgstr "ע_ריכה…"
 
 #: src/ptyxis-profile-row.ui:59
 msgid "_Remove"
-msgstr "_הסרה"
+msgstr "ה_סרה"
 
 #. Translators: <b>%s</b> is used to show the provided text in bold
-#: src/ptyxis-shortcut-accel-dialog.c:442
+#: src/ptyxis-shortcut-accel-dialog.c:455
 #, c-format
 msgid "Enter new shortcut to change <b>%s</b>."
 msgstr "יש להזין צירוף מקשים חדש לשינוי <b>%s</b>."
@@ -1497,14 +1507,14 @@ msgstr "הגדרת צירופי מקשים"
 
 #: src/ptyxis-shortcut-row.c:194
 msgid "disabled"
-msgstr "מנוטרל"
+msgstr "מושבת"
 
-#: src/ptyxis-tab.c:279
+#: src/ptyxis-tab.c:281
 #, c-format
 msgid "Process Exited from Signal %d"
 msgstr "תהליך יצא עם אות %d"
 
-#: src/ptyxis-tab.c:282 src/ptyxis-tab.c:305
+#: src/ptyxis-tab.c:284 src/ptyxis-tab.c:307
 msgid "_Restart"
 msgstr "הפעלה _מחדש"
 
@@ -1512,196 +1522,220 @@ msgstr "הפעלה _מחדש"
 #. * display it again if the tab is removed from the parking lot and
 #. * restored into the window.
 #.
-#: src/ptyxis-tab.c:304
+#: src/ptyxis-tab.c:306
 msgid "Process Exited"
-msgstr ""
+msgstr "התהליך הסתיים"
 
-#: src/ptyxis-tab.c:368
+#: src/ptyxis-tab.c:370
 msgid "Failed to launch terminal"
-msgstr ""
+msgstr "הפעלת המסוף נכשלה"
 
-#: src/ptyxis-tab.c:424
+#: src/ptyxis-tab.c:426
 #, c-format
 msgid "Cannot locate container “%s”"
-msgstr ""
+msgstr "לא ניתן לאתר את המכולה „%s”"
 
-#: src/ptyxis-tab.c:448
+#: src/ptyxis-tab.c:450
 msgid "Failed to create pseudo terminal device"
-msgstr ""
+msgstr "יצירת התקן מסוף מדומה נכשלה"
 
-#: src/ptyxis-tab.c:1252
+#: src/ptyxis-tab.c:1277
 msgid "Exited"
 msgstr "נסגר"
 
-#: src/ptyxis-tab.c:1254
+#: src/ptyxis-tab.c:1279
 msgid "Failed"
 msgstr "נכשל"
 
-#: src/ptyxis-tab.c:1790
+#: src/ptyxis-tab.c:1815
 msgid "Failed to open link"
-msgstr "אירע כשל בפתיחת הקישור"
+msgstr "פתיחת הקישור נכשלה"
 
 #: src/ptyxis-tab-notify.h:89
 msgid "Command completed"
 msgstr "פקודה הושלמה"
 
-#: src/ptyxis-terminal.ui:148
+#: src/ptyxis-terminal.ui:170
 msgid "Search…"
 msgstr "חיפוש…"
 
-#: src/ptyxis-terminal.ui:154
+#: src/ptyxis-terminal.ui:176
 msgid "_Open Link"
 msgstr "_פתיחת קישור"
 
-#: src/ptyxis-terminal.ui:162
+#: src/ptyxis-terminal.ui:184
 msgid "_Copy"
 msgstr "_העתקה"
 
-#: src/ptyxis-terminal.ui:163
+#: src/ptyxis-terminal.ui:185
 msgid "Copy selection from terminal to clipboard"
 msgstr "העתקת הטקסט הנבחר מהמסוף ללוח הגזירים"
 
-#: src/ptyxis-terminal.ui:167
+#: src/ptyxis-terminal.ui:189
 msgid "_Copy Link"
 msgstr "ה_עתקת קישור"
 
-#: src/ptyxis-terminal.ui:173
+#: src/ptyxis-terminal.ui:195
 msgid "_Paste"
 msgstr "ה_דבקה"
 
-#: src/ptyxis-terminal.ui:174
+#: src/ptyxis-terminal.ui:196
 msgid "Paste from clipboard into the terminal"
 msgstr "הדבקה מלוח הגזירים למסוף"
 
-#: src/ptyxis-terminal.ui:181
+#: src/ptyxis-terminal.ui:203
 msgid "Select _All"
-msgstr "_בחירת הכול"
+msgstr "_בחירה בהכול"
 
-#: src/ptyxis-terminal.ui:182
+#: src/ptyxis-terminal.ui:204
 msgid "Selection all text from terminal including scrollback"
 msgstr "בחירת כל הטקסט במסוף לרבות מה שמעבר לגלילה"
 
-#: src/ptyxis-terminal.ui:188
+#: src/ptyxis-terminal.ui:210
 msgid "Select _None"
 msgstr "_ניקוי בחירה"
 
-#: src/ptyxis-terminal.ui:195
+#: src/ptyxis-terminal.ui:217
 msgid "Read-Only"
 msgstr "קריאה בלבד"
 
-#: src/ptyxis-terminal.ui:216 src/ptyxis-window.ui:512
+#: src/ptyxis-terminal.ui:238 src/ptyxis-window.ui:511
 msgid "Leave Fullscreen"
 msgstr "יציאה ממצב מסך מלא"
 
-#: src/ptyxis-terminal.ui:222
+#: src/ptyxis-terminal.ui:244
 msgid "_Inspect Terminal"
 msgstr "_חקירת מסוף"
 
-#: src/ptyxis-theme-selector.ui:21 src/ptyxis-theme-selector.ui:23
-msgid "Follow system style"
-msgstr "שימוש בסגנון המערכת"
+#: src/ptyxis-theme-selector.ui:21
+msgid "Follow System Style"
+msgstr "כמו סגנון המערכת"
 
-#: src/ptyxis-theme-selector.ui:37 src/ptyxis-theme-selector.ui:39
+#: src/ptyxis-theme-selector.ui:23
+msgid "Follow system style"
+msgstr "כמו סגנון המערכת"
+
+#: src/ptyxis-theme-selector.ui:37
+msgid "Light Style"
+msgstr "סגנון בהיר"
+
+#: src/ptyxis-theme-selector.ui:39
 msgid "Light style"
 msgstr "סגנון בהיר"
 
-#: src/ptyxis-theme-selector.ui:54 src/ptyxis-theme-selector.ui:56
+#: src/ptyxis-theme-selector.ui:54
+msgid "Dark Style"
+msgstr "סגנון כהה"
+
+#: src/ptyxis-theme-selector.ui:56
 msgid "Dark style"
 msgstr "סגנון כהה"
 
 #. translators: Builder Terminal means this is a terminal bundled with GNOME Builder
-#: src/ptyxis-util.c:309
+#: src/ptyxis-util.c:313
 msgid "Builder Terminal"
 msgstr "מסוף Builder"
 
-#: src/ptyxis-util.c:313
+#: src/ptyxis-util.c:317
 msgid "Ptyxis"
 msgstr "Ptyxis"
 
-#: src/ptyxis-window.c:986 src/ptyxis-window.ui:565
+#: src/ptyxis-window.c:997 src/ptyxis-window.ui:564
 msgid "Set Title"
 msgstr "הגדרת כותרת"
 
-#: src/ptyxis-window.c:1235
+#: src/ptyxis-window.c:1246
 msgid "Zoom in"
 msgstr "התקרבות"
 
-#: src/ptyxis-window.c:1250
+#: src/ptyxis-window.c:1261
 msgid "Zoom out"
 msgstr "התרחקות"
 
-#: src/ptyxis-window.c:1340
+#: src/ptyxis-window.c:1351
 msgid "Containers"
 msgstr "מיכלים"
 
-#: src/ptyxis-window.ui:359
+#: src/ptyxis-window.ui:358
 msgid "New Terminal"
 msgstr "מסוף חדש"
 
-#: src/ptyxis-window.ui:372
+#: src/ptyxis-window.ui:371
 msgid "Show Profiles and Containers"
 msgstr "הצרת פרופילים ומיכלים"
 
-#: src/ptyxis-window.ui:413
+#: src/ptyxis-window.ui:412
 msgid "Main Menu"
 msgstr "תפריט ראשי"
 
-#: src/ptyxis-window.ui:421 src/ptyxis-window.ui:498
+#: src/ptyxis-window.ui:420 src/ptyxis-window.ui:497
 msgid "Show Open Tabs"
 msgstr "הצגת לשוניות פתוחות"
 
-#: src/ptyxis-window.ui:482
+#: src/ptyxis-window.ui:481
 msgid "New _Tab"
 msgstr "_לשונית חדשה"
 
-#: src/ptyxis-window.ui:489
+#: src/ptyxis-window.ui:488
 msgid "New _Window"
 msgstr "_חלון חדש"
 
-#: src/ptyxis-window.ui:506
+#: src/ptyxis-window.ui:505
 msgid "Fullscreen"
 msgstr "מסך מלא"
 
-#: src/ptyxis-window.ui:520
+#: src/ptyxis-window.ui:519
 msgid "_Preferences"
 msgstr "_העדפות"
 
-#: src/ptyxis-window.ui:524
+#: src/ptyxis-window.ui:523
 msgid "_Keyboard Shortcuts"
 msgstr "_צירופי מקשים"
 
-#: src/ptyxis-window.ui:528
+#: src/ptyxis-window.ui:527
 msgid "_About"
 msgstr "על _אודות"
 
-#: src/ptyxis-window.ui:537
+#: src/ptyxis-window.ui:536
 msgid "Move _Left"
 msgstr "ה_עברה לשמאל"
 
-#: src/ptyxis-window.ui:542
+#: src/ptyxis-window.ui:541
 msgid "Move _Right"
-msgstr "ה_עברה לימין"
+msgstr "הע_ברה לימין"
 
-#: src/ptyxis-window.ui:547
+#: src/ptyxis-window.ui:546
 msgid "Move to New _Window"
 msgstr "העברה ל_חלון חדש"
 
-#: src/ptyxis-window.ui:553
+#: src/ptyxis-window.ui:552
 msgid "_Pin Tab"
 msgstr "ה_צמדת לשונית"
 
-#: src/ptyxis-window.ui:558
+#: src/ptyxis-window.ui:557
 msgid "Un_pin Tab"
 msgstr "_ביטול הצמדת לשונית"
 
-#: src/ptyxis-window.ui:572
+#: src/ptyxis-window.ui:571
 msgid "Close _Other Tabs"
 msgstr "סגירת _שאר הלשוניות"
 
-#: src/ptyxis-window.ui:577
+#: src/ptyxis-window.ui:576
 msgid "_Close Tab"
 msgstr "סגירת ה_לשונית"
 
-#: src/ptyxis-window.ui:584
+#: src/ptyxis-window.ui:583
 msgid "_My Computer"
-msgstr "המחשב _שלי "
+msgstr "המחשב _שלי"
+
+#~ msgid "Search up to next result"
+#~ msgstr "מעבר מעלה לתוצאה הבאה"
+
+#~ msgid "Search down to next result"
+#~ msgstr "מעבר מטה לתוצאה הבאה"
+
+#~ msgid "Show fewer…"
+#~ msgstr "להציג פחות…"
+
+#~ msgid "Show more…"
+#~ msgstr "להציג עוד…"
