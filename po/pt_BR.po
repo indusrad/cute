@@ -2,21 +2,22 @@
 # Copyright (C) 2024 THE ptyxis'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the ptyxis package.
 # Rafael Fontenelle <rafaelff@gnome.org>, 2023-2024.
+# Juliano de Souza Camargo <julianosc@pm.me>, 2024.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: ptyxis\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/chergert/ptyxis/issues\n"
-"POT-Creation-Date: 2024-08-06 17:57+0000\n"
-"PO-Revision-Date: 2024-08-26 22:59-0300\n"
-"Last-Translator: Rafael Fontenelle <rafaelff@gnome.org>\n"
+"POT-Creation-Date: 2024-10-26 19:40+0000\n"
+"PO-Revision-Date: 2024-10-28 08:47-0300\n"
+"Last-Translator: Juliano de Souza Camargo <julianosc@pm.me>\n"
 "Language-Team: Brazilian Portuguese <https://br.gnome.org/traducao>\n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1)\n"
-"X-Generator: Gtranslator 46.1\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Gtranslator 47.0\n"
 
 #: data/org.gnome.Ptyxis.desktop.in.in:3
 msgid "@APP_NAME@"
@@ -129,53 +130,53 @@ msgid "Terminal inspector to help when writing terminal-based applications"
 msgstr ""
 "Inspetor de terminal para ajudar ao escrever aplicativos baseadas de terminal"
 
-#: data/org.gnome.Ptyxis.metainfo.xml.in.in:72
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:77
 msgid "A column and row size indicator is displayed when resizing the window"
 msgstr ""
 "Um indicador de tamanho de coluna e linha é exibido ao redimensionar a janela"
 
-#: data/org.gnome.Ptyxis.metainfo.xml.in.in:77
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:82
 msgid "Containers are automatically discovered and displayed"
 msgstr "Os contêineres são descobertos e exibidos automaticamente"
 
-#: data/org.gnome.Ptyxis.metainfo.xml.in.in:82
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:87
 msgid "Many behaviors of the terminal may be tweaked to user preference"
 msgstr ""
 "Muitos comportamentos do terminal podem ser ajustados de acordo com a "
 "preferência do usuário"
 
-#: data/org.gnome.Ptyxis.metainfo.xml.in.in:87
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:92
 msgid "You may rename a tab by providing a prefix to the title"
 msgstr "Você pode renomear uma aba fornecendo um prefixo para o título"
 
-#: data/org.gnome.Ptyxis.metainfo.xml.in.in:92
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:97
 msgid "Palettes provide an integrated dark mode"
 msgstr "As paletas fornecem um modo escuro integrado"
 
-#: data/org.gnome.Ptyxis.metainfo.xml.in.in:97
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:102
 msgid "You can see an overview of your tabs at any time"
 msgstr "Você pode ver uma visão geral de suas abas a qualquer momento"
 
-#: data/org.gnome.Ptyxis.metainfo.xml.in.in:102
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:107
 msgid "Many shortcuts may be remapped to user preference"
 msgstr "Muitos atalhos pode ser remapeado para as preferências do usuário"
 
-#: data/org.gnome.Ptyxis.metainfo.xml.in.in:107
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:112
 msgid "Built-in color palettes provide both dark and light mode variants"
 msgstr "Paletas de cores embutidos oferecem variantes de modo claro e escuro"
 
-#: data/org.gnome.Ptyxis.metainfo.xml.in.in:112
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:117
 msgid ""
 "Profiles allow for overriding a number of features such as default container"
 msgstr ""
 "Perfis permitem substituir uma série de recursos, como contêiner padrão"
 
-#: data/org.gnome.Ptyxis.metainfo.xml.in.in:117
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:122
 msgid "The terminal will remind you when you're root on the local system"
 msgstr ""
 "O terminal irá lembrá-lo quando você estiver como root no sistema local"
 
-#: data/org.gnome.Ptyxis.metainfo.xml.in.in:122
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:127
 msgid "The terminal will remind you when you're on a remote system"
 msgstr "O terminal irá lembrá-lo quando você estiver em um sistema remoto"
 
@@ -588,7 +589,7 @@ msgstr ""
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:411 src/ptyxis-preferences-window.ui:655
 msgid "Search History"
-msgstr "Histórico de pesquisa"
+msgstr "Pesquisar histórico"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:412
 msgid "Shortcut to begin searching the terminal history"
@@ -770,36 +771,36 @@ msgstr "Desfazer fechar aba"
 msgid "Undo closing of last tab"
 msgstr "Desfaz o fechamento da última aba"
 
-#: src/ptyxis-application.c:244
+#: src/ptyxis-application.c:245
 msgid "--tab, --tab-with-profile, or --new-window may not be used together"
 msgstr "--tab, --tab-with-profile ou --new-window podem não ser usados juntos"
 
-#: src/ptyxis-application.c:290
+#: src/ptyxis-application.c:291
 #, c-format
 msgid "Cannot parse command: %s"
 msgstr "Não foi possível analisar o comando: %s"
 
-#: src/ptyxis-application.c:796
+#: src/ptyxis-application.c:804
 msgid "Examples:"
 msgstr "Exemplos:"
 
-#: src/ptyxis-application.c:798
+#: src/ptyxis-application.c:806
 msgid "Show the application preferences"
 msgstr "Mostra as preferências do aplicativo"
 
 #. Used for new tabs/windows/etc when specified
-#: src/ptyxis-application.c:801
+#: src/ptyxis-application.c:809
 msgid "Use DIR for --tab, --tab-with-profile, --new-window, or -x"
 msgstr "Usa DIR para --tab, --tab-with-profile, --new-window ou -x"
 
-#: src/ptyxis-application.c:801
+#: src/ptyxis-application.c:809
 msgid "DIR"
 msgstr "DIR"
 
 #. By default, this implies a new ptyxis instance unless the options
 #. * below are provided to override that.
 #.
-#: src/ptyxis-application.c:806
+#: src/ptyxis-application.c:814
 msgid "Command to execute in new window"
 msgstr "Comando para executar em uma nova janela"
 
@@ -807,39 +808,39 @@ msgstr "Comando para executar em uma nova janela"
 #. * short command options for these to make it easier to sniff them in early args
 #. * checking from `main.c`.
 #.
-#: src/ptyxis-application.c:812
+#: src/ptyxis-application.c:820
 msgid "New terminal window"
 msgstr "Nova janela de terminal"
 
-#: src/ptyxis-application.c:813
+#: src/ptyxis-application.c:821
 msgid "New terminal tab in active window"
 msgstr "Nova janela de terminal na janela ativa"
 
-#: src/ptyxis-application.c:814
+#: src/ptyxis-application.c:822
 msgid "New terminal tab in active window using PROFILE"
 msgstr "Nova aba de terminal na janela ativa usando PERFIL"
 
-#: src/ptyxis-application.c:814
+#: src/ptyxis-application.c:822
 msgid "PROFILE"
 msgstr "PERFIL"
 
-#: src/ptyxis-application.c:821
+#: src/ptyxis-application.c:829
 msgid "Run Separate Instance"
 msgstr "Executa uma instância separada"
 
-#: src/ptyxis-application.c:825
+#: src/ptyxis-application.c:833
 msgid "Open Preferences"
 msgstr "Abre as preferências"
 
-#: src/ptyxis-application.c:829
+#: src/ptyxis-application.c:837
 msgid "Run Custom Command in New Window"
 msgstr "Executa um comando personalizado em uma nova janela"
 
-#: src/ptyxis-application.c:833
+#: src/ptyxis-application.c:841
 msgid "[-- COMMAND ARGUMENTS]"
 msgstr "[-- ARGUMENTOS DO COMANDO]"
 
-#: src/ptyxis-application.c:1071
+#: src/ptyxis-application.c:1079
 msgid "translator-credits"
 msgstr "Rafael Fontenelle <rafaelff@gnome.org>"
 
@@ -1015,15 +1016,15 @@ msgstr "Hiperlink"
 msgid "The quick brown fox jumps over the lazy dog"
 msgstr "A rápida raposa marrom pula por cima do cão preguiçoso"
 
-#: src/ptyxis-preferences-window.c:241
+#: src/ptyxis-preferences-window.c:242
 msgid "Select Font"
 msgstr "Selecionar fonte"
 
-#: src/ptyxis-preferences-window.c:291
+#: src/ptyxis-preferences-window.c:292
 msgid "Show fewer…"
 msgstr "Mostrar menos…"
 
-#: src/ptyxis-preferences-window.c:293 src/ptyxis-preferences-window.ui:43
+#: src/ptyxis-preferences-window.c:294 src/ptyxis-preferences-window.ui:43
 msgid "Show more…"
 msgstr "Mostrar mais…"
 
