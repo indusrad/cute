@@ -1,3 +1,16 @@
+# Ptyxis 47.4
+
+ * Work around Podman in `--additional-flags` parsing to fix
+   execution of distrobox containers.
+ * Prioritize "manager":"distrobox" over "com.github.containers.toolbox"
+   label because F41 images created by distrobox are, for some reason,
+   setting the toolbox label id.
+ * Fix raising of window when activating shell notification.
+ * Override distro-theming for `vte-terminal` CSS element. This
+   fixes styling on Ubuntu-based systems, but possibly others.
+
+Thanks to everyone who filed bugs to help catch these issues.
+
 # Ptyxis 47.3
 
  * Fix race condition in connecting to exited/signaled D-Bus

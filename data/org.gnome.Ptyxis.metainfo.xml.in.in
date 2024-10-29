@@ -43,6 +43,11 @@
   <launchable type="desktop-id">@APP_ID@.desktop</launchable>
 
   <releases>
+    <release version="47.4" date="2024-10-29">
+      <description>
+        <p>This release contains numerous fixes for distrobox containers. Additionally it fixes styling on Ubuntu-based systems which had distribution provided themes overriding the default terminal emulator styling. Raising the terminal tab in response to shell notifications has also been fixed.</p>
+      </description>
+    </release>
     <release version="47.3" date="2024-10-18"/>
     <release version="47.2" date="2024-10-04">
       <description>
