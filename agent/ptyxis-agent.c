@@ -124,14 +124,19 @@ ptyxis_agent_init (PtyxisAgent  *agent,
     }
 
   podman = ptyxis_podman_provider_new ();
-  ptyxis_podman_provider_set_type_for_label (PTYXIS_PODMAN_PROVIDER (podman),
-                                             "com.github.containers.toolbox",
-                                             NULL,
-                                             PTYXIS_TYPE_TOOLBOX_CONTAINER);
+
+  /* Prioritize "manager":"distrobox" above toolbox because it erroniously
+   * can add com.github.containers.toolbox too! See #245 for details.
+   */
   ptyxis_podman_provider_set_type_for_label (PTYXIS_PODMAN_PROVIDER (podman),
                                              "manager",
                                              "distrobox",
                                              PTYXIS_TYPE_DISTROBOX_CONTAINER);
+
+  ptyxis_podman_provider_set_type_for_label (PTYXIS_PODMAN_PROVIDER (podman),
+                                             "com.github.containers.toolbox",
+                                             NULL,
+                                             PTYXIS_TYPE_TOOLBOX_CONTAINER);
 
   if (!ptyxis_podman_provider_update_sync (PTYXIS_PODMAN_PROVIDER (podman), NULL, &local_error))
     {
