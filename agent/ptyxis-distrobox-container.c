@@ -56,7 +56,7 @@ ptyxis_distrobox_container_run_context_cb (PtyxisRunContext    *run_context,
   ptyxis_run_context_append_argv (run_context, "--no-tty");
   ptyxis_run_context_append_argv (run_context, name);
 
-  additional_flags = g_string_new ("--tty ");
+  additional_flags = g_string_new ("--tty");
 
   /* From podman-exec(1):
    *
@@ -64,7 +64,7 @@ ptyxis_distrobox_container_run_context_cb (PtyxisRunContext    *run_context,
    * 0, 1, 2).  The total FDs will be 3+N.
    */
   if ((max_dest_fd = ptyxis_unix_fd_map_get_max_dest_fd (unix_fd_map)) > 2)
-    g_string_append_printf (additional_flags, "--preserve-fds=%d ", max_dest_fd-2);
+    g_string_append_printf (additional_flags, " --preserve-fds=%d", max_dest_fd-2);
 
   /* Make sure we can pass the FDs down */
   if (!ptyxis_run_context_merge_unix_fd_map (run_context, unix_fd_map, error))
