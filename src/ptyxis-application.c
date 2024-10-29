@@ -956,7 +956,7 @@ ptyxis_application_init (PtyxisApplication *self)
      */
     { "new-window", 0, 0, G_OPTION_ARG_NONE, NULL, N_("New terminal window") },
     { "tab", 0, 0, G_OPTION_ARG_NONE, NULL, N_("New terminal tab in active window") },
-    { "tab-with-profile", 0, 0, G_OPTION_ARG_STRING, NULL, N_("New terminal tab in active window using the profile UUID"), N_("PROFILE_UUID") },
+    { "tab-with-profile", 0, 0, G_OPTION_ARG_STRING, NULL, N_("New terminal tab in active window using PROFILE"), N_("PROFILE") },
 
     { "title", 0, 0, G_OPTION_ARG_STRING, NULL, N_("Set title for new tab") },
 
