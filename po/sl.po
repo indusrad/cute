@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ptyxis main\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/chergert/ptyxis/issues\n"
-"POT-Creation-Date: 2024-10-20 15:05+0000\n"
-"PO-Revision-Date: 2024-10-20 22:43+0200\n"
+"POT-Creation-Date: 2024-10-29 18:31+0000\n"
+"PO-Revision-Date: 2024-10-29 22:19+0100\n"
 "Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Slovenian <gnome-si@googlegroups.com>\n"
 "Language: sl\n"
@@ -833,16 +833,16 @@ msgid "New terminal tab in active window"
 msgstr "Nov zavihek terminala v dejavnem oknu"
 
 #: src/ptyxis-application.c:1001
-msgid "New terminal tab in active window using PROFILE"
-msgstr "Nov zavihek terminala v dejavnem oknu z uporabo PROFILE"
+msgid "New terminal tab in active window using the profile UUID"
+msgstr "Nov zavihek terminala v dejavnem oknu z uporabo UUID profila"
 
 #: src/ptyxis-application.c:1001
-msgid "PROFILE"
-msgstr "PROFIL"
+msgid "PROFILE_UUID"
+msgstr "PROFIL_UUID"
 
 #: src/ptyxis-application.c:1003
 msgid "Set title for new tab"
-msgstr "Določite naslov za nov zavihek"
+msgstr "Določi naslov za nov zavihek"
 
 #: src/ptyxis-application.c:1010
 msgid "Run Separate Instance"
