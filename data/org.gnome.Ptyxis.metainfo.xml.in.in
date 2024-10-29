@@ -43,6 +43,7 @@
   <launchable type="desktop-id">@APP_ID@.desktop</launchable>
 
   <releases>
+    <release version="46.8" date="2024-10-28"/>
     <release version="46.7" date="2024-09-24">
       <description>
         <p>This release includes a number of bug fixes.</p>

@@ -1,3 +1,15 @@
+# Ptyxis 46.8
+
+Changes since 46.7
+
+ * Fix a race in exit code tracking of fast-exiting commands
+ * Various fixes for distrobox containers
+ * Styling fixes for Ubuntu-based systems
+ * Translation updates
+ * Fix raising of windows from shell notifications
+ * Fix detach-tab keybinding
+ * Better handling of tiled state for when to create a new window
+
 # Ptyxis 46.7
 
 Changes since 46.6
