@@ -723,9 +723,10 @@ ptyxis_application_client_process_exited_cb (PtyxisApplication *self,
    * removed from the hash table when doing so (or when we get the real
    * value outside of a race condition).
    */
-  g_hash_table_insert (self->exited,
-                       g_strdup (process_object_path),
-                       GINT_TO_POINTER (exit_code));
+  if (self->exited != NULL)
+    g_hash_table_insert (self->exited,
+                         g_strdup (process_object_path),
+                         GINT_TO_POINTER (exit_code));
 }
 
 static void
@@ -1804,11 +1805,14 @@ ptyxis_application_process_signaled_cb (PtyxisIpcProcess *process,
                                         int               term_sig,
                                         GTask            *task)
 {
+  PtyxisApplication *self = PTYXIS_APPLICATION_DEFAULT;
+
   g_assert (PTYXIS_IPC_IS_PROCESS (process));
   g_assert (G_IS_TASK (task));
 
-  g_hash_table_remove (PTYXIS_APPLICATION_DEFAULT->exited,
-                       g_dbus_proxy_get_object_path (G_DBUS_PROXY (process)));
+  if (self->exited != NULL)
+    g_hash_table_remove (self->exited,
+                         g_dbus_proxy_get_object_path (G_DBUS_PROXY (process)));
 
   wait_complete (task, 0, term_sig, NULL);
 }
