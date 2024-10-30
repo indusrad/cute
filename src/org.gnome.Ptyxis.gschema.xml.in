@@ -484,6 +484,12 @@
       <description>Shortcut to close all tabs in the window but the current one</description>
     </key>
 
+    <key name="close-window" type="s">
+      <default>'&lt;ctrl&gt;&lt;shift&gt;q'</default>
+      <summary>Close Window</summary>
+      <description>Shortcut to close the current window</description>
+    </key>
+
     <key name="focus-tab-1" type="s">
       <default>'&lt;alt&gt;1'</default>
       <summary>Focus Tab 1</summary>

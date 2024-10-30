@@ -86,6 +86,7 @@ struct _PtyxisPreferencesWindow
   GListModel           *scrollbar_policies;
   PtyxisShortcutRow    *shortcut_close_other_tabs;
   PtyxisShortcutRow    *shortcut_close_tab;
+  PtyxisShortcutRow    *shortcut_close_window;
   PtyxisShortcutRow    *shortcut_copy_clipboard;
   PtyxisShortcutRow    *shortcut_detach_tab;
   PtyxisShortcutRow    *shortcut_focus_tab_10;
@@ -859,6 +860,9 @@ ptyxis_preferences_window_constructed (GObject *object)
   g_object_bind_property (shortcuts, "undo-close-tab",
                           self->shortcut_undo_close_tab, "accelerator",
                           G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
+  g_object_bind_property (shortcuts, "close-window",
+                          self->shortcut_close_window, "accelerator",
+                          G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
 
   g_object_bind_property (shortcuts, "move-next-tab",
                           self->shortcut_move_next_tab, "accelerator",
@@ -993,6 +997,7 @@ ptyxis_preferences_window_class_init (PtyxisPreferencesWindowClass *klass)
   gtk_widget_class_bind_template_child (widget_class, PtyxisPreferencesWindow, scrollbar_policy);
   gtk_widget_class_bind_template_child (widget_class, PtyxisPreferencesWindow, shortcut_close_other_tabs);
   gtk_widget_class_bind_template_child (widget_class, PtyxisPreferencesWindow, shortcut_close_tab);
+  gtk_widget_class_bind_template_child (widget_class, PtyxisPreferencesWindow, shortcut_close_window);
   gtk_widget_class_bind_template_child (widget_class, PtyxisPreferencesWindow, shortcut_copy_clipboard);
   gtk_widget_class_bind_template_child (widget_class, PtyxisPreferencesWindow, shortcut_detach_tab);
   gtk_widget_class_bind_template_child (widget_class, PtyxisPreferencesWindow, shortcut_focus_tab_1);

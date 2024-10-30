@@ -691,17 +691,28 @@
         </child>
         <child>
           <object class="AdwPreferencesGroup">
+            <property name="title" translatable="yes">Windows</property>
+            <child>
+              <object class="PtyxisShortcutRow" id="shortcut_new_window">
+                <property name="title" translatable="yes">New Window</property>
+                <property name="subtitle" translatable="yes">Open a new tab in a new window</property>
+              </object>
+            </child>
+            <child>
+              <object class="PtyxisShortcutRow" id="shortcut_close_window">
+                <property name="title" translatable="yes">Close Window</property>
+                <property name="subtitle" translatable="yes">Close the current window</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
             <property name="title" translatable="yes">Tabs</property>
             <child>
               <object class="PtyxisShortcutRow" id="shortcut_new_tab">
                 <property name="title" translatable="yes">New Tab</property>
                 <property name="subtitle" translatable="yes">Open a new tab in the current window</property>
-              </object>
-            </child>
-            <child>
-              <object class="PtyxisShortcutRow" id="shortcut_new_window">
-                <property name="title" translatable="yes">New Window</property>
-                <property name="subtitle" translatable="yes">Open a new tab in a new window</property>
               </object>
             </child>
           </object>

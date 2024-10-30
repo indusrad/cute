@@ -217,6 +217,16 @@
         <child>
           <object class="GtkShortcut">
             <binding name="trigger">
+              <lookup name="close-window" type="PtyxisShortcuts">
+                <lookup name="shortcuts">PtyxisWindow</lookup>
+              </lookup>
+            </binding>
+            <property name="action">action(window.close)</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkShortcut">
+            <binding name="trigger">
               <lookup name="focus-tab-1" type="PtyxisShortcuts">
                 <lookup name="shortcuts">PtyxisWindow</lookup>
               </lookup>
