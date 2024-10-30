@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ptyxis main\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/chergert/ptyxis/issues\n"
-"POT-Creation-Date: 2024-10-20 15:05+0000\n"
-"PO-Revision-Date: 2024-10-20 21:26+0300\n"
+"POT-Creation-Date: 2024-10-29 21:19+0000\n"
+"PO-Revision-Date: 2024-10-30 17:39+0200\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -852,12 +852,14 @@ msgid "New terminal tab in active window"
 msgstr "Нова вкладка термінала в активному вікні з використанням ПРОФІЛЮ"
 
 #: src/ptyxis-application.c:1001
-msgid "New terminal tab in active window using PROFILE"
-msgstr "Нова вкладка термінала в активному вікні з використанням ПРОФІЛЮ"
+#| msgid "New terminal tab in active window using PROFILE"
+msgid "New terminal tab in active window using the profile UUID"
+msgstr "Нова вкладка термінала в активному вікні з використанням UUID профілю"
 
 #: src/ptyxis-application.c:1001
-msgid "PROFILE"
-msgstr "ПРОФІЛЬ"
+#| msgid "PROFILE"
+msgid "PROFILE_UUID"
+msgstr "UUID_ПРОФІЛЮ"
 
 #: src/ptyxis-application.c:1003
 msgid "Set title for new tab"
@@ -913,12 +915,10 @@ msgid "Unknown Container"
 msgstr "Невідомий контейнер"
 
 #: src/ptyxis-find-bar.ui:68
-#| msgid "Search Options"
 msgid "Search Up"
 msgstr "Шукати вгору"
 
 #: src/ptyxis-find-bar.ui:75
-#| msgid "Search Options"
 msgid "Search Down"
 msgstr "Шукати вниз"
 
@@ -1654,7 +1654,6 @@ msgid "_Inspect Terminal"
 msgstr "_Інспектувати термінал"
 
 #: src/ptyxis-theme-selector.ui:21
-#| msgid "Follow system style"
 msgid "Follow System Style"
 msgstr "Використовувати стиль системи"
 
@@ -1663,7 +1662,6 @@ msgid "Follow system style"
 msgstr "Використовувати стиль системи"
 
 #: src/ptyxis-theme-selector.ui:37
-#| msgid "Light style"
 msgid "Light Style"
 msgstr "Світлий стиль"
 
@@ -1672,7 +1670,6 @@ msgid "Light style"
 msgstr "Світлий стиль"
 
 #: src/ptyxis-theme-selector.ui:54
-#| msgid "Dark style"
 msgid "Dark Style"
 msgstr "Темний стиль"
 
