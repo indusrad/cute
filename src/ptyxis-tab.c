@@ -1811,7 +1811,8 @@ ptyxis_tab_open_uri_cb (GObject      *object,
   g_assert (G_IS_ASYNC_RESULT (result));
   g_assert (PTYXIS_IS_TAB (self));
 
-  if (!xdp_portal_open_uri_finish (XDP_PORTAL (object), result, &error))
+  if (!xdp_portal_open_uri_finish (XDP_PORTAL (object), result, &error) &&
+      !g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
     ptyxis_tab_toast (self, 3, _("Failed to open link"));
 }
 
