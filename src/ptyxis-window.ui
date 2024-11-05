@@ -581,6 +581,7 @@
     </section>
     <section>
       <item>
+        <attribute name="id">set-title</attribute>
         <attribute name="label" translatable="yes">Set Title</attribute>
         <attribute name="action">win.set-title</attribute>
       </item>
