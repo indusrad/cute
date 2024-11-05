@@ -491,7 +491,7 @@
     </key>
 
     <key name="set-title" type="s">
-      <default>'&lt;crtl&gt;&lt;shift&gt;e'</default>
+      <default>''</default>
       <summary>Set Title</summary>
       <description>The shortcut to show set title</description>
     </key>
