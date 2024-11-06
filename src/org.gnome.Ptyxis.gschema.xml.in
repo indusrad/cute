@@ -490,6 +490,12 @@
       <description>Shortcut to close the current window</description>
     </key>
 
+    <key name="set-title" type="s">
+      <default>''</default>
+      <summary>Set Title</summary>
+      <description>The shortcut to show set title</description>
+    </key>
+
     <key name="focus-tab-1" type="s">
       <default>'&lt;alt&gt;1'</default>
       <summary>Focus Tab 1</summary>

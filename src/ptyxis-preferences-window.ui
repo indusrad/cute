@@ -708,6 +708,15 @@
         </child>
         <child>
           <object class="AdwPreferencesGroup">
+            <child>
+              <object class="PtyxisShortcutRow" id="shortcut_set_title">
+                <property name="title" translatable="yes">Set Title</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
             <property name="title" translatable="yes">Tabs</property>
             <child>
               <object class="PtyxisShortcutRow" id="shortcut_new_tab">
@@ -958,3 +967,4 @@
     </child>
   </object>
 </interface>
+

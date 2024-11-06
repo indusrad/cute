@@ -107,6 +107,7 @@ struct _PtyxisPreferencesWindow
   PtyxisShortcutRow    *shortcut_new_window;
   PtyxisShortcutRow    *shortcut_paste_clipboard;
   PtyxisShortcutRow    *shortcut_popup_menu;
+  PtyxisShortcutRow    *shortcut_set_title;
   PtyxisShortcutRow    *shortcut_preferences;
   PtyxisShortcutRow    *shortcut_primary_menu;
   PtyxisShortcutRow    *shortcut_reset;
@@ -841,6 +842,10 @@ ptyxis_preferences_window_constructed (GObject *object)
                           self->shortcut_popup_menu, "accelerator",
                           G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
 
+  g_object_bind_property (shortcuts, "set-title",
+                          self->shortcut_set_title, "accelerator",
+                          G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
+
   g_object_bind_property (shortcuts, "zoom-in",
                           self->shortcut_zoom_in, "accelerator",
                           G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
@@ -1018,6 +1023,7 @@ ptyxis_preferences_window_class_init (PtyxisPreferencesWindowClass *klass)
   gtk_widget_class_bind_template_child (widget_class, PtyxisPreferencesWindow, shortcut_new_window);
   gtk_widget_class_bind_template_child (widget_class, PtyxisPreferencesWindow, shortcut_paste_clipboard);
   gtk_widget_class_bind_template_child (widget_class, PtyxisPreferencesWindow, shortcut_popup_menu);
+  gtk_widget_class_bind_template_child (widget_class, PtyxisPreferencesWindow, shortcut_set_title);
   gtk_widget_class_bind_template_child (widget_class, PtyxisPreferencesWindow, shortcut_preferences);
   gtk_widget_class_bind_template_child (widget_class, PtyxisPreferencesWindow, shortcut_primary_menu);
   gtk_widget_class_bind_template_child (widget_class, PtyxisPreferencesWindow, shortcut_reset);
