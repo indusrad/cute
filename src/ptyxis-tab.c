@@ -627,7 +627,17 @@ ptyxis_tab_dup_icon (PtyxisTab *self)
         const char *icon_name;
 
         if (!(container = ptyxis_tab_discover_container (self)))
-          g_set_object (&container, self->container_at_creation);
+          {
+            if (!g_set_object (&container, self->container_at_creation))
+              {
+                if (self->profile != NULL)
+                {
+                  g_autofree char *profile_uuid = ptyxis_profile_dup_default_container (self->profile);
+
+                  container = ptyxis_application_lookup_container (PTYXIS_APPLICATION_DEFAULT, profile_uuid);
+                }
+              }
+          }
 
         if (container != NULL &&
             (icon_name = ptyxis_ipc_container_get_icon_name (container)) &&
