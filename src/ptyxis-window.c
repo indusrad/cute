@@ -1078,6 +1078,18 @@ ptyxis_window_primary_menu_action (GtkWidget  *widget,
 }
 
 static void
+ptyxis_window_tab_menu_action (GtkWidget  *widget,
+                               const char *action_name,
+                               GVariant   *param)
+{
+  PtyxisWindow *self = (PtyxisWindow *)widget;
+
+  g_assert (PTYXIS_IS_WINDOW (self));
+
+  gtk_menu_button_popup (self->new_terminal_menu_button);
+}
+
+static void
 ptyxis_window_close_request_cb (GObject      *object,
                                 GAsyncResult *result,
                                 gpointer      user_data)
@@ -1541,6 +1553,7 @@ ptyxis_window_class_init (PtyxisWindowClass *klass)
   gtk_widget_class_bind_template_callback (widget_class, ptyxis_window_tab_overview_create_tab_cb);
 
   gtk_widget_class_install_action (widget_class, "win.primary-menu", NULL, ptyxis_window_primary_menu_action);
+  gtk_widget_class_install_action (widget_class, "win.tab-menu", NULL, ptyxis_window_tab_menu_action);
   gtk_widget_class_install_action (widget_class, "win.new-tab", "(ss)", ptyxis_window_new_tab_action);
   gtk_widget_class_install_action (widget_class, "win.new-window", "(ss)", ptyxis_window_new_window_action);
   gtk_widget_class_install_action (widget_class, "win.new-terminal", "(ss)", ptyxis_window_new_terminal_action);

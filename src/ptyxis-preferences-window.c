@@ -110,6 +110,7 @@ struct _PtyxisPreferencesWindow
   PtyxisShortcutRow    *shortcut_set_title;
   PtyxisShortcutRow    *shortcut_preferences;
   PtyxisShortcutRow    *shortcut_primary_menu;
+  PtyxisShortcutRow    *shortcut_tab_menu;
   PtyxisShortcutRow    *shortcut_reset;
   PtyxisShortcutRow    *shortcut_reset_and_clear;
   PtyxisShortcutRow    *shortcut_search;
@@ -812,6 +813,9 @@ ptyxis_preferences_window_constructed (GObject *object)
   g_object_bind_property (shortcuts, "primary-menu",
                           self->shortcut_primary_menu, "accelerator",
                           G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
+  g_object_bind_property (shortcuts, "tab-menu",
+                          self->shortcut_tab_menu, "accelerator",
+                          G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
 
   g_object_bind_property (shortcuts, "copy-clipboard",
                           self->shortcut_copy_clipboard, "accelerator",
@@ -1026,6 +1030,7 @@ ptyxis_preferences_window_class_init (PtyxisPreferencesWindowClass *klass)
   gtk_widget_class_bind_template_child (widget_class, PtyxisPreferencesWindow, shortcut_set_title);
   gtk_widget_class_bind_template_child (widget_class, PtyxisPreferencesWindow, shortcut_preferences);
   gtk_widget_class_bind_template_child (widget_class, PtyxisPreferencesWindow, shortcut_primary_menu);
+  gtk_widget_class_bind_template_child (widget_class, PtyxisPreferencesWindow, shortcut_tab_menu);
   gtk_widget_class_bind_template_child (widget_class, PtyxisPreferencesWindow, shortcut_reset);
   gtk_widget_class_bind_template_child (widget_class, PtyxisPreferencesWindow, shortcut_reset_and_clear);
   gtk_widget_class_bind_template_child (widget_class, PtyxisPreferencesWindow, shortcut_search);

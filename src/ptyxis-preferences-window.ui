@@ -888,6 +888,12 @@
               </object>
             </child>
             <child>
+              <object class="PtyxisShortcutRow" id="shortcut_tab_menu">
+                <property name="title" translatable="yes">Show New Tab Menu</property>
+                <property name="subtitle" translatable="yes">Displays the new tab menu for the terminal window</property>
+              </object>
+            </child>
+            <child>
               <object class="PtyxisShortcutRow" id="shortcut_preferences">
                 <property name="title" translatable="yes">Preferences</property>
                 <property name="subtitle" translatable="yes">Show this preferences window</property>

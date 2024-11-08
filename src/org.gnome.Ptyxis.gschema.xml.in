@@ -442,6 +442,12 @@
       <description>Shortcut to show the primary menu for the window</description>
     </key>
 
+    <key name="tab-menu" type="s">
+      <default>''</default>
+      <summary>Tab Menu</summary>
+      <description>Shortcut to show the new tab menu</description>
+    </key>
+
     <key name="move-previous-tab" type="s">
       <default>'&lt;ctrl&gt;Page_Up'</default>
       <summary>Move to Previous Tab</summary>

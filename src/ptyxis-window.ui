@@ -42,6 +42,16 @@
         <child>
           <object class="GtkShortcut">
             <binding name="trigger">
+              <lookup name="tab-menu" type="PtyxisShortcuts">
+                <lookup name="shortcuts">PtyxisWindow</lookup>
+              </lookup>
+            </binding>
+            <property name="action">action(win.tab-menu)</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkShortcut">
+            <binding name="trigger">
               <lookup name="set-title" type="PtyxisShortcuts">
                 <lookup name="shortcuts">PtyxisWindow</lookup>
               </lookup>
