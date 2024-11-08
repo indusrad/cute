@@ -46,6 +46,7 @@ G_BEGIN_DECLS
 #define PTYXIS_SETTING_KEY_VISUAL_BELL             "visual-bell"
 #define PTYXIS_SETTING_KEY_VISUAL_PROCESS_LEADER   "visual-process-leader"
 #define PTYXIS_SETTING_KEY_DISABLE_PADDING         "disable-padding"
+#define PTYXIS_SETTING_KEY_WORD_CHAR_EXCEPTIONS    "word-char-exceptions"
 
 typedef enum _PtyxisNewTabPosition
 {
@@ -140,5 +141,6 @@ void                    ptyxis_settings_set_toast_on_copy_clipboard (PtyxisSetti
 gboolean                ptyxis_settings_get_disable_padding         (PtyxisSettings             *self);
 void                    ptyxis_settings_set_disable_padding         (PtyxisSettings             *self,
                                                                      gboolean                    disable_padding);
+char                   *ptyxis_settings_dup_word_char_exceptions    (PtyxisSettings             *self);
 
 G_END_DECLS

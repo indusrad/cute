@@ -150,6 +150,12 @@
       <description>The default blink mode cursor</description>
     </key>
 
+    <key name="word-char-exceptions" type="ms">
+      <default>nothing</default>
+      <summary>List of punctuation characters that are treated as word characters</summary>
+      <description>By default, when doing word-wise selection, most punctuation breaks up word boundaries. This list of exceptions will instead be treated as part of the word.</description>
+    </key>
+
     <key name="scrollbar-policy" enum="@APP_SCHEMA_ID@.ScrollbarPolicy">
       <default>'system'</default>
       <summary>Scrollbar Policy</summary>
