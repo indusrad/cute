@@ -57,6 +57,7 @@ enum {
   PROP_USE_SYSTEM_FONT,
   PROP_VISUAL_BELL,
   PROP_VISUAL_PROCESS_LEADER,
+  PROP_WORD_CHAR_EXCEPTIONS,
   N_PROPS
 };
 
@@ -119,6 +120,8 @@ ptyxis_settings_changed_cb (PtyxisSettings *self,
       g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_USE_SYSTEM_FONT]);
       g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_FONT_DESC]);
     }
+  else if (g_str_equal (key, PTYXIS_SETTING_KEY_WORD_CHAR_EXCEPTIONS))
+    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_WORD_CHAR_EXCEPTIONS]);
 }
 
 static void
@@ -485,6 +488,13 @@ ptyxis_settings_class_init (PtyxisSettingsClass *klass)
                           (G_PARAM_READWRITE |
                            G_PARAM_EXPLICIT_NOTIFY |
                            G_PARAM_STATIC_STRINGS));
+
+  properties[PROP_WORD_CHAR_EXCEPTIONS] =
+    g_param_spec_string ("word-char-exceptions", NULL, NULL,
+                         NULL,
+                         (G_PARAM_READWRITE |
+                          G_PARAM_EXPLICIT_NOTIFY |
+                          G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_properties (object_class, N_PROPS, properties);
 }
@@ -1026,4 +1036,15 @@ ptyxis_settings_get_disable_padding (PtyxisSettings *self)
 
   return g_settings_get_boolean (self->settings,
                                  PTYXIS_SETTING_KEY_DISABLE_PADDING);
+}
+
+char *
+ptyxis_settings_dup_word_char_exceptions (PtyxisSettings *self)
+{
+  char *word_char_exceptions;
+
+  g_return_val_if_fail (PTYXIS_IS_SETTINGS (self), NULL);
+
+  g_settings_get (self->settings, PTYXIS_SETTING_KEY_WORD_CHAR_EXCEPTIONS, "ms", &word_char_exceptions);
+  return word_char_exceptions;
 }

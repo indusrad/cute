@@ -733,6 +733,20 @@ ptyxis_tab_update_padding_cb (PtyxisTab      *self,
 }
 
 static void
+ptyxis_tab_update_word_char_exceptions (PtyxisTab      *self,
+                                        GParamSpec     *pspec,
+                                        PtyxisSettings *settings)
+{
+  g_autofree char *word_char_exceptions = NULL;
+
+  g_assert (PTYXIS_IS_TAB (self));
+  g_assert (PTYXIS_IS_SETTINGS (settings));
+
+  word_char_exceptions = ptyxis_settings_dup_word_char_exceptions (settings);
+  vte_terminal_set_word_char_exceptions (VTE_TERMINAL (self->terminal), word_char_exceptions);
+}
+
+static void
 ptyxis_tab_constructed (GObject *object)
 {
   PtyxisTab *self = (PtyxisTab *)object;
@@ -790,6 +804,13 @@ ptyxis_tab_constructed (GObject *object)
                            self,
                            G_CONNECT_SWAPPED);
   ptyxis_tab_update_scrollback_lines (self);
+
+  g_signal_connect_object (settings,
+                           "notify::word-char-exceptions",
+                           G_CALLBACK (ptyxis_tab_update_word_char_exceptions),
+                           self,
+                           G_CONNECT_SWAPPED);
+  ptyxis_tab_update_word_char_exceptions (self, NULL, settings);
 
   self->monitor = ptyxis_tab_monitor_new (self);
 }
