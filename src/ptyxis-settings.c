@@ -1048,3 +1048,23 @@ ptyxis_settings_dup_word_char_exceptions (PtyxisSettings *self)
   g_settings_get (self->settings, PTYXIS_SETTING_KEY_WORD_CHAR_EXCEPTIONS, "ms", &word_char_exceptions);
   return word_char_exceptions;
 }
+
+void
+ptyxis_settings_set_prompt_on_close (PtyxisSettings *self,
+                                     gboolean        prompt_on_close)
+{
+  g_return_if_fail (PTYXIS_IS_SETTINGS (self));
+
+  g_settings_set_boolean (self->settings,
+                          PTYXIS_SETTING_KEY_PROMPT_ON_CLOSE,
+                          !!prompt_on_close);
+}
+
+gboolean
+ptyxis_settings_get_prompt_on_close (PtyxisSettings *self)
+{
+  g_return_val_if_fail (PTYXIS_IS_SETTINGS (self), FALSE);
+
+  return g_settings_get_boolean (self->settings,
+                                 PTYXIS_SETTING_KEY_PROMPT_ON_CLOSE);
+}

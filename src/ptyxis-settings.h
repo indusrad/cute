@@ -35,6 +35,7 @@ G_BEGIN_DECLS
 #define PTYXIS_SETTING_KEY_INTERFACE_STYLE         "interface-style"
 #define PTYXIS_SETTING_KEY_NEW_TAB_POSITION        "new-tab-position"
 #define PTYXIS_SETTING_KEY_PROFILE_UUIDS           "profile-uuids"
+#define PTYXIS_SETTING_KEY_PROMPT_ON_CLOSE         "prompt-on-close"
 #define PTYXIS_SETTING_KEY_RESTORE_SESSION         "restore-session"
 #define PTYXIS_SETTING_KEY_RESTORE_WINDOW_SIZE     "restore-window-size"
 #define PTYXIS_SETTING_KEY_DEFAULT_COLUMNS         "default-columns"
@@ -142,5 +143,8 @@ gboolean                ptyxis_settings_get_disable_padding         (PtyxisSetti
 void                    ptyxis_settings_set_disable_padding         (PtyxisSettings             *self,
                                                                      gboolean                    disable_padding);
 char                   *ptyxis_settings_dup_word_char_exceptions    (PtyxisSettings             *self);
+gboolean                ptyxis_settings_get_prompt_on_close         (PtyxisSettings             *self);
+void                    ptyxis_settings_set_prompt_on_close         (PtyxisSettings             *self,
+                                                                     gboolean                    prompt_on_close);
 
 G_END_DECLS

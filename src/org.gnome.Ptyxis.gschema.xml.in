@@ -222,6 +222,12 @@
       <description>Do not pad around the terminal emulator widget. Setting to true may have significant performance impacts.</description>
     </key>
 
+    <key name="prompt-on-close" type="b">
+      <default>true</default>
+      <summary>Prompt when active tab is closed</summary>
+      <description>If a tab (or window) is closed with active foreground processes, prompt the user for confirmation.</description>
+    </key>
+
   </schema>
 
   <schema id="@APP_SCHEMA_PROFILE_ID@">

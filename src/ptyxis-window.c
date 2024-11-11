@@ -139,6 +139,7 @@ ptyxis_window_close_page_cb (PtyxisWindow *self,
                              AdwTabView   *tab_view)
 {
   g_autoptr(GPtrArray) tabs = NULL;
+  PtyxisSettings *settings;
   PtyxisTab *tab;
 
   g_assert (PTYXIS_IS_WINDOW (self));
@@ -148,8 +149,10 @@ ptyxis_window_close_page_cb (PtyxisWindow *self,
   ptyxis_window_save_size (self);
 
   tab = PTYXIS_TAB (adw_tab_page_get_child (tab_page));
+  settings = ptyxis_application_get_settings (PTYXIS_APPLICATION_DEFAULT);
 
-  if (!ptyxis_tab_is_running (tab, NULL))
+  if (!ptyxis_tab_is_running (tab, NULL) ||
+      !ptyxis_settings_get_prompt_on_close (settings))
     {
       ptyxis_parking_lot_push (self->parking_lot, tab);
       gtk_window_set_default_size (GTK_WINDOW (self), -1, -1);
@@ -1127,6 +1130,7 @@ ptyxis_window_close_request (GtkWindow *window)
 {
   PtyxisWindow *self = (PtyxisWindow *)window;
   g_autoptr(GPtrArray) tabs = NULL;
+  PtyxisSettings *settings;
   guint n_pages;
 
   g_assert (PTYXIS_IS_WINDOW (self));
@@ -1135,6 +1139,11 @@ ptyxis_window_close_request (GtkWindow *window)
 
   if (!self->single_terminal_mode && is_last_window (self))
     ptyxis_application_save_session (PTYXIS_APPLICATION_DEFAULT);
+
+  /* Short-circuit if user dismissed guard rails */
+  settings = ptyxis_application_get_settings (PTYXIS_APPLICATION_DEFAULT);
+  if (!ptyxis_settings_get_prompt_on_close (settings))
+    return GDK_EVENT_PROPAGATE;
 
   tabs = g_ptr_array_new_with_free_func (g_object_unref);
   n_pages = adw_tab_view_get_n_pages (self->tab_view);
@@ -1152,10 +1161,10 @@ ptyxis_window_close_request (GtkWindow *window)
     return GDK_EVENT_PROPAGATE;
 
   _ptyxis_close_dialog_run_async (GTK_WINDOW (self),
-                                   tabs,
-                                   NULL,
-                                   ptyxis_window_close_request_cb,
-                                   g_object_ref (self));
+                                  tabs,
+                                  NULL,
+                                  ptyxis_window_close_request_cb,
+                                  g_object_ref (self));
 
   return GDK_EVENT_STOP;
 }
