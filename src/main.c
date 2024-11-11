@@ -20,6 +20,8 @@
 
 #include "config.h"
 
+#include <sys/resource.h>
+
 #include <glib/gi18n.h>
 
 #include "ptyxis-application.h"
@@ -106,6 +108,24 @@ warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\
     }
 }
 
+static void
+bump_to_max_fd_limit (void)
+{
+  struct rlimit limit;
+
+  if (getrlimit (RLIMIT_NOFILE, &limit) == 0)
+    {
+      limit.rlim_cur = limit.rlim_max;
+
+      if (setrlimit (RLIMIT_NOFILE, &limit) != 0)
+        g_warning ("Failed to set FD limit to %"G_GSSIZE_FORMAT"",
+                    (gssize)limit.rlim_max);
+      else
+        g_debug ("Set RLIMIT_NOFILE to %"G_GSSIZE_FORMAT"",
+                 (gssize)limit.rlim_max);
+    }
+}
+
 int
 main (int   argc,
       char *argv[])
@@ -126,6 +146,8 @@ main (int   argc,
 
   if (standalone)
     flags |= G_APPLICATION_NON_UNIQUE;
+
+  bump_to_max_fd_limit ();
 
   gtk_init ();
 
