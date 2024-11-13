@@ -60,6 +60,7 @@ struct _PtyxisApplication
   guint                has_restored_session : 1;
   guint                overlay_scrollbars : 1;
   guint                client_is_fallback : 1;
+  guint                maximize : 1;
 };
 
 static void ptyxis_application_about             (GSimpleAction *action,
@@ -123,6 +124,22 @@ ptyxis_application_new (const char        *application_id,
                        "application-id", application_id,
                        "flags", flags,
                        NULL);
+}
+
+static void
+maybe_maximize (PtyxisApplication *self,
+                PtyxisWindow      *window)
+{
+  g_assert (PTYXIS_IS_APPLICATION (self));
+  g_assert (PTYXIS_IS_WINDOW (window));
+
+  if (self->maximize)
+    {
+      /*  unset maximize so it doesn't stick unless it's added again */
+      self->maximize = FALSE;
+
+      gtk_window_maximize (GTK_WINDOW (window));
+    }
 }
 
 static inline GFile *
@@ -240,6 +257,8 @@ ptyxis_application_activate (GApplication *app)
       ptyxis_tab_set_title_prefix (tab, self->next_title_prefix);
       g_clear_pointer (&self->next_title_prefix, g_free);
 
+      maybe_maximize (self, window);
+
       gtk_window_present (GTK_WINDOW (window));
     }
 }
@@ -301,6 +320,7 @@ ptyxis_application_command_line (GApplication            *app,
   gboolean new_tab = FALSE;
   gboolean new_window = FALSE;
   gboolean did_restore = FALSE;
+  gboolean maximize = FALSE;
   int argc;
 
   g_assert (PTYXIS_IS_APPLICATION (self));
@@ -319,6 +339,9 @@ ptyxis_application_command_line (GApplication            *app,
   cwd = g_application_command_line_get_cwd (cmdline);
   dict = g_application_command_line_get_options_dict (cmdline);
   argv = g_application_command_line_get_arguments (cmdline, &argc);
+
+  if (g_variant_dict_lookup (dict, "maximize", "b", &maximize))
+    self->maximize = !!maximize;
 
   if (!g_variant_dict_lookup (dict, "tab", "b", &new_tab))
     new_tab = FALSE;
@@ -430,6 +453,8 @@ ptyxis_application_command_line (GApplication            *app,
           ptyxis_tab_set_initial_working_directory_uri (tab, cwd_uri);
           ptyxis_window_set_active_tab (window, tab);
 
+          maybe_maximize (self, window);
+
           gtk_window_present (GTK_WINDOW (window));
         }
       else
@@ -504,6 +529,8 @@ ptyxis_application_command_line (GApplication            *app,
       ptyxis_tab_set_title_prefix (tab, title);
       ptyxis_window_add_tab (window, tab);
       ptyxis_window_set_active_tab (window, tab);
+
+      maybe_maximize (self, window);
 
       gtk_window_present (GTK_WINDOW (window));
     }
@@ -1002,6 +1029,7 @@ ptyxis_application_init (PtyxisApplication *self)
     { "tab-with-profile", 0, 0, G_OPTION_ARG_STRING, NULL, N_("New terminal tab in active window using the profile UUID"), N_("PROFILE_UUID") },
 
     { "title", 0, 0, G_OPTION_ARG_STRING, NULL, N_("Set title for new tab") },
+    { "maximize", 0, 0, G_OPTION_ARG_NONE, NULL, N_("Maximize a newly created window") },
 
     { NULL }
   };
