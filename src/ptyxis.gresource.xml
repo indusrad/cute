@@ -43,8 +43,7 @@
     <file>palettes/xterm.palette</file>
 
     <!-- Extra Plettes -->
-    <file>palettes/3024 Day.palette</file>
-    <file>palettes/3024 Night.palette</file>
+    <file>palettes/3024.palette</file>
     <file>palettes/Aci.palette</file>
     <file>palettes/Aco.palette</file>
     <file>palettes/Adventure Time.palette</file>
@@ -55,20 +54,16 @@
     <file>palettes/Arthur.palette</file>
     <file>palettes/Atom.palette</file>
     <file>palettes/Aura.palette</file>
-    <file>palettes/Ayu Dark.palette</file>
-    <file>palettes/Ayu Light.palette</file>
+    <file>palettes/Ayu.palette</file>
     <file>palettes/Ayu Mirage.palette</file>
     <file>palettes/Azu.palette</file>
-    <file>palettes/Belafonte Day.palette</file>
-    <file>palettes/Belafonte Night.palette</file>
+    <file>palettes/Belafonte.palette</file>
     <file>palettes/Bim.palette</file>
     <file>palettes/Birds Of Paradise.palette</file>
     <file>palettes/Blazer.palette</file>
     <file>palettes/Bluloco Light.palette</file>
     <file>palettes/Bluloco Zsh Light.palette</file>
     <file>palettes/Borland.palette</file>
-    <file>palettes/Breath Darker.palette</file>
-    <file>palettes/Breath Light.palette</file>
     <file>palettes/Breath.palette</file>
     <file>palettes/Breath Silverfox.palette</file>
     <file>palettes/Breeze.palette</file>
@@ -103,8 +98,7 @@
     <file>palettes/Espresso Libre.palette</file>
     <file>palettes/Espresso.palette</file>
     <file>palettes/Everblush.palette</file>
-    <file>palettes/Everforest Dark.palette</file>
-    <file>palettes/Everforest Light.palette</file>
+    <file>palettes/Everforest.palette</file>
     <file>palettes/Fairy Floss Dark.palette</file>
     <file>palettes/Fairy Floss.palette</file>
     <file>palettes/Fishtank.palette</file>
@@ -117,13 +111,11 @@
     <file>palettes/Frontend Fun Forrest.palette</file>
     <file>palettes/Frontend Galaxy.palette</file>
     <file>palettes/Geohot.palette</file>
-    <file>palettes/Github Dark.palette</file>
-    <file>palettes/Github Light.palette</file>
+    <file>palettes/Github.palette</file>
     <file>palettes/GNOME Legacy.palette</file>
     <file>palettes/Gogh.palette</file>
     <file>palettes/Gooey.palette</file>
-    <file>palettes/Google Dark.palette</file>
-    <file>palettes/Google Light.palette</file>
+    <file>palettes/Google.palette</file>
     <file>palettes/Gotham.palette</file>
     <file>palettes/Grape.palette</file>
     <file>palettes/Grass.palette</file>
@@ -131,8 +123,7 @@
     <file>palettes/Gruvbox.palette</file>
     <file>palettes/Hardcore.palette</file>
     <file>palettes/Harper.palette</file>
-    <file>palettes/Hemisu Dark.palette</file>
-    <file>palettes/Hemisu Light.palette</file>
+    <file>palettes/Hemisu.palette</file>
     <file>palettes/Highway.palette</file>
     <file>palettes/Hipster Green.palette</file>
     <file>palettes/Homebrew Light.palette</file>
@@ -159,9 +150,8 @@
     <file>palettes/Lavandula.palette</file>
     <file>palettes/Liquid Carbon.palette</file>
     <file>palettes/Liquid Carbon Transparent.palette</file>
-    <file>palettes/Lunaria Dark.palette</file>
+    <file>palettes/Lunaria.palette</file>
     <file>palettes/Lunaria Eclipse.palette</file>
-    <file>palettes/Lunaria Light.palette</file>
     <file>palettes/Maia.palette</file>
     <file>palettes/Man Page.palette</file>
     <file>palettes/Mar.palette</file>
@@ -199,9 +189,8 @@
     <file>palettes/Oceanic Next.palette</file>
     <file>palettes/Ollie.palette</file>
     <file>palettes/Omni.palette</file>
-    <file>palettes/One Dark.palette</file>
+    <file>palettes/One.palette</file>
     <file>palettes/One Half Black.palette</file>
-    <file>palettes/One Light.palette</file>
     <file>palettes/Oxocarbon Dark.palette</file>
     <file>palettes/Palenight.palette</file>
     <file>palettes/Pali.palette</file>
@@ -209,8 +198,7 @@
     <file>palettes/Papercolor.palette</file>
     <file>palettes/Paraiso Dark.palette</file>
     <file>palettes/Paul Millr.palette</file>
-    <file>palettes/Pencil Dark.palette</file>
-    <file>palettes/Pencil Light.palette</file>
+    <file>palettes/Pencil.palette</file>
     <file>palettes/Peppermint.palette</file>
     <file>palettes/Pixiefloss.palette</file>
     <file>palettes/Pnevma.palette</file>
@@ -229,8 +217,7 @@
     <file>palettes/Sat.palette</file>
     <file>palettes/Seafoam Pastel.palette</file>
     <file>palettes/Sea Shells.palette</file>
-    <file>palettes/Selenized Dark.palette</file>
-    <file>palettes/Selenized Light.palette</file>
+    <file>palettes/Selenized.palette</file>
     <file>palettes/Seti.palette</file>
     <file>palettes/Shaman.palette</file>
     <file>palettes/Shel.palette</file>
@@ -240,8 +227,7 @@
     <file>palettes/Soft Server.palette</file>
     <file>palettes/Solarized Darcula.palette</file>
     <file>palettes/Solarized Dark Higher Contrast.palette</file>
-    <file>palettes/Solarized Dark.palette</file>
-    <file>palettes/Solarized Light.palette</file>
+    <file>palettes/Solarized.palette</file>
     <file>palettes/Sonokai.palette</file>
     <file>palettes/Spacedust.palette</file>
     <file>palettes/Spacegray Eighties Dull.palette</file>
