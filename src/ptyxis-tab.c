@@ -230,6 +230,19 @@ ptyxis_tab_update_scrollback_lines (PtyxisTab *self)
   vte_terminal_set_scrollback_lines (VTE_TERMINAL (self->terminal), scrollback_lines);
 }
 
+static void
+ptyxis_tab_update_cell_height_scale (PtyxisTab *self)
+{
+  double cell_height_scale = 1.0;
+
+  g_assert (PTYXIS_IS_TAB (self));
+
+  if (ptyxis_profile_get_cell_height_scale (self->profile))
+    cell_height_scale = ptyxis_profile_get_cell_height_scale (self->profile);
+
+  vte_terminal_set_cell_height_scale (VTE_TERMINAL (self->terminal), cell_height_scale);
+}
+
 static gboolean
 ptyxis_tab_grab_focus (GtkWidget *widget)
 {
@@ -804,6 +817,13 @@ ptyxis_tab_constructed (GObject *object)
                            self,
                            G_CONNECT_SWAPPED);
   ptyxis_tab_update_scrollback_lines (self);
+
+  g_signal_connect_object (G_OBJECT (self->profile),
+                           "notify::cell-height-scale",
+                           G_CALLBACK (ptyxis_tab_update_cell_height_scale),
+                           self,
+                           G_CONNECT_SWAPPED);
+  ptyxis_tab_update_cell_height_scale (self);
 
   g_signal_connect_object (settings,
                            "notify::word-char-exceptions",

@@ -53,6 +53,7 @@ struct _PtyxisPreferencesWindow
   AdwSwitchRow         *audible_bell;
   AdwComboRow          *backspace_binding;
   AdwSwitchRow         *bold_is_bright;
+  AdwSpinRow           *cell_height_scale;
   AdwComboRow          *cjk_ambiguous_width;
   GListModel           *cjk_ambiguous_widths;
   AdwComboRow          *cursor_blink_mode;
@@ -140,6 +141,23 @@ enum {
 };
 
 static GParamSpec *properties[N_PROPS];
+
+static gboolean
+ptyxis_preferences_window_spin_row_show_decimal_cb (PtyxisPreferencesWindow *self,
+                                                    AdwSpinRow              *spin)
+{
+  g_autofree char *text = NULL;
+  double value;
+
+  g_assert (PTYXIS_IS_PREFERENCES_WINDOW (self));
+  g_assert (ADW_IS_SPIN_ROW (spin));
+
+  value = adw_spin_row_get_value (spin);
+  text = g_strdup_printf ("%.1f", value);
+  gtk_editable_set_text (GTK_EDITABLE (spin), text);
+
+  return TRUE;
+}
 
 static void
 invalidate_filter (PtyxisPreferencesWindow *self)
@@ -494,6 +512,9 @@ ptyxis_preferences_window_notify_default_profile_cb (PtyxisPreferencesWindow *se
                           G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
   g_object_bind_property (profile, "bold-is-bright",
                           self->bold_is_bright, "active",
+                          G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
+  g_object_bind_property (profile, "cell-height-scale",
+                          self->cell_height_scale, "value",
                           G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
   g_object_bind_property (profile, "login-shell",
                           self->login_shell, "active",
@@ -973,6 +994,7 @@ ptyxis_preferences_window_class_init (PtyxisPreferencesWindowClass *klass)
   gtk_widget_class_bind_template_child (widget_class, PtyxisPreferencesWindow, audible_bell);
   gtk_widget_class_bind_template_child (widget_class, PtyxisPreferencesWindow, backspace_binding);
   gtk_widget_class_bind_template_child (widget_class, PtyxisPreferencesWindow, bold_is_bright);
+  gtk_widget_class_bind_template_child (widget_class, PtyxisPreferencesWindow, cell_height_scale);
   gtk_widget_class_bind_template_child (widget_class, PtyxisPreferencesWindow, cjk_ambiguous_width);
   gtk_widget_class_bind_template_child (widget_class, PtyxisPreferencesWindow, cjk_ambiguous_widths);
   gtk_widget_class_bind_template_child (widget_class, PtyxisPreferencesWindow, cursor_blink_mode);
@@ -1052,6 +1074,7 @@ ptyxis_preferences_window_class_init (PtyxisPreferencesWindowClass *klass)
 
   gtk_widget_class_bind_template_callback (widget_class, ptyxis_preferences_window_profile_row_activated_cb);
   gtk_widget_class_bind_template_callback (widget_class, ptyxis_preferences_window_show_all_cb);
+  gtk_widget_class_bind_template_callback (widget_class, ptyxis_preferences_window_spin_row_show_decimal_cb);
 
   gtk_widget_class_install_action (widget_class,
                                    "profile.add",
