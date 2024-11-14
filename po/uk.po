@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ptyxis main\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/chergert/ptyxis/issues\n"
-"POT-Creation-Date: 2024-11-11 18:15+0000\n"
-"PO-Revision-Date: 2024-11-12 17:10+0200\n"
+"POT-Creation-Date: 2024-11-13 20:34+0000\n"
+"PO-Revision-Date: 2024-11-14 19:04+0200\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -287,9 +287,9 @@ msgid ""
 "boundaries. This list of exceptions will instead be treated as part of the "
 "word."
 msgstr ""
-"Типово, при позначенні тексту за словами, більшість знаків пунктуації"
-" вважаються межами слів. Символи зі списку виключень вважатимуться частинами"
-" слова."
+"Типово, при позначенні тексту за словами, більшість знаків пунктуації "
+"вважаються межами слів. Символи зі списку виключень вважатимуться частинами "
+"слова."
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:161
 msgid "Scrollbar Policy"
@@ -387,8 +387,8 @@ msgid ""
 "If a tab (or window) is closed with active foreground processes, prompt the "
 "user for confirmation."
 msgstr ""
-"Якщо користувач закриває вкладку (або вікно) активними основними процесами,"
-" просити підтвердити дію."
+"Якщо користувач закриває вкладку (або вікно) активними основними процесами, "
+"просити підтвердити дію."
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:237
 msgid "Label"
@@ -856,37 +856,37 @@ msgstr "Скасувати закриття вкладки"
 msgid "Undo closing of last tab"
 msgstr "Скасувати закриття останньої вкладки"
 
-#: src/ptyxis-application.c:339
+#: src/ptyxis-application.c:362
 msgid "--tab, --tab-with-profile, or --new-window may not be used together"
 msgstr ""
 "--tab, --tab-with-profile і --new-window не можна використовувати одночасно"
 
-#: src/ptyxis-application.c:385
+#: src/ptyxis-application.c:408
 #, c-format
 msgid "Cannot parse command: %s"
 msgstr "Не вдалося обробити команду: %s"
 
-#: src/ptyxis-application.c:984
+#: src/ptyxis-application.c:1011
 msgid "Examples:"
 msgstr "Приклади:"
 
-#: src/ptyxis-application.c:986
+#: src/ptyxis-application.c:1013
 msgid "Show the application preferences"
 msgstr "Показати налаштування програми"
 
 #. Used for new tabs/windows/etc when specified
-#: src/ptyxis-application.c:989
+#: src/ptyxis-application.c:1016
 msgid "Use DIR for --tab, --tab-with-profile, --new-window, or -x"
 msgstr "Використати DIR для --tab, --tab-with-profile, --new-window або -x"
 
-#: src/ptyxis-application.c:989
+#: src/ptyxis-application.c:1016
 msgid "DIR"
 msgstr "КАТАЛОГ"
 
 #. By default, this implies a new ptyxis instance unless the options
 #. * below are provided to override that.
 #.
-#: src/ptyxis-application.c:994
+#: src/ptyxis-application.c:1021
 msgid "Command to execute in new window"
 msgstr "Команда, яку слід виконати у новому вікні"
 
@@ -894,43 +894,47 @@ msgstr "Команда, яку слід виконати у новому вік�
 #. * short command options for these to make it easier to sniff them in early args
 #. * checking from `main.c`.
 #.
-#: src/ptyxis-application.c:1000
+#: src/ptyxis-application.c:1027
 msgid "New terminal window"
 msgstr "Нове вікно термінала"
 
-#: src/ptyxis-application.c:1001
+#: src/ptyxis-application.c:1028
 msgid "New terminal tab in active window"
 msgstr "Нова вкладка термінала в активному вікні з використанням ПРОФІЛЮ"
 
-#: src/ptyxis-application.c:1002
+#: src/ptyxis-application.c:1029
 msgid "New terminal tab in active window using the profile UUID"
 msgstr "Нова вкладка термінала в активному вікні з використанням UUID профілю"
 
-#: src/ptyxis-application.c:1002
+#: src/ptyxis-application.c:1029
 msgid "PROFILE_UUID"
 msgstr "UUID_ПРОФІЛЮ"
 
-#: src/ptyxis-application.c:1004
+#: src/ptyxis-application.c:1031
 msgid "Set title for new tab"
 msgstr "Встановити заголовок для нової вкладки"
 
-#: src/ptyxis-application.c:1011
+#: src/ptyxis-application.c:1032
+msgid "Maximize a newly created window"
+msgstr "Максимізувати новостворене вікно"
+
+#: src/ptyxis-application.c:1039
 msgid "Run Separate Instance"
 msgstr "Запустити окремий екземпляр"
 
-#: src/ptyxis-application.c:1015
+#: src/ptyxis-application.c:1043
 msgid "Open Preferences"
 msgstr "Відкрити налаштування"
 
-#: src/ptyxis-application.c:1019
+#: src/ptyxis-application.c:1047
 msgid "Run Custom Command in New Window"
 msgstr "Виконати нетипову команду у новому вікні"
 
-#: src/ptyxis-application.c:1023
+#: src/ptyxis-application.c:1051
 msgid "[-- COMMAND ARGUMENTS]"
 msgstr "[-- КОМАНДА АРГУМЕНТИ]"
 
-#: src/ptyxis-application.c:1261
+#: src/ptyxis-application.c:1289
 msgid "translator-credits"
 msgstr "Юрій Чорноіван <yurchor@ukr.net>, 2024"
 
