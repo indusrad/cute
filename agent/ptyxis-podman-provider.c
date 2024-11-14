@@ -43,6 +43,7 @@ typedef struct _LabelToType
 struct _PtyxisPodmanProvider
 {
   PtyxisContainerProvider parent_instance;
+  GFileMonitor *storage_monitor;
   GFileMonitor *monitor;
   GArray *label_to_type;
   guint queued_update;
@@ -55,6 +56,7 @@ ptyxis_podman_provider_constructed (GObject *object)
 {
   PtyxisPodmanProvider *self = (PtyxisPodmanProvider *)object;
   g_autoptr(GFile) file = NULL;
+  g_autoptr(GFile) storage_dir = NULL;
   g_autofree char *data_dir = NULL;
   g_autofree char *parent_dir = NULL;
 
@@ -66,6 +68,7 @@ ptyxis_podman_provider_constructed (GObject *object)
 
   g_assert (data_dir != NULL);
 
+  storage_dir = g_file_new_build_filename (data_dir, "containers", "storage", NULL);
   parent_dir = g_build_filename (data_dir, "containers", "storage", "overlay-containers", NULL);
   file = g_file_new_build_filename (parent_dir, "containers.json", NULL);
 
@@ -75,8 +78,25 @@ ptyxis_podman_provider_constructed (GObject *object)
    */
   g_mkdir_with_parents (parent_dir, 0700);
 
+  /* We have two files to monitor for potential updates. The containers.json
+   * file is primarily how we've done it. But if we have hopes to track the
+   * creation of containers via quadlet, we must monitor db.sql for changes.
+   *
+   * Since db.sql might not exist if we're the first to set things up, we
+   * track changes to the @storage_dir directory. We could filter on what
+   * files are changed there, but it isn't frequently changed and we delay
+   * three seconds, so that doesn't seem necessary.
+   */
+
   if ((self->monitor = g_file_monitor (file, G_FILE_MONITOR_NONE, NULL, NULL)))
     g_signal_connect_object (self->monitor,
+                             "changed",
+                             G_CALLBACK (ptyxis_podman_provider_queue_update),
+                             self,
+                             G_CONNECT_SWAPPED);
+
+  if ((self->storage_monitor = g_file_monitor_directory (storage_dir, G_FILE_MONITOR_NONE, NULL, NULL)))
+    g_signal_connect_object (self->storage_monitor,
                              "changed",
                              G_CALLBACK (ptyxis_podman_provider_queue_update),
                              self,
@@ -93,6 +113,7 @@ ptyxis_podman_provider_dispose (GObject *object)
   if (self->label_to_type->len > 0)
     g_array_remove_range (self->label_to_type, 0, self->label_to_type->len);
 
+  g_clear_object (&self->storage_monitor);
   g_clear_object (&self->monitor);
   g_clear_handle_id (&self->queued_update, g_source_remove);
 
