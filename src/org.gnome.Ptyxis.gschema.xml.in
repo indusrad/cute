@@ -330,6 +330,13 @@
       <description>Setting bold on one of the lower 8 colors in the palette will use bright variant (upper 8 colors)</description>
     </key>
 
+    <key name="cell-height-scale" type="d">
+      <default>1.0</default>
+      <range min="1.0" max="2.0"/>
+      <summary>Line Spacing</summary>
+      <description>The terminal’s cell height scale</description>
+    </key>
+
     <key name="cjk-ambiguous-width" enum="@APP_SCHEMA_ID@.CjkAmbiguousWidth">
       <default>'narrow'</default>
       <summary>CJK Ambiguous Width</summary>

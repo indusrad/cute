@@ -171,6 +171,24 @@
         <child>
           <object class="AdwPreferencesGroup">
             <child>
+              <object class="AdwSpinRow" id="cell_height_scale">
+                <property name="title" translatable="yes">Line Spacing</property>
+                <property name="adjustment">
+                  <object class="GtkAdjustment">
+                    <property name="lower">1.0</property>
+                    <property name="upper">2.0</property>
+                    <property name="step-increment">0.1</property>
+                    <property name="page-increment">0.5</property>
+                  </object>
+                </property>
+                <signal name="output" handler="ptyxis_preferences_window_spin_row_show_decimal_cb" swapped="true"/>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <child>
               <object class="AdwSwitchRow" id="bold_is_bright">
                 <property name="title" translatable="yes">Use Bright Colors for Bold</property>
               </object>

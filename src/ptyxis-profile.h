@@ -30,6 +30,7 @@ G_BEGIN_DECLS
 
 #define PTYXIS_PROFILE_KEY_BACKSPACE_BINDING   "backspace-binding"
 #define PTYXIS_PROFILE_KEY_BOLD_IS_BRIGHT      "bold-is-bright"
+#define PTYXIS_PROFILE_KEY_CELL_HEIGHT_SCALE   "cell-height-scale"
 #define PTYXIS_PROFILE_KEY_CJK_AMBIGUOUS_WIDTH "cjk-ambiguous-width"
 #define PTYXIS_PROFILE_KEY_CUSTOM_COMMAND      "custom-command"
 #define PTYXIS_PROFILE_KEY_DEFAULT_CONTAINER   "default-container"
@@ -103,6 +104,9 @@ void                     ptyxis_profile_set_scroll_on_output    (PtyxisProfile  
 gboolean                 ptyxis_profile_get_bold_is_bright      (PtyxisProfile            *self);
 void                     ptyxis_profile_set_bold_is_bright      (PtyxisProfile            *self,
                                                                  gboolean                  bold_is_bright);
+double                   ptyxis_profile_get_cell_height_scale   (PtyxisProfile            *self);
+void                     ptyxis_profile_set_cell_height_scale   (PtyxisProfile            *self,
+                                                                 double                    cell_height_scale);
 PtyxisExitAction         ptyxis_profile_get_exit_action         (PtyxisProfile            *self);
 void                     ptyxis_profile_set_exit_action         (PtyxisProfile            *self,
                                                                  PtyxisExitAction          exit_action);
