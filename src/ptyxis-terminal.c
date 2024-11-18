@@ -189,6 +189,7 @@ ptyxis_terminal_update_clipboard_actions (PtyxisTerminal *self)
   has_selection = vte_terminal_get_has_selection (VTE_TERMINAL (self));
 
   gtk_widget_action_set_enabled (GTK_WIDGET (self), "clipboard.copy", has_selection);
+  gtk_widget_action_set_enabled (GTK_WIDGET (self), "clipboard.copy-as-html", has_selection);
   gtk_widget_action_set_enabled (GTK_WIDGET (self), "clipboard.paste", can_paste);
 }
 
@@ -403,7 +404,13 @@ copy_clipboard_action (GtkWidget  *widget,
 {
   PtyxisTerminal *self = PTYXIS_TERMINAL (widget);
   GdkClipboard *clipboard = gtk_widget_get_clipboard (widget);
-  g_autofree char *text = vte_terminal_get_text_selected (VTE_TERMINAL (widget), VTE_FORMAT_TEXT);
+  g_autofree char *text = NULL;
+  VteFormat format = VTE_FORMAT_TEXT;
+
+  if (strstr (action_name, "copy-as-html"))
+    format = VTE_FORMAT_HTML;
+
+  text = vte_terminal_get_text_selected (VTE_TERMINAL (widget), format);
 
   if (text && text[0] != 0)
     {
@@ -1275,6 +1282,7 @@ ptyxis_terminal_class_init (PtyxisTerminalClass *klass)
   gtk_widget_class_bind_template_callback (widget_class, ptyxis_terminal_drop_target_drop);
 
   gtk_widget_class_install_action (widget_class, "clipboard.copy", NULL, copy_clipboard_action);
+  gtk_widget_class_install_action (widget_class, "clipboard.copy-as-html", NULL, copy_clipboard_action);
   gtk_widget_class_install_action (widget_class, "clipboard.copy-link", NULL, copy_link_address_action);
   gtk_widget_class_install_action (widget_class, "clipboard.paste", NULL, paste_clipboard_action);
   gtk_widget_class_install_action (widget_class, "terminal.open-link", NULL, open_link_action);

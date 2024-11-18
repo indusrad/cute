@@ -186,6 +186,12 @@
         <attribute name="action">clipboard.copy</attribute>
       </item>
       <item>
+        <attribute name="label" translatable="yes">Copy as _HTML</attribute>
+        <attribute name="description" translatable="yes">Copy selection from terminal to clipboard with HTML formatting</attribute>
+        <attribute name="action">clipboard.copy-as-html</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+      </item>
+      <item>
         <attribute name="label" translatable="yes">_Copy Link</attribute>
         <attribute name="action">clipboard.copy-link</attribute>
         <attribute name="hidden-when">action-disabled</attribute>
