@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ptyxis main\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/chergert/ptyxis/issues\n"
-"POT-Creation-Date: 2024-11-15 09:19+0000\n"
-"PO-Revision-Date: 2024-11-15 22:16+0200\n"
+"POT-Creation-Date: 2024-11-18 23:21+0000\n"
+"PO-Revision-Date: 2024-11-19 18:24+0200\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -947,27 +947,27 @@ msgstr "[-- КОМАНДА АРГУМЕНТИ]"
 msgid "translator-credits"
 msgstr "Юрій Чорноіван <yurchor@ukr.net>, 2024"
 
-#: src/ptyxis-close-dialog.c:110
+#: src/ptyxis-close-dialog.c:109
 msgid "_Close"
 msgstr "З_акрити"
 
-#: src/ptyxis-close-dialog.c:110
+#: src/ptyxis-close-dialog.c:109
 msgid "_Close All"
 msgstr "_Закрити все"
 
-#: src/ptyxis-close-dialog.c:112
+#: src/ptyxis-close-dialog.c:111
 msgid "Close Window?"
 msgstr "Закрити вікно?"
 
-#: src/ptyxis-close-dialog.c:113
+#: src/ptyxis-close-dialog.c:112
 msgid "Some processes are still running."
 msgstr "Усе ще запущено деякі процеси."
 
-#: src/ptyxis-close-dialog.c:117
+#: src/ptyxis-close-dialog.c:116
 msgid "_Cancel"
 msgstr "_Скасувати"
 
-#: src/ptyxis-close-dialog.c:147
+#: src/ptyxis-close-dialog.c:142
 #, c-format
 msgid "Process %d"
 msgstr "Процес %d"
@@ -1354,11 +1354,11 @@ msgstr "Скорочення"
 msgid "Clear Selection"
 msgstr "Зняти позначення"
 
-#: src/ptyxis-preferences-window.ui:682 src/ptyxis-terminal.ui:224
+#: src/ptyxis-preferences-window.ui:682 src/ptyxis-terminal.ui:230
 msgid "Reset"
 msgstr "Скинути"
 
-#: src/ptyxis-preferences-window.ui:687 src/ptyxis-terminal.ui:230
+#: src/ptyxis-preferences-window.ui:687 src/ptyxis-terminal.ui:236
 msgid "Reset and Clear"
 msgstr "Скинути та очистити"
 
@@ -1523,8 +1523,8 @@ msgstr "Вилучення TTY"
 msgid "Untitled Profile"
 msgstr "Профіль без назви"
 
-#: src/ptyxis-profile-editor.c:149 src/ptyxis-terminal.c:415
-#: src/ptyxis-terminal.c:450
+#: src/ptyxis-profile-editor.c:149 src/ptyxis-terminal.c:422
+#: src/ptyxis-terminal.c:457
 msgid "Copied to clipboard"
 msgstr "Скопійовано до буфера обміну"
 
@@ -1696,38 +1696,47 @@ msgid "Copy selection from terminal to clipboard"
 msgstr "Копіювати позначений текст з термінала до буфера"
 
 #: src/ptyxis-terminal.ui:189
+msgid "Copy as _HTML"
+msgstr "Копіювати як _HTML"
+
+#: src/ptyxis-terminal.ui:190
+#| msgid "Copy selection from terminal to clipboard"
+msgid "Copy selection from terminal to clipboard with HTML formatting"
+msgstr "Копіювати позначений текст з термінала до буфера з форматуванням HTML"
+
+#: src/ptyxis-terminal.ui:195
 msgid "_Copy Link"
 msgstr "_Копіювати посилання"
 
-#: src/ptyxis-terminal.ui:195
+#: src/ptyxis-terminal.ui:201
 msgid "_Paste"
 msgstr "Вст_авити"
 
-#: src/ptyxis-terminal.ui:196
+#: src/ptyxis-terminal.ui:202
 msgid "Paste from clipboard into the terminal"
 msgstr "Вставити з буфера обміну даними до термінала"
 
-#: src/ptyxis-terminal.ui:203
+#: src/ptyxis-terminal.ui:209
 msgid "Select _All"
 msgstr "Позначити _все"
 
-#: src/ptyxis-terminal.ui:204
+#: src/ptyxis-terminal.ui:210
 msgid "Selection all text from terminal including scrollback"
 msgstr "Позначити увесь текст у терміналі, разом із буфером гортання"
 
-#: src/ptyxis-terminal.ui:210
+#: src/ptyxis-terminal.ui:216
 msgid "Select _None"
 msgstr "С_касувати позначення"
 
-#: src/ptyxis-terminal.ui:217
+#: src/ptyxis-terminal.ui:223
 msgid "Read-Only"
 msgstr "Лише читання"
 
-#: src/ptyxis-terminal.ui:238 src/ptyxis-window.ui:541
+#: src/ptyxis-terminal.ui:244 src/ptyxis-window.ui:541
 msgid "Leave Fullscreen"
 msgstr "Вийти з повноекранного режиму"
 
-#: src/ptyxis-terminal.ui:244
+#: src/ptyxis-terminal.ui:250
 msgid "_Inspect Terminal"
 msgstr "_Інспектувати термінал"
 
