@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ptyxis main\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/chergert/ptyxis/issues\n"
-"POT-Creation-Date: 2024-11-14 21:50+0000\n"
-"PO-Revision-Date: 2024-11-15 17:17+0800\n"
+"POT-Creation-Date: 2024-11-18 23:21+0000\n"
+"PO-Revision-Date: 2024-11-19 09:03+0800\n"
 "Last-Translator: lumingzh <lumingzh@qq.com>\n"
 "Language-Team: Chinese (China) <i18n-zh@googlegroups.com>\n"
 "Language: zh_CN\n"
@@ -906,27 +906,27 @@ msgstr ""
 "SuGotLand <sugotland@outlook.com>, 2024.\n"
 "lumingzh <lumingzh@qq.com>, 2024."
 
-#: src/ptyxis-close-dialog.c:110
+#: src/ptyxis-close-dialog.c:109
 msgid "_Close"
 msgstr "关闭(_C)"
 
-#: src/ptyxis-close-dialog.c:110
+#: src/ptyxis-close-dialog.c:109
 msgid "_Close All"
 msgstr "全部关闭(_C)"
 
-#: src/ptyxis-close-dialog.c:112
+#: src/ptyxis-close-dialog.c:111
 msgid "Close Window?"
 msgstr "关闭窗口吗？"
 
-#: src/ptyxis-close-dialog.c:113
+#: src/ptyxis-close-dialog.c:112
 msgid "Some processes are still running."
 msgstr "某些进程仍在运行。"
 
-#: src/ptyxis-close-dialog.c:117
+#: src/ptyxis-close-dialog.c:116
 msgid "_Cancel"
 msgstr "取消(_C)"
 
-#: src/ptyxis-close-dialog.c:147
+#: src/ptyxis-close-dialog.c:142
 #, c-format
 msgid "Process %d"
 msgstr "进程 %d"
@@ -1311,11 +1311,11 @@ msgstr "快捷键"
 msgid "Clear Selection"
 msgstr "清除选区"
 
-#: src/ptyxis-preferences-window.ui:682 src/ptyxis-terminal.ui:224
+#: src/ptyxis-preferences-window.ui:682 src/ptyxis-terminal.ui:230
 msgid "Reset"
 msgstr "重置"
 
-#: src/ptyxis-preferences-window.ui:687 src/ptyxis-terminal.ui:230
+#: src/ptyxis-preferences-window.ui:687 src/ptyxis-terminal.ui:236
 msgid "Reset and Clear"
 msgstr "重置并清除"
 
@@ -1480,8 +1480,8 @@ msgstr "TTY 擦除"
 msgid "Untitled Profile"
 msgstr "无标题的配置文件"
 
-#: src/ptyxis-profile-editor.c:149 src/ptyxis-terminal.c:415
-#: src/ptyxis-terminal.c:450
+#: src/ptyxis-profile-editor.c:149 src/ptyxis-terminal.c:422
+#: src/ptyxis-terminal.c:457
 msgid "Copied to clipboard"
 msgstr "已复制到剪贴板"
 
@@ -1653,38 +1653,46 @@ msgid "Copy selection from terminal to clipboard"
 msgstr "从终端复制选区到剪贴板"
 
 #: src/ptyxis-terminal.ui:189
+msgid "Copy as _HTML"
+msgstr "复制为 _HTML"
+
+#: src/ptyxis-terminal.ui:190
+msgid "Copy selection from terminal to clipboard with HTML formatting"
+msgstr "以 HTML 格式从终端复制选区到剪贴板"
+
+#: src/ptyxis-terminal.ui:195
 msgid "_Copy Link"
 msgstr "复制链接(_C)"
 
-#: src/ptyxis-terminal.ui:195
+#: src/ptyxis-terminal.ui:201
 msgid "_Paste"
 msgstr "粘贴(_P)"
 
-#: src/ptyxis-terminal.ui:196
+#: src/ptyxis-terminal.ui:202
 msgid "Paste from clipboard into the terminal"
 msgstr "从剪贴板粘贴到终端"
 
-#: src/ptyxis-terminal.ui:203
+#: src/ptyxis-terminal.ui:209
 msgid "Select _All"
 msgstr "全选(_A)"
 
-#: src/ptyxis-terminal.ui:204
+#: src/ptyxis-terminal.ui:210
 msgid "Selection all text from terminal including scrollback"
 msgstr "选择终端上包括回滚的所有文本"
 
-#: src/ptyxis-terminal.ui:210
+#: src/ptyxis-terminal.ui:216
 msgid "Select _None"
 msgstr "不选(_N)"
 
-#: src/ptyxis-terminal.ui:217
+#: src/ptyxis-terminal.ui:223
 msgid "Read-Only"
 msgstr "只读"
 
-#: src/ptyxis-terminal.ui:238 src/ptyxis-window.ui:541
+#: src/ptyxis-terminal.ui:244 src/ptyxis-window.ui:541
 msgid "Leave Fullscreen"
 msgstr "退出全屏"
 
-#: src/ptyxis-terminal.ui:244
+#: src/ptyxis-terminal.ui:250
 msgid "_Inspect Terminal"
 msgstr "检查终端(_I)"
 
