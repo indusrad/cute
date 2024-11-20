@@ -74,7 +74,9 @@ enum {
   PROP_0,
   PROP_CURRENT_CONTAINER_NAME,
   PROP_CURRENT_CONTAINER_RUNTIME,
+  PROP_HAS_PROGRESS,
   PROP_PALETTE,
+  PROP_PROGRESS,
   PROP_SHORTCUTS,
   N_PROPS
 };
@@ -1150,6 +1152,23 @@ ptyxis_terminal_get_property (GObject    *object,
       g_value_set_object (value, ptyxis_terminal_get_palette (self));
       break;
 
+    case PROP_HAS_PROGRESS:
+      g_value_set_boolean (value,
+                           vte_terminal_get_termprop_uint_by_id (VTE_TERMINAL (self),
+                                                                 VTE_PROPERTY_ID_PROGRESS,
+                                                                 NULL));
+      break;
+
+    case PROP_PROGRESS: {
+      guint64 v64;
+
+      if (vte_terminal_get_termprop_uint_by_id (VTE_TERMINAL (self),
+                                                VTE_PROPERTY_ID_PROGRESS,
+                                                &v64))
+        g_value_set_double (value, CLAMP (v64 / 100.0, .0, 1.));
+      break;
+    }
+
     case PROP_SHORTCUTS:
       g_value_set_object (value, self->shortcuts);
       break;
@@ -1209,11 +1228,23 @@ ptyxis_terminal_class_init (PtyxisTerminalClass *klass)
                          (G_PARAM_READABLE |
                           G_PARAM_STATIC_STRINGS));
 
+  properties[PROP_HAS_PROGRESS] =
+    g_param_spec_boolean ("has-progress", NULL, NULL,
+                          FALSE,
+                          (G_PARAM_READABLE |
+                           G_PARAM_STATIC_STRINGS));
+
   properties[PROP_PALETTE] =
     g_param_spec_object ("palette", NULL, NULL,
                          PTYXIS_TYPE_PALETTE,
                          (G_PARAM_READWRITE |
                           G_PARAM_EXPLICIT_NOTIFY |
+                          G_PARAM_STATIC_STRINGS));
+
+  properties[PROP_PROGRESS] =
+    g_param_spec_double ("progress", NULL, NULL,
+                         .0, 1., 0.,
+                         (G_PARAM_READABLE |
                           G_PARAM_STATIC_STRINGS));
 
   properties[PROP_SHORTCUTS] =
@@ -1366,6 +1397,14 @@ ptyxis_terminal_init (PtyxisTerminal *self)
                     "termprop-changed::" VTE_TERMPROP_CONTAINER_RUNTIME,
                     G_CALLBACK (notify_property_changed),
                     properties[PROP_CURRENT_CONTAINER_RUNTIME]);
+  g_signal_connect (self,
+                    "termprop-changed::" VTE_TERMPROP_PROGRESS,
+                    G_CALLBACK (notify_property_changed),
+                    properties[PROP_PROGRESS]);
+  g_signal_connect (self,
+                    "termprop-changed::" VTE_TERMPROP_PROGRESS,
+                    G_CALLBACK (notify_property_changed),
+                    properties[PROP_HAS_PROGRESS]);
 
   g_signal_connect_object (gtk_widget_get_clipboard (GTK_WIDGET (self)),
                            "changed",

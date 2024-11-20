@@ -1,0 +1,77 @@
+From ebba800839a6f1a8026e217460497706836feed8 Mon Sep 17 00:00:00 2001
+From: Christian Hergert <chergert@redhat.com>
+Date: Tue, 19 Nov 2024 18:00:33 -0800
+Subject: [PATCH 1/2] termprops: add a progress termprop
+
+The idea here is to be able to do similar things as Windows Terminal with
+regards to progress tracking. Since termprops have the concept of if the
+value has been set (nullability), this does not need the different OSC for
+both reset and set-progress-value like ConEmu and Windows Terminal use.
+---
+ src/vte/vteenums.h   |  4 ++++
+ src/vte/vteglobals.h | 10 ++++++++++
+ src/vtegtk.cc        |  4 ++++
+ 3 files changed, 18 insertions(+)
+
+diff --git a/src/vte/vteenums.h b/src/vte/vteenums.h
+index 619b250f..bd317537 100644
+--- a/src/vte/vteenums.h
++++ b/src/vte/vteenums.h
+@@ -290,9 +290,12 @@ typedef enum {
+  * @VTE_PROPERTY_ID_SHELL_PRECMD: the ID of the %VTE_TERMPROP_SHELL_PRECMD termprop
+  * @VTE_PROPERTY_ID_SHELL_PREEXEC: the ID of the %VTE_TERMPROP_SHELL_PREEXEC termprop
+  * @VTE_PROPERTY_ID_SHELL_POSTEXEC: the ID of the %VTE_TERMPROP_SHELL_POSTEXEC termprop
++ * @VTE_PROPERTY_ID_PROGRESS: the ID of the %VTE_TERMPROP_PROGRESS termprop
+  *
+  * An enum containing the IDs of the always-installed termprops.
+  *
++ * @VTE_PROPERTY_ID_PROGRESS was added in 0.80.
++ *
+  * Since: 0.78
+  */
+ typedef enum {
+@@ -305,6 +308,7 @@ typedef enum {
+         VTE_PROPERTY_ID_SHELL_PRECMD,
+         VTE_PROPERTY_ID_SHELL_PREEXEC,
+         VTE_PROPERTY_ID_SHELL_POSTEXEC,
++        VTE_PROPERTY_ID_PROGRESS,
+ 	_VTE_PROPERTY_ID_MAX = 0x7ffffff, /*< skip >*/
+ } VtePropertyId;
+ 
+diff --git a/src/vte/vteglobals.h b/src/vte/vteglobals.h
+index 0de9929c..b575850a 100644
+--- a/src/vte/vteglobals.h
++++ b/src/vte/vteglobals.h
+@@ -180,4 +180,14 @@ gboolean vte_query_termprop_by_id(int prop,
+  */
+ #define VTE_TERMPROP_SHELL_POSTEXEC "vte.shell.postexec"
+ 
++/**
++ * VTE_TERMPROP_PROGRESS:
++ *
++ * A %VTE_PROPERTY_UINT termprop that stores the progress of the running
++ * command as a value between 0 and 100.
++ *
++ * Since: 0.80
++ */
++#define VTE_TERMPROP_PROGRESS "vte.progress"
++
+ G_END_DECLS
+diff --git a/src/vtegtk.cc b/src/vtegtk.cc
+index 4785112b..3f6db17e 100644
+--- a/src/vtegtk.cc
++++ b/src/vtegtk.cc
+@@ -3045,6 +3045,10 @@ vte_terminal_class_init(VteTerminalClass *klass)
+                           vte::terminal::TermpropType::UINT,
+                           vte::terminal::TermpropFlags::EPHEMERAL,
+                           VTE_PROPERTY_ID_SHELL_POSTEXEC },
++                        { VTE_TERMPROP_PROGRESS,
++                          vte::terminal::TermpropType::UINT,
++                          vte::terminal::TermpropFlags::NONE,
++                          VTE_PROPERTY_ID_PROGRESS },
+                 };
+ 
+                 for (auto i = 0u; i < G_N_ELEMENTS(builtin_termprops); ++i) {
+-- 
+2.47.0
+

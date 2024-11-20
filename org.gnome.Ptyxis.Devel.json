@@ -74,6 +74,14 @@
                     "type" : "git",
                     "url" : "https://gitlab.gnome.org/GNOME/vte.git",
                     "branch" : "master"
+                },
+                {
+                    "type" : "patch",
+                    "path" : "build-aux/0001-termprops-add-a-progress-termprop.patch"
+                },
+                {
+                    "type" : "patch",
+                    "path" : "build-aux/0002-osc-implement-9-4-OSC-for-progress-tracking.patch"
                 }
             ]
         },
