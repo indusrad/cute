@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ptyxis main\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/chergert/ptyxis/issues\n"
-"POT-Creation-Date: 2024-11-18 18:30+0000\n"
-"PO-Revision-Date: 2024-11-18 21:09+0100\n"
+"POT-Creation-Date: 2024-11-19 22:23+0000\n"
+"PO-Revision-Date: 2024-11-20 16:03+0100\n"
 "Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Slovenian <gnome-si@googlegroups.com>\n"
 "Language: sl\n"
@@ -1334,11 +1334,11 @@ msgstr "Tipkovne bližnjice:"
 msgid "Clear Selection"
 msgstr "Počisti izbor"
 
-#: src/ptyxis-preferences-window.ui:682 src/ptyxis-terminal.ui:224
+#: src/ptyxis-preferences-window.ui:682 src/ptyxis-terminal.ui:230
 msgid "Reset"
 msgstr "Ponastavi"
 
-#: src/ptyxis-preferences-window.ui:687 src/ptyxis-terminal.ui:230
+#: src/ptyxis-preferences-window.ui:687 src/ptyxis-terminal.ui:236
 msgid "Reset and Clear"
 msgstr "Ponastavi in počisti"
 
@@ -1503,8 +1503,8 @@ msgstr "Brisanje TTY"
 msgid "Untitled Profile"
 msgstr "Neimenovani profil"
 
-#: src/ptyxis-profile-editor.c:149 src/ptyxis-terminal.c:415
-#: src/ptyxis-terminal.c:450
+#: src/ptyxis-profile-editor.c:149 src/ptyxis-terminal.c:422
+#: src/ptyxis-terminal.c:457
 msgid "Copied to clipboard"
 msgstr "Kopirano na odložišče"
 
@@ -1677,38 +1677,46 @@ msgid "Copy selection from terminal to clipboard"
 msgstr "Kopira izbor iz terminala na odložišče"
 
 #: src/ptyxis-terminal.ui:189
+msgid "Copy as _HTML"
+msgstr "Kopiraj kot _HTML"
+
+#: src/ptyxis-terminal.ui:190
+msgid "Copy selection from terminal to clipboard with HTML formatting"
+msgstr "Kopirajte izbor iz terminala na odložišče z oblikovanjem HTML"
+
+#: src/ptyxis-terminal.ui:195
 msgid "_Copy Link"
 msgstr "Kopiraj _povezavo"
 
-#: src/ptyxis-terminal.ui:195
+#: src/ptyxis-terminal.ui:201
 msgid "_Paste"
 msgstr "_Prilepi"
 
-#: src/ptyxis-terminal.ui:196
+#: src/ptyxis-terminal.ui:202
 msgid "Paste from clipboard into the terminal"
 msgstr "Prilepi iz odložišča v terminal"
 
-#: src/ptyxis-terminal.ui:203
+#: src/ptyxis-terminal.ui:209
 msgid "Select _All"
 msgstr "_Izberi vse"
 
-#: src/ptyxis-terminal.ui:204
+#: src/ptyxis-terminal.ui:210
 msgid "Selection all text from terminal including scrollback"
 msgstr "Izbor celotnega besedila s terminala, vključno z drsenjem nazaj"
 
-#: src/ptyxis-terminal.ui:210
+#: src/ptyxis-terminal.ui:216
 msgid "Select _None"
 msgstr "_Brez izbora"
 
-#: src/ptyxis-terminal.ui:217
+#: src/ptyxis-terminal.ui:223
 msgid "Read-Only"
 msgstr "Samo za branje"
 
-#: src/ptyxis-terminal.ui:238 src/ptyxis-window.ui:541
+#: src/ptyxis-terminal.ui:244 src/ptyxis-window.ui:541
 msgid "Leave Fullscreen"
 msgstr "Zapusti celozaslonski način"
 
-#: src/ptyxis-terminal.ui:244
+#: src/ptyxis-terminal.ui:250
 msgid "_Inspect Terminal"
 msgstr "_Preuči terminal"
 
