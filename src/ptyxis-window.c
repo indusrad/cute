@@ -338,14 +338,15 @@ ptyxis_window_notify_selected_page_cb (PtyxisWindow *self,
 {
   g_autoptr(GPropertyAction) read_only = NULL;
   PtyxisTerminal *terminal = NULL;
-  AdwTabPage *page;
+  AdwTabPage *page = NULL;
   PtyxisTab *tab = NULL;
   gboolean has_page = FALSE;
 
   g_assert (PTYXIS_IS_WINDOW (self));
   g_assert (ADW_IS_TAB_VIEW (tab_view));
 
-  page = adw_tab_view_get_selected_page (self->tab_view);
+  if (self->tab_view != NULL)
+    page = adw_tab_view_get_selected_page (self->tab_view);
 
   g_signal_group_set_target (self->selected_page_signals, page);
 
