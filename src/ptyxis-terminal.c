@@ -1112,6 +1112,8 @@ ptyxis_terminal_dispose (GObject *object)
 {
   PtyxisTerminal *self = (PtyxisTerminal *)object;
 
+  g_debug ("Disposing %s @ %p", G_OBJECT_TYPE_NAME (self), object);
+
   gtk_widget_dispose_template (GTK_WIDGET (self), PTYXIS_TYPE_TERMINAL);
 
   g_clear_object (&self->palette);
