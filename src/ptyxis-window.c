@@ -149,6 +149,10 @@ ptyxis_window_close_page_cb (PtyxisWindow *self,
 
   tab = PTYXIS_TAB (adw_tab_page_get_child (tab_page));
 
+  /* If we are disposed, allow closing immediately */
+  if (self->disposed)
+    return GDK_EVENT_PROPAGATE;
+
   if (!ptyxis_tab_is_running (tab, NULL))
     {
       ptyxis_parking_lot_push (self->parking_lot, tab);
