@@ -1153,13 +1153,15 @@ ptyxis_window_close_request (GtkWindow *window)
   tabs = g_ptr_array_new_with_free_func (g_object_unref);
   n_pages = adw_tab_view_get_n_pages (self->tab_view);
 
-  for (guint i = 0; i < n_pages; i++)
+  for (guint i = n_pages; i > 0; i--)
     {
-      AdwTabPage *page = adw_tab_view_get_nth_page (self->tab_view, i);
+      AdwTabPage *page = adw_tab_view_get_nth_page (self->tab_view, i - 1);
       PtyxisTab *tab = PTYXIS_TAB (adw_tab_page_get_child (page));
 
       if (ptyxis_tab_is_running (tab, NULL))
         g_ptr_array_add (tabs, g_object_ref (tab));
+      else
+        adw_tab_view_close_page (self->tab_view, page);
     }
 
   if (tabs->len == 0)
