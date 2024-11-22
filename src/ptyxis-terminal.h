@@ -38,5 +38,7 @@ const char    *ptyxis_terminal_get_current_container_name    (PtyxisTerminal *se
 const char    *ptyxis_terminal_get_current_container_runtime (PtyxisTerminal *self);
 char          *ptyxis_terminal_dup_current_directory_uri     (PtyxisTerminal *self);
 char          *ptyxis_terminal_dup_current_file_uri          (PtyxisTerminal *self);
+gboolean       ptyxis_terminal_can_paste                     (PtyxisTerminal *self);
+void           ptyxis_terminal_paste                         (PtyxisTerminal *self);
 
 G_END_DECLS

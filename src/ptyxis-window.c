@@ -175,6 +175,80 @@ ptyxis_window_close_page_cb (PtyxisWindow *self,
   return GDK_EVENT_STOP;
 }
 
+static PtyxisTab *
+ptyxis_window_get_tab_at_tab_bar_point (PtyxisWindow     *self,
+                                        graphene_point_t *point)
+{
+  static GType tab_type = G_TYPE_INVALID;
+  g_autoptr(AdwTabPage) page = NULL;
+  GtkWidget *pick;
+  GtkWidget *child;
+
+  g_assert (PTYXIS_IS_WINDOW (self));
+  g_assert (point != NULL);
+
+  if (tab_type == G_TYPE_INVALID)
+    {
+      tab_type = g_type_from_name ("AdwTab");
+      g_assert (tab_type != G_TYPE_INVALID);
+    }
+
+  if (!(pick = gtk_widget_pick (GTK_WIDGET (self->tab_bar), point->x, point->y, GTK_PICK_DEFAULT)))
+    return NULL;
+
+  if (!G_TYPE_CHECK_INSTANCE_TYPE (pick, tab_type))
+    {
+      if (!(pick = gtk_widget_get_ancestor (pick, tab_type)))
+        return NULL;
+    }
+
+  g_object_get (pick, "page", &page, NULL);
+  g_assert (!page || ADW_IS_TAB_PAGE (page));
+
+  if (page == NULL ||
+      !(child = adw_tab_page_get_child (page)) ||
+      !PTYXIS_IS_TAB (child))
+    return NULL;
+
+  return PTYXIS_TAB (child);
+}
+
+static void
+ptyxis_window_tab_bar_click_pressed_cb (PtyxisWindow    *self,
+                                        guint            n_press,
+                                        double           x,
+                                        double           y,
+                                        GtkGestureClick *click)
+{
+  PtyxisTabMiddleClickBehavior behavior;
+  PtyxisSettings *settings;
+  PtyxisTab *tab;
+
+  g_assert (PTYXIS_IS_WINDOW (self));
+  g_assert (GTK_IS_GESTURE_CLICK (click));
+
+  settings = ptyxis_application_get_settings (PTYXIS_APPLICATION_DEFAULT);
+  behavior = ptyxis_settings_get_tab_middle_click (settings);
+
+  if (behavior == PTYXIS_TAB_MIDDLE_CLICK_CLOSE)
+    return;
+
+  if (!(tab = ptyxis_window_get_tab_at_tab_bar_point (self, &GRAPHENE_POINT_INIT (x, y))))
+    return;
+
+  ptyxis_window_set_active_tab (self, tab);
+
+  if (behavior == PTYXIS_TAB_MIDDLE_CLICK_PASTE)
+    {
+      PtyxisTerminal *terminal = ptyxis_tab_get_terminal (tab);
+
+      if (ptyxis_terminal_can_paste (terminal))
+        ptyxis_terminal_paste (terminal);
+    }
+
+  gtk_gesture_set_state (GTK_GESTURE (click), GTK_EVENT_SEQUENCE_CLAIMED);
+}
+
 static gboolean
 ptyxis_window_focus_active_tab_cb (gpointer data)
 {
@@ -1604,6 +1678,7 @@ static void
 ptyxis_window_init (PtyxisWindow *self)
 {
   g_autoptr(GIcon) default_icon = NULL;
+  GtkGestureClick *click;
 
   self->active_tab_bindings = g_binding_group_new ();
   self->profile_bindings = g_binding_group_new ();
@@ -1671,6 +1746,18 @@ ptyxis_window_init (PtyxisWindow *self)
                              self, "title",
                              G_BINDING_SYNC_CREATE,
                              bind_title_cb, NULL, NULL, NULL);
+
+  click = GTK_GESTURE_CLICK (gtk_gesture_click_new ());
+  gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (click), 2);
+  gtk_event_controller_set_propagation_phase (GTK_EVENT_CONTROLLER (click),
+                                              GTK_PHASE_CAPTURE);
+  g_signal_connect_object (click,
+                           "pressed",
+                           G_CALLBACK (ptyxis_window_tab_bar_click_pressed_cb),
+                           self,
+                           G_CONNECT_SWAPPED);
+  gtk_widget_add_controller (GTK_WIDGET (self->tab_bar),
+                             GTK_EVENT_CONTROLLER (g_steal_pointer (&click)));
 }
 
 PtyxisTab *

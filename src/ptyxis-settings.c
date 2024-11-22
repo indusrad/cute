@@ -52,6 +52,7 @@ enum {
   PROP_DEFAULT_COLUMNS,
   PROP_DEFAULT_ROWS,
   PROP_SCROLLBAR_POLICY,
+  PROP_TAB_MIDDLE_CLICK,
   PROP_TEXT_BLINK_MODE,
   PROP_TOAST_ON_COPY_CLIPBOARD,
   PROP_USE_SYSTEM_FONT,
@@ -94,6 +95,8 @@ ptyxis_settings_changed_cb (PtyxisSettings *self,
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_CURSOR_BLINK_MODE]);
   else if (g_str_equal (key, PTYXIS_SETTING_KEY_SCROLLBAR_POLICY))
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_SCROLLBAR_POLICY]);
+  else if (g_str_equal (key, PTYXIS_SETTING_KEY_TAB_MIDDLE_CLICK))
+    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_TAB_MIDDLE_CLICK]);
   else if (g_str_equal (key, PTYXIS_SETTING_KEY_TEXT_BLINK_MODE))
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_TEXT_BLINK_MODE]);
   else if (g_str_equal (key, PTYXIS_SETTING_KEY_INTERFACE_STYLE))
@@ -208,6 +211,10 @@ ptyxis_settings_get_property (GObject    *object,
       g_value_set_enum (value, ptyxis_settings_get_scrollbar_policy (self));
       break;
 
+    case PROP_TAB_MIDDLE_CLICK:
+      g_value_set_enum (value, ptyxis_settings_get_tab_middle_click (self));
+      break;
+
     case PROP_TEXT_BLINK_MODE:
       g_value_set_enum (value, ptyxis_settings_get_text_blink_mode (self));
       break;
@@ -301,6 +308,10 @@ ptyxis_settings_set_property (GObject      *object,
 
     case PROP_SCROLLBAR_POLICY:
       ptyxis_settings_set_scrollbar_policy (self, g_value_get_enum (value));
+      break;
+
+    case PROP_TAB_MIDDLE_CLICK:
+      ptyxis_settings_set_tab_middle_click (self, g_value_get_enum (value));
       break;
 
     case PROP_TEXT_BLINK_MODE:
@@ -449,6 +460,14 @@ ptyxis_settings_class_init (PtyxisSettingsClass *klass)
     g_param_spec_enum ("scrollbar-policy", NULL, NULL,
                        PTYXIS_TYPE_SCROLLBAR_POLICY,
                        PTYXIS_SCROLLBAR_POLICY_SYSTEM,
+                       (G_PARAM_READWRITE |
+                        G_PARAM_EXPLICIT_NOTIFY |
+                        G_PARAM_STATIC_STRINGS));
+
+  properties[PROP_TAB_MIDDLE_CLICK] =
+    g_param_spec_enum ("tab-middle-click", NULL, NULL,
+                       PTYXIS_TYPE_TAB_MIDDLE_CLICK_BEHAVIOR,
+                       PTYXIS_TAB_MIDDLE_CLICK_CLOSE,
                        (G_PARAM_READWRITE |
                         G_PARAM_EXPLICIT_NOTIFY |
                         G_PARAM_STATIC_STRINGS));
@@ -846,6 +865,25 @@ ptyxis_settings_set_scrollbar_policy (PtyxisSettings        *self,
   g_settings_set_enum (self->settings,
                        PTYXIS_SETTING_KEY_SCROLLBAR_POLICY,
                        scrollbar_policy);
+}
+
+PtyxisTabMiddleClickBehavior
+ptyxis_settings_get_tab_middle_click (PtyxisSettings *self)
+{
+  g_return_val_if_fail (PTYXIS_IS_SETTINGS (self), 0);
+
+  return g_settings_get_enum (self->settings, PTYXIS_SETTING_KEY_TAB_MIDDLE_CLICK);
+}
+
+void
+ptyxis_settings_set_tab_middle_click (PtyxisSettings               *self,
+                                      PtyxisTabMiddleClickBehavior  tab_middle_click)
+{
+  g_return_if_fail (PTYXIS_IS_SETTINGS (self));
+
+  g_settings_set_enum (self->settings,
+                       PTYXIS_SETTING_KEY_TAB_MIDDLE_CLICK,
+                       tab_middle_click);
 }
 
 VteTextBlinkMode

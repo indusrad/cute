@@ -428,12 +428,9 @@ paste_clipboard_action (GtkWidget  *widget,
                         const char *action_name,
                         GVariant   *param)
 {
-  g_assert (VTE_IS_TERMINAL (widget));
+  g_assert (PTYXIS_IS_TERMINAL (widget));
 
-  vte_terminal_paste_clipboard (VTE_TERMINAL (widget));
-
-  if (vte_terminal_get_scroll_on_keystroke (VTE_TERMINAL (widget)))
-    ptyxis_terminal_scroll_to_bottom (PTYXIS_TERMINAL (widget));
+  ptyxis_terminal_paste (PTYXIS_TERMINAL (widget));
 }
 
 static void
@@ -1453,4 +1450,27 @@ ptyxis_terminal_dup_current_file_uri (PtyxisTerminal *self)
   g_return_val_if_fail (PTYXIS_IS_TERMINAL (self), NULL);
 
   return ptyxis_terminal_dup_termprop_uri_by_id (self, VTE_PROPERTY_ID_CURRENT_FILE_URI);
+}
+
+gboolean
+ptyxis_terminal_can_paste (PtyxisTerminal *self)
+{
+  GdkClipboard *clipboard;
+
+  g_return_val_if_fail (PTYXIS_IS_TERMINAL (self), FALSE);
+
+  clipboard = gtk_widget_get_clipboard (GTK_WIDGET (self));
+
+  return gdk_content_formats_contain_gtype (gdk_clipboard_get_formats (clipboard), G_TYPE_STRING);
+}
+
+void
+ptyxis_terminal_paste (PtyxisTerminal *self)
+{
+  g_return_if_fail (PTYXIS_IS_TERMINAL (self));
+
+  vte_terminal_paste_clipboard (VTE_TERMINAL (self));
+
+  if (vte_terminal_get_scroll_on_keystroke (VTE_TERMINAL (self)))
+    ptyxis_terminal_scroll_to_bottom (self);
 }
