@@ -67,6 +67,8 @@ ptyxis_process_impl_class_init (PtyxisProcessImplClass *klass)
     g_hash_table_insert (exec_to_kind, (char *)name, (char *)kind)
   ADD_MAPPING ("docker", "container");
   ADD_MAPPING ("flatpak", "container");
+  ADD_MAPPING ("mosh", "remote");
+  ADD_MAPPING ("mosh-client", "remote");
   ADD_MAPPING ("podman", "container");
   ADD_MAPPING ("rlogin", "remote");
   ADD_MAPPING ("scp", "remote");
