@@ -81,6 +81,12 @@
     <value nick="always" value="2"/>
   </enum>
 
+  <enum id="@APP_SCHEMA_ID@.TabMiddleClickBehavior">
+    <value nick="close" value="0"/>
+    <value nick="paste" value="1"/>
+    <value nick="nothing" value="2"/>
+  </enum>
+
   <enum id="@APP_SCHEMA_ID@.TextBlinkMode">
     <value nick="never" value="0"/>
     <value nick="focused" value="1"/>
@@ -154,6 +160,10 @@
       <default>'system'</default>
       <summary>Scrollbar Policy</summary>
       <description>If scrollbars should be displayed</description>
+    </key>
+
+    <key name="tab-middle-click" enum="@APP_SCHEMA_ID@.TabMiddleClickBehavior">
+      <default>'close'</default>
     </key>
 
     <key name="text-blink-mode" enum="@APP_SCHEMA_ID@.TextBlinkMode">

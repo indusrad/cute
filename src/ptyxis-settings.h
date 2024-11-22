@@ -46,6 +46,7 @@ G_BEGIN_DECLS
 #define PTYXIS_SETTING_KEY_VISUAL_BELL             "visual-bell"
 #define PTYXIS_SETTING_KEY_VISUAL_PROCESS_LEADER   "visual-process-leader"
 #define PTYXIS_SETTING_KEY_DISABLE_PADDING         "disable-padding"
+#define PTYXIS_SETTING_KEY_TAB_MIDDLE_CLICK        "tab-middle-click"
 
 typedef enum _PtyxisNewTabPosition
 {
@@ -59,6 +60,21 @@ typedef enum _PtyxisScrollbarPolicy
   PTYXIS_SCROLLBAR_POLICY_SYSTEM = 1,
   PTYXIS_SCROLLBAR_POLICY_ALWAYS = 2,
 } PtyxisScrollbarPolicy;
+
+/**
+ * PtyxisTabMiddleClickBehavior:
+ * %PTYXIS_TAB_MIDDLE_CLICK_CLOSE: close the tab on middle mouse click
+ * %PTYXIS_TAB_MIDDLE_CLICK_PASTE: raise tab and paste clipboard contents on middle mouse click
+ * %PTYXIS_TAB_MIDDLE_CLICK_NOTHING: raise tab only
+ *
+ * Enumeration describing the action to take on middle-mouse-click on tab widget
+ */
+typedef enum _PtyxisTabMiddleClickBehavior
+{
+  PTYXIS_TAB_MIDDLE_CLICK_CLOSE   = 0,
+  PTYXIS_TAB_MIDDLE_CLICK_PASTE   = 1,
+  PTYXIS_TAB_MIDDLE_CLICK_NOTHING = 2,
+} PtyxisTabMiddleClickBehavior;
 
 #define PTYXIS_TYPE_SETTINGS (ptyxis_settings_get_type())
 
@@ -113,6 +129,9 @@ void                    ptyxis_settings_set_restore_window_size     (PtyxisSetti
 PtyxisScrollbarPolicy   ptyxis_settings_get_scrollbar_policy        (PtyxisSettings             *self);
 void                    ptyxis_settings_set_scrollbar_policy        (PtyxisSettings             *self,
                                                                      PtyxisScrollbarPolicy       scrollbar_policy);
+PtyxisTabMiddleClickBehavior   ptyxis_settings_get_tab_middle_click        (PtyxisSettings               *self);
+void                           ptyxis_settings_set_tab_middle_click        (PtyxisSettings               *self,
+                                                                            PtyxisTabMiddleClickBehavior  tab_middle_click);
 VteTextBlinkMode        ptyxis_settings_get_text_blink_mode         (PtyxisSettings             *self);
 void                    ptyxis_settings_set_text_blink_mode         (PtyxisSettings             *self,
                                                                      VteTextBlinkMode            text_blink_mode);
