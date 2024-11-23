@@ -28,6 +28,7 @@
 #include "ptyxis-parking-lot.h"
 #include "ptyxis-preferences-window.h"
 #include "ptyxis-settings.h"
+#include "ptyxis-shrinker.h"
 #include "ptyxis-tab-monitor.h"
 #include "ptyxis-theme-selector.h"
 #include "ptyxis-title-dialog.h"
@@ -1672,6 +1673,7 @@ ptyxis_window_class_init (PtyxisWindowClass *klass)
   gtk_widget_class_install_action (widget_class, "win.preferences", NULL, ptyxis_window_preferences_action);
 
   g_type_ensure (PTYXIS_TYPE_FIND_BAR);
+  g_type_ensure (PTYXIS_TYPE_SHRINKER);
 }
 
 static void
