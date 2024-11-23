@@ -22,6 +22,7 @@ ptyxis_sources = [
   'ptyxis-shortcut-accel-dialog.c',
   'ptyxis-shortcut-row.c',
   'ptyxis-shortcuts.c',
+  'ptyxis-shrinker.c',
   'ptyxis-tab.c',
   'ptyxis-tab-monitor.c',
   'ptyxis-terminal.c',
