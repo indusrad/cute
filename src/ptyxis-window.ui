@@ -413,13 +413,13 @@
                         </child>
                       </object>
                     </child>
-                    <child>
-                      <object class="AdwTabBar" id="tab_bar">
-                        <property name="autohide">false</property>
-                        <property name="visible">false</property>
-                        <property name="view">tab_view</property>
-                      </object>
-                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="AdwTabBar" id="tab_bar">
+                    <property name="autohide">false</property>
+                    <property name="visible">false</property>
+                    <property name="view">tab_view</property>
                   </object>
                 </child>
               </object>
