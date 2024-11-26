@@ -104,7 +104,6 @@ ptyxis_terminal_update_colors (PtyxisTerminal *self)
   const PtyxisPaletteFace *face;
   AdwStyleManager *style_manager;
   gboolean dark;
-  GdkRGBA fallback;
 
   g_assert (PTYXIS_IS_TERMINAL (self));
 
@@ -131,13 +130,8 @@ ptyxis_terminal_update_colors (PtyxisTerminal *self)
     }
   else
     {
-      if (dark)
-        fallback = (GdkRGBA){1.0, 1.0, 1.0, 1.0};
-      else
-        fallback = (GdkRGBA){0.0, 0.0, 0.0, 1.0};
-
-      vte_terminal_set_color_cursor (VTE_TERMINAL (self), &fallback);
-      vte_terminal_set_color_cursor_foreground (VTE_TERMINAL (self), &face->background);
+      vte_terminal_set_color_cursor (VTE_TERMINAL (self), NULL);
+      vte_terminal_set_color_cursor_foreground (VTE_TERMINAL (self), NULL);
     }
 }
 
