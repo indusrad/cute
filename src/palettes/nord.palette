@@ -5,6 +5,7 @@ Primary=true
 [Light]
 Foreground=#414858
 Background=#e5e9f0
+Cursor=#414858
 Color0=#3b4251
 Color1=#bf6069
 Color2=#a3be8b
@@ -25,6 +26,7 @@ Color15=#eceff4
 [Dark]
 Foreground=#d8dee9
 Background=#2e3440
+Cursor=#d8dee9
 Color0=#3b4252
 Color1=#bf616a
 Color2=#a3be8c

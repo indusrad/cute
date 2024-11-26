@@ -4,6 +4,7 @@ Name=Papercolor
 [Light]
 Background=#EEEEEE
 Foreground=#444444
+Cursor=#444444
 Color0=#EEEEEE
 Color1=#AF0000
 Color2=#008700
@@ -24,6 +25,7 @@ Color15=#005F87
 [Dark]
 Background=#1C1C1C
 Foreground=#D0D0D0
+Cursor=#D0D0D0
 Color0=#1C1C1C
 Color1=#AF005F
 Color2=#5FAF00
