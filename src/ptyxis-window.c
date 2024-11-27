@@ -342,6 +342,37 @@ ptyxis_window_create_window_cb (PtyxisWindow *self,
 }
 
 static void
+update_visible_and_maybe_close (PtyxisWindow *self)
+{
+  gboolean visible;
+  gboolean was_visible;
+  guint n_pages;
+
+  g_assert (PTYXIS_IS_WINDOW (self));
+
+  if (self->disposed || self->tab_view == NULL)
+    return;
+
+  n_pages = adw_tab_view_get_n_pages (self->tab_view);
+
+  if (n_pages == 0 && !adw_tab_view_get_is_transferring_page (self->tab_view))
+    {
+      ptyxis_application_save_session (PTYXIS_APPLICATION_DEFAULT);
+      gtk_window_destroy (GTK_WINDOW (self));
+      return;
+    }
+
+  was_visible = gtk_widget_get_visible (GTK_WIDGET (self->tab_bar));
+  visible = !self->single_terminal_mode && n_pages > 1;
+
+  if (visible != was_visible)
+    {
+      gtk_widget_set_visible (GTK_WIDGET (self->tab_bar), visible);
+      gtk_window_set_default_size (GTK_WINDOW (self), -1, -1);
+    }
+}
+
+static void
 ptyxis_window_page_attached_cb (PtyxisWindow *self,
                                 AdwTabPage   *page,
                                 int           position,
@@ -358,9 +389,7 @@ ptyxis_window_page_attached_cb (PtyxisWindow *self,
   g_object_bind_property (child, "title", page, "title", G_BINDING_SYNC_CREATE);
   g_object_bind_property (child, "icon", page, "icon", G_BINDING_SYNC_CREATE);
 
-  gtk_widget_set_visible (GTK_WIDGET (self->tab_bar),
-                          (!self->single_terminal_mode &&
-                           adw_tab_view_get_n_pages (tab_view) > 1));
+  update_visible_and_maybe_close (self);
 }
 
 static void
@@ -369,25 +398,11 @@ ptyxis_window_page_detached_cb (PtyxisWindow *self,
                                 int           position,
                                 AdwTabView   *tab_view)
 {
-  guint n_pages;
-
   g_assert (PTYXIS_IS_WINDOW (self));
   g_assert (ADW_IS_TAB_PAGE (page));
   g_assert (ADW_IS_TAB_VIEW (tab_view));
 
-  if (self->disposed)
-    return;
-
-  n_pages = adw_tab_view_get_n_pages (tab_view);
-
-  if (n_pages == 0 && !adw_tab_view_get_is_transferring_page (tab_view))
-    {
-      ptyxis_application_save_session (PTYXIS_APPLICATION_DEFAULT);
-      gtk_window_destroy (GTK_WINDOW (self));
-      return;
-    }
-
-  gtk_widget_set_visible (GTK_WIDGET (self->tab_bar), n_pages > 1);
+  update_visible_and_maybe_close (self);
 }
 
 static gboolean
