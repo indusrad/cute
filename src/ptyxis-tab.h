@@ -56,8 +56,16 @@ typedef enum _PtyxisZoomLevel
   PTYXIS_ZOOM_LEVEL_PLUS_7,
 } PtyxisZoomLevel;
 
-#define PTYXIS_ZOOM_LEVEL_LAST (PTYXIS_ZOOM_LEVEL_PLUS_7+1)
-#define PTYXIS_TYPE_TAB        (ptyxis_tab_get_type())
+typedef enum _PtyxisTabProgress
+{
+  PTYXIS_TAB_PROGRESS_INACTIVE,
+  PTYXIS_TAB_PROGRESS_ACTIVE,
+  PTYXIS_TAB_PROGRESS_INDETERMINATE,
+} PtyxisTabProgress;
+
+#define PTYXIS_ZOOM_LEVEL_LAST   (PTYXIS_ZOOM_LEVEL_PLUS_7+1)
+#define PTYXIS_TYPE_TAB          (ptyxis_tab_get_type())
+#define PTYXIS_TYPE_TAB_PROGRESS (ptyxis_tab_progress_get_type())
 
 G_DECLARE_FINAL_TYPE (PtyxisTab, ptyxis_tab, PTYXIS, TAB, GtkWidget)
 
@@ -77,6 +85,8 @@ void                ptyxis_tab_set_title_prefix                   (PtyxisTab    
 char               *ptyxis_tab_dup_current_directory_uri          (PtyxisTab            *self);
 void                ptyxis_tab_set_previous_working_directory_uri (PtyxisTab            *self,
                                                                    const char           *previous_working_directory_uri);
+PtyxisTabProgress   ptyxis_tab_get_progress                       (PtyxisTab            *self);
+double              ptyxis_tab_get_progress_fraction              (PtyxisTab            *self);
 PtyxisZoomLevel     ptyxis_tab_get_zoom                           (PtyxisTab            *self);
 void                ptyxis_tab_set_zoom                           (PtyxisTab            *self,
                                                                    PtyxisZoomLevel       zoom);

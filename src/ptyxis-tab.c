@@ -87,6 +87,8 @@ enum {
   PROP_ICON,
   PROP_PROCESS_LEADER_KIND,
   PROP_PROFILE,
+  PROP_PROGRESS,
+  PROP_PROGRESS_FRACTION,
   PROP_READ_ONLY,
   PROP_SUBTITLE,
   PROP_TITLE,
@@ -932,6 +934,15 @@ ptyxis_tab_invalidate_icon (PtyxisTab *self)
   g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_ICON]);
 }
 
+static void
+ptyxis_tab_invalidate_progress (PtyxisTab *self)
+{
+  g_assert (PTYXIS_IS_TAB (self));
+
+  g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_PROGRESS]);
+  g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_PROGRESS_FRACTION]);
+}
+
 static gboolean
 ptyxis_tab_match_clicked_cb (PtyxisTab       *self,
                              double           x,
@@ -1018,6 +1029,14 @@ ptyxis_tab_get_property (GObject    *object,
 
     case PROP_PROCESS_LEADER_KIND:
       g_value_set_enum (value, self->leader_kind);
+      break;
+
+    case PROP_PROGRESS:
+      g_value_set_enum (value, ptyxis_tab_get_progress (self));
+      break;
+
+    case PROP_PROGRESS_FRACTION:
+      g_value_set_double (value, ptyxis_tab_get_progress_fraction (self));
       break;
 
     case PROP_PROFILE:
@@ -1131,6 +1150,19 @@ ptyxis_tab_class_init (PtyxisTabClass *klass)
                           G_PARAM_CONSTRUCT_ONLY |
                           G_PARAM_STATIC_STRINGS));
 
+  properties[PROP_PROGRESS] =
+    g_param_spec_enum ("progress", NULL, NULL,
+                       PTYXIS_TYPE_TAB_PROGRESS,
+                       PTYXIS_TAB_PROGRESS_INACTIVE,
+                       (G_PARAM_READABLE |
+                        G_PARAM_STATIC_STRINGS));
+
+  properties[PROP_PROGRESS_FRACTION] =
+    g_param_spec_double ("progress-fraction", NULL, NULL,
+                         0, 1, 0,
+                         (G_PARAM_READABLE |
+                          G_PARAM_STATIC_STRINGS));
+
   properties[PROP_READ_ONLY] =
     g_param_spec_boolean ("read-only", NULL, NULL,
                           FALSE,
@@ -1204,6 +1236,7 @@ ptyxis_tab_class_init (PtyxisTabClass *klass)
   gtk_widget_class_bind_template_callback (widget_class, ptyxis_tab_notify_palette_cb);
   gtk_widget_class_bind_template_callback (widget_class, ptyxis_tab_bell_cb);
   gtk_widget_class_bind_template_callback (widget_class, ptyxis_tab_invalidate_icon);
+  gtk_widget_class_bind_template_callback (widget_class, ptyxis_tab_invalidate_progress);
   gtk_widget_class_bind_template_callback (widget_class, ptyxis_tab_match_clicked_cb);
 
   gtk_widget_class_install_action (widget_class, "tab.respawn", NULL, ptyxis_tab_respawn_action);
@@ -1970,4 +2003,49 @@ ptyxis_tab_query_working_directory_from_agent (PtyxisTab *self)
     return g_steal_pointer (&path);
 
   return NULL;
+}
+
+PtyxisTabProgress
+ptyxis_tab_get_progress (PtyxisTab *self)
+{
+  guint64 state;
+
+  g_return_val_if_fail (PTYXIS_IS_TAB (self), 0);
+
+  if (vte_terminal_get_termprop_uint_by_id (VTE_TERMINAL (self->terminal),
+                                            VTE_PROPERTY_ID_PROGRESS_HINT,
+                                            &state))
+    {
+      switch (state)
+        {
+        case VTE_PROGRESS_HINT_ACTIVE:
+          return PTYXIS_TAB_PROGRESS_ACTIVE;
+
+        case VTE_PROGRESS_HINT_INDETERMINATE:
+          return PTYXIS_TAB_PROGRESS_INDETERMINATE;
+
+        case VTE_PROGRESS_HINT_ERROR:
+        case VTE_PROGRESS_HINT_PAUSED:
+        default:
+          return PTYXIS_TAB_PROGRESS_INACTIVE;
+        }
+    }
+
+  return PTYXIS_TAB_PROGRESS_INACTIVE;
+}
+
+double
+ptyxis_tab_get_progress_fraction (PtyxisTab *self)
+{
+  guint64 value;
+
+  g_return_val_if_fail (PTYXIS_IS_TAB (self), .0);
+
+  if (ptyxis_tab_get_progress (self) != PTYXIS_TAB_PROGRESS_ACTIVE ||
+      !vte_terminal_get_termprop_uint_by_id (VTE_TERMINAL (self->terminal),
+                                             VTE_PROPERTY_ID_PROGRESS_VALUE,
+                                             &value))
+    return .0;
+
+  return MIN (value, 100) / 100.0;
 }
