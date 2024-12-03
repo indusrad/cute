@@ -63,6 +63,7 @@ fedora:
         libpng-devel
         libportal-gtk4-devel
         libxkbcommon-devel
+        lz4-devel
         glslc
         mesa-vulkan-drivers
         meson
