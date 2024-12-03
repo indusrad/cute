@@ -381,16 +381,9 @@ ptyxis_window_page_attached_cb (PtyxisWindow *self,
                                 int           position,
                                 AdwTabView   *tab_view)
 {
-  GtkWidget *child;
-
   g_assert (PTYXIS_IS_WINDOW (self));
   g_assert (ADW_IS_TAB_PAGE (page));
   g_assert (ADW_IS_TAB_VIEW (tab_view));
-
-  child = adw_tab_page_get_child (page);
-
-  g_object_bind_property (child, "title", page, "title", G_BINDING_SYNC_CREATE);
-  g_object_bind_property (child, "icon", page, "icon", G_BINDING_SYNC_CREATE);
 
   update_visible_and_maybe_close (self);
 }
@@ -1865,14 +1858,32 @@ ptyxis_window_new_for_profile_and_command (PtyxisProfile      *profile,
   return self;
 }
 
+static void
+ptyxis_window_setup_page (PtyxisWindow *self,
+                          PtyxisTab    *tab,
+                          AdwTabPage   *page)
+{
+  g_assert (PTYXIS_IS_WINDOW (self));
+  g_assert (PTYXIS_IS_TAB (tab));
+  g_assert (ADW_IS_TAB_PAGE (page));
+
+  g_object_bind_property (tab, "title", page, "title", G_BINDING_SYNC_CREATE);
+  g_object_bind_property (tab, "icon", page, "icon", G_BINDING_SYNC_CREATE);
+  g_object_bind_property (tab, "indicator-icon", page, "indicator-icon", G_BINDING_SYNC_CREATE);
+}
+
 void
 ptyxis_window_append_tab (PtyxisWindow *self,
                           PtyxisTab    *tab)
 {
+  AdwTabPage *page;
+
   g_return_if_fail (PTYXIS_IS_WINDOW (self));
   g_return_if_fail (PTYXIS_IS_TAB (tab));
 
-  adw_tab_view_append (self->tab_view, GTK_WIDGET (tab));
+  page = adw_tab_view_append (self->tab_view, GTK_WIDGET (tab));
+
+  ptyxis_window_setup_page (self, tab, page);
 
   gtk_widget_grab_focus (GTK_WIDGET (tab));
 }
@@ -1976,7 +1987,9 @@ ptyxis_window_add_tab (PtyxisWindow *self,
         }
     }
 
-  adw_tab_view_insert (self->tab_view, GTK_WIDGET (tab), position);
+  page = adw_tab_view_insert (self->tab_view, GTK_WIDGET (tab), position);
+
+  ptyxis_window_setup_page (self, tab, page);
 
   /* Resize if we are going from 1->2 tabs */
   if (adw_tab_view_get_n_pages (self->tab_view) == 2)

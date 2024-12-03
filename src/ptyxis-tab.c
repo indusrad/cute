@@ -23,6 +23,8 @@
 
 #include <glib/gi18n.h>
 
+#include <cairo.h>
+
 #ifdef __linux__
 # include <libportal/portal.h>
 # include <libportal-gtk4/portal-gtk4.h>
@@ -85,6 +87,7 @@ enum {
   PROP_0,
   PROP_COMMAND_LINE,
   PROP_ICON,
+  PROP_INDICATOR_ICON,
   PROP_PROCESS_LEADER_KIND,
   PROP_PROFILE,
   PROP_PROGRESS,
@@ -941,6 +944,7 @@ ptyxis_tab_invalidate_progress (PtyxisTab *self)
 
   g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_PROGRESS]);
   g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_PROGRESS_FRACTION]);
+  g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_INDICATOR_ICON]);
 }
 
 static gboolean
@@ -1025,6 +1029,10 @@ ptyxis_tab_get_property (GObject    *object,
 
     case PROP_ICON:
       g_value_take_object (value, ptyxis_tab_dup_icon (self));
+      break;
+
+    case PROP_INDICATOR_ICON:
+      g_value_take_object (value, ptyxis_tab_dup_indicator_icon (self));
       break;
 
     case PROP_PROCESS_LEADER_KIND:
@@ -1136,6 +1144,12 @@ ptyxis_tab_class_init (PtyxisTabClass *klass)
                          (G_PARAM_READABLE |
                           G_PARAM_STATIC_STRINGS));
 
+  properties[PROP_INDICATOR_ICON] =
+    g_param_spec_object ("indicator-icon", NULL, NULL,
+                         G_TYPE_ICON,
+                         (G_PARAM_READABLE |
+                          G_PARAM_STATIC_STRINGS));
+
   properties[PROP_PROCESS_LEADER_KIND] =
     g_param_spec_enum ("process-leader-kind", NULL, NULL,
                        PTYXIS_TYPE_PROCESS_LEADER_KIND,
@@ -1153,7 +1167,7 @@ ptyxis_tab_class_init (PtyxisTabClass *klass)
   properties[PROP_PROGRESS] =
     g_param_spec_enum ("progress", NULL, NULL,
                        PTYXIS_TYPE_TAB_PROGRESS,
-                       PTYXIS_TAB_PROGRESS_INACTIVE,
+                       PTYXIS_TAB_PROGRESS_INDETERMINATE,
                        (G_PARAM_READABLE |
                         G_PARAM_STATIC_STRINGS));
 
@@ -2021,17 +2035,17 @@ ptyxis_tab_get_progress (PtyxisTab *self)
         case VTE_PROGRESS_HINT_ACTIVE:
           return PTYXIS_TAB_PROGRESS_ACTIVE;
 
-        case VTE_PROGRESS_HINT_INDETERMINATE:
-          return PTYXIS_TAB_PROGRESS_INDETERMINATE;
-
         case VTE_PROGRESS_HINT_ERROR:
+          return PTYXIS_TAB_PROGRESS_ERROR;
+
         case VTE_PROGRESS_HINT_PAUSED:
+        case VTE_PROGRESS_HINT_INDETERMINATE:
         default:
-          return PTYXIS_TAB_PROGRESS_INACTIVE;
+          return PTYXIS_TAB_PROGRESS_INDETERMINATE;
         }
     }
 
-  return PTYXIS_TAB_PROGRESS_INACTIVE;
+  return PTYXIS_TAB_PROGRESS_INDETERMINATE;
 }
 
 double
@@ -2048,4 +2062,122 @@ ptyxis_tab_get_progress_fraction (PtyxisTab *self)
     return .0;
 
   return MIN (value, 100) / 100.0;
+}
+
+G_GNUC_BEGIN_IGNORE_DEPRECATIONS
+static void
+draw_progress (cairo_t         *cr,
+               GtkStyleContext *style_context,
+               int              width,
+               int              height,
+               double           progress)
+{
+  GdkRGBA rgba;
+  double alpha;
+
+  g_assert (cr != NULL);
+  g_assert (style_context != NULL);
+
+  progress = CLAMP (progress, 0, 1);
+
+  gtk_style_context_get_color (style_context, &rgba);
+
+  alpha = rgba.alpha;
+  rgba.alpha *= .15;
+  gdk_cairo_set_source_rgba (cr, &rgba);
+
+  cairo_arc (cr,
+             width / 2,
+             height / 2,
+             width / 2,
+             0.0,
+             2 * M_PI);
+  cairo_fill (cr);
+
+  if (progress > 0.0)
+    {
+      rgba.alpha = alpha;
+      gdk_cairo_set_source_rgba (cr, &rgba);
+
+      cairo_arc (cr,
+                 width / 2,
+                 height / 2,
+                 width / 2,
+                 (-.5 * M_PI),
+                 (2 * progress * M_PI) - (.5 * M_PI));
+
+      if (progress != 1.0)
+        {
+          cairo_line_to (cr, width / 2, height / 2);
+          cairo_line_to (cr, width / 2, 0);
+        }
+
+      cairo_fill (cr);
+    }
+}
+G_GNUC_END_IGNORE_DEPRECATIONS
+
+/**
+ * ptyxis_tab_dup_indicator_icon:
+ * @self: a #PtyxisTab
+ *
+ * Gets the progress indicator icon.
+ *
+ * Due to libadwaita not providing a way to do progress natively (as of 1.6)
+ * this uses indicator icon to generate a progress icon using a drawing.
+ *
+ * Returns: (transfer full) (nullable): a #GIcon or %NULL
+ */
+GIcon *
+ptyxis_tab_dup_indicator_icon (PtyxisTab *self)
+{
+  PtyxisTabProgress progress;
+
+  g_return_val_if_fail (PTYXIS_IS_TAB (self), NULL);
+
+  progress = ptyxis_tab_get_progress (self);
+
+  if (progress == PTYXIS_TAB_PROGRESS_ERROR)
+    return g_themed_icon_new ("dialog-error-symbolic");
+
+  if (progress == PTYXIS_TAB_PROGRESS_INDETERMINATE)
+    return NULL;
+
+  if (progress == PTYXIS_TAB_PROGRESS_ACTIVE)
+    {
+      g_autoptr(GdkTexture) texture = NULL;
+      g_autoptr(GBytes) bytes = NULL;
+      cairo_surface_t *surface;
+      cairo_t *cr;
+      double fraction;
+      int stride;
+      int scale;
+      int width;
+      int height;
+
+      fraction = ptyxis_tab_get_progress_fraction (self);
+      scale = gtk_widget_get_scale_factor (GTK_WIDGET (self));
+      width = 16 * scale;
+      height = 16 * scale;
+
+      surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, width, height);
+      stride = cairo_image_surface_get_stride (surface);
+      cr = cairo_create (surface);
+
+      G_GNUC_BEGIN_IGNORE_DEPRECATIONS {
+        GtkStyleContext *style_context = gtk_widget_get_style_context (GTK_WIDGET (self));
+        draw_progress (cr, style_context, width, height, fraction);
+      } G_GNUC_END_IGNORE_DEPRECATIONS
+
+      cairo_destroy (cr);
+
+      bytes = g_bytes_new (cairo_image_surface_get_data (surface), height * stride);
+      texture = gdk_memory_texture_new (width, height, GDK_MEMORY_DEFAULT, bytes, stride);
+
+      cairo_surface_destroy (surface);
+
+      return G_ICON (g_steal_pointer (&texture));
+    }
+
+  return NULL;
 }

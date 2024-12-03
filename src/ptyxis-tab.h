@@ -58,9 +58,9 @@ typedef enum _PtyxisZoomLevel
 
 typedef enum _PtyxisTabProgress
 {
-  PTYXIS_TAB_PROGRESS_INACTIVE,
-  PTYXIS_TAB_PROGRESS_ACTIVE,
   PTYXIS_TAB_PROGRESS_INDETERMINATE,
+  PTYXIS_TAB_PROGRESS_ACTIVE,
+  PTYXIS_TAB_PROGRESS_ERROR,
 } PtyxisTabProgress;
 
 #define PTYXIS_ZOOM_LEVEL_LAST   (PTYXIS_ZOOM_LEVEL_PLUS_7+1)
@@ -77,6 +77,7 @@ const char         *ptyxis_tab_get_uuid                           (PtyxisTab    
 const char         *ptyxis_tab_get_command_line                   (PtyxisTab            *self);
 void                ptyxis_tab_set_command                        (PtyxisTab            *self,
                                                                    const char * const   *command);
+GIcon              *ptyxis_tab_dup_indicator_icon                 (PtyxisTab            *self);
 char               *ptyxis_tab_dup_subtitle                       (PtyxisTab            *self);
 char               *ptyxis_tab_dup_title                          (PtyxisTab            *self);
 const char         *ptyxis_tab_get_title_prefix                   (PtyxisTab            *self);
