@@ -1,7 +1,7 @@
 [wrap-git]
 directory=vte
 url=https://gitlab.gnome.org/GNOME/vte.git
-push-url=ssh://git@gitlab.gnome.org:GNOME/vte.git
+push-url=ssh://git@ssh.gitlab.gnome.org:GNOME/vte.git
 revision=master
 depth=1
 
