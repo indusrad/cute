@@ -71,6 +71,7 @@ fedora:
         ninja-build
         redhat-rpm-config
         shared-mime-info
+        systemd-devel
         vala
         xorg-x11-server-Xvfb
         vte291-gtk4-devel
