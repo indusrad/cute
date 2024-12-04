@@ -6,5 +6,5 @@ revision=master
 depth=1
 
 [provide]
-vte-2.91-gtk4 = libvte_gtk4_dep
-dependency_names = vte-2.91-gtk4
+dependency_names=vte-2.91-gtk4
+vte-2.91-gtk4=libvte_gtk4_dep
