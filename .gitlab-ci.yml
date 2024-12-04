@@ -45,6 +45,7 @@ fedora:
         gi-docgen-fonts
         git
         glib2-devel
+        gnutls-devel
         gobject-introspection-devel
         gtk4-devel
         gtksourceview5-devel
