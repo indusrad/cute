@@ -472,7 +472,7 @@
     </key>
 
     <key name="tab-menu" type="s">
-      <default>''</default>
+      <default>'&lt;alt&gt;comma'</default>
       <summary>Tab Menu</summary>
       <description>Shortcut to show the new tab menu</description>
     </key>
