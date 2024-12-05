@@ -1590,6 +1590,19 @@ ptyxis_tab_is_running (PtyxisTab  *self,
   return FALSE;
 }
 
+static gboolean
+ptyxis_tab_force_quit_in_idle (gpointer data)
+{
+  PtyxisTab *self = data;
+
+  g_assert (PTYXIS_IS_TAB (self));
+
+  if (self->process != NULL)
+    ptyxis_tab_send_signal (self, SIGKILL);
+
+  return G_SOURCE_REMOVE;
+}
+
 void
 ptyxis_tab_force_quit (PtyxisTab *self)
 {
@@ -1599,7 +1612,22 @@ ptyxis_tab_force_quit (PtyxisTab *self)
 
   self->forced_exit = TRUE;
 
-  ptyxis_tab_send_signal (self, SIGKILL);
+  if (self->process == NULL)
+    return;
+
+  /* First we try to send SIGHUP so that shells like bash will save their
+   * history (See #308).
+   */
+  ptyxis_tab_send_signal (self, SIGHUP);
+
+  /* In case this was not enough for the process to actually exit, we setup
+   * a short timer to send SIGKILL afterwards.
+   */
+  g_timeout_add_full (G_PRIORITY_LOW,
+                      50,
+                      ptyxis_tab_force_quit_in_idle,
+                      g_object_ref (self),
+                      g_object_unref);
 }
 
 PtyxisIpcProcess *
