@@ -43,6 +43,22 @@
   <launchable type="desktop-id">@APP_ID@.desktop</launchable>
 
   <releases>
+    <release version="47.6" date="2024-12-05">
+      <description>
+        <p>This release contains various bug fixes.</p>
+        <ul>
+          <li>Many separate light/dark palettes have been merged so that they may switch between light/dark like the core palettes.</li>
+          <li>A new GSetting has been added to allow controlling middle-mouse-click behavior.</li>
+          <li>Use the minimum size request for the header bar to prevent --title from creating larger than necessary windows.</li>
+          <li>Fix brightness of GNOME palette on dark mode to match palette index 7.</li>
+          <li>Revert a workaround for reverse video cursor which caused some fg/bg issues in some terminal applications.</li>
+          <li>Ensure all palettes specify Cursor color which makes the previous mitigation unnecessary.</li>
+          <li>Allow the window to grow/shrink when dragging a tab out of the tab bar.</li>
+          <li>Send SIGHUP before SIGKILL upon forcing a tab to quit so that shells like bash may save history.</li>
+          <li>Mark mosh/mosh-client as "remote" processes.</li>
+        </ul>
+      </description>
+    </release>
     <release version="47.5" date="2024-11-21">
       <description>
         <p>This release contains fixes to allow for even more tabs, ensure old processes are exited, discovery of systemd quadlets, and more.</p>
