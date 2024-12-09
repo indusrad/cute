@@ -1,3 +1,57 @@
+# Ptyxis 47.6
+
+ * Many separate light/dark palettes have been merged so that they may
+   switch between light/dark like the core palettes.
+ * A new GSetting has been added to allow controlling middle-mouse-click
+   behavior.
+ * Use the minimum size request for the header bar to prevent --title
+   from creating larger than necessary windows.
+ * Fix brightness of GNOME palette on dark mode to match palette index 7.
+ * Revert a workaround for reverse video cursor which caused some fg/bg
+   issues in some terminal applications.
+ * Ensure all palettes specify Cursor color which makes the previous
+   mitigation unnecessary.
+ * Allow the window to grow/shrink when dragging a tab out of the tab bar.
+ * Send SIGHUP before SIGKILL upon forcing a tab to quit so that shells
+   like bash may save history.
+ * Mark mosh/mosh-client as "remote" processes.
+
+# Ptyxis 47.5
+
+ * Bump the FD soft limit to the max allowed, now that there are more
+   FDs open for Vulkan shader caches.
+ * Fix monitoring of podman for changes which fixes auto-discovery
+   of quadlets in systemd --user services.
+ * Fix disposal of tabs without a foreground process upon closing
+   a Ptyxis window.
+ * Robustness fixes in icon discover for tabs with containers
+ * Robustness fixes in checking for active container
+ * Fix scrolling within close-tabs dialog
+
+# Ptyxis 47.4
+
+ * Work around Podman in `--additional-flags` parsing to fix
+   execution of distrobox containers.
+ * Prioritize "manager":"distrobox" over "com.github.containers.toolbox"
+   label because F41 images created by distrobox are, for some reason,
+   setting the toolbox label id.
+ * Fix raising of window when activating shell notification.
+ * Override distro-theming for `vte-terminal` CSS element. This
+   fixes styling on Ubuntu-based systems, but possibly others.
+
+Thanks to everyone who filed bugs to help catch these issues.
+
+# Ptyxis 47.3
+
+ * Fix race condition in connecting to exited/signaled D-Bus
+   signals from PtyxisIpcProcess. This fixes situations where
+   quick running scripts exit before attaching to said signals,
+   generally during application startup.
+ * Fix --preserve-fds=0 error on distrobox.
+ * Check tiled state in new-window action to start in windowed mode.
+ * Fix detach-tab shortcut.
+ * Translation updates
+
 # Ptyxis 47.2
 
  * Fix closing window title dialog with Return/Enter
