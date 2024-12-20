@@ -288,6 +288,7 @@ ptyxis_podman_provider_communicate_cb (GObject      *object,
     {
       g_debug ("Failed to run podman ps: %s", error->message);
       g_task_return_boolean (task, FALSE);
+      return;
     }
 
   self = g_task_get_source_object (task);
