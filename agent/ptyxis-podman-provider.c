@@ -47,6 +47,7 @@ struct _PtyxisPodmanProvider
   GFileMonitor *monitor;
   GArray *label_to_type;
   guint queued_update;
+  guint is_updating : 1;
 };
 
 G_DEFINE_TYPE (PtyxisPodmanProvider, ptyxis_podman_provider, PTYXIS_TYPE_CONTAINER_PROVIDER)
@@ -284,6 +285,9 @@ ptyxis_podman_provider_communicate_cb (GObject      *object,
   g_assert (G_IS_ASYNC_RESULT (result));
   g_assert (G_IS_TASK (task));
 
+  self = g_task_get_source_object (task);
+  self->is_updating = FALSE;
+
   if (!g_subprocess_communicate_utf8_finish (subprocess, result, &stdout_buf, NULL, &error))
     {
       g_debug ("Failed to run podman ps: %s", error->message);
@@ -291,7 +295,6 @@ ptyxis_podman_provider_communicate_cb (GObject      *object,
       return;
     }
 
-  self = g_task_get_source_object (task);
   parser = json_parser_new ();
 
   if (!json_parser_load_from_data (parser, stdout_buf, -1, &error))
@@ -357,6 +360,8 @@ ptyxis_podman_provider_update_source_func (gpointer user_data)
   task = g_task_new (self, NULL, NULL, NULL);
   g_task_set_source_tag (task, ptyxis_podman_provider_update_source_func);
 
+  self->is_updating = TRUE;
+
   g_subprocess_communicate_utf8_async (subprocess,
                                        NULL,
                                        NULL,
@@ -371,7 +376,7 @@ ptyxis_podman_provider_queue_update (PtyxisPodmanProvider *self)
 {
   g_return_if_fail (PTYXIS_IS_PODMAN_PROVIDER (self));
 
-  if (self->queued_update == 0)
+  if (self->queued_update == 0 && !self->is_updating)
     self->queued_update = g_timeout_add_seconds_full (G_PRIORITY_LOW,
                                                       PODMAN_RELOAD_DELAY_SECONDS,
                                                       ptyxis_podman_provider_update_source_func,
