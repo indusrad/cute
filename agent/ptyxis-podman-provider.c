@@ -52,6 +52,26 @@ struct _PtyxisPodmanProvider
 G_DEFINE_TYPE (PtyxisPodmanProvider, ptyxis_podman_provider, PTYXIS_TYPE_CONTAINER_PROVIDER)
 
 static void
+ptyxis_podman_provider_storage_dir_changed_cb (PtyxisPodmanProvider *self,
+                                               GFile                *file,
+                                               GFile                *other_file,
+                                               GFileMonitorEvent     event,
+                                               GFileMonitor         *monitor)
+{
+  g_autofree char *name = NULL;
+
+  g_assert (PTYXIS_IS_PODMAN_PROVIDER (self));
+  g_assert (G_IS_FILE (file));
+  g_assert (!other_file || G_IS_FILE (other_file));
+  g_assert (G_IS_FILE_MONITOR (monitor));
+
+  name = g_file_get_basename (file);
+
+  if (g_strcmp0 (name, "db.sql") == 0)
+    ptyxis_podman_provider_queue_update (self);
+}
+
+static void
 ptyxis_podman_provider_constructed (GObject *object)
 {
   PtyxisPodmanProvider *self = (PtyxisPodmanProvider *)object;
@@ -81,11 +101,6 @@ ptyxis_podman_provider_constructed (GObject *object)
   /* We have two files to monitor for potential updates. The containers.json
    * file is primarily how we've done it. But if we have hopes to track the
    * creation of containers via quadlet, we must monitor db.sql for changes.
-   *
-   * Since db.sql might not exist if we're the first to set things up, we
-   * track changes to the @storage_dir directory. We could filter on what
-   * files are changed there, but it isn't frequently changed and we delay
-   * three seconds, so that doesn't seem necessary.
    */
 
   if ((self->monitor = g_file_monitor (file, G_FILE_MONITOR_NONE, NULL, NULL)))
@@ -95,10 +110,17 @@ ptyxis_podman_provider_constructed (GObject *object)
                              self,
                              G_CONNECT_SWAPPED);
 
+  /*
+   *
+   * Since db.sql might not exist if we're the first to set things up, we
+   * track changes to the @storage_dir directory. We filter on what files
+   * are changed there, because we can see spurious unlreated updates just
+   * from checking the state.
+   */
   if ((self->storage_monitor = g_file_monitor_directory (storage_dir, G_FILE_MONITOR_NONE, NULL, NULL)))
     g_signal_connect_object (self->storage_monitor,
                              "changed",
-                             G_CALLBACK (ptyxis_podman_provider_queue_update),
+                             G_CALLBACK (ptyxis_podman_provider_storage_dir_changed_cb),
                              self,
                              G_CONNECT_SWAPPED);
 
