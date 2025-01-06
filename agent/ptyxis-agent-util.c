@@ -271,10 +271,11 @@ ptyxis_agent_push_spawn (PtyxisRunContext   *run_context,
   g_return_if_fail (PTYXIS_IS_RUN_CONTEXT (run_context));
   g_return_if_fail (G_IS_UNIX_FD_LIST (fd_list));
 
-  if (cwd && cwd[0])
-    ptyxis_run_context_set_cwd (run_context, cwd);
-  else
-    ptyxis_run_context_set_cwd (run_context, g_get_home_dir ());
+  if (cwd == NULL || cwd[0] == 0)
+    cwd = g_get_home_dir ();
+
+  ptyxis_run_context_setenv (run_context, "PWD", cwd);
+  ptyxis_run_context_set_cwd (run_context, cwd);
 
   ptyxis_run_context_append_args (run_context, argv);
 
