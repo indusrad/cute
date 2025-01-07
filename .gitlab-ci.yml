@@ -1,6 +1,10 @@
 include:
   - project: "gnome/citemplates"
     file: "flatpak/flatpak_ci_initiative.yml"
+  - component: gitlab.gnome.org/GNOME/citemplates/release-service@master
+    inputs:
+      dist-job-name: "flatpak@x86_64"
+      tarball-artifact-path: "${TARBALL_ARTIFACT_PATH}"
 
 stages:
   - "test"
@@ -12,6 +16,7 @@ stages:
     FLATPAK_MODULE: "ptyxis"
     RUNTIME_REPO: "https://nightly.gnome.org/gnome-nightly.flatpakrepo"
     APP_ID: "org.gnome.Ptyxis.Devel"
+    TARBALL_ARTIFACT_PATH: ".flatpak-builder/build/${FLATPAK_MODULE}/_flatpak_build/meson-dist/${CI_PROJECT_NAME}-${CI_COMMIT_TAG}.tar.xz"
   extends: ".flatpak"
 
 flatpak@x86_64:
