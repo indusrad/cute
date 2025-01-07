@@ -81,12 +81,14 @@ struct _PtyxisTab
   PtyxisProcessLeaderKind  leader_kind : 3;
   guint                    has_foreground_process : 1;
   guint                    forced_exit : 1;
+  guint                    ignore_osc_title : 1;
 };
 
 enum {
   PROP_0,
   PROP_COMMAND_LINE,
   PROP_ICON,
+  PROP_IGNORE_OSC_TITLE,
   PROP_INDICATOR_ICON,
   PROP_PROCESS_LEADER_KIND,
   PROP_PROFILE,
@@ -1031,6 +1033,10 @@ ptyxis_tab_get_property (GObject    *object,
       g_value_take_object (value, ptyxis_tab_dup_icon (self));
       break;
 
+    case PROP_IGNORE_OSC_TITLE:
+      g_value_set_boolean (value, ptyxis_tab_get_ignore_osc_title (self));
+      break;
+
     case PROP_INDICATOR_ICON:
       g_value_take_object (value, ptyxis_tab_dup_indicator_icon (self));
       break;
@@ -1094,6 +1100,10 @@ ptyxis_tab_set_property (GObject      *object,
 
   switch (prop_id)
     {
+    case PROP_IGNORE_OSC_TITLE:
+      ptyxis_tab_set_ignore_osc_title (self, g_value_get_boolean (value));
+      break;
+
     case PROP_PROFILE:
       self->profile = g_value_dup_object (value);
       break;
@@ -1142,6 +1152,13 @@ ptyxis_tab_class_init (PtyxisTabClass *klass)
     g_param_spec_object ("icon", NULL, NULL,
                          G_TYPE_ICON,
                          (G_PARAM_READABLE |
+                          G_PARAM_STATIC_STRINGS));
+
+  properties[PROP_IGNORE_OSC_TITLE] =
+    g_param_spec_boolean ("ignore-osc-title", NULL, NULL,
+                         FALSE,
+                         (G_PARAM_READWRITE |
+                          G_PARAM_EXPLICIT_NOTIFY |
                           G_PARAM_STATIC_STRINGS));
 
   properties[PROP_INDICATOR_ICON] =
@@ -1351,24 +1368,29 @@ ptyxis_tab_set_title_prefix (PtyxisTab *self,
 char *
 ptyxis_tab_dup_title (PtyxisTab *self)
 {
-  const char *window_title;
   GString *gstr;
 
   g_return_val_if_fail (PTYXIS_IS_TAB (self), NULL);
 
   gstr = g_string_new (self->title_prefix);
 
-  G_GNUC_BEGIN_IGNORE_DEPRECATIONS
-  window_title = vte_terminal_get_window_title (VTE_TERMINAL (self->terminal));
-  G_GNUC_END_IGNORE_DEPRECATIONS
+  if (!self->ignore_osc_title)
+    {
+      const char *window_title;
 
-  if (window_title && window_title[0])
-    g_string_append (gstr, window_title);
-  else if (self->command != NULL && self->command[0] != NULL)
-    g_string_append (gstr, self->command[0]);
-  else if (self->initial_title != NULL)
-    g_string_append (gstr, self->initial_title);
-  else
+      G_GNUC_BEGIN_IGNORE_DEPRECATIONS
+        window_title = vte_terminal_get_window_title (VTE_TERMINAL (self->terminal));
+      G_GNUC_END_IGNORE_DEPRECATIONS
+
+      if (window_title && window_title[0])
+        g_string_append (gstr, window_title);
+      else if (self->command != NULL && self->command[0] != NULL)
+        g_string_append (gstr, self->command[0]);
+      else if (self->initial_title != NULL)
+        g_string_append (gstr, self->initial_title);
+    }
+
+  if (gstr->len == 0)
     g_string_append (gstr, _("Terminal"));
 
   if (self->state == PTYXIS_TAB_STATE_EXITED)
@@ -2208,4 +2230,28 @@ ptyxis_tab_dup_indicator_icon (PtyxisTab *self)
     }
 
   return NULL;
+}
+
+gboolean
+ptyxis_tab_get_ignore_osc_title (PtyxisTab *self)
+{
+  g_return_val_if_fail (PTYXIS_IS_TAB (self), FALSE);
+
+  return self->ignore_osc_title;
+}
+
+void
+ptyxis_tab_set_ignore_osc_title (PtyxisTab *self,
+                                 gboolean   ignore_osc_title)
+{
+  g_return_if_fail (PTYXIS_IS_TAB (self));
+
+  ignore_osc_title = !!ignore_osc_title;
+
+  if (ignore_osc_title != self->ignore_osc_title)
+    {
+      self->ignore_osc_title = ignore_osc_title;
+      g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_IGNORE_OSC_TITLE]);
+      g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_TITLE]);
+    }
 }
