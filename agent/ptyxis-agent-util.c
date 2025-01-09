@@ -281,6 +281,7 @@ ptyxis_agent_push_spawn (PtyxisRunContext   *run_context,
 
   ptyxis_run_context_setenv (run_context, "COLORTERM", "truecolor");
   ptyxis_run_context_setenv (run_context, "TERM", "xterm-256color");
+  ptyxis_run_context_setenv (run_context, "FLATPAK_TTY_PROGRESS", "1");
 
   if (env && g_variant_iter_init (&iter, env) > 0)
     {
