@@ -26,11 +26,14 @@
 
 struct _PtyxisTitleDialog
 {
-  AdwDialog parent_instance;
+  AdwDialog     parent_instance;
 
-  PtyxisTab *tab;
+  /* Owned references */
+  PtyxisTab    *tab;
 
-  GtkEntry *entry;
+  /* Template Widgets */
+  AdwEntryRow  *entry;
+  AdwSwitchRow *toggle_prefix_only;
 };
 
 enum {
@@ -64,6 +67,8 @@ ptyxis_title_dialog_constructed (GObject *object)
 
   g_object_bind_property (self->tab, "title-prefix", self->entry, "text",
                           G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
+  g_object_bind_property (self->tab, "ignore-osc-title", self->toggle_prefix_only, "active",
+                          G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL | G_BINDING_INVERT_BOOLEAN);
 }
 
 static void
@@ -139,6 +144,8 @@ ptyxis_title_dialog_class_init (PtyxisTitleDialogClass *klass)
   gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/Ptyxis/ptyxis-title-dialog.ui");
 
   gtk_widget_class_bind_template_child (widget_class, PtyxisTitleDialog, entry);
+  gtk_widget_class_bind_template_child (widget_class, PtyxisTitleDialog, toggle_prefix_only);
+
   gtk_widget_class_bind_template_callback (widget_class, ptyxis_title_dialog_activate_cb);
 
   gtk_widget_class_add_binding_action (widget_class, GDK_KEY_Escape, 0, "window.close", NULL);
