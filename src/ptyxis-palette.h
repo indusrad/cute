@@ -44,7 +44,8 @@ typedef struct _PtyxisPaletteFace
   GdkRGBA foreground;
   GdkRGBA titlebar_background;
   GdkRGBA titlebar_foreground;
-  GdkRGBA cursor;
+  GdkRGBA cursor_bg;
+  GdkRGBA cursor_fg;
   GdkRGBA indexed[16];
   union {
     PtyxisPaletteScarf scarves[PTYXIS_PALETTE_N_SCARVES];
