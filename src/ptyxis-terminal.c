@@ -123,10 +123,14 @@ ptyxis_terminal_update_colors (PtyxisTerminal *self)
 
   self->background = face->background;
 
-  if (face->cursor.alpha > 0)
+  if (face->cursor_bg.alpha > 0)
     {
-      vte_terminal_set_color_cursor (VTE_TERMINAL (self), &face->cursor);
-      vte_terminal_set_color_cursor_foreground (VTE_TERMINAL (self), &face->background);
+      vte_terminal_set_color_cursor (VTE_TERMINAL (self), &face->cursor_bg);
+
+      if (face->cursor_fg.alpha)
+        vte_terminal_set_color_cursor_foreground (VTE_TERMINAL (self), &face->cursor_fg);
+      else
+        vte_terminal_set_color_cursor_foreground (VTE_TERMINAL (self), &face->background);
     }
   else
     {
