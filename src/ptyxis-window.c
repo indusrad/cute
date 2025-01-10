@@ -25,6 +25,7 @@
 #include "ptyxis-application.h"
 #include "ptyxis-close-dialog.h"
 #include "ptyxis-find-bar.h"
+#include "ptyxis-fullscreen-box.h"
 #include "ptyxis-parking-lot.h"
 #include "ptyxis-preferences-window.h"
 #include "ptyxis-settings.h"
@@ -59,6 +60,7 @@ struct _PtyxisWindow
   GtkWidget             *zoom_label;
   GtkWidget             *tab_overview_button;
   GtkWidget             *new_tab_box;
+  PtyxisFullscreenBox   *fullscreen_box;
 
   GBindingGroup         *profile_bindings;
   GBindingGroup         *active_tab_bindings;
@@ -1036,6 +1038,8 @@ ptyxis_window_toplevel_state_changed_cb (PtyxisWindow *self,
 
   gtk_widget_action_set_enabled (GTK_WIDGET (self), "win.fullscreen", !is_fullscreen);
   gtk_widget_action_set_enabled (GTK_WIDGET (self), "win.unfullscreen", is_fullscreen);
+
+  ptyxis_fullscreen_box_set_fullscreen (self->fullscreen_box, is_fullscreen);
 }
 
 static void
@@ -1641,6 +1645,7 @@ ptyxis_window_class_init (PtyxisWindowClass *klass)
   gtk_widget_class_bind_template_child (widget_class, PtyxisWindow, my_computer_menu);
   gtk_widget_class_bind_template_child (widget_class, PtyxisWindow, tab_overview_button);
   gtk_widget_class_bind_template_child (widget_class, PtyxisWindow, new_tab_box);
+  gtk_widget_class_bind_template_child (widget_class, PtyxisWindow, fullscreen_box);
 
   gtk_widget_class_bind_template_callback (widget_class, ptyxis_window_page_attached_cb);
   gtk_widget_class_bind_template_callback (widget_class, ptyxis_window_page_detached_cb);
@@ -1681,6 +1686,7 @@ ptyxis_window_class_init (PtyxisWindowClass *klass)
   gtk_widget_class_install_action (widget_class, "win.preferences", NULL, ptyxis_window_preferences_action);
 
   g_type_ensure (PTYXIS_TYPE_FIND_BAR);
+  g_type_ensure (PTYXIS_TYPE_FULLSCREEN_BOX);
   g_type_ensure (PTYXIS_TYPE_SHRINKER);
 }
 
