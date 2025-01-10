@@ -34,7 +34,8 @@
             "name" : "libportal",
             "config-opts" : [
                 "--buildtype=debugoptimized",
-                "-Dbackends=gtk4",
+                "-Dbackend-gtk4=enabled",
+                "-Dbackend-gtk3=disabled",
                 "-Ddocs=false",
                 "-Dtests=false"
             ],
