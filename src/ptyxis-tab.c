@@ -2072,13 +2072,13 @@ ptyxis_tab_query_working_directory_from_agent (PtyxisTab *self)
 PtyxisTabProgress
 ptyxis_tab_get_progress (PtyxisTab *self)
 {
-  guint64 state;
+  gint64 state;
 
   g_return_val_if_fail (PTYXIS_IS_TAB (self), 0);
 
-  if (vte_terminal_get_termprop_uint_by_id (VTE_TERMINAL (self->terminal),
-                                            VTE_PROPERTY_ID_PROGRESS_HINT,
-                                            &state))
+  if (vte_terminal_get_termprop_int_by_id (VTE_TERMINAL (self->terminal),
+                                           VTE_PROPERTY_ID_PROGRESS_HINT,
+                                           &state))
     {
       switch (state)
         {
@@ -2101,14 +2101,14 @@ ptyxis_tab_get_progress (PtyxisTab *self)
 double
 ptyxis_tab_get_progress_fraction (PtyxisTab *self)
 {
-  guint64 value;
+  gint64 value;
 
   g_return_val_if_fail (PTYXIS_IS_TAB (self), .0);
 
   if (ptyxis_tab_get_progress (self) != PTYXIS_TAB_PROGRESS_ACTIVE ||
-      !vte_terminal_get_termprop_uint_by_id (VTE_TERMINAL (self->terminal),
-                                             VTE_PROPERTY_ID_PROGRESS_VALUE,
-                                             &value))
+      !vte_terminal_get_termprop_int_by_id (VTE_TERMINAL (self->terminal),
+                                            VTE_PROPERTY_ID_PROGRESS_VALUE,
+                                            &value))
     return .0;
 
   return MIN (value, 100) / 100.0;
