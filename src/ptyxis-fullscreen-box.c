@@ -2,6 +2,7 @@
  * ptyxis-fullscreen-box.c
  *
  * Copyright © 2021 Purism SPC
+ * Copyright © 2025 Christian Hergert <chergert@redhat.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,7 +46,10 @@ struct _PtyxisFullscreenBox {
   GList *headers;
 };
 
-G_DEFINE_FINAL_TYPE (PtyxisFullscreenBox, ptyxis_fullscreen_box, GTK_TYPE_WIDGET)
+static void buildable_iface_init (GtkBuildableIface *iface);
+
+G_DEFINE_FINAL_TYPE_WITH_CODE (PtyxisFullscreenBox, ptyxis_fullscreen_box, GTK_TYPE_WIDGET,
+                               G_IMPLEMENT_INTERFACE (GTK_TYPE_BUILDABLE, buildable_iface_init))
 
 enum {
   PROP_0,
@@ -57,6 +61,7 @@ enum {
 };
 
 static GParamSpec *props[LAST_PROP];
+static GtkBuildableIface *parent_buildable;
 
 static void
 show_ui (PtyxisFullscreenBox *self)
@@ -521,4 +526,31 @@ ptyxis_fullscreen_box_add_bottom_bar (PtyxisFullscreenBox *self,
   g_return_if_fail (GTK_IS_WIDGET (child));
 
   adw_toolbar_view_add_bottom_bar (self->toolbar_view, child);
+}
+
+static void
+ptyxis_fullscreen_box_add_child (GtkBuildable *buildable,
+                                 GtkBuilder   *builder,
+                                 GObject      *object,
+                                 const char   *name)
+{
+  PtyxisFullscreenBox *self = (PtyxisFullscreenBox *)buildable;
+
+  g_assert (PTYXIS_IS_FULLSCREEN_BOX (self));
+  g_assert (GTK_IS_BUILDER (builder));
+  g_assert (G_IS_OBJECT (object));
+
+  if (g_strcmp0 (name, "top") == 0 && GTK_IS_WIDGET (object))
+    ptyxis_fullscreen_box_add_top_bar (self, GTK_WIDGET (object));
+  else if (g_strcmp0 (name, "bottom") == 0 && GTK_IS_WIDGET (object))
+    ptyxis_fullscreen_box_add_bottom_bar (self, GTK_WIDGET (object));
+  else
+    parent_buildable->add_child (buildable, builder, object, name);
+}
+
+static void
+buildable_iface_init (GtkBuildableIface *iface)
+{
+  parent_buildable = g_type_interface_peek_parent (iface);
+  iface->add_child = ptyxis_fullscreen_box_add_child;
 }
