@@ -1,3 +1,16 @@
+# Ptyxis 48.alpha
+
+ * Automatically hide tabs and headerbar when entering fullscreen. They
+   can be shown by moving the mouse to the top of the monitor, similar to
+   the Epiphany browser (GNOME Web).
+ * Suport for setting Cursor foreground using the CursorForeground= palette
+   value. Cursor= is now an alias for CursorBackground=.
+ * Allow completely replacing the tab title.
+ * Add a high-contrast palette using the GNOME indexed palette.
+ * Ensure PWD is set for handling execve within symlinks.
+ * Avoid tracking podman changes too often.
+ * Add alt+comma to activate menu tab menu list.
+
 # Ptyxis 47.6
 
  * Many separate light/dark palettes have been merged so that they may
