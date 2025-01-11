@@ -10,6 +10,8 @@
  * Ensure PWD is set for handling execve within symlinks.
  * Avoid tracking podman changes too often.
  * Add alt+comma to activate menu tab menu list.
+ * Support for 9;4 OSC used by ConEmu/Windows Terminal in preparation
+   for systemd support in v257.
 
 # Ptyxis 47.6
 
