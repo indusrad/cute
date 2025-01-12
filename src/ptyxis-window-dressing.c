@@ -134,7 +134,7 @@ ptyxis_window_dressing_update (PtyxisWindowDressing *self)
                               "window.%s .window-contents toolbarview.overview tabthumbnail .icon-title-box { color: %s; }\n",
                               self->css_class, fg);
       g_string_append_printf (string,
-                              "window.%s .window-contents toolbarview.overview.background { background-color: %s; color: %s; }\n",
+                              "window.%s .window-contents toolbarview.overview { background-color: %s; color: %s; }\n",
                               self->css_class, titlebar_bg, titlebar_fg);
       g_string_append_printf (string,
                               "window.%s .window-contents revealer.raised.top-bar { background-color: %s; color: %s; }\n",
@@ -150,9 +150,9 @@ ptyxis_window_dressing_update (PtyxisWindowDressing *self)
                               "window.%s .window-contents banner > revealer > widget { background-color: %s; color: %s; }\n",
                               self->css_class, bell_bg, bell_fg);
       g_string_append_printf (string,
-                              "window.%s .window-contents taboverview tabthumbnail button { background-color: alpha(%s,.15); color: %s; }\n"
-                              "window.%s .window-contents taboverview tabthumbnail button:hover { background-color: alpha(%s,.25); }\n"
-                              "window.%s .window-contents taboverview tabthumbnail button:active { background-color: alpha(%s,.55); }\n",
+                              "window.%s taboverview.window-contents tabthumbnail button { background-color: alpha(%s,.15); color: %s; }\n"
+                              "window.%s taboverview.window-contents tabthumbnail button:hover { background-color: alpha(%s,.25); }\n"
+                              "window.%s taboverview.window-contents tabthumbnail button:active { background-color: alpha(%s,.55); }\n",
                               self->css_class, fg, fg,
                               self->css_class, fg,
                               self->css_class, fg);
