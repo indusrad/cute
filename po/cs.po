@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ptyxis main\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/chergert/ptyxis/issues\n"
-"POT-Creation-Date: 2024-09-28 18:13+0000\n"
-"PO-Revision-Date: 2024-10-01 14:44+0200\n"
+"POT-Creation-Date: 2025-01-13 04:34+0000\n"
+"PO-Revision-Date: 2025-01-13 13:04+0100\n"
 "Last-Translator: Daniel Rusek <mail@asciiwolf.com>\n"
 "Language-Team: Czech <Czech>\n"
 "Language: cs\n"
@@ -28,7 +28,7 @@ msgid "A container-oriented terminal for GNOME"
 msgstr "Kontejnerově orientovaný terminál pro GNOME"
 
 #: data/org.gnome.Ptyxis.desktop.in.in:13 src/ptyxis-preferences-window.ui:618
-#: src/ptyxis-tab.c:1272 src/ptyxis-util.c:311
+#: src/ptyxis-tab.c:1284 src/ptyxis-util.c:311
 msgid "Terminal"
 msgstr "Terminál"
 
@@ -42,17 +42,17 @@ msgstr ""
 "toolbox;distrobox;"
 
 #: data/org.gnome.Ptyxis.desktop.in.in:21
-#: src/org.gnome.Ptyxis.gschema.xml.in:363 src/ptyxis-preferences-window.ui:688
+#: src/org.gnome.Ptyxis.gschema.xml.in:373 src/ptyxis-preferences-window.ui:688
 msgid "New Window"
 msgstr "Nové okno"
 
 #: data/org.gnome.Ptyxis.desktop.in.in:25
-#: src/org.gnome.Ptyxis.gschema.xml.in:357 src/ptyxis-preferences-window.ui:682
+#: src/org.gnome.Ptyxis.gschema.xml.in:367 src/ptyxis-preferences-window.ui:682
 msgid "New Tab"
 msgstr "Nová karta"
 
 #: data/org.gnome.Ptyxis.desktop.in.in:29
-#: src/org.gnome.Ptyxis.gschema.xml.in:375 src/ptyxis-preferences-window.ui:857
+#: src/org.gnome.Ptyxis.gschema.xml.in:385 src/ptyxis-preferences-window.ui:857
 msgid "Preferences"
 msgstr "Předvolby"
 
@@ -129,97 +129,97 @@ msgid "Terminal inspector to help when writing terminal-based applications"
 msgstr ""
 "Terminálový inspektor pro pomoc při psaní aplikací založených na terminálu"
 
-#: data/org.gnome.Ptyxis.metainfo.xml.in.in:53
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:85
 msgid "A column and row size indicator is displayed when resizing the window"
 msgstr ""
 "Při změně velikosti okna se zobrazí indikátor velikosti sloupce a řádku"
 
-#: data/org.gnome.Ptyxis.metainfo.xml.in.in:58
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:90
 msgid "Containers are automatically discovered and displayed"
 msgstr "Kontejnery jsou automaticky objeveny a zobrazeny"
 
-#: data/org.gnome.Ptyxis.metainfo.xml.in.in:63
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:95
 msgid "Many behaviors of the terminal may be tweaked to user preference"
 msgstr "Mnoho chování terminálu lze upravit podle preferencí uživatele"
 
-#: data/org.gnome.Ptyxis.metainfo.xml.in.in:68
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:100
 msgid "You may rename a tab by providing a prefix to the title"
 msgstr "Kartu můžete přejmenovat zadáním předpony názvu"
 
-#: data/org.gnome.Ptyxis.metainfo.xml.in.in:73
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:105
 msgid "Palettes provide an integrated dark mode"
 msgstr "Palety poskytují integrovaný tmavý režim"
 
-#: data/org.gnome.Ptyxis.metainfo.xml.in.in:78
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:110
 msgid "You can see an overview of your tabs at any time"
 msgstr "Přehled svých karet můžete kdykoli zobrazit"
 
-#: data/org.gnome.Ptyxis.metainfo.xml.in.in:83
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:115
 msgid "Many shortcuts may be remapped to user preference"
 msgstr "Mnoho zkratek může být přemapováno podle preferencí uživatele"
 
-#: data/org.gnome.Ptyxis.metainfo.xml.in.in:88
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:120
 msgid "Built-in color palettes provide both dark and light mode variants"
 msgstr "Vestavěné barevné palety poskytují varianty tmavého i světlého režimu"
 
-#: data/org.gnome.Ptyxis.metainfo.xml.in.in:93
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:125
 msgid ""
 "Profiles allow for overriding a number of features such as default container"
 msgstr "Profily umožňují přepsat řadu funkcí, jako je výchozí kontejner"
 
-#: data/org.gnome.Ptyxis.metainfo.xml.in.in:98
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:130
 msgid "The terminal will remind you when you're root on the local system"
 msgstr "Terminál vás upozorní, pokud jste root v místním systému"
 
-#: data/org.gnome.Ptyxis.metainfo.xml.in.in:103
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:135
 msgid "The terminal will remind you when you're on a remote system"
 msgstr "Terminál vás upozorní, pokud jste na vzdáleném systému"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:95
+#: src/org.gnome.Ptyxis.gschema.xml.in:101
 msgid "Default Profile UUID"
 msgstr "UUID výchozího profilu"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:96
+#: src/org.gnome.Ptyxis.gschema.xml.in:102
 msgid "The UUID of the default profile"
 msgstr "UUID výchozího profilu"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:101
+#: src/org.gnome.Ptyxis.gschema.xml.in:107
 msgid "UUIDs of all Profiles"
 msgstr "UUID všech profilů"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:102
+#: src/org.gnome.Ptyxis.gschema.xml.in:108
 msgid "A list of UUID for every profile"
 msgstr "Seznam UUID pro každý profil"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:107 src/ptyxis-preferences-window.ui:299
+#: src/org.gnome.Ptyxis.gschema.xml.in:113 src/ptyxis-preferences-window.ui:299
 msgid "New Tab Position"
 msgstr "Umístění nové karty"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:108
+#: src/org.gnome.Ptyxis.gschema.xml.in:114
 msgid "Where to place new tabs"
 msgstr "Kam umístit nové karty"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:113 src/ptyxis-preferences-window.ui:391
+#: src/org.gnome.Ptyxis.gschema.xml.in:119 src/ptyxis-preferences-window.ui:391
 msgid "Audible Bell"
 msgstr "Slyšitelný zvonek"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:114
+#: src/org.gnome.Ptyxis.gschema.xml.in:120
 msgid "If an audible bell should be used"
 msgstr "Zda by měl být použit slyšitelný zvonek"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:119
+#: src/org.gnome.Ptyxis.gschema.xml.in:125
 msgid "Visible Bell"
 msgstr "Viditelný zvonek"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:120
+#: src/org.gnome.Ptyxis.gschema.xml.in:126
 msgid "If a visual bell should be used"
 msgstr "Zda by měl být použit viditelný zvonek"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:125
+#: src/org.gnome.Ptyxis.gschema.xml.in:131
 msgid "Visual Process Leader"
 msgstr "Viditelný vedoucí proces"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:126
+#: src/org.gnome.Ptyxis.gschema.xml.in:132
 msgid ""
 "Display a visual window highlight when process leader is SSH, sudo, or other "
 "specialized tooling"
@@ -227,107 +227,107 @@ msgstr ""
 "Zobrazit viditelné zvýraznění okna, když je vedoucím procesem SSH, sudo nebo "
 "jiný specializovaný nástroj"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:131
+#: src/org.gnome.Ptyxis.gschema.xml.in:137
 msgid "Use System Font"
 msgstr "Použít systémové písmo"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:132
+#: src/org.gnome.Ptyxis.gschema.xml.in:138
 msgid "If the default system monospace font should be used"
 msgstr "Zda by se mělo používat systémové písmo s pevnou šířkou"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:137
+#: src/org.gnome.Ptyxis.gschema.xml.in:143
 msgid "Font Name"
 msgstr "Název písma"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:138
+#: src/org.gnome.Ptyxis.gschema.xml.in:144
 msgid "The font description to use if use-system-font is set to False"
 msgstr ""
 "Popis písma, který se má použít, pokud je use-system-font nastaveno na False"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:143 src/ptyxis-preferences-window.ui:226
+#: src/org.gnome.Ptyxis.gschema.xml.in:149 src/ptyxis-preferences-window.ui:226
 msgid "Cursor Shape"
 msgstr "Tvar kurzoru"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:144
+#: src/org.gnome.Ptyxis.gschema.xml.in:150
 msgid "The default shape of the cursor"
 msgstr "Výchozí tvar kurzoru"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:149
+#: src/org.gnome.Ptyxis.gschema.xml.in:155
 msgid "Cursor Blink Mode"
 msgstr "Režim blikání kurzoru"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:150
+#: src/org.gnome.Ptyxis.gschema.xml.in:156
 msgid "The default blink mode cursor"
 msgstr "Výchozí režim blikání kurzoru"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:155
+#: src/org.gnome.Ptyxis.gschema.xml.in:161
 msgid "Scrollbar Policy"
 msgstr "Zásady posuvníku"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:156
+#: src/org.gnome.Ptyxis.gschema.xml.in:162
 msgid "If scrollbars should be displayed"
 msgstr "Zda mají být zobrazeny posuvníky"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:161
+#: src/org.gnome.Ptyxis.gschema.xml.in:171
 msgid "Text Blink Mode"
 msgstr "Režim blikání textu"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:162
+#: src/org.gnome.Ptyxis.gschema.xml.in:172
 msgid "When text blinking is allowed"
 msgstr "Kdy je povoleno blikání textu"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:167
+#: src/org.gnome.Ptyxis.gschema.xml.in:177
 msgid "Interface Style"
 msgstr "Styl rozhraní"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:168
+#: src/org.gnome.Ptyxis.gschema.xml.in:178
 msgid "If light or dark interface style should be used"
 msgstr "Zda by měl být použit světlý nebo tmavý styl rozhraní"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:173 src/ptyxis-preferences-window.ui:328
+#: src/org.gnome.Ptyxis.gschema.xml.in:183 src/ptyxis-preferences-window.ui:328
 msgid "Restore Session"
 msgstr "Obnovit sezení"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:174
+#: src/org.gnome.Ptyxis.gschema.xml.in:184
 msgid "Restore tabs from previous session when starting Ptyxis"
 msgstr "Obnovit karty z předchozího sezení při spuštění Ptyxis"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:179 src/ptyxis-preferences-window.ui:334
+#: src/org.gnome.Ptyxis.gschema.xml.in:189 src/ptyxis-preferences-window.ui:334
 msgid "Restore Window Size"
 msgstr "Obnovit velikost okna"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:180
+#: src/org.gnome.Ptyxis.gschema.xml.in:190
 msgid "Restore the previous window size when creating new windows"
 msgstr "Obnovit předchozí velikost okna při vytváření nových oken"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:190
+#: src/org.gnome.Ptyxis.gschema.xml.in:200
 msgid "Default Column Size"
 msgstr "Výchozí velikost sloupce"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:191
-#: src/org.gnome.Ptyxis.gschema.xml.in:198
+#: src/org.gnome.Ptyxis.gschema.xml.in:201
+#: src/org.gnome.Ptyxis.gschema.xml.in:208
 msgid "Default window size when restore-window-size is not true."
 msgstr ""
 "Výchozí velikost okna, když hodnota restore-window-size není nastavena na "
 "hodnotu true."
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:197
+#: src/org.gnome.Ptyxis.gschema.xml.in:207
 msgid "Default Row Size"
 msgstr "Výchozí velikost řádku"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:203
+#: src/org.gnome.Ptyxis.gschema.xml.in:213
 msgid "Toast on Copy Clipboard"
 msgstr "Upozornění při kopírování do schránky"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:204
+#: src/org.gnome.Ptyxis.gschema.xml.in:214
 msgid "Show the user when text has copied to the clipboard."
 msgstr "Zobrazit uživateli, když je text zkopírován do schránky."
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:209
+#: src/org.gnome.Ptyxis.gschema.xml.in:219
 msgid "Enable Accessibility"
 msgstr "Povolit přístupnost"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:210
+#: src/org.gnome.Ptyxis.gschema.xml.in:220
 msgid ""
 "Currently experimental feature to send accessibility information to screen "
 "readers."
@@ -335,11 +335,11 @@ msgstr ""
 "V současné době experimentální funkce pro odesílání informací usnadnění do "
 "čteček obrazovky."
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:215
+#: src/org.gnome.Ptyxis.gschema.xml.in:225
 msgid "Disable Padding around Terminal Emulator"
 msgstr "Zakázat odsazení kolem emulátoru terminálu"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:216
+#: src/org.gnome.Ptyxis.gschema.xml.in:226
 msgid ""
 "Do not pad around the terminal emulator widget. Setting to true may have "
 "significant performance impacts."
@@ -347,139 +347,139 @@ msgstr ""
 "Nezakrývat widget emulátoru terminálu. Nastavení na hodnotu true může mít "
 "významný dopad na výkon."
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:225
+#: src/org.gnome.Ptyxis.gschema.xml.in:235
 msgid "Label"
 msgstr "Označení"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:226
+#: src/org.gnome.Ptyxis.gschema.xml.in:236
 msgid "The label for the profile"
 msgstr "Označení profilu"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:231
+#: src/org.gnome.Ptyxis.gschema.xml.in:241
 msgid "Login Shell"
 msgstr "Přihlašovací shell"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:232
+#: src/org.gnome.Ptyxis.gschema.xml.in:242
 msgid "Use a login shell"
 msgstr "Použít přihlašovací shell"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:237 src/ptyxis-preferences-window.ui:459
+#: src/org.gnome.Ptyxis.gschema.xml.in:247 src/ptyxis-preferences-window.ui:459
 #: src/ptyxis-profile-editor.ui:301
 msgid "Limit Scrollback"
 msgstr "Omezení posunu zpět"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:238
+#: src/org.gnome.Ptyxis.gschema.xml.in:248
 msgid "Limit the number of lines to keep for scrollback"
 msgstr "Omezit počet řádků, které se mají ponechat pro posun zpět"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:244 src/ptyxis-preferences-window.ui:468
+#: src/org.gnome.Ptyxis.gschema.xml.in:254 src/ptyxis-preferences-window.ui:468
 #: src/ptyxis-profile-editor.ui:310
 msgid "Scrollback Lines"
 msgstr "Řádky pro posun zpět"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:245
+#: src/org.gnome.Ptyxis.gschema.xml.in:255
 msgid "The number of lines to keep in the scrollback, zero for no scrollback"
 msgstr ""
 "Počet řádků, které se mají ponechat ve zpětném posunu, nula pro zákaz posunu "
 "zpět"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:250 src/ptyxis-preferences-window.ui:449
+#: src/org.gnome.Ptyxis.gschema.xml.in:260 src/ptyxis-preferences-window.ui:449
 #: src/ptyxis-profile-editor.ui:291
 msgid "Scroll on Output"
 msgstr "Posunout při výstupu"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:251
+#: src/org.gnome.Ptyxis.gschema.xml.in:261
 msgid "Scroll to the bottom upon new output"
 msgstr "Posunout dolů při novém výstupu"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:256 src/ptyxis-preferences-window.ui:443
+#: src/org.gnome.Ptyxis.gschema.xml.in:266 src/ptyxis-preferences-window.ui:443
 #: src/ptyxis-profile-editor.ui:285
 msgid "Scroll on Keystroke"
 msgstr "Posunout při zmáčknutí klávesy"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:257
+#: src/org.gnome.Ptyxis.gschema.xml.in:267
 msgid "Scroll to the bottom upon user keystroke"
 msgstr "Posunout dolů při stisku klávesy uživatelem"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:262 src/ptyxis-profile-editor.ui:155
+#: src/org.gnome.Ptyxis.gschema.xml.in:272 src/ptyxis-profile-editor.ui:155
 msgid "Use Custom Command"
 msgstr "Použít vlastní příkaz"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:263
+#: src/org.gnome.Ptyxis.gschema.xml.in:273
 msgid "If a custom command should be used"
 msgstr "Zda by měl být použit vlastní příkaz"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:268
+#: src/org.gnome.Ptyxis.gschema.xml.in:278
 msgid "Use Proxy"
 msgstr "Použít proxy"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:269
+#: src/org.gnome.Ptyxis.gschema.xml.in:279
 msgid "Apply proxy settings from the host in the container"
 msgstr "Použít nastavení proxy z hostitele v kontejneru"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:274 src/ptyxis-profile-editor.ui:160
+#: src/org.gnome.Ptyxis.gschema.xml.in:284 src/ptyxis-profile-editor.ui:160
 msgid "Custom Command"
 msgstr "Vlastní příkaz"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:275
+#: src/org.gnome.Ptyxis.gschema.xml.in:285
 msgid "A custom command for the shell"
 msgstr "Vlastní příkaz shellu"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:280 src/ptyxis-profile-editor.ui:179
+#: src/org.gnome.Ptyxis.gschema.xml.in:290 src/ptyxis-profile-editor.ui:179
 msgid "Default Container"
 msgstr "Výchozí kontejner"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:281
+#: src/org.gnome.Ptyxis.gschema.xml.in:291
 msgid "The default container to run the command in"
 msgstr "Výchozí kontejner pro spuštění příkazu"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:286 src/ptyxis-profile-editor.ui:188
+#: src/org.gnome.Ptyxis.gschema.xml.in:296 src/ptyxis-profile-editor.ui:188
 msgid "Preserve Container"
 msgstr "Zachovat kontejner"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:287
+#: src/org.gnome.Ptyxis.gschema.xml.in:297
 msgid "Preserve the active container when creating new tabs and windows"
 msgstr "Zachovat aktivní kontejner při vytváření nových karet a oken"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:292 src/ptyxis-preferences-window.ui:528
+#: src/org.gnome.Ptyxis.gschema.xml.in:302 src/ptyxis-preferences-window.ui:528
 #: src/ptyxis-profile-editor.ui:249
 msgid "Exit Action"
 msgstr "Akce při ukončení"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:293
+#: src/org.gnome.Ptyxis.gschema.xml.in:303
 msgid "The action to take when the shell exits"
 msgstr "Akce, která se má provést při ukončení shellu"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:298
+#: src/org.gnome.Ptyxis.gschema.xml.in:308
 msgid "Preserve Directory"
 msgstr "Zachovat složku"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:299
+#: src/org.gnome.Ptyxis.gschema.xml.in:309
 msgid "If the directory should be preserved for new terminals"
 msgstr "Zda by měla být složka zachována pro nové terminály"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:304 src/ptyxis-inspector.ui:102
+#: src/org.gnome.Ptyxis.gschema.xml.in:314 src/ptyxis-inspector.ui:102
 #: src/ptyxis-preferences-window.ui:40 src/ptyxis-profile-editor.ui:65
 msgid "Palette"
 msgstr "Paleta"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:305
+#: src/org.gnome.Ptyxis.gschema.xml.in:315
 msgid "The color palette to use for the profile, by name"
 msgstr "Paleta barev, která se má pro profil použít, podle názvu"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:311
+#: src/org.gnome.Ptyxis.gschema.xml.in:321
 msgid "Opacity"
 msgstr "Krytí"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:312
+#: src/org.gnome.Ptyxis.gschema.xml.in:322
 msgid "The opacity of the palette background"
 msgstr "Neprůhlednost pozadí palety"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:317
+#: src/org.gnome.Ptyxis.gschema.xml.in:327
 msgid "Bold is Bright"
 msgstr "Tučné je světlé"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:318
+#: src/org.gnome.Ptyxis.gschema.xml.in:328
 msgid ""
 "Setting bold on one of the lower 8 colors in the palette will use bright "
 "variant (upper 8 colors)"
@@ -487,327 +487,327 @@ msgstr ""
 "Nastavení tučného písma na jednu z 8 spodních barev v paletě použije jasnou "
 "variantu (horních 8 barev)"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:323
+#: src/org.gnome.Ptyxis.gschema.xml.in:333
 msgid "CJK Ambiguous Width"
 msgstr "Nejednoznačná šířka CJK"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:324
+#: src/org.gnome.Ptyxis.gschema.xml.in:334
 msgid "The size to apply to ambiguous width characters"
 msgstr "Velikost, která se použije na znaky s nejednoznačnou šířkou"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:329
-#: src/org.gnome.Ptyxis.gschema.xml.in:335
+#: src/org.gnome.Ptyxis.gschema.xml.in:339
+#: src/org.gnome.Ptyxis.gschema.xml.in:345
 msgid "Backspace Binding"
 msgstr "Přiřazení backspace"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:330
-#: src/org.gnome.Ptyxis.gschema.xml.in:336
+#: src/org.gnome.Ptyxis.gschema.xml.in:340
+#: src/org.gnome.Ptyxis.gschema.xml.in:346
 msgid "What to send to the PTY when a backspace is entered"
 msgstr "Co poslat do PTY, když je zadán backspace"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:345 src/ptyxis-preferences-window.ui:621
+#: src/org.gnome.Ptyxis.gschema.xml.in:355 src/ptyxis-preferences-window.ui:621
 msgid "Copy to Clipboard"
 msgstr "Kopírovat do schránky"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:346
+#: src/org.gnome.Ptyxis.gschema.xml.in:356
 msgid "The shortcut to copy to clipboard"
 msgstr "Zkratka pro kopírování do schránky"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:351 src/ptyxis-preferences-window.ui:626
+#: src/org.gnome.Ptyxis.gschema.xml.in:361 src/ptyxis-preferences-window.ui:626
 msgid "Paste from Clipboard"
 msgstr "Vložit ze schránky"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:352
+#: src/org.gnome.Ptyxis.gschema.xml.in:362
 msgid "The shortcut to paste from the clipboard"
 msgstr "Zkratka pro vložení ze schránky"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:358
+#: src/org.gnome.Ptyxis.gschema.xml.in:368
 msgid "The shortcut to create a new tab in the current window"
 msgstr "Zkratka pro vytvoření nové karty v aktuálním okně"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:364
+#: src/org.gnome.Ptyxis.gschema.xml.in:374
 msgid "The shortcut to create a new tab in a new window"
 msgstr "Zkratka pro vytvoření nové karty v novém okně"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:369
+#: src/org.gnome.Ptyxis.gschema.xml.in:379
 msgid "Tab Overview"
 msgstr "Přehled karet"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:370
+#: src/org.gnome.Ptyxis.gschema.xml.in:380
 msgid "The shortcut to show the tab overview"
 msgstr "Zkratka pro zobrazení přehledu karet"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:376
+#: src/org.gnome.Ptyxis.gschema.xml.in:386
 msgid "The shortcut to show application preferences"
 msgstr "Zkratka pro zobrazení předvoleb aplikace"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:381 src/ptyxis-preferences-window.ui:826
-#: src/ptyxis-window.c:1244 src/ptyxis-window.c:1252
+#: src/org.gnome.Ptyxis.gschema.xml.in:391 src/ptyxis-preferences-window.ui:826
+#: src/ptyxis-window.c:1347 src/ptyxis-window.c:1355
 msgid "Zoom Out"
 msgstr "Oddálit"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:382
+#: src/org.gnome.Ptyxis.gschema.xml.in:392
 msgid "The shortcut to zoom out"
 msgstr "Zkratka pro oddálení"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:387 src/ptyxis-preferences-window.ui:831
-#: src/ptyxis-window.c:1261
+#: src/org.gnome.Ptyxis.gschema.xml.in:397 src/ptyxis-preferences-window.ui:831
+#: src/ptyxis-window.c:1364
 msgid "Reset Zoom"
 msgstr "Výchozí přiblížení"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:388
+#: src/org.gnome.Ptyxis.gschema.xml.in:398
 msgid "The shortcut to reset zoom"
 msgstr "Zkratka pro resetování přiblížení"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:393 src/ptyxis-preferences-window.ui:821
-#: src/ptyxis-window.c:1229 src/ptyxis-window.c:1237
+#: src/org.gnome.Ptyxis.gschema.xml.in:403 src/ptyxis-preferences-window.ui:821
+#: src/ptyxis-window.c:1332 src/ptyxis-window.c:1340
 msgid "Zoom In"
 msgstr "Přiblížit"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:394
+#: src/org.gnome.Ptyxis.gschema.xml.in:404
 msgid "The shortcut to zoom in"
 msgstr "Zkratka pro přiblížení"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:399 src/ptyxis-preferences-window.ui:841
+#: src/org.gnome.Ptyxis.gschema.xml.in:409 src/ptyxis-preferences-window.ui:841
 msgid "Toggle Fullscreen"
 msgstr "Celá obrazovka"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:400
+#: src/org.gnome.Ptyxis.gschema.xml.in:410
 msgid "The shortcut to toggle fullscreen"
 msgstr "Zkratka pro přepnutí na celou obrazovku"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:405
+#: src/org.gnome.Ptyxis.gschema.xml.in:415
 msgid "Reset Terminal"
 msgstr "Resetovat terminál"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:406
+#: src/org.gnome.Ptyxis.gschema.xml.in:416
 msgid "Reset the terminal state for misbehaving clients"
 msgstr "Resetovat stav terminálu pro špatně se chovající klienty"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:411
+#: src/org.gnome.Ptyxis.gschema.xml.in:421
 msgid "Reset Terminal and Clear History"
 msgstr "Resetovat terminál a vymazat historii"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:412
+#: src/org.gnome.Ptyxis.gschema.xml.in:422
 msgid "Reset the terminal state and clear history for misbehaving clients"
 msgstr ""
 "Resetovat stav terminálu a vymazat historii pro špatně se chovající klienty"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:417 src/ptyxis-find-bar.ui:38
+#: src/org.gnome.Ptyxis.gschema.xml.in:427 src/ptyxis-find-bar.ui:38
 #: src/ptyxis-preferences-window.ui:663
 msgid "Search History"
 msgstr "Prohledat historii"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:418
+#: src/org.gnome.Ptyxis.gschema.xml.in:428
 msgid "Shortcut to begin searching the terminal history"
 msgstr "Zkratka pro zahájení vyhledávání v historii terminálu"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:423 src/ptyxis-preferences-window.ui:635
+#: src/org.gnome.Ptyxis.gschema.xml.in:433 src/ptyxis-preferences-window.ui:635
 msgid "Select All"
 msgstr "Vybrat vše"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:424
+#: src/org.gnome.Ptyxis.gschema.xml.in:434
 msgid "Shortcut to select all the entire terminal scrollback"
 msgstr "Zkratka pro výběr celého zpětného posunu terminálu"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:429
+#: src/org.gnome.Ptyxis.gschema.xml.in:439
 msgid "Select None"
 msgstr "Zrušit výběr"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:430
+#: src/org.gnome.Ptyxis.gschema.xml.in:440
 msgid "Shortcut to clear the terminal selection"
 msgstr "Zkratka pro zrušení výběru terminálu"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:435
+#: src/org.gnome.Ptyxis.gschema.xml.in:445
 msgid "Popup Menu"
 msgstr "Vyskakovací nabídka"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:436
+#: src/org.gnome.Ptyxis.gschema.xml.in:446
 msgid "Shortcut to show the popup menu for the terminal"
 msgstr "Zkratka pro zobrazení vyskakovací nabídky pro terminál"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:441
+#: src/org.gnome.Ptyxis.gschema.xml.in:451
 msgid "Primary Menu"
 msgstr "Hlavní nabídka"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:442
+#: src/org.gnome.Ptyxis.gschema.xml.in:452
 msgid "Shortcut to show the primary menu for the window"
 msgstr "Zkratka pro zobrazení hlavní nabídky okna"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:447 src/ptyxis-preferences-window.ui:730
+#: src/org.gnome.Ptyxis.gschema.xml.in:457 src/ptyxis-preferences-window.ui:730
 msgid "Move to Previous Tab"
 msgstr "Přejít na předchozí kartu"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:448
+#: src/org.gnome.Ptyxis.gschema.xml.in:458
 msgid "Shortcut to move to the previous tab"
 msgstr "Zkratka pro přechod na předchozí kartu"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:453 src/ptyxis-preferences-window.ui:735
+#: src/org.gnome.Ptyxis.gschema.xml.in:463 src/ptyxis-preferences-window.ui:735
 msgid "Move to Next Tab"
 msgstr "Přejít na další kartu"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:454
+#: src/org.gnome.Ptyxis.gschema.xml.in:464
 msgid "Shortcut to move to the next tab"
 msgstr "Zkratka pro přechod na další kartu"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:459 src/ptyxis-preferences-window.ui:744
+#: src/org.gnome.Ptyxis.gschema.xml.in:469 src/ptyxis-preferences-window.ui:744
 msgid "Move Tab Left"
 msgstr "Přesunout kartu doleva"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:460
+#: src/org.gnome.Ptyxis.gschema.xml.in:470
 msgid "Shortcut to move the current tab to the left one position"
 msgstr "Zkratka pro přesunutí aktuální karty o jednu pozici doleva"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:465 src/ptyxis-preferences-window.ui:750
+#: src/org.gnome.Ptyxis.gschema.xml.in:475 src/ptyxis-preferences-window.ui:750
 msgid "Move Tab Right"
 msgstr "Přesunout kartu doprava"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:466
+#: src/org.gnome.Ptyxis.gschema.xml.in:476
 msgid "Shortcut to move the current tab to the right one position"
 msgstr "Zkratka pro přesunutí aktuální karty o jednu pozici doprava"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:471 src/ptyxis-preferences-window.ui:756
+#: src/org.gnome.Ptyxis.gschema.xml.in:481 src/ptyxis-preferences-window.ui:756
 msgid "Move Tab to New Window"
 msgstr "Přesunout kartu do nového okna"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:472
+#: src/org.gnome.Ptyxis.gschema.xml.in:482
 msgid "Shortcut to move the current tab into a new window"
 msgstr "Zkratka pro přesunutí aktuální karty do nového okna"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:477 src/ptyxis-preferences-window.ui:708
+#: src/org.gnome.Ptyxis.gschema.xml.in:487 src/ptyxis-preferences-window.ui:708
 msgid "Close Tab"
 msgstr "Zavřít kartu"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:478
+#: src/org.gnome.Ptyxis.gschema.xml.in:488
 msgid "Shortcut to close the current tab"
 msgstr "Zkratka pro zavření aktuální karty"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:483 src/ptyxis-preferences-window.ui:714
+#: src/org.gnome.Ptyxis.gschema.xml.in:493 src/ptyxis-preferences-window.ui:714
 msgid "Close Other Tabs"
 msgstr "Zavřít ostatní karty"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:484
+#: src/org.gnome.Ptyxis.gschema.xml.in:494
 msgid "Shortcut to close all tabs in the window but the current one"
 msgstr "Zkratka pro zavření všech karet v okně kromě aktuální"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:489
+#: src/org.gnome.Ptyxis.gschema.xml.in:499
 msgid "Focus Tab 1"
 msgstr "Zaměřit kartu 1"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:490
+#: src/org.gnome.Ptyxis.gschema.xml.in:500
 msgid "Shortcut to focus tab 1"
 msgstr "Zkratka pro zaměření karty 1"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:495
+#: src/org.gnome.Ptyxis.gschema.xml.in:505
 msgid "Focus Tab 2"
 msgstr "Zaměřit kartu 2"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:496
+#: src/org.gnome.Ptyxis.gschema.xml.in:506
 msgid "Shortcut to focus tab 2"
 msgstr "Zkratka pro zaměření karty 2"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:501
+#: src/org.gnome.Ptyxis.gschema.xml.in:511
 msgid "Focus Tab 3"
 msgstr "Zaměřit kartu 3"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:502
+#: src/org.gnome.Ptyxis.gschema.xml.in:512
 msgid "Shortcut to focus tab 3"
 msgstr "Zkratka pro zaměření karty 3"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:507
+#: src/org.gnome.Ptyxis.gschema.xml.in:517
 msgid "Focus Tab 4"
 msgstr "Zaměřit kartu 4"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:508
+#: src/org.gnome.Ptyxis.gschema.xml.in:518
 msgid "Shortcut to focus tab 4"
 msgstr "Zkratka pro zaměření karty 4"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:513
+#: src/org.gnome.Ptyxis.gschema.xml.in:523
 msgid "Focus Tab 5"
 msgstr "Zaměřit kartu 5"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:514
+#: src/org.gnome.Ptyxis.gschema.xml.in:524
 msgid "Shortcut to focus tab 5"
 msgstr "Zkratka pro zaměření karty 5"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:519
+#: src/org.gnome.Ptyxis.gschema.xml.in:529
 msgid "Focus Tab 6"
 msgstr "Zaměřit kartu 6"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:520
+#: src/org.gnome.Ptyxis.gschema.xml.in:530
 msgid "Shortcut to focus tab 6"
 msgstr "Zkratka pro zaměření karty 6"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:525
+#: src/org.gnome.Ptyxis.gschema.xml.in:535
 msgid "Focus Tab 7"
 msgstr "Zaměřit kartu 7"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:526
+#: src/org.gnome.Ptyxis.gschema.xml.in:536
 msgid "Shortcut to focus tab 7"
 msgstr "Zkratka pro zaměření karty 7"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:531
+#: src/org.gnome.Ptyxis.gschema.xml.in:541
 msgid "Focus Tab 8"
 msgstr "Zaměřit kartu 8"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:532
+#: src/org.gnome.Ptyxis.gschema.xml.in:542
 msgid "Shortcut to focus tab 8"
 msgstr "Zkratka pro zaměření karty 8"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:537
+#: src/org.gnome.Ptyxis.gschema.xml.in:547
 msgid "Focus Tab 9"
 msgstr "Zaměřit kartu 9"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:538
+#: src/org.gnome.Ptyxis.gschema.xml.in:548
 msgid "Shortcut to focus tab 9"
 msgstr "Zkratka pro zaměření karty 9"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:543
+#: src/org.gnome.Ptyxis.gschema.xml.in:553
 msgid "Focus Tab 10"
 msgstr "Zaměřit kartu 10"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:544
+#: src/org.gnome.Ptyxis.gschema.xml.in:554
 msgid "Shortcut to focus tab 10"
 msgstr "Zkratka pro zaměření karty 10"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:549 src/ptyxis-preferences-window.ui:720
+#: src/org.gnome.Ptyxis.gschema.xml.in:559 src/ptyxis-preferences-window.ui:720
 msgid "Undo Close Tab"
 msgstr "Vrátit zpět zavření karty"
 
-#: src/org.gnome.Ptyxis.gschema.xml.in:550
+#: src/org.gnome.Ptyxis.gschema.xml.in:560
 msgid "Undo closing of last tab"
 msgstr "Vrátit zpět zavření poslední karty"
 
-#: src/ptyxis-application.c:333
+#: src/ptyxis-application.c:334
 msgid "--tab, --tab-with-profile, or --new-window may not be used together"
 msgstr "--tab, --tab-with-profile nebo --new-window nelze použít společně"
 
-#: src/ptyxis-application.c:379
+#: src/ptyxis-application.c:380
 #, c-format
 msgid "Cannot parse command: %s"
 msgstr "Nelze zpracovat příkaz: %s"
 
-#: src/ptyxis-application.c:913
+#: src/ptyxis-application.c:941
 msgid "Examples:"
 msgstr "Příklady:"
 
-#: src/ptyxis-application.c:915
+#: src/ptyxis-application.c:943
 msgid "Show the application preferences"
 msgstr "Zobrazit předvolby aplikace"
 
 #. Used for new tabs/windows/etc when specified
-#: src/ptyxis-application.c:918
+#: src/ptyxis-application.c:946
 msgid "Use DIR for --tab, --tab-with-profile, --new-window, or -x"
 msgstr "Použijte ADRESÁŘ pro --tab, --tab-with-profile, --new-window nebo -x"
 
-#: src/ptyxis-application.c:918
+#: src/ptyxis-application.c:946
 msgid "DIR"
 msgstr "ADRESÁŘ"
 
 #. By default, this implies a new ptyxis instance unless the options
 #. * below are provided to override that.
 #.
-#: src/ptyxis-application.c:923
+#: src/ptyxis-application.c:951
 msgid "Command to execute in new window"
 msgstr "Příkaz, který se má spustit v novém okně"
 
@@ -815,67 +815,67 @@ msgstr "Příkaz, který se má spustit v novém okně"
 #. * short command options for these to make it easier to sniff them in early args
 #. * checking from `main.c`.
 #.
-#: src/ptyxis-application.c:929
+#: src/ptyxis-application.c:957
 msgid "New terminal window"
 msgstr "Nové okno terminálu"
 
-#: src/ptyxis-application.c:930
+#: src/ptyxis-application.c:958
 msgid "New terminal tab in active window"
 msgstr "Nová karta terminálu v aktivním okně"
 
-#: src/ptyxis-application.c:931
+#: src/ptyxis-application.c:959
 msgid "New terminal tab in active window using PROFILE"
 msgstr "Nová karta terminálu v aktivním okně používající PROFIL"
 
-#: src/ptyxis-application.c:931
+#: src/ptyxis-application.c:959
 msgid "PROFILE"
 msgstr "PROFIL"
 
-#: src/ptyxis-application.c:933
+#: src/ptyxis-application.c:961
 msgid "Set title for new tab"
 msgstr "Nastavit název pro novou kartu"
 
-#: src/ptyxis-application.c:940
+#: src/ptyxis-application.c:968
 msgid "Run Separate Instance"
 msgstr "Spustit samostatnou instanci"
 
-#: src/ptyxis-application.c:944
+#: src/ptyxis-application.c:972
 msgid "Open Preferences"
 msgstr "Otevřít předvolby"
 
-#: src/ptyxis-application.c:948
+#: src/ptyxis-application.c:976
 msgid "Run Custom Command in New Window"
 msgstr "Spustit vlastní příkaz v novém okně"
 
-#: src/ptyxis-application.c:952
+#: src/ptyxis-application.c:980
 msgid "[-- COMMAND ARGUMENTS]"
 msgstr "[-- PŘÍKAZ ARGUMENTY]"
 
-#: src/ptyxis-application.c:1190
+#: src/ptyxis-application.c:1218
 msgid "translator-credits"
 msgstr "Daniel Rusek <mail@asciiwolf.com>"
 
-#: src/ptyxis-close-dialog.c:110
+#: src/ptyxis-close-dialog.c:109
 msgid "_Close"
 msgstr "Za_vřít"
 
-#: src/ptyxis-close-dialog.c:110
+#: src/ptyxis-close-dialog.c:109
 msgid "_Close All"
 msgstr "Za_vřít vše"
 
-#: src/ptyxis-close-dialog.c:112
+#: src/ptyxis-close-dialog.c:111
 msgid "Close Window?"
 msgstr "Zavřít okno?"
 
-#: src/ptyxis-close-dialog.c:113
+#: src/ptyxis-close-dialog.c:112
 msgid "Some processes are still running."
 msgstr "Některé procesy stále běží."
 
-#: src/ptyxis-close-dialog.c:117
+#: src/ptyxis-close-dialog.c:116
 msgid "_Cancel"
 msgstr "_Zrušit"
 
-#: src/ptyxis-close-dialog.c:147
+#: src/ptyxis-close-dialog.c:142
 #, c-format
 msgid "Process %d"
 msgstr "Proces %d"
@@ -1371,14 +1371,14 @@ msgstr "Zobrazit hlavní nabídku"
 
 #: src/ptyxis-preferences-window.ui:852
 msgid "Displays the primary menu for the terminal window"
-msgstr "Zobrazit hlavní nabídku pro okno terminálu"
+msgstr "Zobrazí hlavní nabídku pro okno terminálu"
 
 #: src/ptyxis-preferences-window.ui:858
 msgid "Show this preferences window"
 msgstr "Zobrazit toto okno s předvolbami"
 
 #: src/ptyxis-preferences-window.ui:867 src/ptyxis-preferences-window.ui:871
-#: src/ptyxis-window.c:1342
+#: src/ptyxis-window.c:1445
 msgid "Profiles"
 msgstr "Profily"
 
@@ -1410,8 +1410,8 @@ msgstr "Mazání TTY"
 msgid "Untitled Profile"
 msgstr "Profil bez názvu"
 
-#: src/ptyxis-profile-editor.c:131 src/ptyxis-terminal.c:415
-#: src/ptyxis-terminal.c:450
+#: src/ptyxis-profile-editor.c:131 src/ptyxis-terminal.c:409
+#: src/ptyxis-terminal.c:441
 msgid "Copied to clipboard"
 msgstr "Zkopírováno do schránky"
 
@@ -1428,7 +1428,7 @@ msgstr "Zpět"
 msgid "My Computer"
 msgstr "Můj počítač"
 
-#: src/ptyxis-profile-editor.ui:22 src/ptyxis-tab.c:369 src/ptyxis-tab.c:426
+#: src/ptyxis-profile-editor.ui:22 src/ptyxis-tab.c:371 src/ptyxis-tab.c:428
 msgid "Edit Profile"
 msgstr "Upravit profil"
 
@@ -1520,12 +1520,12 @@ msgstr "Nastavit zkratku"
 msgid "disabled"
 msgstr "zakázáno"
 
-#: src/ptyxis-tab.c:279
+#: src/ptyxis-tab.c:281
 #, c-format
 msgid "Process Exited from Signal %d"
 msgstr "Proces ukončen ze signálu %d"
 
-#: src/ptyxis-tab.c:282 src/ptyxis-tab.c:305
+#: src/ptyxis-tab.c:284 src/ptyxis-tab.c:307
 msgid "_Restart"
 msgstr "_Restartovat"
 
@@ -1533,32 +1533,32 @@ msgstr "_Restartovat"
 #. * display it again if the tab is removed from the parking lot and
 #. * restored into the window.
 #.
-#: src/ptyxis-tab.c:304
+#: src/ptyxis-tab.c:306
 msgid "Process Exited"
 msgstr "Proces ukončen"
 
-#: src/ptyxis-tab.c:368
+#: src/ptyxis-tab.c:370
 msgid "Failed to launch terminal"
 msgstr "Spuštění terminálu selhalo"
 
-#: src/ptyxis-tab.c:424
+#: src/ptyxis-tab.c:426
 #, c-format
 msgid "Cannot locate container “%s”"
 msgstr "Nelze najít kontejner „%s“"
 
-#: src/ptyxis-tab.c:448
+#: src/ptyxis-tab.c:450
 msgid "Failed to create pseudo terminal device"
 msgstr "Vytvoření zařízení pseudo terminálu selhalo"
 
-#: src/ptyxis-tab.c:1275
+#: src/ptyxis-tab.c:1287
 msgid "Exited"
 msgstr "Ukončeno"
 
-#: src/ptyxis-tab.c:1277
+#: src/ptyxis-tab.c:1289
 msgid "Failed"
 msgstr "Selhalo"
 
-#: src/ptyxis-tab.c:1813
+#: src/ptyxis-tab.c:1854
 msgid "Failed to open link"
 msgstr "Otevření odkazu selhalo"
 
@@ -1610,7 +1610,7 @@ msgstr "Z_rušit výběr"
 msgid "Read-Only"
 msgstr "Pouze ke čtení"
 
-#: src/ptyxis-terminal.ui:238 src/ptyxis-window.ui:512
+#: src/ptyxis-terminal.ui:238 src/ptyxis-window.ui:502
 msgid "Leave Fullscreen"
 msgstr "Opustit celou obrazovku"
 
@@ -1639,90 +1639,90 @@ msgstr "Terminál Builderu"
 msgid "Ptyxis"
 msgstr "Ptyxis"
 
-#: src/ptyxis-window.c:991 src/ptyxis-window.ui:565
+#: src/ptyxis-window.c:1092 src/ptyxis-window.ui:555
 msgid "Set Title"
 msgstr "Nastavit název"
 
-#: src/ptyxis-window.c:1240
+#: src/ptyxis-window.c:1343
 msgid "Zoom in"
 msgstr "Přiblížit"
 
-#: src/ptyxis-window.c:1255
+#: src/ptyxis-window.c:1358
 msgid "Zoom out"
 msgstr "Oddálit"
 
-#: src/ptyxis-window.c:1345
+#: src/ptyxis-window.c:1448
 msgid "Containers"
 msgstr "Kontejnery"
 
-#: src/ptyxis-window.ui:359
+#: src/ptyxis-window.ui:361
 msgid "New Terminal"
 msgstr "Nový terminál"
 
-#: src/ptyxis-window.ui:372
+#: src/ptyxis-window.ui:374
 msgid "Show Profiles and Containers"
 msgstr "Zobrazit profily a kontejnery"
 
-#: src/ptyxis-window.ui:413
+#: src/ptyxis-window.ui:401
 msgid "Main Menu"
 msgstr "Hlavní nabídka"
 
-#: src/ptyxis-window.ui:421 src/ptyxis-window.ui:498
+#: src/ptyxis-window.ui:409 src/ptyxis-window.ui:488
 msgid "Show Open Tabs"
 msgstr "Zobrazit otevřené karty"
 
-#: src/ptyxis-window.ui:482
+#: src/ptyxis-window.ui:472
 msgid "New _Tab"
 msgstr "Nová kar_ta"
 
-#: src/ptyxis-window.ui:489
+#: src/ptyxis-window.ui:479
 msgid "New _Window"
 msgstr "Nové ok_no"
 
-#: src/ptyxis-window.ui:506
+#: src/ptyxis-window.ui:496
 msgid "Fullscreen"
 msgstr "Celá obrazovka"
 
-#: src/ptyxis-window.ui:520
+#: src/ptyxis-window.ui:510
 msgid "_Preferences"
 msgstr "_Předvolby"
 
-#: src/ptyxis-window.ui:524
+#: src/ptyxis-window.ui:514
 msgid "_Keyboard Shortcuts"
 msgstr "_Klávesové zkratky"
 
-#: src/ptyxis-window.ui:528
+#: src/ptyxis-window.ui:518
 msgid "_About"
 msgstr "O _aplikaci"
 
-#: src/ptyxis-window.ui:537
+#: src/ptyxis-window.ui:527
 msgid "Move _Left"
 msgstr "Přesunout v_levo"
 
-#: src/ptyxis-window.ui:542
+#: src/ptyxis-window.ui:532
 msgid "Move _Right"
 msgstr "Přesunout vp_ravo"
 
-#: src/ptyxis-window.ui:547
+#: src/ptyxis-window.ui:537
 msgid "Move to New _Window"
 msgstr "Přesunout do nového ok_na"
 
-#: src/ptyxis-window.ui:553
+#: src/ptyxis-window.ui:543
 msgid "_Pin Tab"
 msgstr "_Připnout kartu"
 
-#: src/ptyxis-window.ui:558
+#: src/ptyxis-window.ui:548
 msgid "Un_pin Tab"
 msgstr "Ode_pnout kartu"
 
-#: src/ptyxis-window.ui:572
+#: src/ptyxis-window.ui:562
 msgid "Close _Other Tabs"
 msgstr "Zavřít _ostatní karty"
 
-#: src/ptyxis-window.ui:577
+#: src/ptyxis-window.ui:567
 msgid "_Close Tab"
 msgstr "_Zavřít kartu"
 
-#: src/ptyxis-window.ui:584
+#: src/ptyxis-window.ui:574
 msgid "_My Computer"
 msgstr "_Můj počítač"
