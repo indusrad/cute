@@ -43,6 +43,18 @@
   <launchable type="desktop-id">@APP_ID@.desktop</launchable>
 
   <releases>
+    <!-- release version="47.7" date="">
+      <description>
+        <p>This release contains various bug fixes and feature improvements.</p>
+        <ul>
+          <li>Improved fullscreen mode which automatically hides tabs and headerbar</li>
+          <li>Fixes to tracking podman-based containers</li>
+          <li>Support for setting Cursor Foreground in palette definitions</li>
+          <li>Set $PWD to improve spawning shells inside of symlinks</li>
+          <li>Add a High Contrast palette based on GNOME palette</li>
+        </ul>
+      </description>
+    </release -->
     <release version="47.6" date="2024-12-05">
       <description>
         <p>This release contains various bug fixes.</p>

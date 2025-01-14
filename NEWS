@@ -1,3 +1,12 @@
+# Ptyxis 47.7
+
+ * Fixes to tracking podman-based containers
+ * Add support for setting CursorForeground in palette files
+ * Improve fullscreen mode to use the same interaction model as
+   Epiphany which animate into view based on mouse pointer.
+ * Add a High Contrast oriented palette based on GNOME palette.
+ * Set PWD when spawning shells to improve usage within symlinks.
+
 # Ptyxis 47.6
 
  * Many separate light/dark palettes have been merged so that they may
