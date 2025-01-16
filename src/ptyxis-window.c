@@ -479,6 +479,8 @@ ptyxis_window_notify_selected_page_cb (PtyxisWindow *self,
   g_binding_group_set_source (self->active_tab_bindings, tab);
 
   g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_ACTIVE_TAB]);
+
+  ptyxis_fullscreen_box_reveal (self->fullscreen_box);
 }
 
 static void
