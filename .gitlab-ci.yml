@@ -10,13 +10,15 @@ stages:
   - "test"
   - "deploy"
 
+variables:
+    FLATPAK_MODULE: "ptyxis"
+    TARBALL_ARTIFACT_PATH: ".flatpak-builder/build/${FLATPAK_MODULE}/_flatpak_build/meson-dist/${CI_PROJECT_NAME}-${CI_COMMIT_TAG}.tar.xz"
+
 .flatpak_vars:
   variables:
     MANIFEST_PATH: "org.gnome.Ptyxis.Devel.json"
-    FLATPAK_MODULE: "ptyxis"
     RUNTIME_REPO: "https://nightly.gnome.org/gnome-nightly.flatpakrepo"
     APP_ID: "org.gnome.Ptyxis.Devel"
-    TARBALL_ARTIFACT_PATH: ".flatpak-builder/build/${FLATPAK_MODULE}/_flatpak_build/meson-dist/${CI_PROJECT_NAME}-${CI_COMMIT_TAG}.tar.xz"
   extends: ".flatpak"
 
 flatpak@x86_64:
