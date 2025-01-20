@@ -27,6 +27,7 @@ src/ptyxis-tab-notify.h
 src/ptyxis-terminal.c
 src/ptyxis-terminal.ui
 src/ptyxis-theme-selector.ui
+src/ptyxis-title-dialog.ui
 src/ptyxis-util.c
 src/ptyxis-window.c
 src/ptyxis-window.ui
