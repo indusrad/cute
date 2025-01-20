@@ -31,6 +31,7 @@
 #include "ptyxis-settings.h"
 #include "ptyxis-shrinker.h"
 #include "ptyxis-tab-monitor.h"
+#include "ptyxis-tab-private.h"
 #include "ptyxis-theme-selector.h"
 #include "ptyxis-title-dialog.h"
 #include "ptyxis-util.h"
@@ -129,6 +130,13 @@ ptyxis_window_close_page_dialog_cb (GObject      *object,
     }
 
   ptyxis_parking_lot_push (self->parking_lot, tab);
+
+  /* Ignore snapshot because libadwaita will try to snapshot this when
+   * calling adw_tab_view_close_page_finish(). This just skips past it
+   * until we maybe get re-added to a view later.
+   */
+  _ptyxis_tab_ignore_snapshot (tab);
+
   adw_tab_view_close_page_finish (self->tab_view, page, TRUE);
 
   /* Resize if we are going from 2->1 tabs */
