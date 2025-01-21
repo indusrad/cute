@@ -1,14 +1,14 @@
 # Georgian translation for ptyxis.
 # Copyright (C) 2024 ptyxis's COPYRIGHT HOLDER
 # This file is distributed under the same license as the ptyxis package.
-# Ekaterine Papava <papava.e@gtu.ge>, 2024.
+# Ekaterine Papava <papava.e@gtu.ge>, 2024-2025.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: ptyxis main\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/chergert/ptyxis/issues\n"
-"POT-Creation-Date: 2024-11-24 11:30+0000\n"
-"PO-Revision-Date: 2024-12-02 04:53+0100\n"
+"POT-Creation-Date: 2025-01-21 02:11+0000\n"
+"PO-Revision-Date: 2025-01-21 04:43+0100\n"
 "Last-Translator: Ekaterine Papava <papava.e@gtu.ge>\n"
 "Language-Team: Georgian <ka@li.org>\n"
 "Language: ka\n"
@@ -20,14 +20,14 @@ msgstr ""
 #: data/org.gnome.Ptyxis.desktop.in.in:3
 #: data/org.gnome.Ptyxis.metainfo.xml.in.in:6
 msgid "@APP_NAME@"
-msgstr ""
+msgstr "@APP_NAME@"
 
 #: data/org.gnome.Ptyxis.desktop.in.in:4
 msgid "A container-oriented terminal for GNOME"
 msgstr ""
 
 #: data/org.gnome.Ptyxis.desktop.in.in:13 src/ptyxis-preferences-window.ui:651
-#: src/ptyxis-tab.c:1325 src/ptyxis-util.c:315
+#: src/ptyxis-tab.c:1412 src/ptyxis-util.c:315
 msgid "Terminal"
 msgstr "ტერმინალი"
 
@@ -126,48 +126,48 @@ msgstr ""
 msgid "Christian Hergert"
 msgstr ""
 
-#: data/org.gnome.Ptyxis.metainfo.xml.in.in:58
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:66
 msgid "A column and row size indicator is displayed when resizing the window"
 msgstr ""
 
-#: data/org.gnome.Ptyxis.metainfo.xml.in.in:63
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:71
 msgid "Containers are automatically discovered and displayed"
 msgstr ""
 
-#: data/org.gnome.Ptyxis.metainfo.xml.in.in:68
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:76
 msgid "Many behaviors of the terminal may be tweaked to user preference"
 msgstr ""
 
-#: data/org.gnome.Ptyxis.metainfo.xml.in.in:73
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:81
 msgid "You may rename a tab by providing a prefix to the title"
 msgstr ""
 
-#: data/org.gnome.Ptyxis.metainfo.xml.in.in:78
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:86
 msgid "Palettes provide an integrated dark mode"
 msgstr ""
 
-#: data/org.gnome.Ptyxis.metainfo.xml.in.in:83
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:91
 msgid "You can see an overview of your tabs at any time"
 msgstr ""
 
-#: data/org.gnome.Ptyxis.metainfo.xml.in.in:88
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:96
 msgid "Many shortcuts may be remapped to user preference"
 msgstr ""
 
-#: data/org.gnome.Ptyxis.metainfo.xml.in.in:93
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:101
 msgid "Built-in color palettes provide both dark and light mode variants"
 msgstr ""
 
-#: data/org.gnome.Ptyxis.metainfo.xml.in.in:98
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:106
 msgid ""
 "Profiles allow for overriding a number of features such as default container"
 msgstr ""
 
-#: data/org.gnome.Ptyxis.metainfo.xml.in.in:103
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:111
 msgid "The terminal will remind you when you're root on the local system"
 msgstr ""
 
-#: data/org.gnome.Ptyxis.metainfo.xml.in.in:108
+#: data/org.gnome.Ptyxis.metainfo.xml.in.in:116
 msgid "The terminal will remind you when you're on a remote system"
 msgstr ""
 
@@ -555,7 +555,7 @@ msgid "The shortcut to show application preferences"
 msgstr ""
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:410 src/ptyxis-preferences-window.ui:879
-#: src/ptyxis-window.c:1353 src/ptyxis-window.c:1361
+#: src/ptyxis-window.c:1375 src/ptyxis-window.c:1383
 msgid "Zoom Out"
 msgstr "დაპატარავება"
 
@@ -564,7 +564,7 @@ msgid "The shortcut to zoom out"
 msgstr "მალსახმობი გასადიდებლად"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:416 src/ptyxis-preferences-window.ui:884
-#: src/ptyxis-window.c:1370
+#: src/ptyxis-window.c:1392
 msgid "Reset Zoom"
 msgstr "გადიდების საწყისი პარამეტრები"
 
@@ -573,7 +573,7 @@ msgid "The shortcut to reset zoom"
 msgstr "მალსახმობი მასშტაბის გასანულებლად"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:422 src/ptyxis-preferences-window.ui:874
-#: src/ptyxis-window.c:1338 src/ptyxis-window.c:1346
+#: src/ptyxis-window.c:1360 src/ptyxis-window.c:1368
 msgid "Zoom In"
 msgstr "გადიდება"
 
@@ -719,7 +719,7 @@ msgid "Shortcut to close the current window"
 msgstr ""
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:530 src/ptyxis-preferences-window.ui:731
-#: src/ptyxis-window.c:1080 src/ptyxis-window.ui:586
+#: src/ptyxis-terminal.ui:244 src/ptyxis-window.c:1102 src/ptyxis-window.ui:592
 msgid "Set Title"
 msgstr "სათაურის მითითება"
 
@@ -815,36 +815,36 @@ msgstr "ჩანართის დახურვის გაუქმებ�
 msgid "Undo closing of last tab"
 msgstr ""
 
-#: src/ptyxis-application.c:362
+#: src/ptyxis-application.c:363
 msgid "--tab, --tab-with-profile, or --new-window may not be used together"
 msgstr ""
 
-#: src/ptyxis-application.c:408
+#: src/ptyxis-application.c:409
 #, c-format
 msgid "Cannot parse command: %s"
 msgstr ""
 
-#: src/ptyxis-application.c:1011
+#: src/ptyxis-application.c:1019
 msgid "Examples:"
 msgstr "მაგალითები:"
 
-#: src/ptyxis-application.c:1013
+#: src/ptyxis-application.c:1021
 msgid "Show the application preferences"
 msgstr "აპლიკაციის პარამეტრების ჩვენება"
 
 #. Used for new tabs/windows/etc when specified
-#: src/ptyxis-application.c:1016
+#: src/ptyxis-application.c:1024
 msgid "Use DIR for --tab, --tab-with-profile, --new-window, or -x"
 msgstr ""
 
-#: src/ptyxis-application.c:1016
+#: src/ptyxis-application.c:1024
 msgid "DIR"
 msgstr "საქაღალდე"
 
 #. By default, this implies a new ptyxis instance unless the options
 #. * below are provided to override that.
 #.
-#: src/ptyxis-application.c:1021
+#: src/ptyxis-application.c:1029
 msgid "Command to execute in new window"
 msgstr ""
 
@@ -852,47 +852,47 @@ msgstr ""
 #. * short command options for these to make it easier to sniff them in early args
 #. * checking from `main.c`.
 #.
-#: src/ptyxis-application.c:1027
+#: src/ptyxis-application.c:1035
 msgid "New terminal window"
 msgstr ""
 
-#: src/ptyxis-application.c:1028
+#: src/ptyxis-application.c:1036
 msgid "New terminal tab in active window"
 msgstr ""
 
-#: src/ptyxis-application.c:1029
+#: src/ptyxis-application.c:1037
 msgid "New terminal tab in active window using the profile UUID"
 msgstr ""
 
-#: src/ptyxis-application.c:1029
+#: src/ptyxis-application.c:1037
 msgid "PROFILE_UUID"
 msgstr ""
 
-#: src/ptyxis-application.c:1031
+#: src/ptyxis-application.c:1039
 msgid "Set title for new tab"
 msgstr ""
 
-#: src/ptyxis-application.c:1032
+#: src/ptyxis-application.c:1040
 msgid "Maximize a newly created window"
 msgstr ""
 
-#: src/ptyxis-application.c:1039
+#: src/ptyxis-application.c:1047
 msgid "Run Separate Instance"
 msgstr ""
 
-#: src/ptyxis-application.c:1043
+#: src/ptyxis-application.c:1051
 msgid "Open Preferences"
 msgstr "მორგების ფანჯრის გახსნა"
 
-#: src/ptyxis-application.c:1047
+#: src/ptyxis-application.c:1055
 msgid "Run Custom Command in New Window"
 msgstr ""
 
-#: src/ptyxis-application.c:1051
+#: src/ptyxis-application.c:1059
 msgid "[-- COMMAND ARGUMENTS]"
 msgstr ""
 
-#: src/ptyxis-application.c:1289
+#: src/ptyxis-application.c:1297
 msgid "translator-credits"
 msgstr "Giorgi Maghlakelidze https://launchpad.net/~dracid"
 
@@ -1438,7 +1438,7 @@ msgid "Show this preferences window"
 msgstr ""
 
 #: src/ptyxis-preferences-window.ui:926 src/ptyxis-preferences-window.ui:930
-#: src/ptyxis-window.c:1451
+#: src/ptyxis-window.c:1473
 msgid "Profiles"
 msgstr "პროფილები"
 
@@ -1470,8 +1470,8 @@ msgstr "TTY წაშლა"
 msgid "Untitled Profile"
 msgstr ""
 
-#: src/ptyxis-profile-editor.c:149 src/ptyxis-terminal.c:422
-#: src/ptyxis-terminal.c:454
+#: src/ptyxis-profile-editor.c:149 src/ptyxis-terminal.c:420
+#: src/ptyxis-terminal.c:452
 msgid "Copied to clipboard"
 msgstr "დაკოპირდა გაცვლის ბაფერში"
 
@@ -1488,7 +1488,7 @@ msgstr "დაბრუნება"
 msgid "My Computer"
 msgstr "ჩემი კომპიუტერი"
 
-#: src/ptyxis-profile-editor.ui:22 src/ptyxis-tab.c:384 src/ptyxis-tab.c:441
+#: src/ptyxis-profile-editor.ui:22 src/ptyxis-tab.c:392 src/ptyxis-tab.c:449
 msgid "Edit Profile"
 msgstr "პროფილის ჩასწორება"
 
@@ -1580,12 +1580,12 @@ msgstr "მალსახმობის დაყენება"
 msgid "disabled"
 msgstr "გამორთულია"
 
-#: src/ptyxis-tab.c:294
+#: src/ptyxis-tab.c:302
 #, c-format
 msgid "Process Exited from Signal %d"
 msgstr ""
 
-#: src/ptyxis-tab.c:297 src/ptyxis-tab.c:320
+#: src/ptyxis-tab.c:305 src/ptyxis-tab.c:328
 msgid "_Restart"
 msgstr "გადატვირთვა"
 
@@ -1593,32 +1593,32 @@ msgstr "გადატვირთვა"
 #. * display it again if the tab is removed from the parking lot and
 #. * restored into the window.
 #.
-#: src/ptyxis-tab.c:319
+#: src/ptyxis-tab.c:327
 msgid "Process Exited"
 msgstr ""
 
-#: src/ptyxis-tab.c:383
+#: src/ptyxis-tab.c:391
 msgid "Failed to launch terminal"
 msgstr ""
 
-#: src/ptyxis-tab.c:439
+#: src/ptyxis-tab.c:447
 #, c-format
 msgid "Cannot locate container “%s”"
 msgstr ""
 
-#: src/ptyxis-tab.c:463
+#: src/ptyxis-tab.c:471
 msgid "Failed to create pseudo terminal device"
 msgstr ""
 
-#: src/ptyxis-tab.c:1328
+#: src/ptyxis-tab.c:1415
 msgid "Exited"
 msgstr "გამოსული"
 
-#: src/ptyxis-tab.c:1330
+#: src/ptyxis-tab.c:1417
 msgid "Failed"
 msgstr "ჩავარდა"
 
-#: src/ptyxis-tab.c:1867
+#: src/ptyxis-tab.c:1982
 msgid "Failed to open link"
 msgstr "ბმულის გახსნის შეცდომა"
 
@@ -1678,11 +1678,11 @@ msgstr "მონიშვნის _მოხსნა"
 msgid "Read-Only"
 msgstr "მხოლოდ-კითხვადი"
 
-#: src/ptyxis-terminal.ui:244 src/ptyxis-window.ui:532
+#: src/ptyxis-terminal.ui:251 src/ptyxis-window.ui:538
 msgid "Leave Fullscreen"
 msgstr "სრული ეკრანიდან გამოსვლა"
 
-#: src/ptyxis-terminal.ui:250
+#: src/ptyxis-terminal.ui:257
 msgid "_Inspect Terminal"
 msgstr ""
 
@@ -1710,6 +1710,18 @@ msgstr "მუქი სტილი"
 msgid "Dark style"
 msgstr "მუქი სტილი"
 
+#: src/ptyxis-title-dialog.ui:36
+msgid "Title"
+msgstr "სათაური"
+
+#: src/ptyxis-title-dialog.ui:42
+msgid "Include Process Title"
+msgstr ""
+
+#: src/ptyxis-title-dialog.ui:43
+msgid "Append title from Shell application"
+msgstr ""
+
 #. translators: Builder Terminal means this is a terminal bundled with GNOME Builder
 #: src/ptyxis-util.c:313
 msgid "Builder Terminal"
@@ -1719,86 +1731,86 @@ msgstr ""
 msgid "Ptyxis"
 msgstr "Ptyxis"
 
-#: src/ptyxis-window.c:1349
+#: src/ptyxis-window.c:1371
 msgid "Zoom in"
 msgstr "გადიდება"
 
-#: src/ptyxis-window.c:1364
+#: src/ptyxis-window.c:1386
 msgid "Zoom out"
 msgstr "დაპატარავება"
 
-#: src/ptyxis-window.c:1454
+#: src/ptyxis-window.c:1476
 msgid "Containers"
 msgstr "კონტეინერები"
 
-#: src/ptyxis-window.ui:391
+#: src/ptyxis-window.ui:390
 msgid "New Terminal"
 msgstr "ახალი ტერმინალი"
 
-#: src/ptyxis-window.ui:404
+#: src/ptyxis-window.ui:403
 msgid "Show Profiles and Containers"
 msgstr ""
 
-#: src/ptyxis-window.ui:431
+#: src/ptyxis-window.ui:430
 msgid "Main Menu"
 msgstr "მთავარი მენიუ"
 
-#: src/ptyxis-window.ui:439 src/ptyxis-window.ui:518
+#: src/ptyxis-window.ui:438 src/ptyxis-window.ui:524
 msgid "Show Open Tabs"
 msgstr "ღია ჩანართებს ჩვენება"
 
-#: src/ptyxis-window.ui:502
+#: src/ptyxis-window.ui:508
 msgid "New _Tab"
 msgstr "ახალი _ჩანართი"
 
-#: src/ptyxis-window.ui:509
+#: src/ptyxis-window.ui:515
 msgid "New _Window"
 msgstr "ახალი ფანჯარა"
 
-#: src/ptyxis-window.ui:526
+#: src/ptyxis-window.ui:532
 msgid "Fullscreen"
 msgstr "სრულ ეკრანზე"
 
-#: src/ptyxis-window.ui:540
+#: src/ptyxis-window.ui:546
 msgid "_Preferences"
 msgstr "_პარამეტრები"
 
-#: src/ptyxis-window.ui:544
+#: src/ptyxis-window.ui:550
 msgid "_Keyboard Shortcuts"
 msgstr "კლავიატურის მალსახმობები"
 
-#: src/ptyxis-window.ui:548
+#: src/ptyxis-window.ui:554
 msgid "_About"
 msgstr "_შესახებ"
 
-#: src/ptyxis-window.ui:557
+#: src/ptyxis-window.ui:563
 msgid "Move _Left"
 msgstr "_მარცხნივ გაწევა"
 
-#: src/ptyxis-window.ui:562
+#: src/ptyxis-window.ui:568
 msgid "Move _Right"
 msgstr "მარჯვნივ _გაწევა"
 
-#: src/ptyxis-window.ui:567
+#: src/ptyxis-window.ui:573
 msgid "Move to New _Window"
 msgstr ""
 
-#: src/ptyxis-window.ui:573
+#: src/ptyxis-window.ui:579
 msgid "_Pin Tab"
 msgstr ""
 
-#: src/ptyxis-window.ui:578
+#: src/ptyxis-window.ui:584
 msgid "Un_pin Tab"
 msgstr ""
 
-#: src/ptyxis-window.ui:593
+#: src/ptyxis-window.ui:599
 msgid "Close _Other Tabs"
 msgstr "_სხვა ჩანართების დახურვა"
 
-#: src/ptyxis-window.ui:598
+#: src/ptyxis-window.ui:604
 msgid "_Close Tab"
 msgstr "ჩანარ_თის დახურვა"
 
-#: src/ptyxis-window.ui:605
+#: src/ptyxis-window.ui:611
 msgid "_My Computer"
 msgstr ""
