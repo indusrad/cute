@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ptyxis\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/chergert/ptyxis/issues\n"
-"POT-Creation-Date: 2025-01-13 13:32+0000\n"
-"PO-Revision-Date: 2025-01-15 00:28-0300\n"
+"POT-Creation-Date: 2025-01-20 21:13+0000\n"
+"PO-Revision-Date: 2025-01-20 23:10-0300\n"
 "Last-Translator: Rafael Fontenelle <rafaelff@gnome.org>\n"
 "Language-Team: Brazilian Portuguese <https://br.gnome.org/traducao>\n"
 "Language: pt_BR\n"
@@ -586,7 +586,7 @@ msgid "The shortcut to show application preferences"
 msgstr "O atalho para mostrar as preferências do aplicativo"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:410 src/ptyxis-preferences-window.ui:879
-#: src/ptyxis-window.c:1365 src/ptyxis-window.c:1373
+#: src/ptyxis-window.c:1367 src/ptyxis-window.c:1375
 msgid "Zoom Out"
 msgstr "Reduzir a ampliação"
 
@@ -595,7 +595,7 @@ msgid "The shortcut to zoom out"
 msgstr "O atalho para diminuir a ampliação"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:416 src/ptyxis-preferences-window.ui:884
-#: src/ptyxis-window.c:1382
+#: src/ptyxis-window.c:1384
 msgid "Reset Zoom"
 msgstr "Redefinir a ampliação"
 
@@ -604,7 +604,7 @@ msgid "The shortcut to reset zoom"
 msgstr "O atalho para redefinir a ampliação"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:422 src/ptyxis-preferences-window.ui:874
-#: src/ptyxis-window.c:1350 src/ptyxis-window.c:1358
+#: src/ptyxis-window.c:1352 src/ptyxis-window.c:1360
 msgid "Zoom In"
 msgstr "Aumentar ampliação"
 
@@ -753,7 +753,7 @@ msgid "Shortcut to close the current window"
 msgstr "Atalho para fechar a janela atual"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:530 src/ptyxis-preferences-window.ui:731
-#: src/ptyxis-terminal.ui:244 src/ptyxis-window.c:1092 src/ptyxis-window.ui:592
+#: src/ptyxis-terminal.ui:244 src/ptyxis-window.c:1094 src/ptyxis-window.ui:592
 msgid "Set Title"
 msgstr "Definir título"
 
@@ -1475,7 +1475,7 @@ msgid "Show this preferences window"
 msgstr "Mostra as janela de preferências"
 
 #: src/ptyxis-preferences-window.ui:926 src/ptyxis-preferences-window.ui:930
-#: src/ptyxis-window.c:1463
+#: src/ptyxis-window.c:1465
 msgid "Profiles"
 msgstr "Perfis"
 
@@ -1748,6 +1748,18 @@ msgstr "Estilo escuro"
 msgid "Dark style"
 msgstr "Estilo escuro"
 
+#: src/ptyxis-title-dialog.ui:36
+msgid "Title"
+msgstr "Título"
+
+#: src/ptyxis-title-dialog.ui:42
+msgid "Include Process Title"
+msgstr "Incluir título do processo"
+
+#: src/ptyxis-title-dialog.ui:43
+msgid "Append title from Shell application"
+msgstr "Anexa o título do aplicativo Shell"
+
 #. translators: Builder Terminal means this is a terminal bundled with GNOME Builder
 #: src/ptyxis-util.c:313
 msgid "Builder Terminal"
@@ -1757,15 +1769,15 @@ msgstr "Terminal do Builder"
 msgid "Ptyxis"
 msgstr "Ptyxis"
 
-#: src/ptyxis-window.c:1361
+#: src/ptyxis-window.c:1363
 msgid "Zoom in"
 msgstr "Ampliar"
 
-#: src/ptyxis-window.c:1376
+#: src/ptyxis-window.c:1378
 msgid "Zoom out"
 msgstr "Reduz"
 
-#: src/ptyxis-window.c:1466
+#: src/ptyxis-window.c:1468
 msgid "Containers"
 msgstr "Contêineres"
 
