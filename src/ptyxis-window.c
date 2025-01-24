@@ -653,9 +653,8 @@ ptyxis_window_new_window_action (GtkWidget  *widget,
    * it's most likely they're just doing a temporary thing or would like
    * to move the window elsewhere.
    */
-  if (!!(state & (GDK_TOPLEVEL_STATE_MAXIMIZED |
-                  GDK_TOPLEVEL_STATE_FULLSCREEN |
-                  GDK_TOPLEVEL_STATE_TILED)))
+  if (!!(state & (GDK_TOPLEVEL_STATE_MAXIMIZED | GDK_TOPLEVEL_STATE_FULLSCREEN | GDK_TOPLEVEL_STATE_TILED)) ||
+      !ptyxis_settings_get_restore_window_size (settings))
     {
       PtyxisTerminal *terminal = ptyxis_tab_get_terminal (tab);
       ptyxis_settings_get_default_size (settings, &columns, &rows);
