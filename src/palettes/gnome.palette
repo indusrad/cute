@@ -5,8 +5,8 @@ UseSystemAccent=true
 
 [Light]
 Foreground=#1d1d20
-Background=#fafafb
-TitlebarBackground=#fafafb
+Background=#ffffff
+TitlebarBackground=#ffffff
 TitlebarForeground=#333333
 Cursor=#1d1d20
 Color0=#1d1d20
