@@ -193,13 +193,88 @@ ptyxis_application_open (GApplication  *app,
 
   for (guint i = 0; i < n_files; i++)
     {
-      PtyxisTab *tab = ptyxis_tab_new (profile);
-      PtyxisTerminal *terminal = ptyxis_tab_get_terminal (tab);
       g_autofree char *uri = g_file_get_uri (files[i]);
+      PtyxisTerminal *terminal = NULL;
+      PtyxisTab *tab = NULL;
 
-      ptyxis_application_apply_default_size (self, terminal);
-      ptyxis_tab_set_initial_working_directory_uri (tab, uri);
-      ptyxis_window_add_tab (window, tab);
+      if (g_file_has_uri_scheme (files[i], "sftp"))
+        {
+          g_autoptr(GStrvBuilder) command_builder = g_strv_builder_new ();
+          g_autoptr(GUri) guri = g_uri_parse (uri, G_URI_FLAGS_NONE, NULL);
+          g_auto(GStrv) argv = NULL;
+          const char *cwd;
+          const char *path;
+          const char *host;
+          const char *user;
+          int port;
+
+          /* This roughly tries to do the same thing as GNOME Terminal does
+           * which amounts to "ssh -t user@host 'cd "dir" && exec $SHELL -l'"
+           * when we see a sftp:// style URI.
+           */
+
+          /* Do nothing if we got an invalid URI */
+          if (guri == NULL)
+            {
+              g_debug ("Failed to parse URI %s", uri);
+              continue;
+            }
+
+          g_strv_builder_add (command_builder, "ssh");
+          g_strv_builder_add (command_builder, "-t");
+
+          if (!(host = g_uri_get_host (guri)))
+            {
+              g_debug ("Failed to extract host from URI %s", uri);
+              continue;
+            }
+
+          user = g_uri_get_user (guri);
+
+          if (user != NULL && host != NULL)
+            {
+              g_autofree char *user_at_host = g_strdup_printf ("%s@%s", user, host);
+
+              g_strv_builder_add (command_builder, user_at_host);
+            }
+          else
+            {
+              g_strv_builder_add (command_builder, host);
+            }
+
+          if ((port = g_uri_get_port (guri)) > 0)
+            {
+              g_autofree char *portstr = g_strdup_printf ("%u", port);
+
+              g_strv_builder_add (command_builder, "-p");
+              g_strv_builder_add (command_builder, portstr);
+            }
+
+          if ((path = g_uri_get_path (guri)))
+            {
+              g_autofree char *quoted_path = g_shell_quote (path);
+              g_autofree char *command = g_strdup_printf ("cd %s && exec $SHELL -l", quoted_path);
+
+              g_strv_builder_add (command_builder, command);
+            }
+
+          argv = g_strv_builder_end (command_builder);
+          cwd = g_get_home_dir ();
+
+          tab = ptyxis_window_add_tab_for_command (window, NULL, (const char * const *)argv, cwd);
+          terminal = ptyxis_tab_get_terminal (tab);
+
+          ptyxis_application_apply_default_size (self, terminal);
+        }
+      else
+        {
+          tab = ptyxis_tab_new (profile);
+          terminal = ptyxis_tab_get_terminal (tab);
+
+          ptyxis_application_apply_default_size (self, terminal);
+          ptyxis_tab_set_initial_working_directory_uri (tab, uri);
+          ptyxis_window_add_tab (window, tab);
+        }
 
       if (i == 0)
         ptyxis_window_set_active_tab (window, tab);
