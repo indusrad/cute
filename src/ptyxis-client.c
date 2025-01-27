@@ -728,7 +728,7 @@ ptyxis_client_spawn_async (PtyxisClient        *self,
           /* TODO: We might want to check with the container that this
            * is a shell (as opposed to one available on the host).
            */
-          if (!ptyxis_is_shell (arg0))
+          if (!arg0 || !ptyxis_is_shell (arg0))
             break;
           G_GNUC_FALLTHROUGH;
 
