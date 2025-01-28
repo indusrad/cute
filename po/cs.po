@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ptyxis main\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/chergert/ptyxis/issues\n"
-"POT-Creation-Date: 2025-01-13 04:34+0000\n"
-"PO-Revision-Date: 2025-01-13 12:58+0100\n"
+"POT-Creation-Date: 2025-01-26 00:56+0000\n"
+"PO-Revision-Date: 2025-01-28 11:32+0100\n"
 "Last-Translator: Daniel Rusek <mail@asciiwolf.com>\n"
 "Language-Team: Czech <Czech>\n"
 "Language: cs\n"
@@ -28,7 +28,7 @@ msgid "A container-oriented terminal for GNOME"
 msgstr "Kontejnerově orientovaný terminál pro GNOME"
 
 #: data/org.gnome.Ptyxis.desktop.in.in:13 src/ptyxis-preferences-window.ui:651
-#: src/ptyxis-tab.c:1394 src/ptyxis-util.c:315
+#: src/ptyxis-tab.c:1412 src/ptyxis-util.c:315
 msgid "Terminal"
 msgstr "Terminál"
 
@@ -582,7 +582,7 @@ msgid "The shortcut to show application preferences"
 msgstr "Zkratka pro zobrazení předvoleb aplikace"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:410 src/ptyxis-preferences-window.ui:879
-#: src/ptyxis-window.c:1365 src/ptyxis-window.c:1373
+#: src/ptyxis-window.c:1374 src/ptyxis-window.c:1382
 msgid "Zoom Out"
 msgstr "Oddálit"
 
@@ -591,7 +591,7 @@ msgid "The shortcut to zoom out"
 msgstr "Zkratka pro oddálení"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:416 src/ptyxis-preferences-window.ui:884
-#: src/ptyxis-window.c:1382
+#: src/ptyxis-window.c:1391
 msgid "Reset Zoom"
 msgstr "Výchozí přiblížení"
 
@@ -600,7 +600,7 @@ msgid "The shortcut to reset zoom"
 msgstr "Zkratka pro resetování přiblížení"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:422 src/ptyxis-preferences-window.ui:874
-#: src/ptyxis-window.c:1350 src/ptyxis-window.c:1358
+#: src/ptyxis-window.c:1359 src/ptyxis-window.c:1367
 msgid "Zoom In"
 msgstr "Přiblížit"
 
@@ -747,7 +747,7 @@ msgid "Shortcut to close the current window"
 msgstr "Zkratka pro zavření aktuálního okna"
 
 #: src/org.gnome.Ptyxis.gschema.xml.in:530 src/ptyxis-preferences-window.ui:731
-#: src/ptyxis-terminal.ui:244 src/ptyxis-window.c:1092 src/ptyxis-window.ui:592
+#: src/ptyxis-terminal.ui:244 src/ptyxis-window.c:1101 src/ptyxis-window.ui:592
 msgid "Set Title"
 msgstr "Nastavit název"
 
@@ -1467,7 +1467,7 @@ msgid "Show this preferences window"
 msgstr "Zobrazit toto okno s předvolbami"
 
 #: src/ptyxis-preferences-window.ui:926 src/ptyxis-preferences-window.ui:930
-#: src/ptyxis-window.c:1463
+#: src/ptyxis-window.c:1472
 msgid "Profiles"
 msgstr "Profily"
 
@@ -1517,7 +1517,7 @@ msgstr "Zpět"
 msgid "My Computer"
 msgstr "Můj počítač"
 
-#: src/ptyxis-profile-editor.ui:22 src/ptyxis-tab.c:391 src/ptyxis-tab.c:448
+#: src/ptyxis-profile-editor.ui:22 src/ptyxis-tab.c:392 src/ptyxis-tab.c:449
 msgid "Edit Profile"
 msgstr "Upravit profil"
 
@@ -1609,12 +1609,12 @@ msgstr "Nastavit zkratku"
 msgid "disabled"
 msgstr "zakázáno"
 
-#: src/ptyxis-tab.c:301
+#: src/ptyxis-tab.c:302
 #, c-format
 msgid "Process Exited from Signal %d"
 msgstr "Proces ukončen ze signálu %d"
 
-#: src/ptyxis-tab.c:304 src/ptyxis-tab.c:327
+#: src/ptyxis-tab.c:305 src/ptyxis-tab.c:328
 msgid "_Restart"
 msgstr "_Restartovat"
 
@@ -1622,32 +1622,32 @@ msgstr "_Restartovat"
 #. * display it again if the tab is removed from the parking lot and
 #. * restored into the window.
 #.
-#: src/ptyxis-tab.c:326
+#: src/ptyxis-tab.c:327
 msgid "Process Exited"
 msgstr "Proces ukončen"
 
-#: src/ptyxis-tab.c:390
+#: src/ptyxis-tab.c:391
 msgid "Failed to launch terminal"
 msgstr "Spuštění terminálu selhalo"
 
-#: src/ptyxis-tab.c:446
+#: src/ptyxis-tab.c:447
 #, c-format
 msgid "Cannot locate container “%s”"
 msgstr "Nelze najít kontejner „%s“"
 
-#: src/ptyxis-tab.c:470
+#: src/ptyxis-tab.c:471
 msgid "Failed to create pseudo terminal device"
 msgstr "Vytvoření zařízení pseudo terminálu selhalo"
 
-#: src/ptyxis-tab.c:1397
+#: src/ptyxis-tab.c:1415
 msgid "Exited"
 msgstr "Ukončeno"
 
-#: src/ptyxis-tab.c:1399
+#: src/ptyxis-tab.c:1417
 msgid "Failed"
 msgstr "Selhalo"
 
-#: src/ptyxis-tab.c:1964
+#: src/ptyxis-tab.c:1982
 msgid "Failed to open link"
 msgstr "Otevření odkazu selhalo"
 
@@ -1739,6 +1739,18 @@ msgstr "Tmavý styl"
 msgid "Dark style"
 msgstr "Tmavý styl"
 
+#: src/ptyxis-title-dialog.ui:36
+msgid "Title"
+msgstr "Název"
+
+#: src/ptyxis-title-dialog.ui:42
+msgid "Include Process Title"
+msgstr "Zahrnout název procesu"
+
+#: src/ptyxis-title-dialog.ui:43
+msgid "Append title from Shell application"
+msgstr "Přidat název z aplikace shellu"
+
 #. translators: Builder Terminal means this is a terminal bundled with GNOME Builder
 #: src/ptyxis-util.c:313
 msgid "Builder Terminal"
@@ -1748,15 +1760,15 @@ msgstr "Terminál Builderu"
 msgid "Ptyxis"
 msgstr "Ptyxis"
 
-#: src/ptyxis-window.c:1361
+#: src/ptyxis-window.c:1370
 msgid "Zoom in"
 msgstr "Přiblížit"
 
-#: src/ptyxis-window.c:1376
+#: src/ptyxis-window.c:1385
 msgid "Zoom out"
 msgstr "Oddálit"
 
-#: src/ptyxis-window.c:1466
+#: src/ptyxis-window.c:1475
 msgid "Containers"
 msgstr "Kontejnery"
 
