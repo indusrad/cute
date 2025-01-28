@@ -43,6 +43,15 @@
   <launchable type="desktop-id">@APP_ID@.desktop</launchable>
 
   <releases>
+    <release version="47.8" date="2025-01-28">
+      <description>
+        <p>This release contains various bug fixes and feature improvements.</p>
+        <ul>
+          <li>Support opening shell on a remote host when Nautilus requests a sftp:// based URI.</li>
+          <li>Ensure previous window size is ignored when restore-window-size is disabled.</li>
+        </ul>
+      </description>
+    </release>
     <release version="47.7" date="2025-01-17">
       <description>
         <p>This release contains various bug fixes and feature improvements.</p>

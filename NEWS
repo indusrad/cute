@@ -1,3 +1,9 @@
+# Ptyxis 47.8
+
+ * Open shell on remote host using SSH when sftp:// URIs are opened via
+   Nautilus or otherwise.
+ * Ensure window size is not inherited when restore-window-size is disabled.
+
 # Ptyxis 47.7
 
  * Fixes to tracking podman-based containers
