@@ -828,7 +828,9 @@ ptyxis_window_detach_action (GtkWidget  *widget,
 
   tab_page = adw_tab_view_get_page (self->tab_view, GTK_WIDGET (tab));
 
-  new_window = g_object_new (PTYXIS_TYPE_WINDOW, NULL);
+  new_window = g_object_new (PTYXIS_TYPE_WINDOW,
+                             "application", PTYXIS_APPLICATION_DEFAULT,
+                             NULL);
   adw_tab_view_transfer_page (self->tab_view, tab_page, new_window->tab_view, 0);
 
   gtk_window_present (GTK_WINDOW (new_window));
