@@ -378,6 +378,16 @@
                         <style>
                           <class name="main-header-bar"/>
                         </style>
+                        <property name="show-start-title-buttons" bind-source="PtyxisWindow" bind-property="fullscreened" bind-flags="sync-create|invert-boolean"/>
+                        <property name="show-end-title-buttons" bind-source="PtyxisWindow" bind-property="fullscreened" bind-flags="sync-create|invert-boolean"/>
+                        <child type="end">
+                          <object class="GtkButton" id="restore_button">
+                            <property name="tooltip-text" translatable="yes">Leave Fullscreen</property>
+                            <property name="icon-name">view-restore-symbolic</property>
+                            <property name="action-name">win.unfullscreen</property>
+                            <property name="visible" bind-source="PtyxisWindow" bind-property="fullscreened" bind-flags="sync-create"/>
+                          </object>
+                        </child>
                         <child type="start">
                           <object class="GtkBox" id="new_tab_box">
                             <property name="css-name">splitbutton</property>
