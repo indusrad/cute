@@ -1,3 +1,15 @@
+# Ptyxis 48.beta
+
+ * Styling improvements to fullscreen mode
+ * Styling improvements to default GNOME palette
+ * Styling improvements to titlebar coloring
+ * Fix size calculation of new windows when not inheriting the
+   current window size.
+ * Support for sftp:// URIs from Nautilus
+ * Fix new windows created from "Move to New Window" to ensure
+   they have an application instance to keep app alive.
+ * Translation updates
+
 # Ptyxis 48.alpha.2
 
  * Reveal tabs briefly when changing tabs in fullscreen mode

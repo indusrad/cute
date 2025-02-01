@@ -43,21 +43,7 @@
   <launchable type="desktop-id">@APP_ID@.desktop</launchable>
 
   <releases>
-    <release version="48.alpha" date="2025-01-12">
-      <description>
-        <p>The highlights include:</p>
-        <ul>
-          <li>Automatically hide window headerbar and tabs while in fullscreen.</li>
-          <li>Support for setting cursor foreground in palette definitions.</li>
-          <li>Allow completely replacing tab title.</li>
-          <li>A new high-contrast palette for GNOME.</li>
-          <li>$PWD is now set when spawning shells to help disambiguate symlink directories.</li>
-          <li>Avoid checking podman for changes too often.</li>
-          <li>Alt+Comma may now be used to activate the profile/container list.</li>
-          <li>Support for OSC 9;4 to set progress as used by systemd v257.</li>
-        </ul>
-      </description>
-    </release>
+    <release version="48.beta" date="2025-02-01"/>
   </releases>
 
   <screenshots>
