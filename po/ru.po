@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ptyxis main\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/chergert/ptyxis/issues\n"
-"POT-Creation-Date: 2025-01-26 00:56+0000\n"
-"PO-Revision-Date: 2025-01-27 00:37+0300\n"
+"POT-Creation-Date: 2025-01-28 10:34+0000\n"
+"PO-Revision-Date: 2025-01-28 18:02+0300\n"
 "Last-Translator: Artur So <arturios2005@mail.ru>\n"
 "Language-Team: Russian <gnome-cyr@gnome.org>\n"
 "Language: ru\n"
@@ -860,37 +860,37 @@ msgstr "Отменить Закрыть вкладку"
 msgid "Undo closing of last tab"
 msgstr "Отменить закрытие последней вкладки"
 
-#: src/ptyxis-application.c:363
+#: src/ptyxis-application.c:438
 msgid "--tab, --tab-with-profile, or --new-window may not be used together"
 msgstr ""
 "--tab, --tab-with-profile, или --new-window не могут быть использованы вместе"
 
-#: src/ptyxis-application.c:409
+#: src/ptyxis-application.c:484
 #, c-format
 msgid "Cannot parse command: %s"
 msgstr "Невозможно разобрать команду: %s"
 
-#: src/ptyxis-application.c:1019
+#: src/ptyxis-application.c:1094
 msgid "Examples:"
 msgstr "Примеры:"
 
-#: src/ptyxis-application.c:1021
+#: src/ptyxis-application.c:1096
 msgid "Show the application preferences"
 msgstr "Показать параметры приложения"
 
 #. Used for new tabs/windows/etc when specified
-#: src/ptyxis-application.c:1024
+#: src/ptyxis-application.c:1099
 msgid "Use DIR for --tab, --tab-with-profile, --new-window, or -x"
 msgstr "Использовать DIR для --tab, --tab-with-profile, --new-window, или -x"
 
-#: src/ptyxis-application.c:1024
+#: src/ptyxis-application.c:1099
 msgid "DIR"
 msgstr "DIR"
 
 #. By default, this implies a new ptyxis instance unless the options
 #. * below are provided to override that.
 #.
-#: src/ptyxis-application.c:1029
+#: src/ptyxis-application.c:1104
 msgid "Command to execute in new window"
 msgstr "Команда для выполнения в новом окне"
 
@@ -898,47 +898,47 @@ msgstr "Команда для выполнения в новом окне"
 #. * short command options for these to make it easier to sniff them in early args
 #. * checking from `main.c`.
 #.
-#: src/ptyxis-application.c:1035
+#: src/ptyxis-application.c:1110
 msgid "New terminal window"
 msgstr "Новое окно терминала"
 
-#: src/ptyxis-application.c:1036
+#: src/ptyxis-application.c:1111
 msgid "New terminal tab in active window"
 msgstr "Новая вкладка терминала в активном окне"
 
-#: src/ptyxis-application.c:1037
+#: src/ptyxis-application.c:1112
 msgid "New terminal tab in active window using the profile UUID"
 msgstr "Новая вкладка терминала в активном окне используя UUID профиля"
 
-#: src/ptyxis-application.c:1037
+#: src/ptyxis-application.c:1112
 msgid "PROFILE_UUID"
 msgstr "PROFILE_UUID"
 
-#: src/ptyxis-application.c:1039
+#: src/ptyxis-application.c:1114
 msgid "Set title for new tab"
 msgstr "Задать название для новой вкладки"
 
-#: src/ptyxis-application.c:1040
+#: src/ptyxis-application.c:1115
 msgid "Maximize a newly created window"
 msgstr "Развернуть только что созданное окно"
 
-#: src/ptyxis-application.c:1047
+#: src/ptyxis-application.c:1122
 msgid "Run Separate Instance"
 msgstr "Запустить отдельный экземпляр"
 
-#: src/ptyxis-application.c:1051
+#: src/ptyxis-application.c:1126
 msgid "Open Preferences"
 msgstr "Открыть параметры"
 
-#: src/ptyxis-application.c:1055
+#: src/ptyxis-application.c:1130
 msgid "Run Custom Command in New Window"
 msgstr "Запустить пользовательскую команду в новом окне"
 
-#: src/ptyxis-application.c:1059
+#: src/ptyxis-application.c:1134
 msgid "[-- COMMAND ARGUMENTS]"
 msgstr "[-- COMMAND ARGUMENTS]"
 
-#: src/ptyxis-application.c:1297
+#: src/ptyxis-application.c:1372
 msgid "translator-credits"
 msgstr "vadim kavetskiy <kve1989@ya.ru>"
 
@@ -1331,11 +1331,11 @@ msgstr "Символы неоднозначной ширины"
 
 #: src/ptyxis-preferences-window.ui:611 src/ptyxis-profile-editor.ui:377
 msgid "Narrow"
-msgstr "Узкий"
+msgstr "Узкие"
 
 #: src/ptyxis-preferences-window.ui:617 src/ptyxis-profile-editor.ui:383
 msgid "Wide"
-msgstr "Широкий"
+msgstr "Широкие"
 
 #: src/ptyxis-preferences-window.ui:637
 msgid "Set as Default Terminal"
