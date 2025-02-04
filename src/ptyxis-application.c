@@ -550,7 +550,6 @@ ptyxis_application_command_line (GApplication            *app,
           gtk_application_add_window (GTK_APPLICATION (self), GTK_WINDOW (window));
           gtk_window_present (GTK_WINDOW (window));
         }
-
     }
   else if (g_variant_dict_contains (dict, "tab"))
     {
@@ -624,7 +623,7 @@ ptyxis_application_command_line (GApplication            *app,
       g_application_activate (G_APPLICATION (self));
     }
 
-  return G_APPLICATION_CLASS (ptyxis_application_parent_class)->command_line (app, cmdline);
+  return EXIT_SUCCESS;
 }
 
 static void
