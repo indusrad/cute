@@ -50,12 +50,16 @@ check_early_opts (int        *argc,
    */
   for (int i = 0; i < *argc; i++)
     {
-      const char *arg = (*argv)[i];
+      char *arg = (*argv)[i];
 
       if (g_str_equal (arg, "--tab") ||
           g_str_equal (arg , "--new-window") ||
           (g_str_equal (arg, "--tab-with-profile") || g_str_has_prefix (arg, "--tab-with-profile=")))
         ignore_standalone = TRUE;
+
+      /* Convert -e to -- for x-terminal-emulator */
+      if (strcmp (arg, "-e") == 0)
+        arg[1] = '-';
 
       if (g_str_equal ((*argv)[i], "--") && (*argv)[i+1] != NULL)
         {
