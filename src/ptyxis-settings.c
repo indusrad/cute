@@ -349,14 +349,14 @@ ptyxis_settings_class_init (PtyxisSettingsClass *klass)
   object_class->set_property = ptyxis_settings_set_property;
 
   properties[PROP_AUDIBLE_BELL] =
-    g_param_spec_boolean ("audible-bell", NULL, NULL,
+    g_param_spec_boolean (PTYXIS_SETTING_KEY_AUDIBLE_BELL, NULL, NULL,
                           FALSE,
                           (G_PARAM_READWRITE |
                            G_PARAM_EXPLICIT_NOTIFY |
                            G_PARAM_STATIC_STRINGS));
 
   properties[PROP_CURSOR_BLINK_MODE] =
-    g_param_spec_enum ("cursor-blink-mode", NULL, NULL,
+    g_param_spec_enum (PTYXIS_SETTING_KEY_CURSOR_BLINK_MODE, NULL, NULL,
                        VTE_TYPE_CURSOR_BLINK_MODE,
                        VTE_CURSOR_BLINK_SYSTEM,
                        (G_PARAM_READWRITE |
@@ -364,7 +364,7 @@ ptyxis_settings_class_init (PtyxisSettingsClass *klass)
                         G_PARAM_STATIC_STRINGS));
 
   properties[PROP_CURSOR_SHAPE] =
-    g_param_spec_enum ("cursor-shape", NULL, NULL,
+    g_param_spec_enum (PTYXIS_SETTING_KEY_CURSOR_SHAPE, NULL, NULL,
                        VTE_TYPE_CURSOR_SHAPE,
                        VTE_CURSOR_SHAPE_BLOCK,
                        (G_PARAM_READWRITE |
@@ -372,7 +372,7 @@ ptyxis_settings_class_init (PtyxisSettingsClass *klass)
                         G_PARAM_STATIC_STRINGS));
 
   properties[PROP_ENABLE_A11Y] =
-    g_param_spec_boolean ("enable-a11y", NULL, NULL,
+    g_param_spec_boolean (PTYXIS_SETTING_KEY_ENABLE_A11Y, NULL, NULL,
                           FALSE,
                           (G_PARAM_READWRITE |
                            G_PARAM_EXPLICIT_NOTIFY |
@@ -386,14 +386,14 @@ ptyxis_settings_class_init (PtyxisSettingsClass *klass)
                          G_PARAM_STATIC_STRINGS));
 
   properties[PROP_FONT_NAME] =
-    g_param_spec_string ("font-name", NULL, NULL,
+    g_param_spec_string (PTYXIS_SETTING_KEY_FONT_NAME, NULL, NULL,
                          NULL,
                          (G_PARAM_READWRITE |
                           G_PARAM_EXPLICIT_NOTIFY |
                           G_PARAM_STATIC_STRINGS));
 
   properties[PROP_INTERFACE_STYLE] =
-    g_param_spec_enum ("interface-style", NULL, NULL,
+    g_param_spec_enum (PTYXIS_SETTING_KEY_INTERFACE_STYLE, NULL, NULL,
                        ADW_TYPE_COLOR_SCHEME,
                        ADW_COLOR_SCHEME_DEFAULT,
                        (G_PARAM_READWRITE |
@@ -401,7 +401,7 @@ ptyxis_settings_class_init (PtyxisSettingsClass *klass)
                         G_PARAM_STATIC_STRINGS));
 
   properties[PROP_NEW_TAB_POSITION] =
-    g_param_spec_enum ("new-tab-position", NULL, NULL,
+    g_param_spec_enum (PTYXIS_SETTING_KEY_NEW_TAB_POSITION, NULL, NULL,
                        PTYXIS_TYPE_NEW_TAB_POSITION,
                        PTYXIS_NEW_TAB_POSITION_LAST,
                        (G_PARAM_READWRITE |
@@ -409,55 +409,55 @@ ptyxis_settings_class_init (PtyxisSettingsClass *klass)
                         G_PARAM_STATIC_STRINGS));
 
   properties[PROP_DEFAULT_PROFILE_UUID] =
-    g_param_spec_string ("default-profile-uuid", NULL, NULL,
+    g_param_spec_string (PTYXIS_SETTING_KEY_DEFAULT_PROFILE_UUID, NULL, NULL,
                          NULL,
                          (G_PARAM_READWRITE |
                           G_PARAM_EXPLICIT_NOTIFY |
                           G_PARAM_STATIC_STRINGS));
 
   properties[PROP_DISABLE_PADDING] =
-    g_param_spec_boolean ("disable-padding", NULL, NULL,
+    g_param_spec_boolean (PTYXIS_SETTING_KEY_DISABLE_PADDING, NULL, NULL,
                           FALSE,
                           (G_PARAM_READWRITE |
                            G_PARAM_EXPLICIT_NOTIFY |
                            G_PARAM_STATIC_STRINGS));
 
   properties[PROP_PROFILE_UUIDS] =
-    g_param_spec_boxed ("profile-uuids", NULL, NULL,
+    g_param_spec_boxed (PTYXIS_SETTING_KEY_PROFILE_UUIDS, NULL, NULL,
                         G_TYPE_STRV,
                         (G_PARAM_READABLE |
                          G_PARAM_STATIC_STRINGS));
 
   properties[PROP_RESTORE_SESSION] =
-    g_param_spec_boolean ("restore-session", NULL, NULL,
+    g_param_spec_boolean (PTYXIS_SETTING_KEY_RESTORE_SESSION, NULL, NULL,
                           FALSE,
                           (G_PARAM_READWRITE |
                            G_PARAM_EXPLICIT_NOTIFY |
                            G_PARAM_STATIC_STRINGS));
 
   properties[PROP_RESTORE_WINDOW_SIZE] =
-    g_param_spec_boolean ("restore-window-size", NULL, NULL,
+    g_param_spec_boolean (PTYXIS_SETTING_KEY_RESTORE_WINDOW_SIZE, NULL, NULL,
                           FALSE,
                           (G_PARAM_READWRITE |
                            G_PARAM_EXPLICIT_NOTIFY |
                            G_PARAM_STATIC_STRINGS));
 
   properties[PROP_DEFAULT_COLUMNS] =
-    g_param_spec_uint ("default-columns", NULL, NULL,
+    g_param_spec_uint (PTYXIS_SETTING_KEY_DEFAULT_COLUMNS, NULL, NULL,
                        1, 65535, 80,
                        (G_PARAM_READWRITE |
                         G_PARAM_EXPLICIT_NOTIFY |
                         G_PARAM_STATIC_STRINGS));
 
   properties[PROP_DEFAULT_ROWS] =
-    g_param_spec_uint ("default-rows", NULL, NULL,
+    g_param_spec_uint (PTYXIS_SETTING_KEY_DEFAULT_ROWS, NULL, NULL,
                        1, 65535, 24,
                        (G_PARAM_READWRITE |
                         G_PARAM_EXPLICIT_NOTIFY |
                         G_PARAM_STATIC_STRINGS));
 
   properties[PROP_SCROLLBAR_POLICY] =
-    g_param_spec_enum ("scrollbar-policy", NULL, NULL,
+    g_param_spec_enum (PTYXIS_SETTING_KEY_SCROLLBAR_POLICY, NULL, NULL,
                        PTYXIS_TYPE_SCROLLBAR_POLICY,
                        PTYXIS_SCROLLBAR_POLICY_SYSTEM,
                        (G_PARAM_READWRITE |
@@ -465,7 +465,7 @@ ptyxis_settings_class_init (PtyxisSettingsClass *klass)
                         G_PARAM_STATIC_STRINGS));
 
   properties[PROP_TAB_MIDDLE_CLICK] =
-    g_param_spec_enum ("tab-middle-click", NULL, NULL,
+    g_param_spec_enum (PTYXIS_SETTING_KEY_TAB_MIDDLE_CLICK, NULL, NULL,
                        PTYXIS_TYPE_TAB_MIDDLE_CLICK_BEHAVIOR,
                        PTYXIS_TAB_MIDDLE_CLICK_CLOSE,
                        (G_PARAM_READWRITE |
@@ -473,7 +473,7 @@ ptyxis_settings_class_init (PtyxisSettingsClass *klass)
                         G_PARAM_STATIC_STRINGS));
 
   properties[PROP_TEXT_BLINK_MODE] =
-    g_param_spec_enum ("text-blink-mode", NULL, NULL,
+    g_param_spec_enum (PTYXIS_SETTING_KEY_TEXT_BLINK_MODE, NULL, NULL,
                        VTE_TYPE_TEXT_BLINK_MODE,
                        VTE_TEXT_BLINK_ALWAYS,
                        (G_PARAM_READWRITE |
@@ -481,35 +481,35 @@ ptyxis_settings_class_init (PtyxisSettingsClass *klass)
                         G_PARAM_STATIC_STRINGS));
 
   properties[PROP_TOAST_ON_COPY_CLIPBOARD] =
-    g_param_spec_boolean ("toast-on-copy-clipboard", NULL, NULL,
+    g_param_spec_boolean (PTYXIS_SETTING_KEY_TOAST_ON_COPY_CLIPBOARD, NULL, NULL,
                           TRUE,
                           (G_PARAM_READWRITE |
                            G_PARAM_EXPLICIT_NOTIFY |
                            G_PARAM_STATIC_STRINGS));
 
   properties[PROP_USE_SYSTEM_FONT] =
-    g_param_spec_boolean ("use-system-font", NULL, NULL,
+    g_param_spec_boolean (PTYXIS_SETTING_KEY_USE_SYSTEM_FONT, NULL, NULL,
                           FALSE,
                           (G_PARAM_READWRITE |
                            G_PARAM_EXPLICIT_NOTIFY |
                            G_PARAM_STATIC_STRINGS));
 
   properties[PROP_VISUAL_BELL] =
-    g_param_spec_boolean ("visual-bell", NULL, NULL,
+    g_param_spec_boolean (PTYXIS_SETTING_KEY_VISUAL_BELL, NULL, NULL,
                           FALSE,
                           (G_PARAM_READWRITE |
                            G_PARAM_EXPLICIT_NOTIFY |
                            G_PARAM_STATIC_STRINGS));
 
   properties[PROP_VISUAL_PROCESS_LEADER] =
-    g_param_spec_boolean ("visual-process-leader", NULL, NULL,
+    g_param_spec_boolean (PTYXIS_SETTING_KEY_VISUAL_PROCESS_LEADER, NULL, NULL,
                           FALSE,
                           (G_PARAM_READWRITE |
                            G_PARAM_EXPLICIT_NOTIFY |
                            G_PARAM_STATIC_STRINGS));
 
   properties[PROP_WORD_CHAR_EXCEPTIONS] =
-    g_param_spec_string ("word-char-exceptions", NULL, NULL,
+    g_param_spec_string (PTYXIS_SETTING_KEY_WORD_CHAR_EXCEPTIONS, NULL, NULL,
                          NULL,
                          (G_PARAM_READWRITE |
                           G_PARAM_EXPLICIT_NOTIFY |
