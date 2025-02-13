@@ -337,40 +337,86 @@ line_is_ptyxis (const char *line)
   return strcmp (line, APP_ID_DESKTOP) == 0 && line[strlen(APP_ID_DESKTOP)] == 0;
 }
 
+static char **
+get_xdg_terminals_list_paths (void)
+{
+  g_autofree char *fallback = g_build_filename (g_get_user_config_dir (), "xdg-terminals.list", NULL);
+  const char *session = g_getenv ("XDG_CURRENT_DESKTOP");
+  g_autoptr(GStrvBuilder) builder = g_strv_builder_new ();
+
+  if (session != NULL)
+    {
+      g_auto(GStrv) split = g_strsplit (session, ":", 0);
+
+      for (guint i = 0; split[i]; i++)
+        {
+          g_autofree char *path = NULL;
+          g_autofree char *down = NULL;
+          g_autofree char *base = NULL;
+
+          g_strstrip (split[i]);
+
+          if (split[i][0] == 0)
+            continue;
+
+          down = g_utf8_strdown (split[i], -1);
+
+          if (strchr (down, G_DIR_SEPARATOR))
+            continue;
+
+          base = g_strdup_printf ("%s-xdg-terminals.list", down);
+          path = g_build_filename (g_get_user_config_dir (), base, NULL);
+
+          g_strv_builder_add (builder, path);
+        }
+    }
+
+  g_strv_builder_add (builder, fallback);
+
+  return g_strv_builder_end (builder);
+}
+
 gboolean
 ptyxis_is_default (void)
 {
-  g_autofree char *path = g_build_filename (g_get_user_config_dir (), "xdg-terminals.list", NULL);
-  g_autofree char *contents = NULL;
-  LineReader reader;
-  gsize contents_len = 0;
-  char *line;
-  gsize len;
+  g_auto(GStrv) paths = get_xdg_terminals_list_paths ();
 
-  if (!g_file_get_contents (path, &contents, &contents_len, NULL))
-    return FALSE;
-
-  line_reader_init (&reader, contents, contents_len);
-
-  while ((line = line_reader_next (&reader, &len)))
+  for (guint i = 0; paths[i]; i++)
     {
-      line[len] = 0;
+      const char *path = paths[i];
+      g_autofree char *contents = NULL;
+      LineReader reader;
+      gsize contents_len = 0;
+      char *line;
+      gsize len;
 
-      g_strchug (line);
+      if (!g_file_get_contents (path, &contents, &contents_len, NULL))
+        return FALSE;
 
-      if (line[0] == '#')
-        continue;
+      line_reader_init (&reader, contents, contents_len);
 
-      return line_is_ptyxis (line);
+      while ((line = line_reader_next (&reader, &len)))
+        {
+          line[len] = 0;
+
+          g_strchug (line);
+
+          if (line[0] == '#')
+            continue;
+
+          if (line[0] == 0)
+            continue;
+
+          return line_is_ptyxis (line);
+        }
     }
 
   return FALSE;
 }
 
-gboolean
-ptyxis_make_default (void)
+static void
+ptyxis_make_default_in_file (const char *path)
 {
-  g_autofree char *path = g_build_filename (g_get_user_config_dir (), "xdg-terminals.list", NULL);
   g_autoptr(GString) replace = g_string_new (APP_ID_DESKTOP "\n");
   g_autofree char *contents = NULL;
   gsize contents_len = 0;
@@ -398,6 +444,15 @@ ptyxis_make_default (void)
     }
 
   g_file_set_contents (path, replace->str, replace->len, NULL);
+}
+
+gboolean
+ptyxis_make_default (void)
+{
+  g_auto(GStrv) paths = get_xdg_terminals_list_paths ();
+
+  for (guint i = 0; paths[i]; i++)
+    ptyxis_make_default_in_file (paths[i]);
 
   return ptyxis_is_default ();
 }
