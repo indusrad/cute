@@ -1,3 +1,7 @@
+# Ptyxis 47.10
+
+ * Fix appinfo for automated CI
+
 # Ptyxis 47.9
 
  * Fix "Move to New Window" action when right clicking on tabs where
