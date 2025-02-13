@@ -43,6 +43,20 @@
   <launchable type="desktop-id">@APP_ID@.desktop</launchable>
 
   <releases>
+    <release version="47.9" date="2025-02-13">
+      <description>
+        <p>This release contains various bug fixes and feature improvements.</p>
+        <ul>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li>Fix "Move to New Window" action when right clicking on tabs where the window may get created without an application instance.</li>
+          <li>Fullscreen button layout and style to match platform expectations.</li>
+          <li>Fix exit code when activating a previous Ptyxis instance.</li>
+          <li>Add support for Debian's x-terminal-emulator.</li>
+        </ul>
+      </description>
+    </release>
     <release version="47.8" date="2025-01-28">
       <description>
         <p>This release contains various bug fixes and feature improvements.</p>

@@ -1,3 +1,11 @@
+# Ptyxis 47.9
+
+ * Fix "Move to New Window" action when right clicking on tabs where
+   the window may get created without an application instance.
+ * Fullscreen button layout and style to match platform expectations.
+ * Fix exit code when activating a previous Ptyxis instance.
+ * Add support for Debian's x-terminal-emulator.
+
 # Ptyxis 47.8
 
  * Open shell on remote host using SSH when sftp:// URIs are opened via
