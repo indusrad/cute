@@ -520,9 +520,6 @@ ptyxis_preferences_window_notify_default_profile_cb (PtyxisPreferencesWindow *se
   g_object_bind_property (profile, "login-shell",
                           self->login_shell, "active",
                           G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
-  g_object_bind_property (profile, "tab-default-ignore-osc-title",
-                          self->tab_default_ignore_osc_title, "active",
-                          G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
 
   g_settings_bind_with_mapping (gsettings,
                                 PTYXIS_PROFILE_KEY_BACKSPACE_BINDING,
@@ -914,6 +911,11 @@ ptyxis_preferences_window_constructed (GObject *object)
   g_object_bind_property (shortcuts, "detach-tab",
                           self->shortcut_detach_tab, "accelerator",
                           G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
+
+  g_object_bind_property (settings, "tab-default-ignore-osc-title",
+                          self->tab_default_ignore_osc_title, "active",
+                          G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL | G_BINDING_INVERT_BOOLEAN);
+
 }
 
 static void

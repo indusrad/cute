@@ -81,7 +81,7 @@ struct _PtyxisTab
   PtyxisProcessLeaderKind  leader_kind : 3;
   guint                    has_foreground_process : 1;
   guint                    forced_exit : 1;
-  guint                    ignore_osc_title : 1;
+  guint                    ignore_osc_title : 2;
   guint                    ignore_snapshot : 1;
 };
 
@@ -768,6 +768,25 @@ ptyxis_tab_update_word_char_exceptions (PtyxisTab      *self,
 }
 
 static void
+ptyxis_tab_update_tab_default_ignore_osc_title (PtyxisTab      *self,
+                                        GParamSpec     *pspec,
+                                        PtyxisSettings *settings)
+{
+
+  gboolean sett;
+  g_assert (PTYXIS_IS_TAB (self));
+  g_assert(PTYXIS_IS_SETTINGS(settings));
+
+  if (ptyxis_defbool_is_default(self->ignore_osc_title))
+    {
+      sett = ptyxis_settings_get_tab_default_ignore_osc_title(settings);
+      self->ignore_osc_title = ptyxis_defbool_gbool_as_default(sett);
+      g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_IGNORE_OSC_TITLE]);
+      g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_TITLE]);
+    }
+}
+
+static void
 ptyxis_tab_constructed (GObject *object)
 {
   PtyxisTab *self = (PtyxisTab *)object;
@@ -839,6 +858,13 @@ ptyxis_tab_constructed (GObject *object)
                            self,
                            G_CONNECT_SWAPPED);
   ptyxis_tab_update_word_char_exceptions (self, NULL, settings);
+
+  g_signal_connect_object (settings,
+                           "notify::tab-default-ignore-osc-title",
+                           G_CALLBACK (ptyxis_tab_update_tab_default_ignore_osc_title),
+                           self,
+                           G_CONNECT_SWAPPED);
+  ptyxis_tab_update_tab_default_ignore_osc_title(self, NULL, settings);
 
   self->monitor = ptyxis_tab_monitor_new (self);
 }
@@ -1298,10 +1324,14 @@ static void
 ptyxis_tab_init (PtyxisTab *self)
 {
   GtkEventController *controller;
+  PtyxisSettings *settings;
+
+  settings = ptyxis_application_get_settings(PTYXIS_APPLICATION_DEFAULT);
 
   self->state = PTYXIS_TAB_STATE_INITIAL;
   self->zoom = PTYXIS_ZOOM_LEVEL_DEFAULT;
   self->uuid = g_uuid_string_random ();
+  self->ignore_osc_title = ptyxis_defbool_gbool_as_default (ptyxis_settings_get_tab_default_ignore_osc_title(settings));
 
   gtk_widget_init_template (GTK_WIDGET (self));
 
@@ -1387,12 +1417,15 @@ char *
 ptyxis_tab_dup_title (PtyxisTab *self)
 {
   GString *gstr;
+  gboolean sett_ignosc;
 
   g_return_val_if_fail (PTYXIS_IS_TAB (self), NULL);
 
   gstr = g_string_new (self->title_prefix);
 
-  if (!self->ignore_osc_title)
+  sett_ignosc = ptyxis_defbool_to_gbool (self->ignore_osc_title);
+
+  if (!sett_ignosc)
     {
       const char *window_title;
 
@@ -2253,24 +2286,37 @@ ptyxis_tab_dup_indicator_icon (PtyxisTab *self)
 gboolean
 ptyxis_tab_get_ignore_osc_title (PtyxisTab *self)
 {
+  gboolean ret;
   g_return_val_if_fail (PTYXIS_IS_TAB (self), FALSE);
 
-  return self->ignore_osc_title;
+  ret = ptyxis_defbool_to_gbool(self->ignore_osc_title);
+
+  return ret;
 }
 
 void
 ptyxis_tab_set_ignore_osc_title (PtyxisTab *self,
-                                 gboolean   ignore_osc_title)
+                                 gboolean   newv)
 {
+  gboolean oldv;
   g_return_if_fail (PTYXIS_IS_TAB (self));
 
-  ignore_osc_title = !!ignore_osc_title;
+  oldv = ptyxis_defbool_to_gbool (self->ignore_osc_title);
 
-  if (ignore_osc_title != self->ignore_osc_title)
+  if (newv != oldv)
     {
-      self->ignore_osc_title = ignore_osc_title;
+      self->ignore_osc_title = ptyxis_defbool_gbool_as_manual (newv);
       g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_IGNORE_OSC_TITLE]);
       g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_TITLE]);
+    }
+}
+
+void ptyxis_tab_enable_osc_title_if (PtyxisTab *self, gboolean cond)
+{
+  gboolean sett_ignosc = ptyxis_defbool_to_gbool(self->ignore_osc_title);
+  if (cond && !sett_ignosc)
+    {
+      ptyxis_tab_set_ignore_osc_title (self, false);
     }
 }
 
