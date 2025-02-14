@@ -49,6 +49,7 @@ G_BEGIN_DECLS
 #define PTYXIS_SETTING_KEY_DISABLE_PADDING         "disable-padding"
 #define PTYXIS_SETTING_KEY_WORD_CHAR_EXCEPTIONS    "word-char-exceptions"
 #define PTYXIS_SETTING_KEY_TAB_MIDDLE_CLICK        "tab-middle-click"
+#define PTYXIS_SETTING_KEY_TAB_DEFAULT_IGNORE_OSC_TITLE "tab-default-ignore-osc-title"
 
 typedef enum _PtyxisNewTabPosition
 {
@@ -107,6 +108,9 @@ void                    ptyxis_settings_set_visual_bell             (PtyxisSetti
 gboolean                ptyxis_settings_get_visual_process_leader   (PtyxisSettings             *self);
 void                    ptyxis_settings_set_visual_process_leader   (PtyxisSettings             *self,
                                                                      gboolean                    visual_process_leader);
+gboolean                ptyxis_settings_get_tab_default_ignore_osc_title   (PtyxisSettings             *self);
+void                    ptyxis_settings_set_tab_default_ignore_osc_title   (PtyxisSettings             *self,
+                                                                     gboolean                    tab_default_ignore_osc_title);
 VteCursorBlinkMode      ptyxis_settings_get_cursor_blink_mode       (PtyxisSettings             *self);
 void                    ptyxis_settings_set_cursor_blink_mode       (PtyxisSettings             *self,
                                                                      VteCursorBlinkMode          blink_mode);
