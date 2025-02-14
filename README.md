@@ -30,6 +30,36 @@ The outcome of the design process should be a specification which includes:
 After that process has completed, you may file an issue referencing it.
 
 
+## FAQ
+
+### Notifications Don't Work
+
+Make sure your supported shell sources `/etc/profile.d/vte.sh` which contains
+the necessary shell-side components for notification plumbing for VTE. It
+ensures the proper OSC sequence is emitted at the right points.
+
+### My Favorite Container Technology is not Supported
+
+See the sources in `agent/` and implement a `PtyxisContainerProvider` and
+`PtyxisContainer` for your technology. It needs to know how to query them
+and spawn processes (with the appropriate PTY) within the container.
+
+It should also update the list of available containers when they change
+without polling (a `GFileMonitor` to requery is a suitable solution).
+
+## I Have a Problem with My GPU
+
+While the underlying terminal emulator (VTE) supports GPU rendering, we have
+very little to do with that from this application. Bugs filed here will almost
+certainly end up in either the GNOME/vte or GNOME/gtk projects.
+
+## I Have Weird Font Rendering
+
+Currently (as of GTK 4.16) GTK has an oddity with rendering at 200% scale when
+the rounding for hinting is different between 1x and 2x scaling. This can cause
+overly constrained clipping. This must be addressed in GTK.
+
+
 ## Authors Note
 
 Ptyxis is a combination of work I've done across multiple projects. The
