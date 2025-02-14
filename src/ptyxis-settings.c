@@ -59,6 +59,7 @@ enum {
   PROP_VISUAL_BELL,
   PROP_VISUAL_PROCESS_LEADER,
   PROP_WORD_CHAR_EXCEPTIONS,
+  PROP_TAB_DEFAULT_IGNORE_OSC_TITLE,
   N_PROPS
 };
 
@@ -87,6 +88,8 @@ ptyxis_settings_changed_cb (PtyxisSettings *self,
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_AUDIBLE_BELL]);
   else if (g_str_equal (key, PTYXIS_SETTING_KEY_VISUAL_BELL))
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_VISUAL_BELL]);
+  else if (g_str_equal (key, PTYXIS_SETTING_KEY_TAB_DEFAULT_IGNORE_OSC_TITLE))
+    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_TAB_DEFAULT_IGNORE_OSC_TITLE]);
   else if (g_str_equal (key, PTYXIS_SETTING_KEY_VISUAL_PROCESS_LEADER))
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_VISUAL_PROCESS_LEADER]);
   else if (g_str_equal (key, PTYXIS_SETTING_KEY_CURSOR_SHAPE))
@@ -235,6 +238,10 @@ ptyxis_settings_get_property (GObject    *object,
       g_value_set_boolean (value, ptyxis_settings_get_visual_process_leader (self));
       break;
 
+    case PROP_TAB_DEFAULT_IGNORE_OSC_TITLE:
+      g_value_set_boolean (value, ptyxis_settings_get_tab_default_ignore_osc_title (self));
+      break;
+
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
     }
@@ -332,6 +339,10 @@ ptyxis_settings_set_property (GObject      *object,
 
     case PROP_VISUAL_PROCESS_LEADER:
       ptyxis_settings_set_visual_process_leader (self, g_value_get_boolean (value));
+      break;
+
+    case PROP_TAB_DEFAULT_IGNORE_OSC_TITLE:
+      ptyxis_settings_set_tab_default_ignore_osc_title (self, g_value_get_boolean (value));
       break;
 
     default:
@@ -514,6 +525,13 @@ ptyxis_settings_class_init (PtyxisSettingsClass *klass)
                          (G_PARAM_READWRITE |
                           G_PARAM_EXPLICIT_NOTIFY |
                           G_PARAM_STATIC_STRINGS));
+
+  properties[PROP_TAB_DEFAULT_IGNORE_OSC_TITLE] =
+    g_param_spec_boolean (PTYXIS_SETTING_KEY_TAB_DEFAULT_IGNORE_OSC_TITLE, NULL, NULL,
+                          FALSE,
+                          (G_PARAM_READWRITE |
+                           G_PARAM_EXPLICIT_NOTIFY |
+                           G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_properties (object_class, N_PROPS, properties);
 }
@@ -737,6 +755,25 @@ ptyxis_settings_set_visual_process_leader (PtyxisSettings *self,
   g_settings_set_boolean (self->settings,
                           PTYXIS_SETTING_KEY_VISUAL_PROCESS_LEADER,
                           visual_process_leader);
+}
+
+gboolean
+ptyxis_settings_get_tab_default_ignore_osc_title (PtyxisSettings *self)
+{
+  g_return_val_if_fail (PTYXIS_IS_SETTINGS (self), FALSE);
+
+  return g_settings_get_boolean (self->settings, PTYXIS_SETTING_KEY_TAB_DEFAULT_IGNORE_OSC_TITLE);
+}
+
+void
+ptyxis_settings_set_tab_default_ignore_osc_title (PtyxisSettings *self,
+						  gboolean tab_default_ignore_osc_title)
+{
+  g_return_if_fail (PTYXIS_IS_SETTINGS (self));
+
+  g_settings_set_boolean (self->settings,
+                          PTYXIS_SETTING_KEY_TAB_DEFAULT_IGNORE_OSC_TITLE,
+                          tab_default_ignore_osc_title);
 }
 
 VteCursorBlinkMode

@@ -82,7 +82,9 @@ char               *ptyxis_tab_dup_subtitle                       (PtyxisTab    
 char               *ptyxis_tab_dup_title                          (PtyxisTab            *self);
 gboolean            ptyxis_tab_get_ignore_osc_title               (PtyxisTab            *self);
 void                ptyxis_tab_set_ignore_osc_title               (PtyxisTab            *self,
-                                                                   gboolean              ignore_osc_title);
+                                                                   gboolean             newv);
+void                ptyxis_tab_enable_osc_title_if                (PtyxisTab            *self,
+                                                                   gboolean             cond);
 const char         *ptyxis_tab_get_title_prefix                   (PtyxisTab            *self);
 void                ptyxis_tab_set_title_prefix                   (PtyxisTab            *self,
                                                                    const char           *title_prefix);

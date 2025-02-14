@@ -626,6 +626,16 @@
         </child>
         <child>
           <object class="AdwPreferencesGroup">
+            <property name="title" translatable="yes">Title</property>
+            <child>
+              <object class="AdwSwitchRow" id="tab_default_ignore_osc_title">
+                <property name="title" translatable="yes">Include process title &lt;b&gt;by default&lt;/b&gt;</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
             <child>
               <object class="GtkButton">
                 <style>

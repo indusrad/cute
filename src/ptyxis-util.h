@@ -74,4 +74,29 @@ ptyxis_str_empty0 (const char *s)
   return !s || !*s;
 }
 
+#define PTYXIS_DEFBOOL_DEFAULT_FALSE 0b00
+#define PTYXIS_DEFBOOL_DEFAULT_TRUE  0b01
+#define PTYXIS_DEFBOOL_MANUAL_FALSE  0b10
+#define PTYXIS_DEFBOOL_MANUAL_TRUE   0b11
+
+static inline gboolean ptyxis_defbool_is_default(const gint n)
+{
+  return (n & 2) == 0;
+}
+
+static inline gboolean ptyxis_defbool_to_gbool(const gint b)
+{
+  return (b & 1) ? true : false;
+}
+
+static inline gint ptyxis_defbool_gbool_as_default(const gboolean b)
+{
+  return b ? PTYXIS_DEFBOOL_DEFAULT_TRUE : PTYXIS_DEFBOOL_DEFAULT_FALSE;
+}
+
+static inline gint ptyxis_defbool_gbool_as_manual(const gboolean b)
+{
+  return b ? PTYXIS_DEFBOOL_MANUAL_TRUE : PTYXIS_DEFBOOL_MANUAL_FALSE;
+}
+
 G_END_DECLS

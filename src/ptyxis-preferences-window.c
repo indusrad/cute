@@ -60,6 +60,7 @@ struct _PtyxisPreferencesWindow
   GListModel           *cursor_blink_modes;
   AdwComboRow          *cursor_shape;
   GListModel           *cursor_shapes;
+  AdwSwitchRow         *tab_default_ignore_osc_title;
   AdwComboRow          *delete_binding;
   AdwSwitchRow         *enable_a11y;
   GListModel           *erase_bindings;
@@ -910,6 +911,11 @@ ptyxis_preferences_window_constructed (GObject *object)
   g_object_bind_property (shortcuts, "detach-tab",
                           self->shortcut_detach_tab, "accelerator",
                           G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
+
+  g_object_bind_property (settings, "tab-default-ignore-osc-title",
+                          self->tab_default_ignore_osc_title, "active",
+                          G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL | G_BINDING_INVERT_BOOLEAN);
+
 }
 
 static void
@@ -1067,6 +1073,7 @@ ptyxis_preferences_window_class_init (PtyxisPreferencesWindowClass *klass)
   gtk_widget_class_bind_template_child (widget_class, PtyxisPreferencesWindow, show_more_palettes);
   gtk_widget_class_bind_template_child (widget_class, PtyxisPreferencesWindow, tab_position);
   gtk_widget_class_bind_template_child (widget_class, PtyxisPreferencesWindow, tab_positions);
+  gtk_widget_class_bind_template_child (widget_class, PtyxisPreferencesWindow, tab_default_ignore_osc_title);
   gtk_widget_class_bind_template_child (widget_class, PtyxisPreferencesWindow, text_blink_mode);
   gtk_widget_class_bind_template_child (widget_class, PtyxisPreferencesWindow, text_blink_modes);
   gtk_widget_class_bind_template_child (widget_class, PtyxisPreferencesWindow, use_system_font);
