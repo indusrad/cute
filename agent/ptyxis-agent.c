@@ -140,7 +140,7 @@ ptyxis_agent_init (PtyxisAgent  *agent,
 
   if (!ptyxis_podman_provider_update_sync (PTYXIS_PODMAN_PROVIDER (podman), NULL, &local_error))
     {
-      g_warning ("Failed to process podman containers: %s", local_error->message);
+      g_debug ("Failed to process podman containers: %s", local_error->message);
 
       /* Sometimes podman seems to crap out on us. Try a second time and see
        * if that works any better. See #62.
