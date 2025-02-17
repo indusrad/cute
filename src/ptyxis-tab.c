@@ -1368,8 +1368,8 @@ ptyxis_tab_get_title_prefix (PtyxisTab *self)
 }
 
 void
-ptyxis_tab_set_title_prefix (PtyxisTab *self,
-                              const char *title_prefix)
+ptyxis_tab_set_title_prefix (PtyxisTab  *self,
+                             const char *title_prefix)
 {
   g_return_if_fail (PTYXIS_IS_TAB (self));
 
