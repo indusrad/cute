@@ -126,6 +126,18 @@ ptyxis_application_new (const char        *application_id,
                        NULL);
 }
 
+static gboolean
+should_ignore_osc_title (PtyxisApplication *self,
+                         const char        *title)
+{
+  g_assert (PTYXIS_IS_APPLICATION (self));
+
+  if (ptyxis_settings_get_ignore_osc_title (self->settings))
+    return TRUE;
+
+  return !ptyxis_str_empty0 (title);
+}
+
 static void
 maybe_maximize (PtyxisApplication *self,
                 PtyxisWindow      *window)
@@ -330,7 +342,7 @@ ptyxis_application_activate (GApplication *app)
       PtyxisTab *tab = ptyxis_window_get_active_tab (window);
 
       ptyxis_tab_set_title_prefix (tab, self->next_title_prefix);
-      ptyxis_tab_set_ignore_osc_title (tab, !ptyxis_str_empty0 (self->next_title_prefix));
+      ptyxis_tab_set_ignore_osc_title (tab, should_ignore_osc_title (self, self->next_title_prefix));
       g_clear_pointer (&self->next_title_prefix, g_free);
 
       maybe_maximize (self, window);
@@ -497,7 +509,7 @@ ptyxis_application_command_line (GApplication            *app,
           tab = ptyxis_window_add_tab_for_command (window, NULL, (const char * const *)argv, cwd_uri);
 
           ptyxis_tab_set_title_prefix (tab, title);
-          ptyxis_tab_set_ignore_osc_title (tab, !ptyxis_str_empty0 (title));
+          ptyxis_tab_set_ignore_osc_title (tab, should_ignore_osc_title (self, title));
           ptyxis_tab_set_initial_working_directory_uri (tab, cwd_uri);
           ptyxis_window_set_active_tab (window, tab);
           gtk_window_present (GTK_WINDOW (window));
@@ -514,7 +526,7 @@ ptyxis_application_command_line (GApplication            *app,
           tab = ptyxis_window_add_tab_for_command (window, profile, (const char * const *)argv, cwd_uri);
 
           ptyxis_tab_set_title_prefix (tab, title);
-          ptyxis_tab_set_ignore_osc_title (tab, !ptyxis_str_empty0 (title));
+          ptyxis_tab_set_ignore_osc_title (tab, should_ignore_osc_title (self, title));
           ptyxis_tab_set_initial_working_directory_uri (tab, cwd_uri);
           ptyxis_window_set_active_tab (window, tab);
           gtk_window_present (GTK_WINDOW (window));
@@ -528,7 +540,7 @@ ptyxis_application_command_line (GApplication            *app,
           tab = ptyxis_window_add_tab_for_command (window, NULL, (const char * const *)argv, cwd_uri);
 
           ptyxis_tab_set_title_prefix (tab, title);
-          ptyxis_tab_set_ignore_osc_title (tab, !ptyxis_str_empty0 (title));
+          ptyxis_tab_set_ignore_osc_title (tab, should_ignore_osc_title (self, title));
           ptyxis_tab_set_initial_working_directory_uri (tab, cwd_uri);
           ptyxis_window_set_active_tab (window, tab);
 
@@ -545,7 +557,7 @@ ptyxis_application_command_line (GApplication            *app,
           tab = ptyxis_window_get_active_tab (window);
 
           ptyxis_tab_set_title_prefix (tab, title);
-          ptyxis_tab_set_ignore_osc_title (tab, !ptyxis_str_empty0 (title));
+          ptyxis_tab_set_ignore_osc_title (tab, should_ignore_osc_title (self, title));
 
           gtk_application_add_window (GTK_APPLICATION (self), GTK_WINDOW (window));
           gtk_window_present (GTK_WINDOW (window));
@@ -566,7 +578,7 @@ ptyxis_application_command_line (GApplication            *app,
 
       ptyxis_tab_set_initial_working_directory_uri (tab, cwd_uri);
       ptyxis_tab_set_title_prefix (tab, title);
-      ptyxis_tab_set_ignore_osc_title (tab, !ptyxis_str_empty0 (title));
+      ptyxis_tab_set_ignore_osc_title (tab, should_ignore_osc_title (self, title));
       ptyxis_window_add_tab (window, tab);
       ptyxis_window_set_active_tab (window, tab);
 
@@ -587,7 +599,7 @@ ptyxis_application_command_line (GApplication            *app,
 
       ptyxis_tab_set_initial_working_directory_uri (tab, cwd_uri);
       ptyxis_tab_set_title_prefix (tab, title);
-      ptyxis_tab_set_ignore_osc_title (tab, !ptyxis_str_empty0 (title));
+      ptyxis_tab_set_ignore_osc_title (tab, should_ignore_osc_title (self, title));
       ptyxis_window_add_tab (window, tab);
       ptyxis_window_set_active_tab (window, tab);
 
@@ -608,7 +620,7 @@ ptyxis_application_command_line (GApplication            *app,
 
       ptyxis_tab_set_initial_working_directory_uri (tab, cwd_uri);
       ptyxis_tab_set_title_prefix (tab, title);
-      ptyxis_tab_set_ignore_osc_title (tab, !ptyxis_str_empty0 (title));
+      ptyxis_tab_set_ignore_osc_title (tab, should_ignore_osc_title (self, title));
       ptyxis_window_add_tab (window, tab);
       ptyxis_window_set_active_tab (window, tab);
 
