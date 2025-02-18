@@ -794,6 +794,9 @@ ptyxis_tab_constructed (GObject *object)
   g_object_bind_property (settings, "text-blink-mode",
                           self->terminal, "text-blink-mode",
                           G_BINDING_SYNC_CREATE);
+  g_object_bind_property (settings, "ignore-osc-title",
+                          self, "ignore-osc-title",
+                          G_BINDING_SYNC_CREATE);
 
   g_signal_connect_object (settings,
                            "notify::disable-padding",

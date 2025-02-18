@@ -49,6 +49,7 @@ G_BEGIN_DECLS
 #define PTYXIS_SETTING_KEY_DISABLE_PADDING         "disable-padding"
 #define PTYXIS_SETTING_KEY_WORD_CHAR_EXCEPTIONS    "word-char-exceptions"
 #define PTYXIS_SETTING_KEY_TAB_MIDDLE_CLICK        "tab-middle-click"
+#define PTYXIS_SETTING_KEY_IGNORE_OSC_TITLE        "ignore-osc-title"
 
 typedef enum _PtyxisNewTabPosition
 {
@@ -165,5 +166,8 @@ char                   *ptyxis_settings_dup_word_char_exceptions    (PtyxisSetti
 gboolean                ptyxis_settings_get_prompt_on_close         (PtyxisSettings             *self);
 void                    ptyxis_settings_set_prompt_on_close         (PtyxisSettings             *self,
                                                                      gboolean                    prompt_on_close);
+gboolean                ptyxis_settings_get_ignore_osc_title        (PtyxisSettings             *self);
+void                    ptyxis_settings_set_ignore_osc_title        (PtyxisSettings             *self,
+                                                                     gboolean                    ignore_osc_title);
 
 G_END_DECLS

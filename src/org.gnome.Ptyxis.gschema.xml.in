@@ -238,6 +238,12 @@
       <description>If a tab (or window) is closed with active foreground processes, prompt the user for confirmation.</description>
     </key>
 
+    <key name="ignore-osc-title" type="b">
+      <default>false</default>
+      <summary>Ignore OSC Title</summary>
+      <description>If OSC title should be ignored in tab titles.</description>
+    </key>
+
   </schema>
 
   <schema id="@APP_SCHEMA_PROFILE_ID@">

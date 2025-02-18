@@ -42,6 +42,7 @@ enum {
   PROP_DEFAULT_PROFILE_UUID,
   PROP_DISABLE_PADDING,
   PROP_ENABLE_A11Y,
+  PROP_IGNORE_OSC_TITLE,
   PROP_FONT_DESC,
   PROP_FONT_NAME,
   PROP_INTERFACE_STYLE,
@@ -113,6 +114,8 @@ ptyxis_settings_changed_cb (PtyxisSettings *self,
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_TOAST_ON_COPY_CLIPBOARD]);
   else if (g_str_equal (key, PTYXIS_SETTING_KEY_ENABLE_A11Y))
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_ENABLE_A11Y]);
+  else if (g_str_equal (key, PTYXIS_SETTING_KEY_IGNORE_OSC_TITLE))
+    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_IGNORE_OSC_TITLE]);
   else if (g_str_equal (key, PTYXIS_SETTING_KEY_FONT_NAME))
     {
       g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_FONT_NAME]);
@@ -169,6 +172,10 @@ ptyxis_settings_get_property (GObject    *object,
 
     case PROP_ENABLE_A11Y:
       g_value_set_boolean (value, ptyxis_settings_get_enable_a11y (self));
+      break;
+
+    case PROP_IGNORE_OSC_TITLE:
+      g_value_set_boolean (value, ptyxis_settings_get_ignore_osc_title (self));
       break;
 
     case PROP_FONT_DESC:
@@ -268,6 +275,10 @@ ptyxis_settings_set_property (GObject      *object,
 
     case PROP_ENABLE_A11Y:
       ptyxis_settings_set_enable_a11y (self, g_value_get_boolean (value));
+      break;
+
+    case PROP_IGNORE_OSC_TITLE:
+      ptyxis_settings_set_ignore_osc_title (self, g_value_get_boolean (value));
       break;
 
     case PROP_FONT_NAME:
@@ -373,6 +384,13 @@ ptyxis_settings_class_init (PtyxisSettingsClass *klass)
 
   properties[PROP_ENABLE_A11Y] =
     g_param_spec_boolean (PTYXIS_SETTING_KEY_ENABLE_A11Y, NULL, NULL,
+                          FALSE,
+                          (G_PARAM_READWRITE |
+                           G_PARAM_EXPLICIT_NOTIFY |
+                           G_PARAM_STATIC_STRINGS));
+
+  properties[PROP_IGNORE_OSC_TITLE] =
+    g_param_spec_boolean (PTYXIS_SETTING_KEY_IGNORE_OSC_TITLE, NULL, NULL,
                           FALSE,
                           (G_PARAM_READWRITE |
                            G_PARAM_EXPLICIT_NOTIFY |
@@ -1105,4 +1123,24 @@ ptyxis_settings_get_prompt_on_close (PtyxisSettings *self)
 
   return g_settings_get_boolean (self->settings,
                                  PTYXIS_SETTING_KEY_PROMPT_ON_CLOSE);
+}
+
+void
+ptyxis_settings_set_ignore_osc_title (PtyxisSettings *self,
+                                      gboolean        ignore_osc_title)
+{
+  g_return_if_fail (PTYXIS_IS_SETTINGS (self));
+
+  g_settings_set_boolean (self->settings,
+                          PTYXIS_SETTING_KEY_IGNORE_OSC_TITLE,
+                          !!ignore_osc_title);
+}
+
+gboolean
+ptyxis_settings_get_ignore_osc_title (PtyxisSettings *self)
+{
+  g_return_val_if_fail (PTYXIS_IS_SETTINGS (self), FALSE);
+
+  return g_settings_get_boolean (self->settings,
+                                 PTYXIS_SETTING_KEY_IGNORE_OSC_TITLE);
 }
