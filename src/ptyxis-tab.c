@@ -2278,6 +2278,30 @@ ptyxis_tab_set_ignore_osc_title (PtyxisTab *self,
 }
 
 void
+ptyxis_tab_ensure_meaningful_title (PtyxisTab      *self,
+                                    const char     *title,
+                                    gboolean        always_global)
+{
+  PtyxisSettings *settings;
+  gboolean global_ignore_osc_title;
+
+  g_assert (PTYXIS_IS_TAB (self));
+
+  if (always_global)
+    {
+      ptyxis_tab_set_title_prefix (self, title);
+      settings = ptyxis_application_get_settings (PTYXIS_APPLICATION_DEFAULT);
+      global_ignore_osc_title = ptyxis_settings_get_ignore_osc_title (settings);
+      ptyxis_tab_set_ignore_osc_title (self, global_ignore_osc_title);
+    }
+  else
+    {
+      ptyxis_tab_set_title_prefix (self, title);
+      ptyxis_tab_set_ignore_osc_title (self, !ptyxis_str_empty0 (title));
+    }
+}
+
+void
 _ptyxis_tab_ignore_snapshot (PtyxisTab *self)
 {
   g_return_if_fail (PTYXIS_IS_TAB (self));
