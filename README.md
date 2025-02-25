@@ -1,3 +1,6 @@
+# Cute
+Cute is a GNOME Terminal Emulator for Windows based on Ptyxis
+
 # Ptyxis
 
 Ptyxis is a terminal for GNOME with first-class support for containers.
